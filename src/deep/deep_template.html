@@ -69,8 +69,9 @@ var $=function(id){return document.getElementById(id)},view=$('view');
 var CAP_FREE=600;
 function norm(s){return s.toLowerCase().replace(/ё/g,'е').replace(/[^a-zа-я0-9+#\- ]/g,' ').replace(/\s+/g,' ').trim()}
 Q.forEach(function(q){q.map={};q.items.forEach(function(it,i){it.keys.forEach(function(k){var n=norm(k);if(!(n in q.map))q.map[n]=i});it.d=depthZ(it.z)});q.n=q.items.length});
-function lev(a,b){if(Math.abs(a.length-b.length)>1)return 9;var d=[],i,j;for(i=0;i<=a.length;i++){d[i]=[i]}for(j=1;j<=b.length;j++)d[0][j]=j;for(i=1;i<=a.length;i++)for(j=1;j<=b.length;j++)d[i][j]=Math.min(d[i-1][j]+1,d[i][j-1]+1,d[i-1][j-1]+(a[i-1]===b[j-1]?0:1));return d[a.length][b.length]}
+function lev(a,b){if(Math.abs(a.length-b.length)>2)return 9;var d=[],i,j;for(i=0;i<=a.length;i++){d[i]=[i]}for(j=1;j<=b.length;j++)d[0][j]=j;for(i=1;i<=a.length;i++)for(j=1;j<=b.length;j++)d[i][j]=Math.min(d[i-1][j]+1,d[i][j-1]+1,d[i-1][j-1]+(a[i-1]===b[j-1]?0:1));return d[a.length][b.length]}
 function find(q,text){var n=norm(text);if(n in q.map)return q.map[n];if(n.length>=5){for(var k in q.map){if(lev(n,k)<=1)return q.map[k]}}return -1}
+function suggest(q,text){var n=norm(text),best=null,bd=9,lim=n.length>=7?2:1,k,d;for(k in q.map){d=lev(n,k);if(d<bd&&d<=lim){bd=d;best=q.items[q.map[k]].name}}if(best)return best;if(VOC){for(k in VOC){if(Math.abs(k.length-n.length)>1)continue;d=lev(n,k);if(d<=1&&k!==n)return k}}return null}
 /* глубина по частоте слова (zipf: 7 — «и», 1 — очень редкое): чем реже слово в текстах, тем глубже */
 function depthZ(z){var t=Math.max(0,Math.min(1,(5.2-z)/4.0));return Math.max(40,Math.round(1000*Math.pow(t,1.1)/5)*5)}
 var VOC=null,vocP=null;
@@ -114,9 +115,9 @@ function answer(t){
   var qi=game.set[game.cur],q=Q[qi];
   if(!t)return commit({q:qi,text:'',depth:0},-2);
   var i=find(q,t);
-  if(i>=0)return commit({q:qi,text:t,rank:i,depth:q.items[i].d,name:q.items[i].name},i);
+  if(i>=0)return commit({q:qi,text:t,rank:i,depth:q.items[i].d,name:q.items[i].name,corr:!(norm(t) in q.map)},i);
   loadVoc().then(function(){var z=freeZ(t);
-    if(z===null){var m=$('msg');if(m)m.textContent='Не нашёл такого слова. Проверь написание или нажми «Не знаю».';$('in').focus();return}
+    if(z===null){var m=$('msg'),sg=suggest(q,t);if(m){m.textContent='Не нашёл такого слова. ';if(sg){var bt=document.createElement('button');bt.type='button';bt.className='btn ghost';bt.style.cssText='padding:4px 10px;margin-left:4px';bt.textContent='Ты имел в виду «'+sg+'»?';bt.onclick=function(){answer(sg)};m.appendChild(bt)}else m.appendChild(document.createTextNode('Проверь написание или нажми «Не знаю».'))}$('in').focus();return}
     commit({q:qi,text:t,depth:Math.min(CAP_FREE,depthZ(z)),free:1},-1)})
 }
 function commit(a,rank){
@@ -127,7 +128,7 @@ function commit(a,rank){
   var deeper='';var pool=q.items.filter(function(it){return it.d>a.depth+30});
   if(pool.length){var pick=shuffle(pool.map(function(_,i){return i}),Date.now()%1e6).slice(0,3).map(function(i){return pool[i].name});deeper='<p class="deeper">Глубже было: <b>'+pick.map(esc).join('</b>, <b>')+'</b></p>'}
   else if(!a.free&&rank>=0)deeper='<p class="deeper">Это почти самое дно. Глубже уже некуда.</p>';
-  view.innerHTML='<div class="card"><p class="eyebrow">Вопрос '+(game.cur+1)+' из 7</p><h2>'+esc(q.q)+'</h2><div class="res"><div class="deeper" style="margin:0 0 6px">'+(t?'Твой ответ: <b>'+esc(t)+'</b>':'Ответа нет')+'</div><div><span class="big">+'+fmt(a.depth)+' м</span><span class="tag '+cls+'">'+inf+'</span></div>'+deeper+'<div class="row"><button class="btn" id="nx">'+(game.cur<6?'Дальше':'Результат')+'</button></div></div></div>';
+  view.innerHTML='<div class="card"><p class="eyebrow">Вопрос '+(game.cur+1)+' из 7</p><h2>'+esc(q.q)+'</h2><div class="res"><div class="deeper" style="margin:0 0 6px">'+(t?'Твой ответ: <b>'+esc(t)+'</b>'+(a.corr?' → принято как <b>'+esc(a.name)+'</b> (опечатка исправлена)':''):'Ответа нет')+'</div><div><span class="big">+'+fmt(a.depth)+' м</span><span class="tag '+cls+'">'+inf+'</span></div>'+deeper+'<div class="row"><button class="btn" id="nx">'+(game.cur<6?'Дальше':'Результат')+'</button></div></div></div>';
   setDepth(tot);$('nx').onclick=function(){game.cur++;game.cur<7?ask():finish(false)};$('nx').focus();
 }
 function finish(again){
