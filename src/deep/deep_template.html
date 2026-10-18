@@ -64,17 +64,21 @@ input:focus{border-color:var(--cy);box-shadow:0 0 0 2px rgba(79,209,255,.2)}
 <script>
 (function(){
 var DATA=JSON.parse(document.getElementById('pdata').textContent);
-var Q=DATA.map(function(p){var items=p.a.split('|').map(function(s){return s.split('=')});return{q:p.q,names:items.map(function(x){return x[0]}),keys:items}});
+var Q=DATA.map(function(p){return{q:p.q,items:p.a.map(function(x){return{name:x[0],keys:x[1],z:x[2]}})}});
 var $=function(id){return document.getElementById(id)},view=$('view');
-var MAXD=1000,UNK=300;
+var CAP_FREE=600;
 function norm(s){return s.toLowerCase().replace(/ё/g,'е').replace(/[^a-zа-я0-9+#\- ]/g,' ').replace(/\s+/g,' ').trim()}
-Q.forEach(function(q){q.map={};q.keys.forEach(function(g,i){g.forEach(function(k){var n=norm(k);if(!(n in q.map))q.map[n]=i})});q.n=q.names.length});
+Q.forEach(function(q){q.map={};q.items.forEach(function(it,i){it.keys.forEach(function(k){var n=norm(k);if(!(n in q.map))q.map[n]=i});it.d=depthZ(it.z)});q.n=q.items.length});
 function lev(a,b){if(Math.abs(a.length-b.length)>1)return 9;var d=[],i,j;for(i=0;i<=a.length;i++){d[i]=[i]}for(j=1;j<=b.length;j++)d[0][j]=j;for(i=1;i<=a.length;i++)for(j=1;j<=b.length;j++)d[i][j]=Math.min(d[i-1][j]+1,d[i][j-1]+1,d[i-1][j-1]+(a[i-1]===b[j-1]?0:1));return d[a.length][b.length]}
-function find(q,text){var n=norm(text);if(n in q.map)return q.map[n];if(n.length>=5){var best=-1;for(var k in q.map){if(lev(n,k)<=1){best=q.map[k];break}}return best}return -1}
-function depthOf(q,i){var t=i/(q.n-1);return Math.round(60+(MAXD-60)*Math.pow(t,.85))}
+function find(q,text){var n=norm(text);if(n in q.map)return q.map[n];if(n.length>=5){for(var k in q.map){if(lev(n,k)<=1)return q.map[k]}}return -1}
+/* глубина по частоте слова (zipf: 7 — «и», 1 — очень редкое): чем реже слово в текстах, тем глубже */
+function depthZ(z){var t=Math.max(0,Math.min(1,(5.2-z)/4.0));return Math.max(40,Math.round(1000*Math.pow(t,1.1)/5)*5)}
+var VOC=null,vocP=null;
+function loadVoc(){if(vocP)return vocP;vocP=fetch('deep_freq.txt').then(function(r){return r.text()}).then(function(t){VOC={};t.split('\n').forEach(function(l){var i=l.indexOf('\t');if(i>0)VOC[l.slice(0,i)]=+l.slice(i+1)/10});return VOC}).catch(function(){VOC={};return VOC});return vocP}
+function freeZ(text){var toks=norm(text).split(/[ \-]+/).filter(Boolean);if(!toks.length)return null;var z=9;for(var i=0;i<toks.length;i++){var v=VOC[toks[i]];if(v===undefined)return null;if(v<z)z=v}return z-(toks.length-1)*.3}
 var TIERS=[[0,'Планктон','t0'],[1500,'Сельдь','t1'],[2500,'Тунец','t1'],[3500,'Кальмар','t2'],[4500,'Удильщик','t3'],[5500,'Гигантский кальмар','t4'],[6500,'Левиафан','t4']];
 function tier(d){var t=TIERS[0];TIERS.forEach(function(x){if(d>=x[0])t=x});return t}
-function rare(i,n){var t=i/(n-1);return t<.15?['частый','t0']:t<.4?['обычный','t1']:t<.7?['редкий','t2']:t<.9?['очень редкий','t3']:['почти никто','t4']}
+function rare(d){return d<150?['частый','t0']:d<350?['обычный','t1']:d<600?['редкий','t2']:d<800?['очень редкий','t3']:['почти никто','t4']}
 function fmt(n){return String(n).replace(/\B(?=(\d{3})+(?!\d))/g,' ')}
 function mulberry(a){return function(){a|=0;a=a+0x6D2B79F5|0;var t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
 function shuffle(arr,seed){var r=mulberry(seed),a=arr.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(r()*(i+1)),t=a[i];a[i]=a[j];a[j]=t}return a}
@@ -94,26 +98,35 @@ function menu(){
   game=null;setDepth(0);var day=dayNo(),done=S.daily[day];
   view.innerHTML='<div class="card"><p class="eyebrow">Ежедневное погружение №'+day+'</p><h1>Как глубоко ты сможешь нырнуть?</h1><p class="sub">7 вопросов. Отвечай как придёт в голову: частые ответы почти не опускают, редкие уводят на дно. Вопросы одинаковые для всех в этот день.</p>'
    +'<div class="menu">'+(done?'<button class="btn" id="seeDaily">Мой результат: '+fmt(done.total)+' м</button>':'<button class="btn" id="goDaily">Погрузиться</button>')+'<button class="btn ghost" id="goFree">Безлимит: случайные вопросы</button></div>'
-   +'<p class="note">Как считаются метры: у каждого вопроса есть список ответов от самых частых к самым редким. Чем дальше в списке, тем глубже. Ответа нет в списке: засчитывается '+UNK+' м без проверки. Это не опрос людей, а моя подборка.</p></div>';
+   +'<p class="note">Как считаются метры: чем реже слово встречается в русских текстах, тем глубже. Частые слова вроде «Москва» дают десятки метров, редкие до 1000 м. Это не опрос игроков, а частота слов в языке. Ответ вне моей подборки тоже считается, но не глубже '+CAP_FREE+' м: категорию я не проверяю.</p></div>';
   var g;(g=$('goDaily'))&&(g.onclick=function(){start('daily')});(g=$('seeDaily'))&&(g.onclick=function(){game={mode:'daily',day:day,answers:done.answers,set:done.set};finish(true)});$('goFree').onclick=function(){start('free')};
 }
 function start(mode){var day=dayNo();game={mode:mode,day:day,set:mode==='daily'?dailySet(day):randomSet(),answers:[],cur:0};setDepth(0);ask()}
 function ask(){
   var qi=game.set[game.cur],q=Q[qi];setDepth(total());
-  view.innerHTML='<div class="card"><p class="eyebrow">Вопрос '+(game.cur+1)+' из 7</p><h2>'+esc(q.q)+'</h2><form id="f" autocomplete="off"><input id="in" type="text" maxlength="40" placeholder="Твой ответ" autocapitalize="sentences" enterkeyhint="go"><button class="btn" type="submit">Нырнуть</button></form><button class="skip" id="sk" type="button">Не знаю (0 м)</button><p class="hint">▼ редкие ответы опускают глубже ▼</p></div>';
+  view.innerHTML='<div class="card"><p class="eyebrow">Вопрос '+(game.cur+1)+' из 7</p><h2>'+esc(q.q)+'</h2><form id="f" autocomplete="off"><input id="in" type="text" maxlength="40" placeholder="Твой ответ" autocapitalize="sentences" enterkeyhint="go"><button class="btn" type="submit">Нырнуть</button></form><div class="deeper" id="msg" style="margin-top:10px;color:var(--pk)"></div><button class="skip" id="sk" type="button">Не знаю (0 м)</button><p class="hint">▼ редкие ответы опускают глубже ▼</p></div>';
   var inp=$('in');setTimeout(function(){inp.focus()},50);
   $('f').onsubmit=function(e){e.preventDefault();var t=inp.value.trim();if(t.length<2){inp.focus();return}answer(t)};
   $('sk').onclick=function(){answer('')};
 }
 function esc(s){return s.replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
 function answer(t){
-  var qi=game.set[game.cur],q=Q[qi],rank=t?find(q,t):-2,a={q:qi,text:t};
-  if(rank>=0){a.rank=rank;a.depth=depthOf(q,rank);a.name=q.names[rank]}else if(rank===-2){a.depth=0}else{a.depth=UNK;a.unk=1}
+  var qi=game.set[game.cur],q=Q[qi];
+  if(!t)return commit({q:qi,text:'',depth:0},-2);
+  var i=find(q,t);
+  if(i>=0)return commit({q:qi,text:t,rank:i,depth:q.items[i].d,name:q.items[i].name},i);
+  loadVoc().then(function(){var z=freeZ(t);
+    if(z===null){var m=$('msg');if(m)m.textContent='Не нашёл такого слова. Проверь написание или нажми «Не знаю».';$('in').focus();return}
+    commit({q:qi,text:t,depth:Math.min(CAP_FREE,depthZ(z)),free:1},-1)})
+}
+function commit(a,rank){
+  var qi=a.q,q=Q[qi],t=a.text;
   game.answers.push(a);var tot=total();
   var inf,cls;
-  if(a.unk){inf='нет в моей подборке';cls='tx'}else if(rank===-2){inf='пропуск';cls='tx'}else{var r=rare(rank,q.n);inf=r[0];cls=r[1]}
-  var deeper='';if(rank>=0&&rank<q.n-1){var pool=q.names.slice(rank+1),pick=shuffle(pool.map(function(_,i){return i}),Date.now()%1e6).slice(0,3).map(function(i){return pool[i]});deeper='<p class="deeper">Глубже было: <b>'+pick.map(esc).join('</b>, <b>')+'</b></p>'}
-  else if(rank===q.n-1)deeper='<p class="deeper">Это самое дно списка. Глубже уже некуда.</p>';
+  if(a.free){inf='вне подборки';cls='tx'}else if(rank===-2){inf='пропуск';cls='tx'}else{var r=rare(a.depth);inf=r[0];cls=r[1]}
+  var deeper='';var pool=q.items.filter(function(it){return it.d>a.depth+30});
+  if(pool.length){var pick=shuffle(pool.map(function(_,i){return i}),Date.now()%1e6).slice(0,3).map(function(i){return pool[i].name});deeper='<p class="deeper">Глубже было: <b>'+pick.map(esc).join('</b>, <b>')+'</b></p>'}
+  else if(!a.free&&rank>=0)deeper='<p class="deeper">Это почти самое дно. Глубже уже некуда.</p>';
   view.innerHTML='<div class="card"><p class="eyebrow">Вопрос '+(game.cur+1)+' из 7</p><h2>'+esc(q.q)+'</h2><div class="res"><div class="deeper" style="margin:0 0 6px">'+(t?'Твой ответ: <b>'+esc(t)+'</b>':'Ответа нет')+'</div><div><span class="big">+'+fmt(a.depth)+' м</span><span class="tag '+cls+'">'+inf+'</span></div>'+deeper+'<div class="row"><button class="btn" id="nx">'+(game.cur<6?'Дальше':'Результат')+'</button></div></div></div>';
   setDepth(tot);$('nx').onclick=function(){game.cur++;game.cur<7?ask():finish(false)};$('nx').focus();
 }
