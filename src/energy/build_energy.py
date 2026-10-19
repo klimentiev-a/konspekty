@@ -11,7 +11,10 @@ ids = [r['id'] for r in m.ROUTES]; assert len(ids) == len(set(ids)), 'повто
 for r in m.ROUTES:
     assert len(r['pts']) >= 2 and all(-180 <= x <= 180 and -90 <= y <= 90 for x, y in r['pts']), r['id']
     assert r['kind'] in ('oil', 'gas', 'lng') and r.get('v', 0) >= 0
-data = json.dumps({'routes': [{k: (list(map(list, v)) if k == 'pts' else v) for k, v in r.items()} for r in m.ROUTES],
+sp3 = importlib.util.spec_from_file_location('countries', os.path.join(HERE, 'countries.py')); cs = importlib.util.module_from_spec(sp3); sp3.loader.exec_module(cs)
+COUNTRIES, MISS, C_SRC, C_YEAR = cs.build(ob.O, ob.GAS_PRICES)
+print('страны:', len(COUNTRIES), '| не сопоставлено:', MISS)
+data = json.dumps({'countries': COUNTRIES, 'cSrc': C_SRC, 'cYear': C_YEAR, 'gasSrcNote': ob.GAS_SRC, 'routes': [{k: (list(map(list, v)) if k == 'pts' else v) for k, v in r.items()} for r in m.ROUTES],
                    'objects': ob.O, 'world': ob.WORLD, 'production': ob.PRODUCTION, 'gas': ob.GAS_PRICES, 'gasSrc': ob.GAS_SRC, 'regions': ob.REGIONS, 'records': ob.RECORDS, 'quiz': ob.QUIZ, 'companies': ob.COMPANIES, 'timeline': ob.TIMELINE, 'scen': ob.SCEN, 'wiki': ob.WIKI, 'deals': m.DEALS, 'dealsAsOf': m.DEALS_AS_OF, 'chokes': [{'n': c['n'], 'x': c['x'], 'y': c['y'], 't': c['t']} for c in m.CHOKES]}, ensure_ascii=False, separators=(',', ':'))
 ft = open(os.path.join(ROOT, 'src', 'finance', 'finance_template.html'), encoding='utf-8').read().split('\n')
 def span(a, b):
