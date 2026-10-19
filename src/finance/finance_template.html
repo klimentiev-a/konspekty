@@ -664,6 +664,12 @@ details.track.cur>summary h2 .tp{color:var(--accent);border-color:var(--accent)}
 p.why{padding:11px 15px;border-radius:10px;background:var(--rail);border-left:3px solid var(--accent2);font-size:15px;line-height:1.62;color:var(--muted)}p.why>em:first-child{display:block;margin-bottom:2px;font:700 11.5px/1.3 var(--sans);letter-spacing:.07em;text-transform:uppercase;font-style:normal;color:var(--accent2)}
 .svf{margin:28px 0 0;padding-top:14px;border-top:1px solid var(--line)}
 .svp{display:flex;gap:12px;align-items:center;margin-top:8px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--surface);text-decoration:none;color:inherit}.svp[aria-current]{border-color:var(--accent)}.svp small{display:block;font:500 12px/1.3 var(--sans);color:var(--faint)}.svp b{font:600 15px/1.3 var(--serif)}
+
+.sub1{margin-top:14px;align-items:center;overflow:visible;flex-wrap:wrap}
+details.more{position:relative;flex:none}details.more>summary{list-style:none;cursor:pointer}details.more>summary::-webkit-details-marker{display:none}details.more>summary.dim{opacity:.7}
+.morep{position:absolute;left:0;top:calc(100% + 6px);z-index:40;min-width:240px;padding:6px;border:1px solid var(--line);border-radius:14px;background:var(--surface);box-shadow:0 12px 32px rgba(0,0,0,.18)}
+.morep a{display:flex;flex-direction:column;gap:1px;padding:9px 12px;border-radius:9px;text-decoration:none;color:var(--fg);font:500 14.5px/1.3 var(--sans)}.morep a small{font:400 12px/1.3 var(--sans);color:var(--faint)}.morep a:hover,.morep a.on{background:var(--rail)}
+@media (max-width:640px){.sub1{flex-wrap:nowrap;overflow-x:auto}.morep{position:fixed;left:12px;right:12px;top:auto;bottom:calc(84px + env(safe-area-inset-bottom,0px));min-width:0;z-index:60}.morep a{padding:12px 14px}}
 </style></head><body>
 <header class="top">
   <div class="bar">
@@ -818,10 +824,10 @@ function renderHome(){
     '<div class="hm-cards">'+cards.map(function(c){return '<a class="hm-card" href="'+c[0]+'">'+c[4]+'<b>'+c[1]+'</b><em>'+c[3]+'</em></a>'}).join('')+'</div>'+
     '<a class="hm-resume" href="#learn/'+(last||CH[0]).id+'"><small>'+(last?'Продолжить урок':'Начать обучение')+'</small><b>'+esc((last||CH[0]).title)+'</b></a>';
   function lst(t,a){return '<div class="hm-sec"><h2>'+t+'</h2><div class="hm-list">'+a.map(function(x){return '<a href="'+x[0]+'"><span>'+x[1]+(x[2]?'<small>'+x[2]+'</small>':'')+'</span></a>'}).join('')+'</div></div>'}
-  h+=lst('Следить за рынком',[['#markets/news','Новости','Главное за день, с важностью'],['#markets/week','Итоги недели','Кто вырос и упал'],['#markets/cal','Календарь событий','Заседания ЦБ, отчёты, данные'],['#markets/divs','Дивиденды','Даты закрытия реестра']]);
-  h+=lst('Мир',[['#world/ranking','Рейтинг компаний мира','Кто крупнее по выручке и прибыли'],['#world/life','Зарплаты и налоги по странам','Сколько остаётся на руках']]);
-  h+=lst('Справка',[['#learn/glossariy','Глоссарий','Термины по буквам'],['search.html','Поиск по всему сайту','Главы, термины, компании, регионы'],['ucheba.html','Учёба','Расписание, билеты, сессия']]);
-  h+='<div class="hm-sec"><h2>Размер текста</h2><div class="hm-set"><div class="zm" role="group" aria-label="Масштаб страницы"><button type="button" data-sz="-1" aria-label="Уменьшить">A−</button><button type="button" class="szv" data-sz="0" title="Сбросить масштаб">100%</button><button type="button" data-sz="1" aria-label="Увеличить">A+</button></div><span>Оформление — кнопка ◐ вверху.</span></div></div></section>';
+  var sv=svList()[0],svFresh=sv&&(Date.now()-new Date(sv.date+'T00:00:00'))<3*864e5;
+  if(svFresh)h+='<a class="hm-resume" href="#markets/daily/'+sv.id+'"><small>Сводка рынка · '+esc(svLabel(sv))+'</small><b>'+esc(sv.title)+'</b></a>';
+  h+=lst('Полезное',[['#markets/news','Новости','Главное за день'],['#markets/cal','Календарь','ЦБ, ФРС, отчёты'],['#markets/divs','Дивиденды','Даты отсечек'],['#world/ranking','Рейтинг компаний мира','По выручке и прибыли'],['#world/life','Зарплаты и налоги','По странам'],['#learn/glossariy','Глоссарий','Термины по буквам'],['search.html','Поиск по сайту','Главы, термины, компании']]);
+  h+='</section>';
   view.innerHTML=h;
 }
 function learnProg(){   // общая полоса прогресса в шапке «Обучения»
@@ -1004,9 +1010,14 @@ var SUBS=[['summary','Сводка'],['daily','Утро и вечер'],['week',
 var SGRP=[['Обзор','Что происходит',['summary','daily','week','news']],['Рынки','Россия, мир, крипта, облигации',['ru','us','crypto','bonds','fx']],['Экономика','Макро, дивиденды, календарь',['macro','divs','events','cal']]];
 var SLBL={};SUBS.forEach(function(s){SLBL[s[0]]=s[1]});
 function sgrp(k){for(var i=0;i<SGRP.length;i++)if(SGRP[i][2].indexOf(k)>=0)return i;return 0}
-function subnav(){var gi=sgrp(cur),g=SGRP[gi];
-  return '<nav class="seg" aria-label="Разделы рынков">'+SGRP.map(function(x,i){return '<a class="'+(i===gi?'on':'')+'" href="#markets/'+(i===gi?cur:x[2][0])+'"><b>'+x[0]+'</b><small>'+x[1]+'</small></a>'}).join('')+'</nav>'+
-  '<nav class="sub sub2">'+g[2].map(function(k){return '<a class="chip'+(k===cur?' on':'')+'" href="#markets/'+k+'">'+SLBL[k]+'</a>'}).join('')+'</nav>'}
+/* одна строка: 5 главных разделов + «Ещё» со всем остальным; открытый раздел из «Ещё» показывается отдельным чипом */
+var MAIN_SUBS=['summary','daily','ru','us','news'],MORE_SUBS=SUBS.map(function(x){return x[0]}).filter(function(k){return MAIN_SUBS.indexOf(k)<0});
+function subnav(){var extra=MORE_SUBS.indexOf(cur)>=0?cur:null;
+  return '<nav class="sub sub1" aria-label="Разделы рынков">'+MAIN_SUBS.map(function(k){return '<a class="chip'+(k===cur?' on':'')+'" href="#markets/'+k+'">'+SLBL[k]+'</a>'}).join('')+
+  (extra?'<a class="chip on" href="#markets/'+extra+'">'+SLBL[extra]+'</a>':'')+
+  '<details class="more"><summary class="chip'+(extra?' dim':'')+'">Ещё ▾</summary><div class="morep">'+MORE_SUBS.map(function(k){return '<a href="#markets/'+k+'"'+(k===cur?' class="on"':'')+'>'+SLBL[k]+'<small>'+(MORE_HINT[k]||'')+'</small></a>'}).join('')+'</div></details></nav>'}
+var MORE_HINT={week:'кто вырос и упал за 5 дней',crypto:'монеты, курс к рублю',bonds:'ОФЗ, кривая, калькулятор',fx:'курсы ЦБ и биржи',macro:'ставка, инфляция, КБД',divs:'даты отсечек',events:'что двигало рынок за год',cal:'ЦБ, ФРС, отчёты'};
+document.addEventListener('click',function(e){var m=document.querySelector('details.more[open]');if(m&&!e.target.closest('details.more'))m.open=false});
 function status(key,label){
   var t=M.t[key],e=M.err[key],cls,txt;
   if(t instanceof Date){cls='live';txt=label+': обновлено <span data-ago="'+t.getTime()+'">'+ago(t.getTime())+'</span>'}
@@ -1037,7 +1048,7 @@ function vSummary(){
   h+=tileL('#markets/crypto/ETH','Ethereum',eth?'$'+nf(eth.p,0):'—',eth?pct(eth.c24)+' за 24 ч':nc);
   var su=(M.snap&&M.snap.us)||{};
   [['^GSPC','S&P 500'],['^IXIC','Nasdaq'],['^DJI','Dow Jones']].forEach(function(x){var v=su[x[0]];if(v&&v.p)h+=tileL('#markets/idx/'+x[0],x[1],nf(v.p,2),pct(v.ch)+' · снимок '+esc(M.snap.updated||''))});
-  h+='</div><p class="note">«Биржа 21:14» — время значения на Мосбирже (бесплатные данные идут с задержкой около 15 минут), «N с назад» — когда сайт последний раз их проверял; проверка идёт сама каждые 15 секунд. Курсы ЦБ обновляются раз в день. Крипта — в реальном времени (CoinGecko, запасной источник Binance).</p></div>';
+  h+='</div><p class="note">Мосбиржа — задержка ~15 мин, курсы ЦБ — раз в день, крипта — в реальном времени. Нажми на плитку — откроется график.</p></div>';
   var ni=(M.news&&M.news.items)||[];h+='<div class="sect"><h2>Главные новости <a class="all" href="#markets/news">вся лента →</a></h2>'+(ni.length?(function(){var t=topNews(ni,36,8);return topBlock(t.slice(0,3))+t.slice(3).map(function(x){return newsItem(x)}).join('')})():evFor('IMOEX').slice(0,4).map(function(e){return evItem(e)}).join('')+'<p class="note">Живая лента появится после первого автоматического обновления; пока — последние события, которые двигали рынок.</p>')+'</div>';
   h+='<div class="sect">'+fold('sr','Россия: ставки и макро','<div class="tiles">'+stTiles(S.macro.ru)+'</div>')+fold('su','США: ставки и мультипликаторы','<div class="tiles">'+stTiles(S.macro.us)+'</div><p class="note">Ставки и мультипликаторы зафиксированы на дату в подписи; источники в «Обучение → Что читать».</p>')+'</div>';
   if(M.idx&&(ix.MOEXOG||ix.MOEXFN)){
@@ -1045,8 +1056,10 @@ function vSummary(){
     [['MOEXOG','Нефть и газ'],['MOEXFN','Финансы'],['MOEXMM','Металлы и добыча'],['MOEXIT','IT']].forEach(function(x){var v=ix[x[0]];if(v)sx+=tileL('#markets/idx/'+x[0],x[1],nf(v.v,2),pct(v.ch))});
     h+='<div class="sect">'+fold('sx','Отраслевые индексы Мосбиржи',sx+'</div>')+'</div>';
   }
-  var up=upcoming(3);if(up.length)h='<div class="sect"><h2>Ближайшие события <a class="all" href="#markets/cal">весь календарь →</a></h2>'+up.map(evRow).join('')+'</div>'+h;
-  return status('ru','Котировки Мосбиржи')+searchBox()+svTeaser()+h;
+  var up=upcoming(3);if(up.length)h+='<div class="sect"><h2>Ближайшие события <a class="all" href="#markets/cal">весь календарь →</a></h2>'+up.map(evRow).join('')+'</div>';
+  // порядок: цифры → сводка дня → новости → события → свёрнутые блоки
+  var tz=svTeaser();if(tz){var k=h.indexOf('<div class="sect"><h2>Главные новости');if(k>0)h=h.slice(0,k)+'<div class="sect" style="margin-top:4px">'+tz+'</div>'+h.slice(k)}
+  return status('ru','Котировки Мосбиржи')+searchBox()+h;
 }
 
 var sortState={};
@@ -1277,7 +1290,7 @@ var busy=false;
 function ago(ms){var s=Math.max(0,Math.round((Date.now()-ms)/1000));return s<5?'только что':s<60?s+' с назад':Math.floor(s/60)+' мин назад'}
 setInterval(function(){document.querySelectorAll('[data-ago]').forEach(function(e){e.textContent=ago(+e.getAttribute('data-ago'))})},1000);
 function refresh(){var l=loaders[cur]||[];if(cur==='summary')l=l.concat([loadRU]);busy=true;return Promise.all(l.map(function(f){return f()})).then(function(){busy=false;drawMarkets()},function(){busy=false;drawMarkets()})}
-function startTimer(){clearInterval(timer);timer=setInterval(function(){if(state==='markets'&&!document.hidden&&!busy)refresh()},15000)}
+function startTimer(){clearInterval(timer);timer=setInterval(function(){if(state==='markets'&&!document.hidden&&!busy)refresh()},30000)}
 document.addEventListener('visibilitychange',function(){if(!document.hidden&&state==='markets')refresh()});
 
 
@@ -1665,7 +1678,7 @@ function pcPoint(e){var g=pcGeom();if(!g)return null;var r=g.el.getBoundingClien
 document.addEventListener('pointerdown',function(e){var el=e.target.closest&&e.target.closest('#pchart');if(!el)return;if(e.target.closest('.selx')){PC.sel=null;PC.hov=null;drawPC();e.preventDefault();return}var p=pcPoint(e);if(!p)return;PC.drag={x:p.x,i:p.i,moved:false,id:e.pointerId,t:e.pointerType!=='mouse',lp:false};if(PC.drag.t){var dg=PC.drag;dg.tm=setTimeout(function(){if(PC.drag===dg&&!dg.pm){dg.lp=true;if(navigator.vibrate)try{navigator.vibrate(15)}catch(err){}}},380)}try{el.setPointerCapture(e.pointerId)}catch(err){}});
 document.addEventListener('pointermove',function(e){var el=document.getElementById('pchart');if(!el)return;
   if(PC.drag){var p=pcPoint(e);if(!p)return;if(PC.drag.t&&!PC.drag.lp){if(Math.abs(p.x-PC.drag.x)>6)PC.drag.pm=1;PC.hov=p.i;if(!PC.raf){PC.raf=requestAnimationFrame(function(){PC.raf=0;drawPC()})}return}if(Math.abs(p.x-PC.drag.x)>6)PC.drag.moved=true;if(PC.drag.moved){PC.sel=[PC.drag.i,p.i];PC.hov=p.i}else PC.hov=p.i;if(!PC.raf){PC.raf=requestAnimationFrame(function(){PC.raf=0;drawPC()})}return}
-  if(e.target.closest&&e.target.closest('#pchart')){var q=pcPoint(e);if(q&&q.i!==PC.hov){PC.hov=q.i;var mm=markAt(q.i)||dayMark(q.i);if(mm)PC.mk=mm;drawPC()}}});
+  if(e.target.closest&&e.target.closest('#pchart')){var q=pcPoint(e);if(q&&q.i!==PC.hov){PC.hov=q.i;var mm=markAt(q.i)||dayMark(q.i);if(mm)PC.mk=mm;if(!PC.raf){PC.raf=requestAnimationFrame(function(){PC.raf=0;drawPC()})}}}});
 document.addEventListener('pointerup',function(e){if(!PC.drag)return;clearTimeout(PC.drag.tm);var p=pcPoint(e);if(PC.drag.moved&&p){PC.sel=PC.drag.i===p.i?null:[PC.drag.i,p.i]}else if(p&&!PC.drag.pm){var mm=markAt(p.i)||dayMark(p.i);if(mm){PC.mk=mm;PC.sel=null;if(e.pointerType==='mouse'&&mm.e){var hr=markHref(mm);if(hr){PC.drag=null;location.hash=hr;return}}}else PC.sel=null}PC.drag=null;if(e.pointerType!=='mouse'){PC.sel=null;PC.hov=null}drawPC()});
 document.addEventListener('pointercancel',function(){if(PC.drag)clearTimeout(PC.drag.tm);PC.drag=null;drawPC()});
 document.addEventListener('pointerleave',function(){},true);
@@ -2751,7 +2764,7 @@ function route(){
     CARD.tic=(cur==='ru'&&p[2])?p[2].toUpperCase():null;ASSET={kind:null,id:null};var ck=p[2]?p[1]+'/'+p[2]:'';if(ck&&ck!==LASTCARD&&!/^(ev-|[0-9a-f]{10}$)/.test(p[2]))CARD.range='1m';if(ck&&p[1]!=='news')LASTCARD=ck;if(p[2]&&(p[1]==='us'||p[1]==='crypto'||p[1]==='idx')){if(p[1]==='idx')cur='summary';openAsset(p[1]==='crypto'?'cr':p[1],p[2].toUpperCase())}NEWSID=(cur==='news'&&p[2])?p[2]:null;SVID=(cur==='daily'&&p[2])?p[2]:null;if(cur==='news'&&!TEXTS)setTimeout(function(){try{if(navigator.connection&&navigator.connection.saveData)return}catch(e){}if(state==='markets'&&cur==='news')loadTexts()},2500);if(CARD.tic){PC.d=null;NLIM=12;Promise.all([loadCoRU(),loadCandles(CARD.tic,CARD.range),loadDivs(CARD.tic),loadNews(),loadEN(enFile('ru',CARD.tic))]).then(function(){drawMarkets(true)})}
     drawMarkets(true);refresh();startTimer();document.title='Рынки · Финансы';
   }else if(sec==='home'){
-    clearInterval(timer);renderHome();document.title='Финансы'
+    clearInterval(timer);renderHome();document.title='Финансы';if(XD.svod===undefined)loadSvod().then(function(){if(state==='home')renderHome()})
   }else if(sec==='calc'){
     clearInterval(timer);renderCalc(p[1]);document.title='Калькуляторы · Финансы';
   }else if(sec==='world'){
