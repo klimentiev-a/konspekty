@@ -60,7 +60,7 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
   .bnav a.on{color:var(--accent)}.bnav a.on svg{stroke-width:2.1}
   main{padding-bottom:calc(92px + env(safe-area-inset-bottom,0px))}
   #totop{bottom:calc(72px + env(safe-area-inset-bottom,0px))}
-  .hero{padding-top:20px}.hero p{display:none}
+  .hero{padding-top:20px}.hero>p{display:none}.hero .howto p{font-size:13.5px}
   html.wfs-lock .bnav{display:none}
 }
 /* главная */
@@ -636,6 +636,15 @@ html.wfs-lock,html.wfs-lock body{overflow:hidden}
 .mv b{grid-area:n;font-weight:600;font-size:14px}.mv span{grid-area:k;font-size:11.5px;color:var(--faint);font-family:var(--mono)}.mv i{grid-area:p;font-style:normal;font-weight:600;align-self:center;font-variant-numeric:tabular-nums}
 @media(max-width:560px){.mvs{grid-template-columns:1fr}}
 .svod{max-width:760px}.svod h1{font:600 clamp(26px,5vw,36px)/1.15 var(--serif);margin:6px 0 14px}
+
+.nextl{display:grid;gap:4px;margin-top:18px;padding:18px 20px;border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:14px;background:var(--surface);text-decoration:none;color:inherit;max-width:720px}
+.nextl small{font:500 11px/1 var(--sans);letter-spacing:.07em;text-transform:uppercase;color:var(--accent)}.nextl b{font:600 clamp(19px,3.5vw,24px)/1.25 var(--serif)}.nextl span{color:var(--muted);font-size:14.5px}.nextl em{font-style:normal;font-size:13px;color:var(--faint);margin-top:4px}
+.nextl:hover{border-color:var(--accent)}
+.howto{margin-top:16px;max-width:720px}.howto p{margin:0;font-size:14.5px;line-height:1.55;color:var(--muted)}.howto b{color:var(--fg)}
+.trk-nav a.cur{border-color:var(--accent);color:var(--accent);font-weight:600}
+details.track>summary{list-style:none;cursor:pointer}details.track>summary::-webkit-details-marker{display:none}details.track>summary h2{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 10px}
+details.track>summary h2::before{content:'▸';font-size:14px;color:var(--faint);margin-right:2px}details.track[open]>summary h2::before{content:'▾'}
+details.track.cur>summary h2 .tp{color:var(--accent);border-color:var(--accent)}details.track.done>summary h2{opacity:.7}
 </style></head><body>
 <header class="top">
   <div class="bar">
@@ -740,13 +749,12 @@ SEC.forEach(function(c,i){prepDoc(c,i);c.sec=1;c.min=Math.max(2,Math.round(c.pla
 
 /* ---------------- обучение ---------------- */
 var TRACKS=[
- ['С чего начать','Маршрут: что читать и в каком порядке, книги, курсы, сертификаты',['marshrut']],
  ['Шаг 1. Основы','Бухучёт, отчётность, МСФО, деньги во времени, статистика',['ib','buhuchet-s-nulya','otchetnost','msfo-standarty','konsolidatsiya-goodwill','model-3-otchetov','analiz-otchetnosti','npv-irr','koeffitsienty','kolichestvennye-metody']],
  ['Шаг 2. Оценка компаний','Ядро работы аналитика',['portfel-capm','wacc','dcf','multiplikatory','comps','metody','sektory','banki-fig','kpi','chuvstvitelnost-stsenarii']],
  ['Шаг 3. Сделки','Как это применяют в банке: M&A, ECM/DCM, LBO, венчур',['ma-lbo','lbo-poshagovo','accretion-dilution','process-sdelki','vrazhdebnye-sdelki','ecm-dcm','dolgovoe-finansirovanie','restrukturizatsiya','struktura-kapitala','oborotny-kapital','venchur','alternativnye-investitsii']],
  ['Шаг 4. Рынки и макро','Рынки, облигации, деривативы, микро и макро, валюты, Россия, этика',['rynki-kapitala','organizatsiya-rynkov','obligatsii','derivativy','mikroekonomika-rynki','makro','mezhdunarodnye','rossiya','povedencheskie-esg','etika-regulirovanie']],
  ['Шаг 5. Практика и собеседование','Кейсы, задачи, подготовка к стажировке',['stazhirovka','keysy','sobesedovanie','praktikum','excel','project-black','karera']],
- ['Справка','Возвращайся по необходимости',['glossariy','istochniki']]];
+ ['Справка','Возвращайся по необходимости: маршрут на год, глоссарий, источники',['marshrut','glossariy','istochniki']]];
 (function(){var order=[];TRACKS.forEach(function(tr){tr[2].forEach(function(id){var c=CH.filter(function(x){return x.id===id})[0];if(c&&order.indexOf(c)<0)order.push(c)})});
   CH.forEach(function(c){if(order.indexOf(c)<0)order.push(c)});CH=order;CH.forEach(function(c,i){c.i=i;c.min=Math.max(2,Math.round(c.plain.split(' ').length/170))})})();
 var CALC_LINK={'npv-irr':['npv','Посчитать NPV и IRR'],'wacc':['wacc','Посчитать WACC'],'dcf':['dcf','Собрать свой DCF'],'ma-lbo':['lbo','Посчитать LBO'],'struktura-kapitala':['wacc','Поиграть со структурой капитала'],'rynki-kapitala':['npv','Калькулятор потоков'],'praktikum':['npv','Проверить ответы в калькуляторах']};
@@ -755,17 +763,26 @@ function doneGet(){try{return JSON.parse(store('fin:done')||'{}')||{}}catch(e){r
 function doneIs(id){return !!doneGet()[id]}
 function doneSet(id,on){var d=doneGet();if(on)d[id]=1;else delete d[id];store('fin:done',JSON.stringify(d))}
 function doneStat(ids){var d=doneGet(),n=0;ids.forEach(function(i){if(d[i])n++});return n}
+/* где урок в маршруте: {step: индекс шага, name, k: номер в шаге, n: всего в шаге, next: следующая глава} */
+function lessonPos(c){for(var i=0;i<TRACKS.length;i++){var ids=TRACKS[i][2].filter(function(id){return CH.some(function(x){return x.id===id})}),k=ids.indexOf(c.id);
+  if(k>=0){var nxid=ids[k+1]||(TRACKS[i+1]&&TRACKS[i+1][2][0]),nx=nxid?CH.filter(function(x){return x.id===nxid})[0]:null;return {step:i,name:TRACKS[i][0],k:k+1,n:ids.length,next:nx}}}return null}
+/* следующий урок: последний открытый, если он не пройден; иначе первый непройденный по порядку шагов */
+function nextLesson(){var last=CH.filter(function(x){return x.id===store('fin:last')})[0];if(last&&!doneIs(last.id)&&last.id!=='glossariy'&&last.id!=='istochniki'&&last.id!=='marshrut')return last;
+  for(var i=0;i<TRACKS.length;i++){if(TRACKS[i][0]==='Справка')continue;for(var j=0;j<TRACKS[i][2].length;j++){var c=CH.filter(function(x){return x.id===TRACKS[i][2][j]})[0];if(c&&!doneIs(c.id))return c}}return null}
 function renderLearn(){
   var last=CH.filter(function(x){return x.id===store('fin:last')})[0];
-  var h='<section class="hero"><h1>Справочник по корпоративным финансам</h1><p>Иди по шагам сверху вниз: каждая глава опирается на предыдущие. Прошёл урок — отметь кружком справа, прогресс сохраняется. Подчёркнутые пунктиром термины объясняются при наведении или нажатии.</p>'+
-    '<div class="prog" id="lprog"></div>'+(last?'<a class="resume" href="#learn/'+last.id+'"><small>Продолжить</small><b>'+esc(last.title)+'</b></a>':'')+'</section>'+'<nav class="trk-nav" aria-label="Шаги">'+TRACKS.map(function(t,i){return '<a href="#" data-trk="trk'+i+'">'+esc(t[0].replace(/^Шаг (\d)\. /,'$1. '))+'</a>'}).join('')+'</nav>';
+  var nx=nextLesson(),np=nx?lessonPos(nx):null,allN=CH.filter(function(x){return x.id!=='glossariy'&&x.id!=='istochniki'}),doneN=doneStat(allN.map(function(x){return x.id}));
+  var h='<section class="hero"><h1>Справочник по корпоративным финансам</h1>'+
+    (nx?'<a class="nextl" href="#learn/'+nx.id+'"><small>'+(doneN?'Твой следующий урок':'Начни отсюда')+' · '+esc(np.name.replace(/^Шаг (\d)\. /,'шаг $1: '))+', урок '+np.k+' из '+np.n+'</small><b>'+esc(nx.title)+'</b><span>'+esc(nx.short)+'</span><em>'+nx.min+' мин · открыть →</em></a>':'<p class="note">Все уроки пройдены. Возвращайся к любому шагу ниже.</p>')+
+    '<div class="howto"><p><b>Как тут всё устроено.</b> Курс идёт шагами сверху вниз, каждый следующий опирается на предыдущий. Не нужно выбирать, что читать: открывай урок из карточки выше, в конце урока нажми «Отметить пройденным», и карточка сама покажет следующий. Текущий шаг раскрыт, остальные свёрнуты. Термины с пунктиром объясняются по нажатию.</p></div>'+
+    '<div class="prog" id="lprog"></div></section>'+'<nav class="trk-nav" aria-label="Шаги">'+TRACKS.map(function(t,i){return '<a href="#" data-trk="trk'+i+'"'+(np&&np.step===i?' class="cur"':'')+'>'+esc(t[0].replace(/^Шаг (\d)\. /,'$1. '))+'</a>'}).join('')+'</nav>';
   TRACKS.forEach(function(tr){
-    var tids=tr[2].filter(function(id){return CH.some(function(x){return x.id===id})}),tn=doneStat(tids);
-    h+='<section class="track" id="trk'+TRACKS.indexOf(tr)+'"><h2>'+esc(tr[0])+'<span>'+esc(tr[1])+'</span><span class="tp'+(tn===tids.length&&tids.length?' all':'')+'" data-tp="'+esc(tr[0])+'">'+tn+' из '+tids.length+'</span></h2><div class="chs">';
+    var ti=TRACKS.indexOf(tr),tids=tr[2].filter(function(id){return CH.some(function(x){return x.id===id})}),tn=doneStat(tids),isCur=np?np.step===ti:ti===0,done=tn===tids.length&&tids.length>0;
+    h+='<details class="track'+(isCur?' cur':'')+(done?' done':'')+'" id="trk'+ti+'"'+(isCur||OPENF['trk'+ti]?' open':'')+' data-fold="trk'+ti+'"><summary><h2>'+esc(tr[0])+'<span>'+esc(tr[1])+'</span><span class="tp'+(done?' all':'')+'" data-tp="'+esc(tr[0])+'">'+(isCur?'сейчас · ':'')+tn+' из '+tids.length+'</span></h2></summary><div class="chs">';
     tr[2].forEach(function(id){var c=CH.filter(function(x){return x.id===id})[0];if(!c)return;var dn=doneIs(c.id);
       h+='<div class="chw'+(dn?' dn':'')+'"><a class="ch'+(last&&last.id===c.id?' cur':'')+'" href="#learn/'+c.id+'"><span class="n">'+(c.i+1)+'</span><span><b>'+esc(c.title)+'</b><i>'+esc(c.short)+'</i><em>'+c.min+' мин чтения'+(CALC_LINK[c.id]?' · есть калькулятор':'')+'</em></span></a>'+
         '<button type="button" class="ck'+(dn?' on':'')+'" data-ck="'+c.id+'" aria-pressed="'+(dn?'true':'false')+'" aria-label="'+(dn?'Снять отметку «пройдено»':'Отметить пройденным')+': '+esc(c.title)+'" title="'+(dn?'Пройдено — нажми, чтобы снять':'Отметить пройденным')+'">✓</button></div>'});
-    h+='</div></section>';
+    h+='</div></details>';
   });
   h+='<p class="dreset"><button type="button" data-dreset>Сбросить отметки о прохождении</button></p>';
   view.innerHTML=h;learnProg();
@@ -800,11 +817,12 @@ function renderChapter(c){
   var toc=heads.map(function(x){return '<a href="#" data-to="'+x.id+'">'+esc(x.t)+'</a>'}).join('');
   var pv=L[c.i-1],nx=L[c.i+1];
   var crumb=c.sec?'<a href="#world">Мир</a> · <a href="#world/sectors">Сектора</a> · ':'<a href="#learn">Обучение</a> · ';
-  view.innerHTML='<div class="doc"><article class="art"><p class="eyebrow">'+crumb+(c.i+1)+' из '+L.length+'</p><h1>'+esc(c.title)+'</h1><p class="meta">'+c.min+' мин чтения'+(!gl?' · термины с пунктиром — наведи или нажми':'')+'</p>'+
+  var lp=!c.sec?lessonPos(c):null;
+  view.innerHTML='<div class="doc"><article class="art"><p class="eyebrow">'+crumb+(lp?esc(lp.name.replace(/^Шаг (\d)\. /,'шаг $1: '))+' · урок '+lp.k+' из '+lp.n:(c.i+1)+' из '+L.length)+'</p><h1>'+esc(c.title)+'</h1><p class="meta">'+c.min+' мин чтения'+(!gl?' · термины с пунктиром — наведи или нажми':'')+'</p>'+
     (heads.length>2?'<details class="toc"><summary>Содержание</summary><nav>'+toc+'</nav></details>':'')+
     (gl?'<input class="gfilter" type="search" placeholder="Найти термин: EBITDA, спред, оферта…" aria-label="Фильтр глоссария">':'')+'<div class="prose">'+body+'</div>'+(!c.sec&&c.id!=='glossariy'&&c.id!=='istochniki'?'<div class="quiz" id="quiz" hidden></div>':'')+(cl?'<a class="try" href="#calc/'+cl[0]+'">'+esc(cl[1])+' в калькуляторе →</a>':'')+(!c.sec&&c.id!=='glossariy'&&c.id!=='istochniki'?'<div class="donebar"><button type="button" class="chip'+(doneIs(c.id)?' on':'')+'" data-ckc="'+c.id+'" aria-pressed="'+(doneIs(c.id)?'true':'false')+'">'+(doneIs(c.id)?'✓ Урок пройден':'Отметить пройденным')+'</button><span class="note" style="margin:0">Отметка хранится в этом браузере.</span></div>':'')+'<nav class="pager">'+
     (pv?'<a href="'+base+pv.id+'"><small>← Назад</small><b>'+esc(pv.title)+'</b></a>':'')+
-    (nx?'<a class="nx" href="'+base+nx.id+'"><small>Дальше →</small><b>'+esc(nx.title)+'</b></a>':(c.sec?'<a class="nx" href="#world/sectors"><small>Все сектора →</small><b>Сектора мировой экономики</b></a>':''))+
+    (nx?'<a class="nx" href="'+base+nx.id+'"><small>'+(lp&&lp.next&&lp.next.id===nx.id&&lp.k===lp.n?'Следующий шаг →':'Дальше →')+'</small><b>'+esc(nx.title)+'</b></a>':(c.sec?'<a class="nx" href="#world/sectors"><small>Все сектора →</small><b>Сектора мировой экономики</b></a>':''))+
     '</nav></article>'+(heads.length>2?'<aside class="side"><p class="h">Содержание</p>'+toc+'</aside>':'')+'</div>';
   if(c.sec||(c.id!=='glossariy'&&c.id!=='istochniki'))applyTerms(view.querySelector('.prose'));
   var qs=view.querySelectorAll('details.qa');
@@ -822,6 +840,7 @@ function qaPaint(d,v){d.classList.toggle('qk-ok',v===1);d.classList.toggle('qk-n
 view.addEventListener('click',function(e){var b=e.target.closest('[data-qkv]');if(!b)return;var d=b.closest('details.qa'),k=d.getAttribute('data-qk'),v=+b.getAttribute('data-qkv'),st=qaStore();st[k]=st[k]===v?undefined:v;if(st[k]===undefined)delete st[k];try{localStorage.setItem('fin:qa',JSON.stringify(st))}catch(x){}qaPaint(d,st[k])});
 view.addEventListener('input',function(e){if(!e.target.classList.contains('gfilter'))return;var q=e.target.value.trim().toLowerCase();view.querySelectorAll('.prose tbody tr').forEach(function(tr){tr.hidden=q&&tr.textContent.toLowerCase().indexOf(q)<0})});
 view.addEventListener('click',function(e){
+  var tk=e.target.closest('[data-trk]');if(tk){e.preventDefault();var d=document.getElementById(tk.getAttribute('data-trk'));if(d){d.open=true;OPENF[d.id]=true;d.scrollIntoView({behavior:'smooth',block:'start'})}return}
   if(e.target.closest('[data-rq]')){var qs=[].slice.call(view.querySelectorAll('details.qa'));qs.forEach(function(d){d.open=false;d.classList.remove('rqon')});var q=qs[Math.floor(Math.random()*qs.length)];q.classList.add('rqon');q.scrollIntoView({behavior:'smooth',block:'center'});return}
   var a=e.target.closest('[data-to]');if(!a)return;e.preventDefault();
   var el=document.getElementById(a.getAttribute('data-to'));if(el)el.scrollIntoView({behavior:'smooth',block:'start'});
@@ -904,7 +923,6 @@ view.addEventListener('click',function(e){
     k.classList.toggle('on',on);k.setAttribute('aria-pressed',on?'true':'false');var w=k.closest('.chw');if(w)w.classList.toggle('dn',on);
     document.querySelectorAll('.track').forEach(function(t){var ids=[].map.call(t.querySelectorAll('[data-ck]'),function(b){return b.getAttribute('data-ck')}),n=doneStat(ids),tp=t.querySelector('.tp');if(tp){tp.textContent=n+' из '+ids.length;tp.classList.toggle('all',n===ids.length&&ids.length>0)}});learnProg();return}
   var kc=e.target.closest('[data-ckc]');if(kc){var cid=kc.getAttribute('data-ckc'),on2=!doneIs(cid);doneSet(cid,on2);kc.classList.toggle('on',on2);kc.setAttribute('aria-pressed',on2?'true':'false');kc.textContent=on2?'✓ Урок пройден':'Отметить пройденным';return}
-  var tj=e.target.closest('[data-trk]');if(tj){e.preventDefault();var te=document.getElementById(tj.getAttribute('data-trk'));if(te)te.scrollIntoView({behavior:'smooth',block:'start'});return}
   if(e.target.closest('[data-dreset]')){if(confirm('Сбросить все отметки о прохождении?')){store('fin:done','{}');renderLearn()}return}
   var a=e.target.closest('a[data-hl]');if(a){/* Q остаётся для подсветки */}});
 
