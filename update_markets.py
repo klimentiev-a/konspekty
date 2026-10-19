@@ -3,13 +3,17 @@
 Страница finance.html берёт живые данные прямо из браузера, а этот файл —
 запасной вариант и единственный источник цен по США (у бесплатных американских
 котировок нет доступа из браузера)."""
-import json, urllib.request, urllib.parse, datetime, time, sys
+import json, urllib.request, urllib.parse, datetime, time, sys, os
+from concurrent.futures import ThreadPoolExecutor
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), 'src', 'finance'))
+import universe as UNI
 
 UA = {'User-Agent': 'Mozilla/5.0 (konspekty markets snapshot)'}
 RU = ['SBER','LKOH','ROSN','NVTK','SIBN','GAZP','GMKN','TATN','PLZL','YDEX','TRNFP','SNGS','T','VTBR','OZON','PHOR',
       'CHMF','X5','NLMK','RUAL','MOEX','MTSS','IRAO','MGNT','ALRS','HEAD','AFLT','POSI']
-US = ['NVDA','AAPL','GOOGL','MSFT','AMZN','META','AVGO','TSLA','BRK-B','LLY','AMD','WMT','JPM','V','XOM','JNJ','MA',
-      'COST','CVX','ORCL','KO','BAC','PG','UNH','NFLX','^GSPC','^IXIC','^DJI']
+# весь мир: справочник src/finance/universe.py (≈330 бумаг) + индексы США/мира
+WORLD = [w[0] for w in UNI.WORLD]
+US = WORLD + ['^GSPC','^IXIC','^DJI','^STOXX50E','^FTSE','^GDAXI','^N225','^HSI','000001.SS','^BSESN','^KS11']
 
 def get(url, t=20):
     r = urllib.request.urlopen(urllib.request.Request(url, headers=UA), timeout=t)
@@ -24,14 +28,22 @@ try: old = json.load(open('markets.json'))
 except Exception: pass
 
 try:
+    # все акции режима TQBR (основной режим, ~250 бумаг): имя, уровень листинга, капитализация, оборот
     j = get('https://iss.moex.com/iss/engines/stock/markets/shares/boards/TQBR/securities.json?iss.meta=off'
-            '&iss.only=securities,marketdata&securities.columns=SECID,PREVPRICE&marketdata.columns=SECID,LAST,LASTTOPREVPRICE,UPDATETIME'
-            '&securities=' + ','.join(RU))
+            '&iss.only=securities,marketdata&securities.columns=SECID,PREVPRICE,SHORTNAME,SECNAME,LISTLEVEL'
+            '&marketdata.columns=SECID,LAST,LCURRENTPRICE,LASTTOPREVPRICE,UPDATETIME,VALTODAY,ISSUECAPITALIZATION', 40)
     s, m = iss(j['securities']), iss(j['marketdata'])
     out['ru'] = {}
     for k, a in s.items():
-        b = m.get(k, {}); p = b.get('LAST') or a.get('PREVPRICE')
-        out['ru'][k] = {'p': p, 'ch': b.get('LASTTOPREVPRICE') if b.get('LAST') else None, 'tm': b.get('UPDATETIME')}
+        b = m.get(k, {}); p = b.get('LAST') or b.get('LCURRENTPRICE') or a.get('PREVPRICE')
+        if not p: continue
+        u = UNI.RU.get(k)
+        row = {'p': p, 'ch': b.get('LASTTOPREVPRICE') if b.get('LAST') else ((p / a['PREVPRICE'] - 1) * 100 if a.get('PREVPRICE') else None), 'tm': b.get('UPDATETIME'),
+               'n': (u[0] if u else (a.get('SHORTNAME') or k)), 'lvl': a.get('LISTLEVEL'), 'vol': b.get('VALTODAY') or 0}
+        cap = b.get('ISSUECAPITALIZATION')
+        if cap: row['cap'] = round(cap / 1e9, 1)   # млрд ₽
+        out['ru'][k] = row
+    if len(out['ru']) < 50: raise Exception('слишком мало бумаг: %d' % len(out['ru']))
 except Exception as e:
     print('moex shares', e, file=sys.stderr); out['ru'] = old.get('ru')
 
@@ -83,18 +95,50 @@ try:
 except Exception as e:
     print('coingecko', e, file=sys.stderr); out['crypto'] = old.get('crypto')
 
+def yq(t):
+    """цена и дневное изменение одной бумаги (Yahoo chart, 5 дней)"""
+    j = get('https://query1.finance.yahoo.com/v8/finance/chart/' + urllib.parse.quote(t) + '?range=5d&interval=1d', 15)
+    r0 = j['chart']['result'][0]; meta = r0['meta']
+    cl = [c for c in (r0['indicators']['quote'][0].get('close') or []) if c]
+    p = meta.get('regularMarketPrice') or (cl[-1] if cl else None)
+    pc = cl[-2] if len(cl) >= 2 else (meta.get('previousClose') or meta.get('chartPreviousClose'))
+    row = {'p': p, 'ch': (p / pc - 1) * 100 if p and pc else None, 'cur': meta.get('currency')}
+    if meta.get('currency') == 'GBp' and p: row['p'] = p / 100; row['cur'] = 'GBP'   # Лондон котирует в пенсах
+    return row
+
+def spark(batch):
+    """пакетный запрос: до 40 бумаг за раз"""
+    j = get('https://query1.finance.yahoo.com/v8/finance/spark?symbols=' + urllib.parse.quote(','.join(batch)) + '&range=5d&interval=1d', 25)
+    res = {}
+    for r in (j.get('spark') or {}).get('result') or []:
+        try:
+            x = r['response'][0]; meta = x['meta']
+            cl = [c for c in (x['indicators']['quote'][0].get('close') or []) if c]
+            p = meta.get('regularMarketPrice') or (cl[-1] if cl else None)
+            pc = cl[-2] if len(cl) >= 2 else (meta.get('previousClose') or meta.get('chartPreviousClose'))
+            row = {'p': p, 'ch': (p / pc - 1) * 100 if p and pc else None, 'cur': meta.get('currency')}
+            if meta.get('currency') == 'GBp' and p: row['p'] = p / 100; row['cur'] = 'GBP'
+            res[r['symbol']] = row
+        except Exception: pass
+    return res
+
+t_us = time.time()
 us = {}
-for t in US:
-    try:
-        j = get('https://query1.finance.yahoo.com/v8/finance/chart/' + urllib.parse.quote(t) + '?range=5d&interval=1d')
-        meta = j['chart']['result'][0]['meta']
-        cl = [c for c in (j['chart']['result'][0]['indicators']['quote'][0].get('close') or []) if c]
-        p = meta.get('regularMarketPrice')
-        pc = cl[-2] if len(cl) >= 2 else (meta.get('previousClose') or meta.get('chartPreviousClose'))   # вчерашнее закрытие (раньше бралось закрытие 5 дней назад)
-        us[t] = {'p': p, 'ch': (p / pc - 1) * 100 if p and pc else None}
-    except Exception as e:
-        print('yahoo', t, e, file=sys.stderr)
-    time.sleep(0.4)
+# 1) пакетами через spark (быстро), 2) что не пришло — по одной в 6 потоков
+for i in range(0, len(US), 40):
+    try: us.update(spark(US[i:i + 40]))
+    except Exception as e: print('spark', i, e, file=sys.stderr)
+missing = [t for t in US if t not in us]
+def one(t):
+    try: return t, yq(t)
+    except Exception as e: print('yahoo', t, e, file=sys.stderr); return t, None
+with ThreadPoolExecutor(6) as ex:
+    for t, row in ex.map(one, missing):
+        if row: us[t] = row
+# что не удалось сейчас — берём из прошлого снимка (чтобы таблица не пустела)
+for t, row in (old.get('us') or {}).items():
+    if t not in us and t in US: us[t] = row
+print('yahoo: %d из %d за %d с (spark %d)' % (len(us), len(US), time.time() - t_us, len(US) - len(missing)), file=sys.stderr)
 out['us'] = us or old.get('us') or {}
 
 # нефть и газ (Yahoo, фьючерсы): Brent, WTI, Henry Hub, TTF + 30 дней закрытий для мини-графика

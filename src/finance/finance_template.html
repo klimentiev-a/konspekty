@@ -621,6 +621,15 @@ html.wfs-lock,html.wfs-lock body{overflow:hidden}
 .pctip{animation:fin .12s ease both}
 .reader .gist{animation:vin .3s .05s cubic-bezier(.2,.8,.25,1) both}
 @media (prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
+
+/* поиск акций */
+.ssrch{position:relative;margin-top:12px;max-width:560px}
+.ssrch .sq{width:100%;box-sizing:border-box;padding:11px 14px;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--fg);font:inherit;font-size:15px}
+.ssrch .sq:focus{outline:2px solid var(--accent,#0A9466);outline-offset:1px}
+.ssrch .sres{position:absolute;left:0;right:0;top:calc(100% + 6px);z-index:30;background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:0 12px 32px rgba(0,0,0,.18);max-height:min(60vh,420px);overflow:auto}
+.ssrch .sres a{display:flex;flex-direction:column;gap:2px;padding:9px 14px;text-decoration:none;color:inherit;border-bottom:1px solid var(--line)}
+.ssrch .sres a:last-child{border-bottom:0}.ssrch .sres a:hover,.ssrch .sres a:focus{background:var(--rail)}
+.ssrch .sres b{font-weight:600}.ssrch .sres span{font-size:12.5px;color:var(--faint)}
 </style></head><body>
 <header class="top">
   <div class="bar">
@@ -647,6 +656,32 @@ function $(s,r){return (r||document).querySelector(s)}
 function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
 function store(k,v){try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v)}catch(e){return null}}
 var view=$('#view');
+/* справочник бумаг (src/finance/universe.py): все акции Мосбиржи (цены и имена приходят из ISS/markets.json) и ~330 акций мира */
+var UNI=S.uni||{ru:{},world:[],region:{},country:{}},WMAP={};UNI.world.forEach(function(w){WMAP[w[0]]=w});
+var STATIC_US={};S.us.forEach(function(r){STATIC_US[r[0]]=r});var STATIC_RU={};S.ru.forEach(function(r){STATIC_RU[r[0]]=r});
+function wInfo(t){var w=WMAP[t];if(!w)return null;return {tic:t,nm:w[1],cc:w[2],country:UNI.country[w[2]]||w[2],region:UNI.region[w[2]]||'Мир',sec:w[3],cur:w[4]}}
+function ruSec(t){var u=UNI.ru[t];return u?u[1]:(STATIC_RU[t]?STATIC_RU[t][2]:'Прочее')}
+function ruName(t){var u=UNI.ru[t];if(u)return u[0];if(STATIC_RU[t])return STATIC_RU[t][1];var l=M.ru&&M.ru[t];return l&&l.n?l.n:t}
+/* все бумаги для поиска: [ключ, имя, подпись, адрес] */
+function allAssets(){var a=[];
+  var seen={};Object.keys(M.ru||{}).concat(S.ru.map(function(r){return r[0]}),Object.keys(UNI.ru)).forEach(function(t){if(seen[t])return;seen[t]=1;a.push({k:t,n:ruName(t),s:'Россия · '+ruSec(t),h:'#markets/ru/'+t})});
+  UNI.world.forEach(function(w){a.push({k:w[0],n:w[1],s:(UNI.country[w[2]]||w[2])+' · '+w[3],h:'#markets/us/'+encodeURIComponent(w[0])})});
+  (M.cr||[]).forEach(function(c){a.push({k:c.s,n:c.n,s:'Крипта',h:'#markets/crypto/'+c.s})});
+  if(typeof IDX!=='undefined')Object.keys(IDX).forEach(function(k){a.push({k:k,n:IDX[k].n,s:'Индекс · '+IDX[k].sub,h:'#markets/idx/'+encodeURIComponent(k)})});
+  return a}
+var TRL={а:'a',б:'b',в:'v',г:'g',д:'d',е:'e',ё:'e',ж:'zh',з:'z',и:'i',й:'y',к:'k',л:'l',м:'m',н:'n',о:'o',п:'p',р:'r',с:'s',т:'t',у:'u',ф:'f',х:'h',ц:'c',ч:'ch',ш:'sh',щ:'sch',ъ:'',ы:'y',ь:'',э:'e',ю:'yu',я:'ya'};
+function trl(x){return x.toLowerCase().replace(/[а-яё]/g,function(c){return TRL[c]||c})}
+function searchAssets(q,n){q=String(q||'').trim().toLowerCase();if(!q)return [];var ql=trl(q),out=[];
+  allAssets().forEach(function(x){var k=x.k.toLowerCase(),nm=x.n.toLowerCase(),nt=trl(nm),sc;
+    if(k===q||k===ql)sc=100;else if(k.indexOf(q)===0||k.indexOf(ql)===0)sc=80;else if(nm.indexOf(q)===0||nt.indexOf(ql)===0)sc=70;else if(nm.indexOf(q)>=0||nt.indexOf(ql)>=0)sc=50;else if(x.s.toLowerCase().indexOf(q)>=0)sc=10;else return;
+    out.push([sc,x])});
+  return out.sort(function(a,b){return b[0]-a[0]||a[1].n.localeCompare(b[1].n,'ru')}).slice(0,n||12).map(function(x){return x[1]})}
+function searchBox(ph){return '<div class="ssrch"><input type="search" class="sq" placeholder="'+(ph||'Найти акцию: Сбер, VK, Nvidia, Toyota, биткоин…')+'" aria-label="Поиск акций" autocomplete="off"><div class="sres" hidden></div></div>'}
+view.addEventListener('input',function(e){var i=e.target;if(!i.classList||!i.classList.contains('sq'))return;var box=i.nextElementSibling,r=searchAssets(i.value,12);
+  box.innerHTML=r.map(function(x){return '<a href="'+x.h+'"><b>'+esc(x.n)+'</b><span>'+esc(x.k)+' · '+esc(x.s)+'</span></a>'}).join('')||(i.value.trim()?'<p class="empty" style="margin:0;padding:10px">Ничего не нашёл. Попробуй тикер или часть названия.</p>':'');box.hidden=!i.value.trim()});
+view.addEventListener('keydown',function(e){var i=e.target;if(!i.classList||!i.classList.contains('sq'))return;if(e.key==='Enter'){var a=i.nextElementSibling.querySelector('a');if(a){e.preventDefault();location.hash=a.getAttribute('href')}}if(e.key==='Escape'){i.value='';i.nextElementSibling.hidden=true}});
+view.addEventListener('focusout',function(e){var i=e.target;if(i.classList&&i.classList.contains('sq'))setTimeout(function(){if(i.nextElementSibling)i.nextElementSibling.hidden=true},200)});
+view.addEventListener('focusin',function(e){var i=e.target;if(i.classList&&i.classList.contains('sq')&&i.value.trim())i.nextElementSibling.hidden=false});
 
 /* тема */
 var root=document.documentElement;
@@ -877,9 +912,9 @@ var M={bonds:{},kbd:null,ru:null,idx:null,ofz:null,fx:null,cr:null,snap:null,t:{
 var ISS='https://iss.moex.com/iss/engines/stock/markets/';
 function loadSnap(){if(M.snap!==null)return Promise.resolve(M.snap);return getJSON('markets.json',6000).then(function(j){M.snap=j;return j}).catch(function(){M.snap=false;return false})}
 function loadRU(){
-  var t=S.ru.map(function(r){return r[0]}).join(',');
-  return getJSON(ISS+'shares/boards/TQBR/securities.json?iss.meta=off&iss.only=securities,marketdata&securities.columns=SECID,PREVPRICE,SHORTNAME&marketdata.columns=SECID,LAST,LCURRENTPRICE,LASTTOPREVPRICE,UPDATETIME,VALTODAY&securities='+t)
-  .then(function(j){var s=iss(j.securities),m=iss(j.marketdata),o={};Object.keys(s).forEach(function(k){var a=s[k],b=m[k]||{},p=b.LAST||b.LCURRENTPRICE||a.PREVPRICE;o[k]={p:p,ch:b.LAST?b.LASTTOPREVPRICE:(p&&a.PREVPRICE?(p/a.PREVPRICE-1)*100:null),tm:b.UPDATETIME,vol:b.VALTODAY}});M.ru=o;M.t.ru=new Date();M.err.ru=0})
+  // вся доска TQBR (~250 акций): цена, изменение, имя, уровень листинга, капитализация, оборот
+  return getJSON(ISS+'shares/boards/TQBR/securities.json?iss.meta=off&iss.only=securities,marketdata&securities.columns=SECID,PREVPRICE,SHORTNAME,LISTLEVEL&marketdata.columns=SECID,LAST,LCURRENTPRICE,LASTTOPREVPRICE,UPDATETIME,VALTODAY,ISSUECAPITALIZATION',12000)
+  .then(function(j){var s=iss(j.securities),m=iss(j.marketdata),o={};Object.keys(s).forEach(function(k){var a=s[k],b=m[k]||{},p=b.LAST||b.LCURRENTPRICE||a.PREVPRICE;if(!p)return;var u=UNI.ru[k];o[k]={p:p,ch:b.LAST?b.LASTTOPREVPRICE:(p&&a.PREVPRICE?(p/a.PREVPRICE-1)*100:null),tm:b.UPDATETIME,vol:b.VALTODAY||0,n:u?u[0]:(a.SHORTNAME||k),lvl:a.LISTLEVEL,cap:b.ISSUECAPITALIZATION?Math.round(b.ISSUECAPITALIZATION/1e8)/10:null}});M.ru=o;M.t.ru=new Date();M.err.ru=0})
   .catch(function(){M.err.ru=1;return loadSnap().then(function(sn){if(sn&&sn.ru){M.ru=sn.ru;M.t.ru='snap'}})});
 }
 function loadIdx(){
@@ -922,8 +957,8 @@ function loadCR(){
 function usdRub(){try{return M.fx.Valute.USD.Value}catch(e){return 83.9153}}
 
 /* ---------------- рынки: виды ---------------- */
-var SUBS=[['summary','Сводка'],['week','Итоги недели'],['news','Новости'],['ru','Россия'],['us','США'],['crypto','Крипта'],['bonds','Облигации'],['fx','Валюты'],['macro','Макро России'],['divs','Дивиденды'],['events','События'],['cal','Календарь']],cur='summary';
-var SGRP=[['Обзор','Что происходит',['summary','week','news']],['Рынки','Акции, крипта, облигации',['ru','us','crypto','bonds','fx']],['Экономика','Макро, дивиденды, календарь',['macro','divs','events','cal']]];
+var SUBS=[['summary','Сводка'],['week','Итоги недели'],['news','Новости'],['ru','Россия'],['us','Мир'],['crypto','Крипта'],['bonds','Облигации'],['fx','Валюты'],['macro','Макро России'],['divs','Дивиденды'],['events','События'],['cal','Календарь']],cur='summary';
+var SGRP=[['Обзор','Что происходит',['summary','week','news']],['Рынки','Россия, мир, крипта, облигации',['ru','us','crypto','bonds','fx']],['Экономика','Макро, дивиденды, календарь',['macro','divs','events','cal']]];
 var SLBL={};SUBS.forEach(function(s){SLBL[s[0]]=s[1]});
 function sgrp(k){for(var i=0;i<SGRP.length;i++)if(SGRP[i][2].indexOf(k)>=0)return i;return 0}
 function subnav(){var gi=sgrp(cur),g=SGRP[gi];
@@ -968,7 +1003,7 @@ function vSummary(){
     h+='<div class="sect">'+fold('sx','Отраслевые индексы Мосбиржи',sx+'</div>')+'</div>';
   }
   var up=upcoming(3);if(up.length)h='<div class="sect"><h2>Ближайшие события <a class="all" href="#markets/cal">весь календарь →</a></h2>'+up.map(evRow).join('')+'</div>'+h;
-  return status('ru','Котировки Мосбиржи')+h;
+  return status('ru','Котировки Мосбиржи')+searchBox()+h;
 }
 
 var sortState={};
@@ -988,44 +1023,56 @@ view.addEventListener('click',function(e){
 var flt={ru:'Все',us:'Все'};
 function filters(g,list){var a=['Все'].concat(list.filter(function(x,i,s){return s.indexOf(x)===i}));return '<nav class="sub" style="margin-top:10px">'+a.map(function(x){return '<button type="button" class="chip'+(flt[g]===x?' on':'')+'" data-g="'+g+'" data-flt="'+esc(x)+'">'+esc(x)+'</button>'}).join('')+'</nav>'}
 
+var RUV='Все';
 function vRU(){
-  var rows=S.ru.map(function(r){var l=(M.ru||{})[r[0]]||{};return {tic:r[0],nm:r[1],sec:r[2],cap:r[3],pe:r[4],ev:r[5],pb:r[6],dy:r[7],nd:r[8],note:r[9],p:l.p,ch:l.ch}});
+  var live=M.ru||{},keys=Object.keys(live);if(!keys.length)keys=S.ru.map(function(r){return r[0]});
+  var seen={};var rows=keys.concat(S.ru.map(function(r){return r[0]})).filter(function(t){if(seen[t])return false;seen[t]=1;return true}).map(function(t){var r=STATIC_RU[t],l=live[t]||{};
+    return {tic:t,nm:ruName(t),sec:ruSec(t),cap:l.cap!=null?l.cap:(r?r[3]:null),pe:r?r[4]:null,ev:r?r[5]:null,pb:r?r[6]:null,dy:r?r[7]:null,nd:r?r[8]:null,note:r?r[9]:'',p:l.p,ch:l.ch,vol:l.vol||0,lvl:l.lvl||(r?1:3),blue:!!r}});
+  if(RUV==='Голубые фишки')rows=rows.filter(function(r){return r.blue});else if(RUV==='1-й уровень')rows=rows.filter(function(r){return r.lvl===1});
   if(flt.ru!=='Все')rows=rows.filter(function(r){return r.sec===flt.ru});
+  if(!sortState.ru||sortState.ru.k==null)rows.sort(function(a,b){return (b.cap||0)-(a.cap||0)||(b.vol||0)-(a.vol||0)});
   var cols=[
-    {k:'tic',t:'Компания',cls:'nm',f:function(r){return '<b>'+esc(r.nm)+'</b><i>'+r.tic+' · '+esc(r.sec)+'</i>'}},
+    {k:'tic',t:'Компания',cls:'nm',f:function(r){return '<b>'+esc(r.nm)+'</b><i>'+r.tic+' · '+esc(r.sec)+(r.lvl&&r.lvl!==1?' · '+r.lvl+'-й уровень':'')+'</i>'}},
     {k:'p',t:'Цена, ₽',num:1,f:function(r){return auto(r.p)}},
     {k:'ch',t:'За день',num:1,f:function(r){return pct(r.ch)}},
-    {k:'cap',t:'Кап., млрд ₽',num:1,f:function(r){return nf(r.cap,0)}},
-    {k:'pe',t:'P/E',num:1,f:function(r){return r.pe==null?'н/д':mult(r.pe)}},
+    {k:'cap',t:'Кап., млрд ₽',num:1,f:function(r){return r.cap==null?'—':nf(r.cap,r.cap<10?1:0)}},
+    {k:'vol',t:'Оборот, млн ₽',num:1,f:function(r){return r.vol?nf(r.vol/1e6,r.vol<1e7?1:0):'—'}},
+    {k:'pe',t:'P/E',num:1,f:function(r){return r.pe==null?(r.blue?'н/д':'—'):mult(r.pe)}},
     {k:'ev',t:'EV/EBITDA',num:1,f:function(r){return r.ev==null?'—':mult(r.ev)}},
-    {k:'pb',t:'P/B',num:1,f:function(r){return r.pb==null?'отр.':mult(r.pb)}},
-    {k:'dy',t:'ДД',num:1,f:function(r){return esc(r.dy)}},
-    {k:'nd',t:'ND/EBITDA · ROE',num:1,f:function(r){return esc(r.nd)}},
+    {k:'pb',t:'P/B',num:1,f:function(r){return r.pb==null?(r.blue?'отр.':'—'):mult(r.pb)}},
+    {k:'dy',t:'ДД',num:1,f:function(r){return r.dy==null?'—':esc(r.dy)}},
+    {k:'nd',t:'ND/EBITDA · ROE',num:1,f:function(r){return r.nd==null?'—':esc(r.nd)}},
     {k:'note',t:'Заметка',cls:'nt',f:function(r){return esc(r.note)}}];
-  var h=status('ru','Котировки Мосбиржи')+filters('ru',S.ru.map(function(r){return r[2]}))+table('ru',cols,rows)+
-    '<p class="sect note">Цены — Мосбиржа (режим T+, задержка ~15 мин). Капитализация и мультипликаторы: '+esc(S.ru_asof)+'; P/E и P/B по LTM МСФО. «Отр.» — отрицательный капитал, «н/д» — убыток или нет данных. Для банков вместо долга — ROE. Нажми на компанию — откроется карточка с графиком и дивидендами; на заголовок столбца — сортировка.</p>';
+  var secs=[];rows.forEach(function(r){if(secs.indexOf(r.sec)<0)secs.push(r.sec)});Object.keys(UNI.ru).forEach(function(t){var x=UNI.ru[t][1];if(secs.indexOf(x)<0)secs.push(x)});secs.sort(function(a,b){return a==='Прочее'?1:b==='Прочее'?-1:a.localeCompare(b,'ru')});
+  var views=['Все','Голубые фишки','1-й уровень'];
+  var h=status('ru','Котировки Мосбиржи')+searchBox('Найти акцию: Сбер, VK, Самолёт, SBER…')+'<nav class="sub" style="margin-top:10px">'+views.map(function(v){return '<button type="button" class="chip'+(RUV===v?' on':'')+'" data-ruv="'+v+'">'+v+'</button>'}).join('')+'</nav>'+filters('ru',secs)+'<p class="note" style="margin:6px 0 0">'+rows.length+' бумаг</p>'+table('ru',cols,rows)+
+    '<p class="sect note">Все акции основного режима Мосбиржи (TQBR), по убыванию капитализации. Цены — задержка ~15 мин. Мультипликаторы есть только у голубых фишек ('+esc(S.ru_asof)+'; P/E и P/B по LTM МСФО; «отр.» — отрицательный капитал, «н/д» — убыток или нет данных; у банков вместо долга — ROE). У остальных пока только цена, капитализация и оборот. Нажми на компанию — карточка с графиком, дивидендами и новостями; на заголовок столбца — сортировка.</p>';
   h+='<div class="sect"><h2>Медианные мультипликаторы по секторам</h2>'+table('rus',[
     {k:0,t:'Сектор',f:function(r){return esc(r[0])}},{k:1,t:'Компаний',num:1,f:function(r){return r[1]}},
     {k:2,t:'P/E',num:1,f:function(r){return mult(r[2])}},{k:3,t:'P/B',num:1,f:function(r){return mult(r[3])}},{k:4,t:'EV/EBITDA',num:1,f:function(r){return r[4]==null?'—':mult(r[4])}}],S.ru_sect)+
     '<p class="note">'+esc(S.ru_sect_asof)+'. Медиана P/E рынка 7,0×, EV/EBITDA нефинансовых компаний 5,2×.</p></div>';
   return h+secNews('ru','Новости российского рынка',8);
 }
+view.addEventListener('click',function(e){var b=e.target.closest('[data-ruv]');if(b){RUV=b.getAttribute('data-ruv');drawMarkets(true)}var w=e.target.closest('[data-wreg]');if(w){WREG=w.getAttribute('data-wreg');drawMarkets(true)}});
+var WREG='Все';
 function vUS(){
   var sn=(M.snap&&M.snap.us)||{};
-  var rows=S.us.map(function(r){var l=sn[r[0]]||{};return {tic:r[0],nm:r[1],sec:r[2],cap:r[3],pe:r[4],fpe:r[5],ev:r[6],pb:r[7],ps:r[8],dy:r[9],p:l.p,ch:l.ch}});
+  var rows=UNI.world.map(function(w){var l=sn[w[0]]||{},r=STATIC_US[w[0]];return {tic:w[0],nm:w[1],cc:w[2],country:UNI.country[w[2]]||w[2],region:UNI.region[w[2]]||'Мир',sec:w[3],cur:l.cur==='GBP'?'£':(w[4]||'$'),cap:r?r[3]:null,pe:r?r[4]:null,fpe:r?r[5]:null,ev:r?r[6]:null,pb:r?r[7]:null,ps:r?r[8]:null,dy:r?r[9]:null,p:l.p,ch:l.ch}});
+  if(WREG!=='Все')rows=rows.filter(function(r){return r.region===WREG});
   if(flt.us!=='Все')rows=rows.filter(function(r){return r.sec===flt.us});
   var hasP=Object.keys(sn).length>0;
-  var cols=[{k:'tic',t:'Компания',cls:'nm',f:function(r){return '<b>'+esc(r.nm)+'</b><i>'+r.tic+' · '+esc(r.sec)+'</i>'}}];
-  if(hasP)cols.push({k:'p',t:'Цена, $',num:1,f:function(r){return auto(r.p)}},{k:'ch',t:'За день',num:1,f:function(r){return pct(r.ch)}});
+  var cols=[{k:'tic',t:'Компания',cls:'nm',f:function(r){return '<b>'+esc(r.nm)+'</b><i>'+esc(r.tic)+' · '+esc(r.country)+' · '+esc(r.sec)+'</i>'}}];
+  if(hasP)cols.push({k:'p',t:'Цена',num:1,f:function(r){return r.p==null?'—':nf(r.p,r.p<10?2:r.p<1000?2:0)+' '+r.cur}},{k:'ch',t:'За день',num:1,f:function(r){return pct(r.ch)}});
   cols=cols.concat([
-    {k:'cap',t:'Кап., млрд $',num:1,f:function(r){return nf(r.cap,r.cap>=1000?0:1)}},
-    {k:'pe',t:'P/E',num:1,f:function(r){return mult(r.pe)}},{k:'fpe',t:'P/E fwd',num:1,f:function(r){return mult(r.fpe)}},
-    {k:'ev',t:'EV/EBITDA',num:1,f:function(r){return r.ev==null?'— (банк)':mult(r.ev)}},
-    {k:'pb',t:'P/B',num:1,f:function(r){return mult(r.pb)}},{k:'ps',t:'P/S',num:1,f:function(r){return mult(r.ps)}},
-    {k:'dy',t:'ДД',num:1,f:function(r){return esc(r.dy)}}]);
-  var h=(hasP?'<div class="stat"><span class="dot"></span><span>Цены: снимок от '+esc(M.snap.updated||'')+' (обновляется автоматически несколько раз в день)</span></div>':'<div class="stat"><span class="dot"></span><span>Бесплатных живых котировок США, доступных прямо из браузера, нет; таблица — снимок на '+esc(S.us_asof)+'</span></div>')+
-    filters('us',S.us.map(function(r){return r[2]}))+table('us',cols,rows)+
-    '<p class="sect note">Нажми на компанию — откроется карточка с графиком за 5 лет, причинами резких движений и новостями. Мультипликаторы: '+esc(S.us_asof)+' (данные S&P Global). У Tesla и AMD высокий P/E из-за упавшей прибыли и ожиданий роста; у Berkshire прибыль по US GAAP включает переоценку портфеля акций.</p>';
+    {k:'cap',t:'Кап., млрд $',num:1,f:function(r){return r.cap==null?'—':nf(r.cap,r.cap>=1000?0:1)}},
+    {k:'pe',t:'P/E',num:1,f:function(r){return r.pe==null?'—':mult(r.pe)}},{k:'fpe',t:'P/E fwd',num:1,f:function(r){return r.fpe==null?'—':mult(r.fpe)}},
+    {k:'ev',t:'EV/EBITDA',num:1,f:function(r){return r.ev==null?(STATIC_US[r.tic]?'— (банк)':'—'):mult(r.ev)}},
+    {k:'pb',t:'P/B',num:1,f:function(r){return r.pb==null?'—':mult(r.pb)}},{k:'dy',t:'ДД',num:1,f:function(r){return r.dy==null?'—':esc(r.dy)}}]);
+  var regs=['Все'];UNI.world.forEach(function(w){var g=UNI.region[w[2]]||'Мир';if(regs.indexOf(g)<0)regs.push(g)});
+  var secs=[];rows.forEach(function(r){if(secs.indexOf(r.sec)<0)secs.push(r.sec)});secs.sort(function(a,b){return a.localeCompare(b,'ru')});
+  var h=(hasP?'<div class="stat"><span class="dot"></span><span>Цены: снимок от '+esc(M.snap.updated||'')+', обновляется каждый час (Yahoo Finance)</span></div>':'<div class="stat"><span class="dot"></span><span>Цены появятся после первого автоматического обновления</span></div>')+
+    searchBox('Найти акцию: Nvidia, Toyota, ASML, TSM…')+'<nav class="sub" style="margin-top:10px">'+regs.map(function(v){return '<button type="button" class="chip'+(WREG===v?' on':'')+'" data-wreg="'+v+'">'+v+'</button>'}).join('')+'</nav>'+filters('us',secs)+'<p class="note" style="margin:6px 0 0">'+rows.length+' компаний</p>'+table('us',cols,rows)+
+    '<p class="sect note">Крупнейшие компании мира: США, Европа, Азия, Ближний Восток, Америки, Австралия. Цена — в валюте биржи (у лондонских бумаг переведена из пенсов в фунты). Мультипликаторы пока только у 25 крупнейших компаний США ('+esc(S.us_asof)+'). Нажми на компанию — карточка с графиком за 5 лет и новостями.</p>';
   h+='<div class="sect"><h2>Мультипликаторы по отраслям США</h2>'+table('uss',[
     {k:0,t:'Отрасль',f:function(r){return esc(r[0])}},{k:1,t:'P/E trailing',num:1,f:function(r){return mult(r[1])}},{k:2,t:'P/E forward',num:1,f:function(r){return mult(r[2])}},{k:3,t:'EV/EBITDA',num:1,f:function(r){return r[3]==null?'—':mult(r[3])}}],S.us_sect)+
     '<p class="note">'+esc(S.us_sect_asof)+'. Агрегаты считаются как сумма капитализаций / сумма прибылей, включая убыточные компании, поэтому trailing P/E выше медианного; сравнивай по forward.</p></div>';
@@ -1191,7 +1238,7 @@ function loadFin(){return loadX('fin','fin.json')}
 function loadCal(){return loadX('cal','corp_cal.json')}
 function loadDig(){return loadX('dig','digest.json')}
 function loadCoRU(){return Promise.all([loadX('coru','world/companies/ru.json'),loadX('cord','world/companies/ru-detail.json')])}
-function rname(t){var r=S.ru.filter(function(x){return x[0]===t})[0]||S.us.filter(function(x){return x[0]===t})[0];return r?r[1]:t}
+function rname(t){if(STATIC_RU[t]||UNI.ru[t]||(M.ru&&M.ru[t]))return ruName(t);var w=WMAP[t];return w?w[1]:t}
 function nfs(v,d){return v==null||isNaN(v)?'—':nf(v,d==null?1:d)}
 function finBlockUS(t){
   var F=XD.fin,d=F&&F.us&&F.us[t],lk='<p class="note">Подробнее: <a href="https://stockanalysis.com/stocks/'+t.toLowerCase()+'/financials/" target="_blank" rel="noopener">stockanalysis.com</a> · <a href="https://finance.yahoo.com/quote/'+t+'/financials/" target="_blank" rel="noopener">Yahoo Finance</a></p>';
@@ -1308,10 +1355,10 @@ function loadNews(){
   }).then(mergeNews);
 }
 function fmtDT(iso){var d=new Date(iso),now=new Date(),same=d.toDateString()===now.toDateString();return same?d.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'}):d.toLocaleDateString('ru-RU',{day:'numeric',month:'short'})+', '+d.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})}
-function tname(t){var r=S.ru.filter(function(x){return x[0]===t})[0];if(r)return r[1];var u=S.us.filter(function(x){return x[0]===t})[0];if(u)return u[1];if(typeof IDX!=='undefined'&&IDX[t])return IDX[t].n;var c=(M.cr||[]).filter(function(x){return x.s===t})[0];return c?c.n:t}
-function isUS(t){return t.charAt(0)==='^'||S.us.some(function(x){return x[0]===t})}
+function tname(t){if(STATIC_RU[t]||UNI.ru[t]||(M.ru&&M.ru[t]))return ruName(t);if(WMAP[t])return WMAP[t][1];if(typeof IDX!=='undefined'&&IDX[t])return IDX[t].n;var c=(M.cr||[]).filter(function(x){return x.s===t})[0];return c?c.n:t}
+function isUS(t){return t.charAt(0)==='^'||!!WMAP[t]||!!STATIC_US[t]}
 function isCR(t){return !!(typeof CRID!=='undefined'&&CRID[t])||(M.cr||[]).some(function(x){return x.s===t})}
-function tagHref(t){return S.ru.some(function(x){return x[0]===t})?'#markets/ru/'+t:t==='IMOEX'||t==='RTSI'||t==='RGBI'||t.charAt(0)==='^'?'#markets/idx/'+encodeURIComponent(t):isUS(t)?'#markets/us/'+t:isCR(t)?'#markets/crypto/'+t:'#markets/ru/'+t}
+function tagHref(t){return (STATIC_RU[t]||UNI.ru[t]||(M.ru&&M.ru[t]))?'#markets/ru/'+t:t==='IMOEX'||t==='RTSI'||t==='RGBI'||t.charAt(0)==='^'?'#markets/idx/'+encodeURIComponent(t):isUS(t)?'#markets/us/'+t:isCR(t)?'#markets/crypto/'+t:'#markets/ru/'+t}
 var RX_BOND=/ОФЗ|облигац|бонд|купон|аукцион[а-я]* Минфин|Treasur|bond yield|bonds/i,RX_FX=/курс[а-я]* (?:доллар|рубл|юан|евро)|доллар|(?:^|[^а-яё])евро(?![а-яё])|юан|рубл[ьяеюи](?![а-яё])|валют|dollar|yuan|currenc|forex/i,RX_RATE=/ставк|ЦБ|Банк[а-я]* России|ФРС|(?:^|\W)Fed(?:\W|$)|инфляц|Набиуллин|Пауэлл|Powell/i;
 var NFF={all:function(){return true},ru:function(x){return x.cat==='ru'||x.cat==='cbr'||(x.tags||[]).some(function(t){return S.ru.some(function(r){return r[0]===t})})},comp:function(x){return x.tags&&x.tags.length},cbr:function(x){return x.cat==='cbr'||RX_RATE.test(x.t)},
   us:function(x){return x.cat==='us'||x.cat==='world'||(x.tags||[]).some(isUS)},crypto:function(x){return x.cat==='crypto'||(x.tags||[]).some(isCR)},bonds:function(x){return RX_BOND.test(x.t)||RX_BOND.test((x.sum||[]).join(' '))&&RX_RATE.test(x.t)},fx:function(x){return RX_FX.test(x.t)}};
@@ -1524,11 +1571,12 @@ function loadDivs(tic){
    .catch(function(){CARD.divs[tic]=false});
 }
 function vCard(tic){
-  var r=S.ru.filter(function(x){return x[0]===tic})[0];if(!r)return '<p class="empty">Компания не найдена.</p>';
-  var l=(M.ru||{})[tic]||{},key=tic+':'+CARD.range,cd=CARD.candles[key],px=l.p||(cd&&cd.length?cd[cd.length-1][1]:null);
+  var r=STATIC_RU[tic],l=(M.ru||{})[tic]||{},live=!r;
+  if(!r){if(!l.p&&!UNI.ru[tic])return '<p class="empty">Компания не найдена. '+(M.ru?'':'Подожди, список бумаг Мосбиржи ещё загружается…')+'</p>';r=[tic,ruName(tic),ruSec(tic),l.cap,null,null,null,null,null,'']}
+  var key=tic+':'+CARD.range,cd=CARD.candles[key],px=l.p||(cd&&cd.length?cd[cd.length-1][1]:null);
   var sec=SECMAP[r[2]],med=S.ru_sect.filter(function(x){return x[0]===sec})[0];
   var h='<div id="card-root" class="sect" style="margin-top:20px"><p class="eyebrow"><a href="#markets/ru">Россия</a> · '+esc(r[2])+'</p><h1 style="margin:0;font:600 clamp(28px,6vw,40px)/1.1 var(--serif)">'+esc(r[1])+' <span style="color:var(--faint);font:500 18px var(--mono)">'+tic+'</span></h1>'+
-    '<div class="tiles" style="margin-top:14px" id="card-price">'+tile('Цена',px?nf(px,px<10?3:2)+' ₽':'—',l.ch!=null?pct(l.ch)+' за день':'Мосбиржа')+tile('Капитализация',nf(r[3],0)+' млрд ₽',esc(S.ru_asof))+'</div></div>';
+    '<div class="tiles" style="margin-top:14px" id="card-price">'+tile('Цена',px?nf(px,px<10?3:2)+' ₽':'—',l.ch!=null?pct(l.ch)+' за день':'Мосбиржа')+tile('Капитализация',r[3]!=null?nf(r[3],r[3]<10?1:0)+' млрд ₽':'—',live?'Мосбиржа, по текущей цене':esc(S.ru_asof))+'</div></div>';
   h+='<div class="sect"><div class="box"><div class="pchead"><h2>График цены</h2>'+[['1m','1 мес'],['3m','3 мес'],['6m','6 мес'],['1y','1 год'],['3y','3 года'],['5y','5 лет']].map(function(x){return '<button type="button" class="chip'+(CARD.range===x[0]?' on':'')+'" data-crange="'+x[0]+'">'+x[1]+'</button>'}).join('')+'</div>';
   if(cd&&cd.length>1){
     var mkk=tic+CARD.range+(ENEWS[enFile('ru',tic)]?1:0)+(M.news?1:0);
@@ -1536,13 +1584,15 @@ function vCard(tic){
     h+='<div id="pchart" class="pchart" role="img" aria-label="График цены '+tic+'"></div><div id="pc-info" class="pcinfo"></div><p class="note">Цены закрытия, Мосбиржа'+(CARD.range==='3y'||CARD.range==='5y'?' (по неделям)':' (по дням)')+'.</p>';
   }else h+='<p class="empty">'+(CARD.err[key]?'Мосбиржа сейчас не отдаёт историю цен.':'Загружаю…')+'</p>';
   h+='</div></div>';
-  // мультипликаторы vs сектор
+  // мультипликаторы vs сектор (только у голубых фишек со статикой)
+  if(live){h+='<div class="sect"><h2>Мультипликаторы</h2><p class="note">Для этой бумаги мультипликаторы на сайте пока не собраны — есть у голубых фишек. Отчётность и показатели: <a href="https://smart-lab.ru/q/'+tic+'/f/y/" target="_blank" rel="noopener">smart-lab</a>.</p>'}else{
   var rows=[['P/E',r[4],med&&med[2]],['P/B',r[6],med&&med[3]],['EV/EBITDA',r[5],med&&med[4]]];
   h+='<div class="sect"><h2>Мультипликаторы против сектора «'+esc(sec||'—')+'»</h2>'+mini(['Показатель',esc(r[1]),'Сектор','Разница'],rows.map(function(x){var d=(x[1]!=null&&x[2]!=null&&x[1]>0)?(x[1]/x[2]-1)*100:null;return [x[0],x[1]==null?'—':mult(x[1]),x[2]==null?'—':mult(x[2]),d==null?'—':'<span class="'+(d<0?'up':'down')+'">'+(d>0?'+':'')+nf(d,0)+'%</span>']}))+
     '<p class="note">Дивидендная доходность '+esc(r[7])+', '+(String(r[8]).indexOf('ROE')===0?esc(r[8]):'чистый долг / EBITDA '+esc(r[8]))+'. '+(r[9]?esc(r[9])+'. ':'')+'Зелёный — дешевле сектора, красный — дороже.</p>';
   if(med&&r[4]>0&&med[2]){var up=med[2]/r[4]-1;
     h+='<div class="tiles" style="margin-top:10px">'+tile('Оценка по P/E сектора',nf(r[3]*med[2]/r[4],0)+' млрд ₽','потенциал '+pct(up*100,0))+(r[6]>0&&med[3]?tile('Оценка по P/B сектора',nf(r[3]*med[3]/r[6],0)+' млрд ₽','потенциал '+pct((med[3]/r[6]-1)*100,0)):'')+'</div>'+
       '<p class="note">Грубая оценка «как у сектора»: капитализация × медиана сектора / мультипликатор компании. Это не рекомендация: разница бывает оправдана ростом, риском, дивидендами, качеством управления.</p>'}
+  }
   h+='</div>';
   h+=finBlockRU(tic);
   var evs=evFor(tic),nws=cardNews(tic,enFile('ru',tic));
@@ -1571,6 +1621,9 @@ var IDX={IMOEX:{n:'Индекс Мосбиржи',sub:'Россия · акци�
   MOEXOG:{n:'Индекс нефти и газа',sub:'Мосбиржа · отрасль',src:'iss',u:''},MOEXFN:{n:'Индекс финансов',sub:'Мосбиржа · отрасль',src:'iss',u:''},MOEXIT:{n:'Индекс IT',sub:'Мосбиржа · отрасль',src:'iss',u:''},MOEXMM:{n:'Индекс металлов и добычи',sub:'Мосбиржа · отрасль',src:'iss',u:''},
   '^GSPC':{n:'S&P 500',sub:'США · 500 крупнейших компаний',src:'hist',u:''},'^IXIC':{n:'Nasdaq Composite',sub:'США · технологический индекс',src:'hist',u:''},'^DJI':{n:'Dow Jones',sub:'США · 30 «голубых фишек»',src:'hist',u:''}};
 function assetInfo(kind,id){
+  if(kind==='us'&&!STATIC_US[id]&&WMAP[id]){var w=wInfo(id),sn2=((M.snap&&M.snap.us)||{})[id]||{},cu=sn2.cur==='GBP'?'£':w.cur;
+    return {key:id,name:w.nm,sub:w.country+' · '+w.sec,unit:' '+cu,px:sn2.p,ch:sn2.ch,chNote:sn2.p?'снимок '+((M.snap&&M.snap.updated)||''):'цены — снимок раз в час',cap:null,
+      mult:[],multNote:'',src:'hist',hkey:'us-'+id,links:[['Yahoo Finance','https://finance.yahoo.com/quote/'+encodeURIComponent(id)]]}}
   if(kind==='us'){var r=S.us.filter(function(x){return x[0]===id})[0];if(!r)return null;var sn=((M.snap&&M.snap.us)||{})[id]||{};
     return {key:id,name:r[1],sub:r[2],unit:' $',px:sn.p,ch:sn.ch,chNote:sn.p?'снимок '+((M.snap&&M.snap.updated)||''):'цены США — снимок раз в час',cap:nf(r[3],r[3]>=1000?0:1)+' млрд $',
       mult:[['P/E',mult(r[4])],['P/E прогнозный',mult(r[5])],['EV/EBITDA',r[6]==null?'— (банк)':mult(r[6])],['P/B',mult(r[7])],['P/S',mult(r[8])],['Дивидендная доходность',esc(r[9])]],multNote:S.us_asof,
@@ -1601,7 +1654,7 @@ function loadSeries(a,range){
   return p.then(function(d){if(!d||d.length<2)throw 0;SER[k]=d;SERR[k]=0}).catch(function(){SERR[k]=1});
 }
 function vAsset(){
-  var a=assetInfo(ASSET.kind,ASSET.id),back={us:['#markets/us','США'],cr:['#markets/crypto','Крипта'],idx:['#markets','Сводка']}[ASSET.kind];
+  var a=assetInfo(ASSET.kind,ASSET.id),back={us:['#markets/us','Мир'],cr:['#markets/crypto','Крипта'],idx:['#markets','Сводка']}[ASSET.kind];
   if(!a)return '<p class="empty">Не нашёл такой инструмент.</p>';
   var k=a.hkey+':'+CARD.range,cd=SER[k],px=a.px||(cd&&cd.length?cd[cd.length-1][1]:null);
   var h='<div id="card-root" class="sect" style="margin-top:20px"><p class="eyebrow"><a href="'+back[0]+'">'+back[1]+'</a> · '+esc(a.sub)+'</p><h1 style="margin:0;font:600 clamp(26px,6vw,40px)/1.15 var(--serif)">'+esc(a.name)+(ASSET.kind!=='cr'?' <span style="color:var(--faint);font:500 18px var(--mono)">'+esc(a.key)+'</span>':'')+'</h1>'+

@@ -3,12 +3,16 @@
 Запускается GitHub Action'ом; файлы уходят в отдельную ветку `data` (перезаписывается, история не копится).
 Обновляет файл, если он старше 20 часов. Формат: {"name", "updated", "d": [[день, цена], …] (1 год по дням), "w": [[день, цена], …] (5 лет по неделям)}; день = дни с 1970-01-01."""
 import json, os, sys, time, urllib.request, urllib.parse, datetime
+from concurrent.futures import ThreadPoolExecutor
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), 'src', 'finance'))
+import universe as UNI
 
 OUT = sys.argv[1] if len(sys.argv) > 1 else 'hist_out'
 os.makedirs(os.path.join(OUT, 'hist'), exist_ok=True)
 UA = {'User-Agent': 'Mozilla/5.0 (konspekty history)'}
-US = ['NVDA', 'AAPL', 'GOOGL', 'MSFT', 'AMZN', 'META', 'AVGO', 'TSLA', 'BRK-B', 'LLY', 'AMD', 'WMT', 'JPM', 'V', 'XOM', 'JNJ', 'MA',
-      'COST', 'CVX', 'ORCL', 'KO', 'BAC', 'PG', 'UNH', 'NFLX', '^GSPC', '^IXIC', '^DJI']
+# весь мир (universe.py) + индексы; за один прогон обновляем не больше BUDGET самых старых файлов, остальные — в следующий час
+US = ['^GSPC', '^IXIC', '^DJI', '^STOXX50E', '^FTSE', '^GDAXI', '^N225', '^HSI', '000001.SS', '^BSESN', '^KS11'] + [w[0] for w in UNI.WORLD]
+BUDGET = int(os.environ.get('HIST_BUDGET', '140'))
 CR = {'BTC': 'bitcoin', 'ETH': 'ethereum', 'SOL': 'solana', 'XRP': 'ripple', 'BNB': 'binancecoin', 'DOGE': 'dogecoin',
       'TON': 'the-open-network', 'ADA': 'cardano', 'TRX': 'tron', 'USDT': 'tether'}
 YCR = {'TON': 'TON11419-USD'}
@@ -16,12 +20,13 @@ YCR = {'TON': 'TON11419-USD'}
 def get(url, t=25):
     return json.loads(urllib.request.urlopen(urllib.request.Request(url, headers=UA), timeout=t).read().decode('utf-8'))
 def fname(key): return os.path.join(OUT, 'hist', key.replace('^', '_') + '.json')
-def fresh(key):
+def age(key):
     try:
         u = json.load(open(fname(key))).get('updated', '')
-        return (datetime.datetime.utcnow() - datetime.datetime.strptime(u, '%Y-%m-%dT%H:%MZ')).total_seconds() < 6 * 3600
+        return (datetime.datetime.utcnow() - datetime.datetime.strptime(u, '%Y-%m-%dT%H:%MZ')).total_seconds()
     except Exception:
-        return False
+        return 1e12
+def fresh(key): return age(key) < 6 * 3600
 def day(ts): return int(ts // 86400)
 def stamp(): return datetime.datetime.utcnow().strftime('%Y-%m-%dT%H:%MZ')
 
@@ -31,20 +36,24 @@ def yahoo(t):
         j = get('https://query1.finance.yahoo.com/v8/finance/chart/' + urllib.parse.quote(t) + '?range=' + rng + '&interval=' + iv)
         r = j['chart']['result'][0]
         ts, cl = r['timestamp'], r['indicators']['quote'][0]['close']
-        res[k] = [[day(a), round(b, 6 if b < 1 else 2)] for a, b in zip(ts, cl) if b is not None]
+        pence = r['meta'].get('currency') == 'GBp'
+        res[k] = [[day(a), round(b / 100 if pence else b, 6 if b < 1 else 2)] for a, b in zip(ts, cl) if b is not None]
         res['name'] = r['meta'].get('longName') or r['meta'].get('shortName') or t
-        time.sleep(0.4)
+        res['cur'] = 'GBP' if pence else r['meta'].get('currency')
+        time.sleep(0.2)
     res['updated'] = stamp()
     return res
 
 changed = 0
-for t in US:
-    key = 'us-' + t
-    if fresh(key): continue
+todo = sorted([t for t in US if not fresh('us-' + t)], key=lambda t: -age('us-' + t))[:BUDGET]
+def one(t):
     try:
-        json.dump(yahoo(t), open(fname(key), 'w'), separators=(',', ':')); changed += 1
+        json.dump(yahoo(t), open(fname('us-' + t), 'w'), separators=(',', ':')); return 1
     except Exception as e:
-        print('yahoo', t, e, file=sys.stderr)
+        print('yahoo', t, e, file=sys.stderr); return 0
+with ThreadPoolExecutor(5) as ex:
+    changed += sum(ex.map(one, todo))
+print('history: %d из %d устаревших обновлено' % (changed, len(todo)), file=sys.stderr)
 
 for sym, cid in CR.items():
     key = 'cr-' + sym

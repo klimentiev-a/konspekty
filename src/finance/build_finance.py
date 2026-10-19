@@ -3,6 +3,7 @@
 import sys, os, re, json, glob
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import static_data as S
+import universe as UNI
 
 cdir, marked_path, out = sys.argv[1:4]
 IDS = {'01':'ib','02':'otchetnost','03':'npv-irr','04':'wacc','05':'dcf','06':'multiplikatory','07':'metody','08':'sektory',
@@ -72,7 +73,7 @@ for x in TERMS:
     x['p'] = [re.sub(r'(?<!\\)\((?!\?)', '(?:', s.replace('\\w', '[а-яёА-ЯЁa-zA-Z]')) for s in x['p']]
 static = {'ru': S.RU, 'ru_asof': S.RU_ASOF, 'ru_sect': S.RU_SECT, 'ru_sect_asof': S.RU_SECT_ASOF,
           'us': S.US, 'us_asof': S.US_ASOF, 'us_sect': S.US_SECT, 'us_sect_asof': S.US_SECT_ASOF,
-          'macro': S.MACRO, 'kbd': S.KBD, 'keyrate': S.KEYRATE, 'cal': S.CAL, 'events': json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'events.json'), encoding='utf-8'))}
+          'uni': {'ru': UNI.RU, 'world': UNI.world_json(), 'region': UNI.REGION, 'country': UNI.COUNTRY}, 'macro': S.MACRO, 'kbd': S.KBD, 'keyrate': S.KEYRATE, 'cal': S.CAL, 'events': json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'events.json'), encoding='utf-8'))}
 data = json.dumps({'chapters': chs, 'sectors': secs, 'static': static, 'terms': TERMS}, ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/')
 tpl = open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'finance_template.html'), encoding='utf-8').read()
 assert '<!--DATA-->' in tpl and '<!--MARKED-->' in tpl
