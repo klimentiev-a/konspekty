@@ -1,8 +1,7 @@
-2026-10-18T23:49Z
-ответ без dividends: ['description', 'boards'] {'description': {'columns': ['name', 'title', 'value', 'type', 'sort_order', 'is_hidden', 'precision'], 'data': [['SECID', 'Код ценной бумаги', 'SBER', 'string', 1, 0, None], ['ISSUENAME', 'Наименование ценной бумаги', 'Акции обыкновенные', 'string', 2, 0, None], ['NAME', 'Полное наименование', 'Сбе
-div SBER 'dividends'
-div LKOH 'dividends'
-div ROSN 'dividends'
+2026-10-18T23:57Z
+div SBER <urlopen error timed out>
+div LKOH <urlopen error timed out>
+div ROSN <urlopen error timed out>
 ISS дивиденды недоступны, пробую запасной источник
 smartlab SBER байт 55477 строк 0 []
 таблица дивидендов, заголовок: ['дата объявления дивиденда', 'дата закрытия реестра', 'год для учета дивиденда', 'дивиденд'] колонка значения: [3] строка: ['n/a', '20.07.2027 (прогноз)', 'n/a', '44.53']
