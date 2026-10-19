@@ -767,10 +767,12 @@ marked.use({gfm:true,breaks:false,renderer:{
   heading:function(text,level,raw){if(level===1)return '';if(level===2){var id='h'+heads.length;heads.push({id:id,t:raw});return '<h2 id="'+id+'">'+text+'</h2>\n'}return '<h'+level+'>'+text+'</h'+level+'>\n'},
   link:function(href,title,text){return '<a href="'+esc(href)+'" target="_blank" rel="noopener noreferrer">'+text+'</a>'}
 }});
-function prepDoc(c,i){c.i=i;c.plain=c.md.replace(/<[^>]+>/g,' ').replace(/[#*|`>_-]{1,}/g,' ').replace(/\s+/g,' ');c.low=c.plain.toLowerCase()}
+/* текст для поиска считаем лениво (2 МБ глав на телефоне разбирать при старте — заметная задержка); минуты чтения — по длине markdown (~6,3 знака на слово) */
+function ensurePlain(c){if(c.plain==null){c.plain=c.md.replace(/<[^>]+>/g,' ').replace(/[#*|`>_-]{1,}/g,' ').replace(/\s+/g,' ');c.low=c.plain.toLowerCase()}return c}
+function prepDoc(c,i){c.i=i;c.min=Math.max(2,Math.round(c.md.length/6.3/170))}
 CH.forEach(prepDoc);
 var SEC=D.sectors||[];   // сектора мировой экономики (#world/sectors)
-SEC.forEach(function(c,i){prepDoc(c,i);c.sec=1;c.min=Math.max(2,Math.round(c.plain.split(' ').length/170))});
+SEC.forEach(function(c,i){prepDoc(c,i);c.sec=1});
 
 /* ---------------- обучение ---------------- */
 var TRACKS=[
@@ -781,7 +783,7 @@ var TRACKS=[
  ['Шаг 5. Практика и собеседование','Кейсы, задачи, подготовка к стажировке',['stazhirovka','keysy','sobesedovanie','praktikum','excel','project-black','karera']],
  ['Справка','Возвращайся по необходимости: маршрут на год, глоссарий, источники',['marshrut','glossariy','istochniki']]];
 (function(){var order=[];TRACKS.forEach(function(tr){tr[2].forEach(function(id){var c=CH.filter(function(x){return x.id===id})[0];if(c&&order.indexOf(c)<0)order.push(c)})});
-  CH.forEach(function(c){if(order.indexOf(c)<0)order.push(c)});CH=order;CH.forEach(function(c,i){c.i=i;c.min=Math.max(2,Math.round(c.plain.split(' ').length/170))})})();
+  CH.forEach(function(c){if(order.indexOf(c)<0)order.push(c)});CH=order;CH.forEach(function(c,i){c.i=i})})();
 var CALC_LINK={'npv-irr':['npv','Посчитать NPV и IRR'],'wacc':['wacc','Посчитать WACC'],'dcf':['dcf','Собрать свой DCF'],'ma-lbo':['lbo','Посчитать LBO'],'struktura-kapitala':['wacc','Поиграть со структурой капитала'],'rynki-kapitala':['npv','Калькулятор потоков'],'praktikum':['npv','Проверить ответы в калькуляторах']};
 /* пройденные уроки: localStorage 'fin:done' = {id:1} (общий для глав обучения; секторы не считаются) */
 function doneGet(){try{return JSON.parse(store('fin:done')||'{}')||{}}catch(e){return {}}}
@@ -933,7 +935,7 @@ function hl(el,q){
 }
 function renderSearch(q){
   var ql=q.toLowerCase(),res=[];
-  CH.concat(SEC).forEach(function(c){var i=c.low.indexOf(ql),n=0,j=i;while(j>=0){n++;j=c.low.indexOf(ql,j+1)}if(i>=0||c.title.toLowerCase().indexOf(ql)>=0)res.push({c:c,i:i,n:n})});
+  CH.concat(SEC).forEach(function(c){ensurePlain(c);var i=c.low.indexOf(ql),n=0,j=i;while(j>=0){n++;j=c.low.indexOf(ql,j+1)}if(i>=0||c.title.toLowerCase().indexOf(ql)>=0)res.push({c:c,i:i,n:n})});
   res.sort(function(a,b){return b.n-a.n});
   var re=new RegExp('('+q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','gi');
   view.innerHTML='<section class="results"><p class="eyebrow">Поиск</p>'+(res.length?res.map(function(r){
