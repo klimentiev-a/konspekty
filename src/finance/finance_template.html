@@ -1,6 +1,6 @@
 <!doctype html><html lang="ru"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#F4F1E8" media="(prefers-color-scheme: light)"><meta name="theme-color" content="#171611" media="(prefers-color-scheme: dark)">
+<meta name="robots" content="noindex,nofollow"><meta name="description" content="Финансы: обучение инвестбанкингу, рынки России и мира, калькуляторы, карта мира."><meta property="og:type" content="website"><meta property="og:site_name" content="Hub"><meta property="og:title" content="Hub · Финансы"><meta property="og:description" content="Финансы: обучение инвестбанкингу, рынки России и мира, калькуляторы, карта мира."><meta property="og:image" content="https://klimentiev-a.github.io/konspekty/icon-512.png"><meta name="twitter:card" content="summary"><meta name="theme-color" content="#F4F1E8" media="(prefers-color-scheme: light)"><meta name="theme-color" content="#171611" media="(prefers-color-scheme: dark)">
 <meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="Финансы">
 <link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="favicon.svg?v=31" type="image/svg+xml"><link rel="icon" href="icon-192.png?v=31" sizes="192x192"><link rel="apple-touch-icon" href="apple-touch-icon.png?v=31">
 <title>Финансы</title>
@@ -693,7 +693,9 @@ details.more{position:relative;flex:none}details.more>summary{list-style:none;cu
 var D=JSON.parse(document.getElementById('fdata').textContent);
 var CH=D.chapters,S=D.static;
 function $(s,r){return (r||document).querySelector(s)}
-function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+/* ссылка из внешних данных: схемы javascript:/data:/vbscript: заменяем на «#» */
+function eu(u){u=String(u==null?'':u);return /^[\s\u0000-\u001f]*(javascript|data|vbscript):/i.test(u)?'#':esc(u)}
 function store(k,v){try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v)}catch(e){return null}}
 var view=$('#view');
 /* справочник бумаг (src/finance/universe.py): все акции Мосбиржи (цены и имена приходят из ISS/markets.json) и ~330 акций мира */
@@ -765,7 +767,7 @@ marked.use({gfm:true,breaks:false,renderer:{
   code:function(code,lang){if(lang==='f')return '<div class="f">'+esc(code)+'</div>\n';return '<pre><code>'+esc(code)+'</code></pre>\n'},
   table:function(h,b){return '<div class="tablewrap"><table><thead>'+h+'</thead><tbody>'+b+'</tbody></table></div>\n'},
   heading:function(text,level,raw){if(level===1)return '';if(level===2){var id='h'+heads.length;heads.push({id:id,t:raw});return '<h2 id="'+id+'">'+text+'</h2>\n'}return '<h'+level+'>'+text+'</h'+level+'>\n'},
-  link:function(href,title,text){return '<a href="'+esc(href)+'" target="_blank" rel="noopener noreferrer">'+text+'</a>'}
+  link:function(href,title,text){return '<a href="'+eu(href)+'" target="_blank" rel="noopener noreferrer">'+text+'</a>'}
 }});
 /* текст для поиска считаем лениво (2 МБ глав на телефоне разбирать при старте — заметная задержка); минуты чтения — по длине markdown (~6,3 знака на слово) */
 function ensurePlain(c){if(c.plain==null){c.plain=c.md.replace(/<[^>]+>/g,' ').replace(/[#*|`>_-]{1,}/g,' ').replace(/\s+/g,' ');c.low=c.plain.toLowerCase()}return c}
@@ -1290,7 +1292,7 @@ var loaders={summary:[loadIdx,loadFX,loadCR,loadSnap,loadNews,loadSvod],daily:[l
 var timer;
 var busy=false;
 function ago(ms){var s=Math.max(0,Math.round((Date.now()-ms)/1000));return s<5?'только что':s<60?s+' с назад':Math.floor(s/60)+' мин назад'}
-setInterval(function(){document.querySelectorAll('[data-ago]').forEach(function(e){e.textContent=ago(+e.getAttribute('data-ago'))})},1000);
+setInterval(function(){if(document.hidden)return;document.querySelectorAll('[data-ago]').forEach(function(e){e.textContent=ago(+e.getAttribute('data-ago'))})},1000);
 function refresh(){var l=loaders[cur]||[];if(cur==='summary')l=l.concat([loadRU]);busy=true;return Promise.all(l.map(function(f){return f()})).then(function(){busy=false;drawMarkets()},function(){busy=false;drawMarkets()})}
 function startTimer(){clearInterval(timer);timer=setInterval(function(){if(state==='markets'&&!document.hidden&&!busy)refresh()},30000)}
 document.addEventListener('visibilitychange',function(){if(!document.hidden&&state==='markets')refresh()});
@@ -1503,7 +1505,7 @@ function nHref(x){return x.id?'#markets/news/'+x.id:x.u}
 function nBadges(x){var c=Math.max(x.cl||1,x._n||1);return (c>1?'<span class="trb srcn" title="Сколько изданий написали об этом">'+plural(c,['издание','издания','изданий'])+'</span>':'')+(x.tr?'<span class="trb" title="Автоперевод с английского">перевод</span>':'')}
 function nTags(x){return (x.tags&&x.tags.length)?'<div class="ntags">'+x.tags.slice(0,4).map(function(t){return '<a class="chip sm" href="'+tagHref(t)+'">'+esc(tname(t))+'</a>'}).join('')+'</div>':''}
 function newsItem(x,kind){
-  var a='<a class="nt" href="'+esc(nHref(x))+'"'+(x.id?'':' target="_blank" rel="noopener"')+'>'+esc(x.t)+'</a>',lead=x.sum&&x.sum.length?x.sum.slice(0,2).join(' '):'';
+  var a='<a class="nt" href="'+eu(nHref(x))+'"'+(x.id?'':' target="_blank" rel="noopener"')+'>'+esc(x.t)+'</a>',lead=x.sum&&x.sum.length?x.sum.slice(0,2).join(' '):'';
   if(kind==='mini')return '<div class="nw mini"><span class="tm">'+new Date(x.d).toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})+'</span><div>'+a+'<span class="ns2"> · '+esc(x.s)+'</span></div></div>';
   var hot=(x.imp||0)>=14;
   return '<div class="nw'+(kind?' '+kind:'')+(hot&&!kind?' hot':'')+'"><div class="nm"><span class="ns">'+esc(x.s)+'</span><span>'+fmtDT(x.d)+'</span>'+nBadges(x)+'</div>'+a+(lead?'<p class="nx">'+esc(lead)+'</p>':'')+nTags(x)+'</div>';
@@ -1513,17 +1515,17 @@ function evItem(e,withTic){
   var ix=EV.indexOf(e);
   var mv=e.move?'<b class="'+(/^[−-]/.test(e.move)?'down':/^\+/.test(e.move)?'up':'')+'">'+esc(e.move)+'</b> · ':'';
   return '<div class="ev2"><div class="ed2">'+new Date(e.date+'T00:00:00').toLocaleDateString('ru-RU',{day:'numeric',month:'short',year:'numeric'})+'</div><div class="et2">'+
-    (withTic&&e.tic!=='IMOEX'?'<a class="chip sm" href="'+tagHref(e.tic)+'">'+esc(tname(e.tic))+'</a> ':'')+(ix>=0?'<a class="evt" href="#markets/news/ev-'+ix+'"><b>'+esc(e.title)+'</b></a>':'<b>'+esc(e.title)+'</b>')+'<p>'+mv+esc(e.text)+'</p><a class="src" href="'+esc(e.url)+'" target="_blank" rel="noopener">Источник: '+esc(e.src)+' ↗</a></div></div>';
+    (withTic&&e.tic!=='IMOEX'?'<a class="chip sm" href="'+tagHref(e.tic)+'">'+esc(tname(e.tic))+'</a> ':'')+(ix>=0?'<a class="evt" href="#markets/news/ev-'+ix+'"><b>'+esc(e.title)+'</b></a>':'<b>'+esc(e.title)+'</b>')+'<p>'+mv+esc(e.text)+'</p><a class="src" href="'+eu(e.url)+'" target="_blank" rel="noopener">Источник: '+esc(e.src)+' ↗</a></div></div>';
 }
 var NF='all',NEWSID=null,NLIST=120;
 var PREVH='';window.addEventListener('hashchange',function(e){try{PREVH=new URL(e.oldURL).hash}catch(err){}});
-function backLink(){var m=/^#markets\/(ru|us|crypto|idx)\/(.+)$/.exec(PREVH);if(m)return '<a class="back" href="'+esc(PREVH)+'">← К графику: '+esc(tname(decodeURIComponent(m[2]).toUpperCase()))+'</a>';var s2=/^#markets\/(ru|us|crypto|bonds|fx|summary)?$/.exec(PREVH);if(s2&&PREVH!=='#markets/news')return '<a class="back" href="'+esc(PREVH)+'">← Назад</a>';return '<a class="back" href="#markets/news">← Все новости</a>'}
+function backLink(){var m=/^#markets\/(ru|us|crypto|idx)\/(.+)$/.exec(PREVH);if(m)return '<a class="back" href="'+eu(PREVH)+'">← К графику: '+esc(tname(decodeURIComponent(m[2]).toUpperCase()))+'</a>';var s2=/^#markets\/(ru|us|crypto|bonds|fx|summary)?$/.exec(PREVH);if(s2&&PREVH!=='#markets/news')return '<a class="back" href="'+eu(PREVH)+'">← Назад</a>';return '<a class="back" href="#markets/news">← Все новости</a>'}
 function vEvent(i){
   var e=EV[i],h='<div class="sect reader">'+backLink();if(!e)return h+'<p class="empty">Событие не найдено.</p></div>';
   h+='<div class="nm"><span class="ns">'+esc(e.src)+'</span><span>'+new Date(e.date+'T12:00:00').toLocaleDateString('ru-RU',{day:'numeric',month:'long',year:'numeric'})+'</span></div><h1>'+esc(e.title)+'</h1>';
   if(e.tic!=='IMOEX')h+='<div class="ntags"><a class="chip sm" href="'+tagHref(e.tic)+'">'+esc(tname(e.tic))+' — карточка и график</a></div>';
   h+='<div class="gist"><h3>Что произошло</h3><p style="margin:0;font:400 16.5px/1.6 var(--sans)">'+esc(e.text)+'</p>'+(e.move?'<p style="margin:10px 0 0;font:600 15px var(--sans)">Реакция цены: <span class="'+(/^[−-]/.test(e.move)?'down':/^[+]/.test(e.move)?'up':'')+'">'+esc(e.move)+'</span></p>':'')+'</div>';
-  h+='<a class="readsrc" href="'+esc(e.url)+'" target="_blank" rel="noopener">Читать в источнике: '+esc(e.src)+' ↗</a>';
+  h+='<a class="readsrc" href="'+eu(e.url)+'" target="_blank" rel="noopener">Читать в источнике: '+esc(e.src)+' ↗</a>';
   var same=EV.filter(function(y){return y!==e&&y.tic===e.tic}).slice(0,6);
   if(same.length)h+='<h3 class="evm">Другие события '+(e.tic==='IMOEX'?'рынка':'по '+esc(tname(e.tic)))+'</h3>'+same.map(function(y){return evItem(y)}).join('');
   return h+'</div>';
@@ -1540,8 +1542,8 @@ function vReader(id){
   else if(TEXTS&&!TEXTS[x.id]&&!TEXTA&&!x.g&&x.d<hoursAgo(40)){loadTextsArch().then(function(){if(NEWSID===id)drawMarkets(true)})}
   var s=(TEXTS&&TEXTS[x.id])||((x.sum&&x.sum.length)?x.sum:(x.x?[x.x]:[]));
   h+='<div class="gist"><h3>Подробно</h3>'+(s.length?(s.length>4&&s.every(function(q){return q.length<330})?s.reduce(function(acc,q,i){if(i%2===0)acc.push([]);acc[acc.length-1].push(q);return acc},[]).map(function(g){return g.join(' ')}):s).map(function(g){return '<p class="gp">'+esc(g)+'</p>'}).join('')+(!TEXTS&&!x.g?'<p class="note">Загружаю полный пересказ…</p>':''):'<p class="note">'+(x.g?'Пересказа этой статьи пока нет — открой источник по кнопке ниже.':'Содержание появится после следующего автообновления (раз в час).')+'</p>')+'</div>';
-  h+='<a class="readsrc" href="'+esc(x.u||x.g)+'" target="_blank" rel="noopener">Читать полностью: '+esc(x.s)+' ↗</a>';
-  if(x.also&&x.also.length)h+='<p class="note" style="margin-top:12px">Об этом же пишут: '+x.also.map(function(a){var it=(n.items||[]).filter(function(y){return y.id===a[2]})[0],u=a[1]||(it&&(it.u||it.g));return u?'<a href="'+esc(u)+'" target="_blank" rel="noopener">'+esc(a[0])+' ↗</a>':esc(a[0])}).join(' · ')+'</p>';
+  h+='<a class="readsrc" href="'+eu(x.u||x.g)+'" target="_blank" rel="noopener">Читать полностью: '+esc(x.s)+' ↗</a>';
+  if(x.also&&x.also.length)h+='<p class="note" style="margin-top:12px">Об этом же пишут: '+x.also.map(function(a){var it=(n.items||[]).filter(function(y){return y.id===a[2]})[0],u=a[1]||(it&&(it.u||it.g));return u?'<a href="'+eu(u)+'" target="_blank" rel="noopener">'+esc(a[0])+' ↗</a>':esc(a[0])}).join(' · ')+'</p>';
   h+='<p class="note">Текст выше — ключевые абзацы статьи, собранные автоматически'+(x.tr?' и переведённые машинным переводом (возможны неточности)':'')+'. Полная версия и права — у источника.</p>';
   var rel=(n.items||[]).filter(function(y){return y!==x&&!y.dup&&y.tags&&x.tags&&y.tags.some(function(t){return x.tags.indexOf(t)>=0})}).slice(0,5);if(!rel.length)rel=(n.items||[]).filter(function(y){return y!==x&&!y.dup&&y.cat===x.cat}).slice(0,5);
   if(rel.length)h+='<h3 class="evm">Ещё по теме</h3>'+rel.map(function(x){return newsItem(x)}).join('');
@@ -1670,7 +1672,7 @@ function drawPC(){
     var seg=d.slice(a2,b2+1).map(function(x){return x[1]}),smx=Math.max.apply(0,seg),smn=Math.min.apply(0,seg);
     IH='<b>'+fmtD(pa[0],1)+' → '+fmtD(pb[0],1)+'</b> · '+plural(days,['день','дня','дней'])+'<br>'+nf(pa[1],2)+' → '+nf(pb[1],2)+PC.unit+' · '+pct(ch,2)+' · '+(pb[1]-pa[1]>=0?'+':'')+nf(pb[1]-pa[1],2)+PC.unit+'<br><span class="mut">внутри периода: макс '+nf(smx,2)+' · мин '+nf(smn,2)+'</span> <button type="button" class="chip" data-pcclear>Сбросить</button>';
   }else if(PC.mk){var m=PC.mk;
-    if(m.e)IH='<div class="pcev"><b>'+fmtD(new Date(m.e.date+"T12:00:00").getTime(),1)+' — '+esc(m.e.title)+'</b>'+(m.e.move?' <span class="'+(/^[−-]/.test(m.e.move)?'down':'up')+'">'+esc(m.e.move)+'</span>':'')+'<p>'+esc(m.e.text)+'</p><a class="chip on" href="'+markHref(m)+'">Подробнее →</a> <a href="'+esc(m.e.url)+'" target="_blank" rel="noopener">Источник: '+esc(m.e.src)+' ↗</a> <button type="button" class="chip" data-pcclear>Закрыть</button></div>';
+    if(m.e)IH='<div class="pcev"><b>'+fmtD(new Date(m.e.date+"T12:00:00").getTime(),1)+' — '+esc(m.e.title)+'</b>'+(m.e.move?' <span class="'+(/^[−-]/.test(m.e.move)?'down':'up')+'">'+esc(m.e.move)+'</span>':'')+'<p>'+esc(m.e.text)+'</p><a class="chip on" href="'+markHref(m)+'">Подробнее →</a> <a href="'+eu(m.e.url)+'" target="_blank" rel="noopener">Источник: '+esc(m.e.src)+' ↗</a> <button type="button" class="chip" data-pcclear>Закрыть</button></div>';
     else{var dd=new Date(d[m.i][0]);IH='<div class="pcev"><b>'+fmtD(d[m.i][0],1)+' — '+(m.day?'изменение ':'движение ')+'<span class="'+(m.mv>=0?'up':'down')+'">'+(m.mv>0?'+':'')+nf(m.mv*100,1)+'%</span> за день</b>'+(m.n?pcStory(m)+' ':'<p>Новостей об этом дне в базе пока нет — архив дополняется каждый час.</p><a href="https://www.google.com/search?tbm=nws&q='+encodeURIComponent((PC.q||tname(PC.tic)+' акции')+' '+dd.toLocaleDateString('ru-RU'))+'" target="_blank" rel="noopener">Найти причину в новостях ↗</a> ')+'<button type="button" class="chip" data-pcclear>Закрыть</button></div>'}
   }else{var f=d[0][1],l=d[d.length-1][1],ys2=d.map(function(x){return x[1]});
     IH='За период: '+pct((l/f-1)*100,1)+' · макс '+nf(Math.max.apply(0,ys2),2)+' · мин '+nf(Math.min.apply(0,ys2),2)+'<br><span class="mut">Наведи на любой день — покажу его новости; кружки — дни движения от '+nf(pcThr()*100,1)+'%, по которым нашлись новости (зелёный — рост, красный — падение), и ключевые события. Нажми — список новостей с источниками. Протяни по графику — посчитаю изменение за период. Чтобы убрать выделение — клик по графику, кнопка ✕ или Esc.</span>'}
@@ -1810,7 +1812,7 @@ function vAsset(){
   var evs=evFor(a.key),nws=cardNews(a.key,enFile(ASSET.kind,a.key));
   h+='<div class="sect"><h2>Почему двигалась цена</h2>'+(evs.length?evs.map(function(e){var m=PC.marks.filter(function(q){return q.e===e})[0];return evItem(e).replace('<div class="ed2">','<div class="ed2">'+(m?'<button type="button" class="chip sm" data-gomark="'+m.i+'">на графике</button>':''))}).join(''):'')+
     newsBlock(nws)+'<p class="note">Новости — лента сайта и архив Google Новостей за год (англоязычные — с автопереводом), пополняется каждый час.</p></div>';
-  h+='<div class="sect"><h2>Ссылки</h2><p class="note" style="margin-top:0">'+a.links.map(function(l){return '<a href="'+esc(l[1])+'" target="_blank" rel="noopener">'+esc(l[0])+' ↗</a>'}).join(' · ')+'</p></div>';
+  h+='<div class="sect"><h2>Ссылки</h2><p class="note" style="margin-top:0">'+a.links.map(function(l){return '<a href="'+eu(l[1])+'" target="_blank" rel="noopener">'+esc(l[0])+' ↗</a>'}).join(' · ')+'</p></div>';
   return h;
 }
 var NLIM=12;
@@ -2237,7 +2239,7 @@ function wLead(){
   var el=$('#w-lead'),s=$('#w-src');if(!el)return;var d=WM.data;
   if(WS.layer!=='countries'){var L=WM.reg[WS.layer],tot=d3.sum(L.items,function(x){return x.gdp}),pop=d3.sum(L.items,function(x){return x.pop||0});
     el.innerHTML=esc(L.title||'')+(L.year?' · '+L.year+' год':'')+': '+(L.metric||'ВВП')+' всего <b>'+wfmtB({gdp:tot},'gdp',L)+'</b>'+(pop?' · население <b>'+wfmtB({pop:pop},'pop')+'</b>':'')+' · '+plural(L.items.length,WS.layer==='cities'?['город','города','городов']:['регион','региона','регионов']);
-    s.innerHTML='<details class="wcalc wsrcd"><summary>ⓘ Источники</summary>'+(L.url?'<a href="'+esc(L.url)+'" target="_blank" rel="noopener">'+esc(L.source||L.url)+'</a>':esc(L.source||'—'))+(L.bsource?'<br>Бюджеты: '+esc(L.bsource):'')+(L.calc||L.note?'<br>'+esc(L.calc||L.note):'')+'<br>Контуры: Natural Earth, упрощены.'+'</details>';return}
+    s.innerHTML='<details class="wcalc wsrcd"><summary>ⓘ Источники</summary>'+(L.url?'<a href="'+eu(L.url)+'" target="_blank" rel="noopener">'+esc(L.source||L.url)+'</a>':esc(L.source||'—'))+(L.bsource?'<br>Бюджеты: '+esc(L.bsource):'')+(L.calc||L.note?'<br>'+esc(L.calc||L.note):'')+'<br>Контуры: Natural Earth, упрощены.'+'</details>';return}
   if(!d){el.textContent='Данные появятся после первого обновления (раз в сутки). Пока можно смотреть карту и курсы валют.';s.textContent='Источник: МВФ, World Economic Outlook.';return}
   var yi=wyi(),f=WS.year>WM.la,g=wAgg('NGDPD',yi),gr=wAgg('NGDP_RPCH',yi),inf=wAgg('PCPIPCH',yi),lp=wAgg('LP',yi);
   el.innerHTML='Мир в '+WS.year+(f?' (прогноз)':'')+': ВВП <b>'+wfmt('NGDPD',g)+'</b>'+(gr!=null?' · рост <b>'+wfmt('NGDP_RPCH',gr)+'</b>':'')+(inf!=null?' · инфляция <b>'+wfmt('PCPIPCH',inf)+'</b>':'')+(lp!=null?' · население <b>'+wfmt('LP',lp)+'</b>':'');
@@ -2357,11 +2359,11 @@ function wCoBody(d){
   row('Руководитель',pp(d.ceo));row('Финансы',pp(d.cfo));
   row('Офис',d.hq?esc(d.hq):'');row('Основана',d.founded?d.founded+(d.fnote?'<small> · '+esc(d.fnote)+'</small>':''):'');
   row('Сотрудники',esc(wStaff(d)));row('Владелец',d.owner?esc(d.owner):'');row('Тикер',d.ticker?esc(d.ticker):'');
-  return (d.what?'<p class="wcw">'+esc(d.what)+'</p>':'')+r.join('')+((d.src||[]).length?'<p class="wcs">'+d.src.slice(0,3).filter(function(u,i,a){return a.map(wDom).indexOf(wDom(u))===i}).map(function(u){return '<a href="'+esc(u)+'" target="_blank" rel="noopener">'+esc(wDom(u))+'</a>'}).join(' · ')+(d.asof&&d.asof!=='unknown'?' · руководство на '+esc(d.asof):' · актуальность руководства не проверена')+'</p>':'')}
+  return (d.what?'<p class="wcw">'+esc(d.what)+'</p>':'')+r.join('')+((d.src||[]).length?'<p class="wcs">'+d.src.slice(0,3).filter(function(u,i,a){return a.map(wDom).indexOf(wDom(u))===i}).map(function(u){return '<a href="'+eu(u)+'" target="_blank" rel="noopener">'+esc(wDom(u))+'</a>'}).join(' · ')+(d.asof&&d.asof!=='unknown'?' · руководство на '+esc(d.asof):' · актуальность руководства не проверена')+'</p>':'')}
 function wCoRow(c,u){   // компактная строка; если есть справка — раскрывается мини-карточкой
   var d=wCoDet(c),t='<span class="nm">'+esc(c.name)+(c.ticker?' <small>'+esc(c.ticker)+'</small>':'')+(c.year?' <small>'+c.year+'</small>':'')+'</span><span class="v">'+(c.est?'≈ ':'')+wfmtC(c.rev,u)+'</span><span class="p">'+(c.profit!=null?wfmtC(c.profit,u).replace(/ (млрд|трлн).*/,' $1'):'')+'</span>';
   return d?'<details class="wcd"><summary>'+t+'</summary><div class="wcb">'+wCoBody(d)+'</div></details>':'<div class="wcd nod"><div class="wcs0">'+t+'</div></div>'}
-function wCoNote(C,pre){return '<details class="wcalc wsrcd"><summary>ⓘ Источники</summary>'+(pre?esc(pre)+'<br>':'')+esc(C.source||'')+(C.url?' · <a href="'+esc(C.url)+'" target="_blank" rel="noopener">страница ↗</a>':'')+'<br>'+esc(C.note||'')+'</details>'}
+function wCoNote(C,pre){return '<details class="wcalc wsrcd"><summary>ⓘ Источники</summary>'+(pre?esc(pre)+'<br>':'')+esc(C.source||'')+(C.url?' · <a href="'+eu(C.url)+'" target="_blank" rel="noopener">страница ↗</a>':'')+'<br>'+esc(C.note||'')+'</details>'}
 function wRegEco(L,x){   // на чём держится экономика региона
   var h='';
   if(L.st&&L.st.items&&L.st.items[x.name]){var v=L.st.items[x.name],cs=L.st.cats||[],mx=Math.max.apply(null,v.map(function(z){return z==null?0:z}))||1;
@@ -2392,7 +2394,7 @@ function wWageHTML(id){   // средняя зарплата страны (го�
   var rows=[];if(w.usd>0)rows.push('<tr><td>В долларах по курсу<small> · '+w.y+'</small></td><td class="v">'+nf(w.usd,0)+' $ в год</td></tr><tr><td>Это в месяц</td><td class="v">'+nf(w.usd/12,0)+' $</td></tr>');
   if(w.ppp>0)rows.push('<tr><td>По паритету покупательной способности<small> · '+(w.y_ppp||w.y)+'</small></td><td class="v">'+nf(w.ppp,0)+' межд. $</td></tr>');
   if(w.local&&w.local.v>0)rows.push('<tr><td>В местной валюте</td><td class="v">'+nf(w.local.v,0)+' '+esc(w.local.cur)+' в год</td></tr>');
-  return '<p class="wsm" style="margin:14px 0 6px"><b>Средняя зарплата</b>'+(rk?' · '+rk+'-е место из '+ks.length+' стран с данными':'')+'</p><table class="wkv">'+rows.join('')+'</table><details class="wcalc wsrcd"><summary>ⓘ Откуда цифра</summary>'+esc(W.countries&&W.countries.definition||'')+'<br>'+esc(w.note||'')+(w.src?' · <a href="'+esc(w.src)+'" target="_blank" rel="noopener">источник ↗</a>':'')+'</details>'}
+  return '<p class="wsm" style="margin:14px 0 6px"><b>Средняя зарплата</b>'+(rk?' · '+rk+'-е место из '+ks.length+' стран с данными':'')+'</p><table class="wkv">'+rows.join('')+'</table><details class="wcalc wsrcd"><summary>ⓘ Откуда цифра</summary>'+esc(W.countries&&W.countries.definition||'')+'<br>'+esc(w.note||'')+(w.src?' · <a href="'+eu(w.src)+'" target="_blank" rel="noopener">источник ↗</a>':'')+'</details>'}
 function wCountryCard(id,nc,withCo){
   var n=WM.names[id]||id,d=WM.data,h='<div class="wck"><div><p class="wck-e">'+(d?WS.year+(WS.year>WM.la?' · прогноз МВФ':' · факт'):'Страна')+'</p><h3>'+esc(n)+'</h3></div>'+(nc?'':'<button type="button" class="wx" data-wclose aria-label="Закрыть">×</button>')+'</div><div class="wcmpb">'+cmpBtn('c:'+id)+' '+favBtn('c:'+id)+'</div>'+(!nc&&WHOSTREV[id]&&WS.layer==='countries'?'<button type="button" class="chip on" data-wl="'+WHOSTREV[id]+'" style="margin:2px 0 10px">Открыть регионы →</button>':'');
   var r=d&&d.data[id],yi=d?wyi():0;
