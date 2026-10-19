@@ -645,6 +645,25 @@ html.wfs-lock,html.wfs-lock body{overflow:hidden}
 details.track>summary{list-style:none;cursor:pointer}details.track>summary::-webkit-details-marker{display:none}details.track>summary h2{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 10px}
 details.track>summary h2::before{content:'▸';font-size:14px;color:var(--faint);margin-right:2px}details.track[open]>summary h2::before{content:'▾'}
 details.track.cur>summary h2 .tp{color:var(--accent);border-color:var(--accent)}details.track.done>summary h2{opacity:.7}
+
+.svc{max-width:780px;margin:16px 0 0;padding:clamp(18px,4vw,34px);border:1px solid var(--line);border-radius:18px;background:var(--surface)}
+.svh{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;font:500 13.5px/1 var(--sans);color:var(--fg)}.svh .mut{color:var(--faint);text-transform:none}
+.svb{display:inline-block;padding:5px 10px;border-radius:999px;font:700 11px/1 var(--sans);letter-spacing:.08em;text-transform:uppercase;background:var(--accent);color:var(--bg)}.svb.pm{background:var(--accent2)}
+.svc h1{margin:14px 0 0;font:600 clamp(24px,5vw,34px)/1.18 var(--serif);letter-spacing:-.015em;text-wrap:balance}
+.svnav{display:flex;gap:8px;overflow-x:auto;margin:18px calc(clamp(18px,4vw,34px)*-1) 0;padding:2px clamp(18px,4vw,34px);scrollbar-width:none}.svnav::-webkit-scrollbar{display:none}
+.svnav a{flex:none;padding:7px 12px;border:1px solid var(--line);border-radius:999px;font:500 13px/1 var(--sans);color:var(--muted);text-decoration:none;white-space:nowrap}.svnav a:hover{border-color:var(--accent);color:var(--accent)}
+.svbody{margin-top:6px;font:400 16.5px/1.72 var(--sans);color:var(--fg)}
+.svbody p{margin:0 0 1em}.svbody ul,.svbody ol{margin:0 0 1em;padding-left:1.3em}.svbody li{margin:.45em 0}.svbody li::marker{color:var(--accent)}.svbody strong{font-weight:650}.svbody a{color:var(--accent);text-underline-offset:3px}
+.sv-s{margin-top:30px;scroll-margin-top:110px}
+.sv-s>h2{display:flex;align-items:center;gap:10px;margin:0 0 12px;font:600 clamp(19px,3.6vw,23px)/1.25 var(--serif)}.sv-s>h2::before{content:'';flex:none;width:4px;height:1.05em;border-radius:2px;background:var(--accent)}
+.sv-s>:last-child{margin-bottom:0}
+.sv-lead,.sv-one,.sv-terms{padding:18px 20px;border-radius:14px}
+.sv-lead{margin-top:22px;background:var(--rail);border-left:4px solid var(--accent)}.sv-lead>h2{font:700 12px/1.2 var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}.sv-lead>h2::before{display:none}.sv-lead p{font-size:17.5px;line-height:1.62}
+.sv-one{border:1px solid var(--accent);background:color-mix(in srgb,var(--accent) 8%,transparent)}.sv-one p{font:600 17.5px/1.55 var(--serif)}
+.sv-terms{background:var(--rail)}.sv-terms>h2{font-size:17px}.sv-terms ul{list-style:none;padding:0;margin:0}.sv-terms li{margin:.65em 0;font-size:14.5px;line-height:1.55;color:var(--muted)}.sv-terms li strong{color:var(--fg)}
+p.why{padding:11px 15px;border-radius:10px;background:var(--rail);border-left:3px solid var(--accent2);font-size:15px;line-height:1.62;color:var(--muted)}p.why>em:first-child{display:block;margin-bottom:2px;font:700 11.5px/1.3 var(--sans);letter-spacing:.07em;text-transform:uppercase;font-style:normal;color:var(--accent2)}
+.svf{margin:28px 0 0;padding-top:14px;border-top:1px solid var(--line)}
+.svp{display:flex;gap:12px;align-items:center;margin-top:8px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--surface);text-decoration:none;color:inherit}.svp[aria-current]{border-color:var(--accent)}.svp small{display:block;font:500 12px/1.3 var(--sans);color:var(--faint)}.svp b{font:600 15px/1.3 var(--serif)}
 </style></head><body>
 <header class="top">
   <div class="bar">
@@ -1339,16 +1358,27 @@ function autoBrief(){
   var up=upcoming(5);if(up.length)h+='<div class="sect"><h2>Что впереди <a class="all" href="#markets/cal">весь календарь →</a></h2>'+up.map(evRow).join('')+'</div>';
   return h;
 }
+function svShort(t){var m=[[/^Коротко/,'Коротко'],[/^Что случилось/,'За ночь'],[/^Как закрылась/,'Итоги дня'],[/^Россия/,'Россия'],[/Америка|США/,'США и мир'],[/Главные новости/,'Новости'],[/^Ставки/,'Ставки'],[/^Календарь/,'Календарь'],[/^Утром ждали/,'Ждали и вышло'],[/^Завтра/,'Завтра'],[/запомнить/i,'Главное'],[/^Термин/i,'Термины']];for(var i=0;i<m.length;i++)if(m[i][0].test(t))return m[i][1];return t.length>18?t.slice(0,17)+'…':t}
+/* markdown сводки → секции-карточки: «Коротко» выделено, «Почему это важно» — врезкой, «Главное» и «Термины» — отдельными блоками */
+function svBuild(md){heads=[];var t=document.createElement('div');t.innerHTML=marked.parse(md||'');var out=document.createElement('div'),sec=null,nav=[];
+  [].slice.call(t.children).forEach(function(el){
+    if(el.tagName==='H2'){var tt=el.textContent.trim(),k=/^Коротко/.test(tt)?' sv-lead':/запомнить/i.test(tt)?' sv-one':/^Термин/i.test(tt)?' sv-terms':'';sec=document.createElement('section');sec.className='sv-s'+k;sec.id='sv'+nav.length;nav.push([sec.id,svShort(tt)]);out.appendChild(sec);el.removeAttribute('id')}
+    if(!sec){sec=document.createElement('section');sec.className='sv-s';out.appendChild(sec)}
+    sec.appendChild(el)});
+  [].forEach.call(out.querySelectorAll('p'),function(p){var f=p.firstElementChild;if(f&&f.tagName==='EM'&&p.firstChild===f&&f.textContent.length<46)p.classList.add('why')});
+  return {html:out.innerHTML,nav:nav}}
 function vDaily(){
   var a=svList(),x=SVID?a.filter(function(z){return z.id===SVID})[0]:a[0];
-  var h='<div class="sect"><h2>Сводка рынка: утро и вечер</h2><p class="note" style="margin-top:0">Утром (около 9:40) — что случилось за ночь и на что смотреть днём; вечером (около 20:10) — как закрылась Россия, что делает Америка, что это значит. Написано простым языком, на 10 минут чтения. Ниже — живые цифры и новости на сейчас.</p>';
+  var h='<div class="sect"><h2>Сводка рынка</h2><p class="note" style="margin:0">Выходит по будням утром (около 9:40) и вечером (около 20:10). Ниже текста — живые цифры и новости на сейчас.</p>';
   if(XD.svod===undefined)h+='<p class="empty">Загружаю сводку…</p>';
-  else if(!x)h+='<p class="empty">Текстовой сводки ещё нет — первая появится в ближайший будний день утром. Пока — цифры и новости ниже.</p>';
-  else{heads=[];var body=marked.parse(x.md||'');
-    h+='<article class="art svod"><p class="eyebrow">'+esc(svLabel(x))+' · '+(x.min||10)+' мин чтения'+(x.updated?' · написано '+esc(x.updated):'')+'</p><h1>'+esc(x.title||'Сводка рынка')+'</h1><div class="prose">'+body+'</div></article>';
-    if(a.length>1)h+='<details class="fold" style="margin-top:14px"><summary><h2>Прошлые сводки</h2></summary>'+a.slice(0,30).map(function(z){return '<a class="hm-resume" style="margin:8px 0 0" href="#markets/daily/'+z.id+'"'+(z.id===x.id?' aria-current="true"':'')+'><small>'+esc(svLabel(z))+'</small><b>'+esc(z.title||'Сводка')+'</b></a>'}).join('')+'</details>'}
+  else if(!x)h+='<p class="empty">Текстовой сводки ещё нет — первая появится в ближайший будний день. Пока — цифры и новости ниже.</p>';
+  else{var B=svBuild(x.md),dt=new Date(x.date+'T12:00:00').toLocaleDateString('ru-RU',{weekday:'long',day:'numeric',month:'long'});
+    h+='<article class="svc"><header class="svh"><span class="svb '+(x.kind==='pm'?'pm':'am')+'">'+(x.kind==='pm'?'Вечер':x.kind==='wk'?'Неделя':'Утро')+'</span><span>'+esc(dt.charAt(0).toUpperCase()+dt.slice(1))+'</span><span class="mut">· '+(x.min||10)+' мин чтения</span></header><h1>'+esc(x.title||'Сводка рынка')+'</h1>'+
+      (B.nav.length>2?'<nav class="svnav" aria-label="Разделы сводки">'+B.nav.map(function(n){return '<a href="#" data-to="'+n[0]+'">'+esc(n[1])+'</a>'}).join('')+'</nav>':'')+
+      '<div class="svbody">'+B.html+'</div>'+(x.updated?'<p class="note svf">Написано '+esc(x.updated)+'. Цифры — из данных сайта на этот момент, не инвестиционная рекомендация.</p>':'')+'</article>';
+    if(a.length>1)h+='<details class="fold" style="margin-top:16px;max-width:780px"><summary><h2>Прошлые сводки</h2></summary>'+a.slice(0,30).map(function(z){return '<a class="svp" href="#markets/daily/'+z.id+'"'+(z.id===x.id?' aria-current="true"':'')+'><span class="svb '+(z.kind==='pm'?'pm':'am')+'">'+(z.kind==='pm'?'Вечер':z.kind==='wk'?'Неделя':'Утро')+'</span><span><small>'+esc(new Date(z.date+'T12:00:00').toLocaleDateString('ru-RU',{weekday:'short',day:'numeric',month:'long'}))+'</small><b>'+esc(z.title||'Сводка')+'</b></span></a>'}).join('')+'</details>'}
   h+='</div>'+autoBrief();
-  setTimeout(function(){var pr=view.querySelector('.svod .prose');if(pr)applyTerms(pr)},0);
+  setTimeout(function(){var pr=view.querySelector('.svbody');if(pr)applyTerms(pr)},0);
   return h;
 }
 function vWeek(){
@@ -1604,7 +1634,7 @@ function drawPC(){
   if(PC.hov!=null){var p=d[PC.hov],x=g.X(p[0]),y=g.Y(p[1]);h+='<line x1="'+x+'" x2="'+x+'" y1="'+g.T+'" y2="'+(g.H-g.B)+'" class="cx"/><line x1="'+g.L+'" x2="'+(g.W-g.R)+'" y1="'+y+'" y2="'+y+'" class="cx"/><circle cx="'+x+'" cy="'+y+'" r="5" class="hd"/>'+
     '<rect x="'+(g.W-g.R+2)+'" y="'+(y-10)+'" width="'+(g.R-4)+'" height="20" rx="4" class="yb"/><text x="'+(g.W-g.R+8)+'" y="'+(y+4)+'" class="yt">'+nf(p[1],p[1]>=100?1:2)+'</text>'}
   h+='</svg>';
-  var tip='';if(PC.hov!=null&&(!PC.drag||(PC.drag.t&&!PC.sel))&&(PC.drag||!(window.matchMedia&&matchMedia('(pointer:coarse)').matches&&(markAt(PC.hov)||dayMark(PC.hov))))){var p2=d[PC.hov],x2=g.X(p2[0]),hm=markAt(PC.hov)||dayMark(PC.hov),tch=window.matchMedia&&matchMedia('(pointer:coarse)').matches,tw=hm&&!tch?230:140;tip='<div class="pctip'+(hm&&!tch?' wide':'')+'" style="left:'+Math.max(4,Math.min(x2-tw/2,g.W-g.R-tw-4))+'px">'+fmtD(p2[0],1)+'<b>'+nf(p2[1],2)+PC.unit+'</b>'+(hm&&tch?'<em>'+(hm.e?(hm.e.move?esc(hm.e.move):'событие'):(hm.mv>0?'+':'')+nf(hm.mv*100,1)+'% за день')+'</em>':hm?(hm.e?'<em>'+esc(hm.e.title)+(hm.e.move?' ('+esc(hm.e.move)+')':'')+'</em>':'<em>'+(hm.mv>0?'+':'')+nf(hm.mv*100,1)+'% за день'+(hm.n?': '+esc(hm.n.t)+(hm.nn&&hm.nn.length>1?' <span class="mut">и ещё '+(hm.nn.length-1)+'</span>':''):' — новостей нет')+'</em>')+((hm.e||hm.n)?'<i class="more">нажми — новости этого дня</i>':''):'')+'</div>'}
+  var tip='';if(PC.hov!=null&&(!PC.drag||(PC.drag.t&&!PC.sel))&&(PC.drag||!(window.matchMedia&&matchMedia('(pointer:coarse)').matches&&(markAt(PC.hov)||dayMark(PC.hov))))){var p2=d[PC.hov],x2=g.X(p2[0]),y2=g.Y(p2[1]),hm=markAt(PC.hov)||dayMark(PC.hov),tch=window.matchMedia&&matchMedia('(pointer:coarse)').matches,tw=hm&&!tch?230:140,onL=x2>(g.W-g.R)/2,tl=onL?Math.max(4,x2-tw-18):Math.min(x2+18,g.W-g.R-tw-4);tip='<div class="pctip'+(hm&&!tch?' wide':'')+'" style="left:'+tl+'px;'+(y2<g.H*0.55?'top:auto;bottom:'+(g.B+8)+'px':'')+'">'+fmtD(p2[0],1)+'<b>'+nf(p2[1],2)+PC.unit+'</b>'+(hm&&tch?'<em>'+(hm.e?(hm.e.move?esc(hm.e.move):'событие'):(hm.mv>0?'+':'')+nf(hm.mv*100,1)+'% за день')+'</em>':hm?(hm.e?'<em>'+esc(hm.e.title)+(hm.e.move?' ('+esc(hm.e.move)+')':'')+'</em>':'<em>'+(hm.mv>0?'+':'')+nf(hm.mv*100,1)+'% за день'+(hm.n?': '+esc(hm.n.t)+(hm.nn&&hm.nn.length>1?' <span class="mut">и ещё '+(hm.nn.length-1)+'</span>':''):' — новостей нет')+'</em>')+((hm.e||hm.n)?'<i class="more">нажми — новости этого дня</i>':''):'')+'</div>'}
   g.el.innerHTML=h+tip;
   var info=document.getElementById('pc-info');if(!info)return;var IH='';
   if(PC.sel){var a2=Math.min(PC.sel[0],PC.sel[1]),b2=Math.max(PC.sel[0],PC.sel[1]),pa=d[a2],pb=d[b2],ch=(pb[1]/pa[1]-1)*100,days=Math.round((pb[0]-pa[0])/864e5);
