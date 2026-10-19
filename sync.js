@@ -94,7 +94,7 @@
 
   /* --- хранилище: GitHub (файл в репозитории) или Cloudflare Worker --- */
   var status = 'off', ghSha = null, ghR = {};
-  function setStatus(s) { status = s; paint() }
+  function setStatus(s) { status = s; paint(); try { window.dispatchEvent(new Event('sync:status')) } catch (e) {} }
   function b64d(t) { var bin = atob(String(t).replace(/\s/g, '')), u = ''; for (var i = 0; i < bin.length; i++) u += '%' + ('0' + bin.charCodeAt(i).toString(16)).slice(-2); return decodeURIComponent(u) }
   function b64e(t) { return btoa(unescape(encodeURIComponent(t))) }
   function ghUrl() { return GH_API + '/repos/' + GH_REPO + '/contents/' + P + '.json' }

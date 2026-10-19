@@ -766,6 +766,17 @@ var CH=D.chapters,S=D.static;
 function $(s,r){return (r||document).querySelector(s)}
 function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
 /* ссылка из внешних данных: схемы javascript:/data:/vbscript: заменяем на «#» */
+/* подпись про хранение: честно показывает состояние синхронизации между устройствами (sync.js) */
+function syncNote(w){var i=window.__syncInfo&&window.__syncInfo();
+  if(!i)return w+' сохраняется только в этом браузере: войди в профиль, чтобы она появилась и на других устройствах.';
+  var st=i.status;
+  if(st==='ok')return w+' сохраняется и на других твоих устройствах.';
+  if(st==='auth')return w+' сохранена здесь. Синхронизация не работает: хранилище не приняло ключ доступа.';
+  if(st==='norepo')return w+' сохранена здесь. Синхронизация не работает: хранилище не найдено.';
+  if(st==='err')return w+' сохранена здесь. Нет связи с хранилищем, повторю позже.';
+  return w+' сохраняется здесь, проверяю синхронизацию…'}
+function syncNotes(){document.querySelectorAll('[data-syncnote]').forEach(function(e){e.textContent=syncNote(e.getAttribute('data-syncnote'))})}
+window.addEventListener('sync:status',syncNotes);
 function eu(u){u=String(u==null?'':u);return /^[\s\u0000-\u001f]*(javascript|data|vbscript):/i.test(u)?'#':esc(u)}
 function store(k,v){try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v)}catch(e){return null}}
 var view=$('#view');
@@ -920,7 +931,7 @@ function renderChapter(c){
   var lp=!c.sec?lessonPos(c):null;
   view.innerHTML='<div class="doc"><article class="art"><p class="eyebrow">'+crumb+(lp?esc(lp.name.replace(/^Шаг (\d)\. /,'шаг $1: '))+' · урок '+lp.k+' из '+lp.n:(c.i+1)+' из '+L.length)+'</p><h1>'+esc(c.title)+'</h1><p class="meta">'+c.min+' мин чтения'+(!gl?' · термины с пунктиром — наведи или нажми':'')+'</p>'+
     (heads.length>2?'<details class="toc"><summary>Содержание</summary><nav>'+toc+'</nav></details>':'')+
-    (gl?'<input class="gfilter" type="search" placeholder="Найти термин: EBITDA, спред, оферта…" aria-label="Фильтр глоссария">':'')+'<div class="prose">'+body+'</div>'+(!c.sec&&c.id!=='glossariy'&&c.id!=='istochniki'?'<div class="quiz" id="quiz" hidden></div>':'')+(cl?'<a class="try" href="#calc/'+cl[0]+'">'+esc(cl[1])+' в калькуляторе →</a>':'')+(!c.sec&&c.id!=='glossariy'&&c.id!=='istochniki'?'<div class="donebar"><button type="button" class="chip'+(doneIs(c.id)?' on':'')+'" data-ckc="'+c.id+'" aria-pressed="'+(doneIs(c.id)?'true':'false')+'">'+(doneIs(c.id)?'✓ Урок пройден':'Отметить пройденным')+'</button><span class="note" style="margin:0">Отметка хранится в этом браузере.</span></div>':'')+'<nav class="pager">'+
+    (gl?'<input class="gfilter" type="search" placeholder="Найти термин: EBITDA, спред, оферта…" aria-label="Фильтр глоссария">':'')+'<div class="prose">'+body+'</div>'+(!c.sec&&c.id!=='glossariy'&&c.id!=='istochniki'?'<div class="quiz" id="quiz" hidden></div>':'')+(cl?'<a class="try" href="#calc/'+cl[0]+'">'+esc(cl[1])+' в калькуляторе →</a>':'')+(!c.sec&&c.id!=='glossariy'&&c.id!=='istochniki'?'<div class="donebar"><button type="button" class="chip'+(doneIs(c.id)?' on':'')+'" data-ckc="'+c.id+'" aria-pressed="'+(doneIs(c.id)?'true':'false')+'">'+(doneIs(c.id)?'✓ Урок пройден':'Отметить пройденным')+'</button><span class="note" style="margin:0" data-syncnote="Отметка">'+syncNote('Отметка')+'</span></div>':'')+'<nav class="pager">'+
     (pv?'<a href="'+base+pv.id+'"><small>← Назад</small><b>'+esc(pv.title)+'</b></a>':'')+
     (nx?'<a class="nx" href="'+base+nx.id+'"><small>'+(lp&&lp.next&&lp.next.id===nx.id&&lp.k===lp.n?'Следующий шаг →':'Дальше →')+'</small><b>'+esc(nx.title)+'</b></a>':(c.sec?'<a class="nx" href="#world/sectors"><small>Все сектора →</small><b>Сектора мировой экономики</b></a>':''))+
     '</nav></article>'+(heads.length>2?'<aside class="side"><p class="h">Содержание</p>'+toc+'</aside>':'')+'</div>';
@@ -2746,7 +2757,7 @@ function favDraw(){
     return '<div class="rk-r"><div class="fv-i"><a href="#" data-rkx="'+idx+'">'+esc(c.name)+'<small>'+esc(r.country+(c.region?' · '+c.region:'')+' · '+wfmtC(c.rev,r.u)+(c.profit!=null?' / прибыль '+wfmtC(c.profit,r.u):''))+'</small></a><button type="button" data-fav="'+esc(k)+'" aria-label="Убрать из избранного">★</button></div>'+(op?'<div class="wcb">'+(r.det?wCoBody(r.det):'<p class="wcw">Подробной справки пока нет.</p>')+'</div>':'')+'</div>'}).join('');
   el.innerHTML=h}
 function renderFav(){
-  view.innerHTML=wsub('fav')+'<section class="wm"><div class="wh"><h1>Избранное</h1><p class="wlead">Страны, регионы и компании, которые ты отметил звёздочкой. Список хранится в этом браузере.</p></div><div id="fav-body"><span class="empty skel"></span></div></section>';
+  view.innerHTML=wsub('fav')+'<section class="wm"><div class="wh"><h1>Избранное</h1><p class="wlead">Страны, регионы и компании, которые ты отметил звёздочкой. <span data-syncnote="Список">'+syncNote('Список')+'</span></p></div><div id="fav-body"><span class="empty skel"></span></div></section>';
   Promise.all([wLoad(),scrRates()]).then(function(){if(state!=='world'||!$('#fav-body'))return;scrBuild();favDraw()}).catch(function(){var e=$('#fav-body');if(e)e.innerHTML='<p class="empty">Не удалось загрузить данные. <button type="button" class="chip sm" data-wretry>Повторить</button></p>'});
 }
 /* ---------------- проверочные вопросы к главам ---------------- */
