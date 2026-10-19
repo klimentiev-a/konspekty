@@ -1689,6 +1689,19 @@ function pcGeom(){
   return {el:el,W:W,H:H,L:L,R:R,T:T,B:B,mn:mn,mx:mx,X:function(t){return L+(t-t0)/(t1-t0||1)*(W-L-R)},Y:function(v){return T+(1-(v-mn)/(mx-mn))*(H-T-B)},
     idx:function(px){var t=t0+(px-L)/(W-L-R)*(t1-t0),lo=0,hi=d.length-1;while(hi-lo>1){var m=(lo+hi)>>1;if(d[m][0]<t)lo=m;else hi=m}return Math.abs(d[lo][0]-t)<Math.abs(d[hi][0]-t)?lo:hi}};
 }
+/* подсказка: из четырёх мест (слева/справа от курсора × вверху/внизу) берём то, где она меньше всего перекрывает линию цены и не закрывает точку */
+function pcPlaceTip(g,d){
+  var t=g.el.querySelector('.pctip');if(!t||PC.hov==null)return;
+  var tw=t.offsetWidth,th=t.offsetHeight,x2=g.X(d[PC.hov][0]),y2=g.Y(d[PC.hov][1]),xs=[],ys=[];
+  d.forEach(function(p){xs.push(g.X(p[0]));ys.push(g.Y(p[1]))});
+  var minX=4,maxX=g.W-g.R-tw-4,tops=[2,g.H-g.B-th-8],best=null;
+  [x2+18,x2-tw-18].forEach(function(lx){lx=Math.max(minX,Math.min(maxX,lx));tops.forEach(function(ty){
+    var sc=0;if(x2>=lx-6&&x2<=lx+tw+6)sc+=1000;if(y2>=ty-4&&y2<=ty+th+4)sc+=3;
+    for(var i=0;i<xs.length;i++){var xa=xs[i],ya=ys[i];if(xa>=lx-4&&xa<=lx+tw+4&&ya>=ty-4&&ya<=ty+th+4)sc+=2;
+      if(i){var xm=(xa+xs[i-1])/2,ym=(ya+ys[i-1])/2;if(xm>=lx-4&&xm<=lx+tw+4&&ym>=ty-4&&ym<=ty+th+4)sc+=1}}
+    if(!best||sc<best.sc)best={sc:sc,lx:lx,ty:ty}})});
+  t.style.left=best.lx+'px';t.style.top=best.ty+'px';t.style.bottom='auto';
+}
 function drawPC(){
   var g=pcGeom();if(!g)return;var an=PC.anim;PC.anim=false;var d=PC.d,h='',up=d[d.length-1][1]>=d[0][1];
   h+='<svg width="'+g.W+'" height="'+g.H+'" class="pcs"><defs><linearGradient id="pcg" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="var(--accent)" stop-opacity=".22"/><stop offset="1" stop-color="var(--accent)" stop-opacity="0"/></linearGradient></defs>';
@@ -1707,6 +1720,7 @@ function drawPC(){
   h+='</svg>';
   var tip='';if(PC.hov!=null&&(!PC.drag||(PC.drag.t&&!PC.sel))&&(PC.drag||!(window.matchMedia&&matchMedia('(pointer:coarse)').matches&&(markAt(PC.hov)||dayMark(PC.hov))))){var p2=d[PC.hov],x2=g.X(p2[0]),y2=g.Y(p2[1]),hm=markAt(PC.hov)||dayMark(PC.hov),tch=window.matchMedia&&matchMedia('(pointer:coarse)').matches,tw=hm&&!tch?230:140,onL=x2>(g.W-g.R)/2,tl=onL?Math.max(4,x2-tw-18):Math.min(x2+18,g.W-g.R-tw-4);tip='<div class="pctip'+(hm&&!tch?' wide':'')+'" style="left:'+tl+'px;'+(y2<g.H*0.55?'top:auto;bottom:'+(g.B+8)+'px':'')+'">'+fmtD(p2[0],1)+'<b>'+nf(p2[1],2)+PC.unit+'</b>'+(hm&&tch?'<em>'+(hm.e?(hm.e.move?esc(hm.e.move):'событие'):(hm.mv>0?'+':'')+nf(hm.mv*100,1)+'% за день')+'</em>':hm?(hm.e?'<em>'+esc(hm.e.title)+(hm.e.move?' ('+esc(hm.e.move)+')':'')+'</em>':'<em>'+(hm.mv>0?'+':'')+nf(hm.mv*100,1)+'% за день'+(hm.n?': '+esc(hm.n.t)+(hm.nn&&hm.nn.length>1?' <span class="mut">и ещё '+(hm.nn.length-1)+'</span>':''):' — новостей нет')+'</em>')+((hm.e||hm.n)?'<i class="more">нажми — новости этого дня</i>':''):'')+'</div>'}
   g.el.innerHTML=h+tip;
+  if(tip)pcPlaceTip(g,d);
   var info=document.getElementById('pc-info');if(!info)return;var IH='';
   if(PC.sel){var a2=Math.min(PC.sel[0],PC.sel[1]),b2=Math.max(PC.sel[0],PC.sel[1]),pa=d[a2],pb=d[b2],ch=(pb[1]/pa[1]-1)*100,days=Math.round((pb[0]-pa[0])/864e5);
     var seg=d.slice(a2,b2+1).map(function(x){return x[1]}),smx=Math.max.apply(0,seg),smn=Math.min.apply(0,seg);
