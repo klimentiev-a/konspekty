@@ -116,7 +116,35 @@ h1,.lead{animation:up .45s cubic-bezier(.2,.8,.25,1) both}.lead{animation-delay:
 .inst .go{display:flex;align-items:center;justify-content:center;margin-top:12px;height:46px;border-radius:999px;background:var(--a2);color:var(--surface);font:600 15px inherit;text-decoration:none}
 .inst .arr{position:absolute;left:50%;bottom:-16px;width:0;height:0;margin-left:-9px;border:9px solid transparent;border-top-color:var(--surface)}
 @media (min-width:700px){.inst .arr{display:none}}
-</style><style>
+:root[data-skin="swiss"]{--bg:#F4F4F2;--surface:#FFFFFF;--fg:#141414;--muted:#5A5A58;--faint:#85857F;--line:#D8D8D4;--a1:#C8201A;--a2:#141414;color-scheme:light}
+:root[data-skin="sepia"]{--bg:#EFE3C8;--surface:#F7EDD7;--fg:#3B2F1E;--muted:#6F5E45;--faint:#8E7C60;--line:#D2C09A;--a1:#8A4B14;--a2:#A33B2A;color-scheme:light}
+:root[data-skin="ocean"]{--bg:#E9F0F6;--surface:#F7FAFD;--fg:#14283A;--muted:#4B6277;--faint:#7289A0;--line:#C5D4E1;--a1:#1A5FA8;--a2:#C2561F;color-scheme:light}
+:root[data-skin="graphite"]{--bg:#15171B;--surface:#1F2227;--fg:#E6E8EC;--muted:#9AA1AD;--faint:#6F7683;--line:#2E3239;--a1:#7BA7F5;--a2:#F2A65A;color-scheme:dark}
+:root[data-skin="forest"]{--bg:#0F1B16;--surface:#17291F;--fg:#DDEBDD;--muted:#92AD9A;--faint:#678570;--line:#254233;--a1:#8FD6A6;--a2:#E8B45A;color-scheme:dark}
+:root[data-skin="terminal"]{--bg:#0A0A08;--surface:#15140F;--fg:#F0D9A0;--muted:#B79A55;--faint:#7E6A3A;--line:#3A3115;--a1:#FFB000;--a2:#FF6A3D;color-scheme:dark}
+:root[data-skin="terminal"] body,:root[data-skin="terminal"] h1,:root[data-skin="terminal"] .lead,:root[data-skin="terminal"] .card b,:root[data-skin="terminal"] .card .ic{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+:root[data-skin] .card.e .ic{color:var(--a2)}
+.skm{position:fixed;z-index:80;top:calc(58px + env(safe-area-inset-top,0px));right:10px;width:min(280px,calc(100vw - 20px));padding:8px;border:1px solid var(--line);border-radius:16px;background:var(--surface);box-shadow:0 14px 40px rgba(0,0,0,.28)}
+.skm p{margin:6px 8px 8px;font:600 13px/1.2 inherit;color:var(--muted)}
+.skm button{display:flex;align-items:center;gap:12px;width:100%;padding:9px 10px;border:0;border-radius:10px;background:none;text-align:left;font:500 15px/1.2 inherit;color:var(--fg);cursor:pointer}
+.skm button:hover{background:color-mix(in srgb,var(--fg) 7%,transparent)}
+.skm button.on{background:color-mix(in srgb,var(--a2) 14%,transparent)}
+.skm button.on::after{content:"✓";margin-left:auto;color:var(--a2);font-weight:700}
+.skm .skw{flex:none;width:34px;height:24px;border-radius:7px;border:1px solid rgba(128,128,128,.35);position:relative;overflow:hidden}
+.skm .skw i{position:absolute;right:0;bottom:0;width:16px;height:12px;border-top-left-radius:6px}
+.skm .sep{height:1px;margin:6px 4px;background:var(--line)}
+</style>
+<script>
+/* оформление начальной страницы: своё, отдельное от разделов (ключ hub:skin) */
+(function(){try{
+  var d=document.documentElement,id=localStorage.getItem('hub:skin');if(!id)return;
+  var T={swiss:'light',sepia:'light',ocean:'light',graphite:'dark',forest:'dark',terminal:'dark',light:'light',dark:'dark'};
+  if(!T[id])return;
+  if(id==='light'||id==='dark')d.removeAttribute('data-skin');else d.setAttribute('data-skin',id);
+  d.setAttribute('data-theme',T[id]);
+}catch(e){}})();
+</script>
+<style>
 .top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:-28px 0 26px}
 .top a,.top button{display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 14px;border:1px solid var(--line);border-radius:999px;background:var(--surface);color:var(--muted);font:500 13.5px/1 'IBM Plex Sans',system-ui,sans-serif;text-decoration:none;cursor:pointer}
 .top a:hover,.top button:hover{color:var(--fg);border-color:var(--faint)}
@@ -172,12 +200,12 @@ h1.brand{line-height:0;margin:4px 0 14px}h1.brand .wm{height:clamp(52px,12vw,76p
 @media (prefers-reduced-motion:reduce){.pin,.pin .sh{transition:none}.pin.bad input{animation:none}}
 </style></head><body>
 <div class="w">
-  <div class="top"><a href="index.html"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg>Профили</a><div class="tr"><a class="sbtn" href="search.html" aria-label="Поиск по сайту"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>Поиск</a><button type="button" data-logout="artem">Выйти</button><button type="button" class="thm" id="thm" aria-label="Светлая или тёмная тема" title="Тема"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 0 0 16z" fill="currentColor"/></svg></button></div></div>
+  <div class="top"><a href="index.html"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg>Профили</a><div class="tr"><a class="sbtn" href="search.html" aria-label="Поиск по сайту"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>Поиск</a><button type="button" data-logout="artem">Выйти</button><button type="button" class="thm" id="thm" aria-label="Оформление" title="Оформление"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 0 0 16z" fill="currentColor"/></svg></button></div></div>
   <h1>Артем</h1>
   <div class="cards">
     <div class="card u"><a class="cover" href="ucheba.html" aria-label="Учёба"></a>
-      <div class="ic">§</div><b>Учёба</b><span>Конспекты, расписание, билеты, сессия</span>
-      <div class="links"><a href="ucheba.html">Конспекты</a><a href="ucheba.html#schedule">Расписание</a><a href="ucheba.html#tickets">Билеты</a><a href="ucheba.html#session">Сессия</a></div>
+      <div class="ic">§</div><b>Учёба</b><span>Конспекты, расписание, билеты, кредиты</span>
+      <div class="links"><a href="ucheba.html">Конспекты</a><a href="ucheba.html#schedule">Расписание</a><a href="ucheba.html#tickets">Билеты</a><a href="ucheba.html#credits">Кредиты</a></div>
     </div>
     <div class="card f"><a class="cover" href="finance.html" aria-label="Финансы"></a>
       <div class="ic">₽</div><b>Финансы</b><span>Справочник для инвестбанкинга и рынки в реальном времени</span>
@@ -196,8 +224,8 @@ h1.brand{line-height:0;margin:4px 0 14px}h1.brand .wm{height:clamp(52px,12vw,76p
 <p class="foot" id="appfoot">Приложение для Android: <a href="https://github.com/klimentiev-a/konspekty/releases/latest/download/Hub.apk" style="color:inherit">скачать Hub.apk</a>. На iPhone: Safari → «Поделиться» → «На экран Домой».</p>
 </div>
 <script>document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('[data-logout]');if(!b)return;var p=b.getAttribute('data-logout');try{localStorage.removeItem('hub:auth:'+p)}catch(x){}document.cookie='hub_'+p+'=; max-age=0; path=/';location.href='index.html'});</script>
-<script>document.getElementById('thm').onclick=function(){var r=document.documentElement,d=r.getAttribute('data-theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'),n=d==='dark'?'light':'dark';r.setAttribute('data-theme',n);try{localStorage.setItem('theme',n)}catch(e){}}</script><script>
-try{var t=localStorage.getItem('theme');if(t==='dark'||t==='light')document.documentElement.setAttribute('data-theme',t)}catch(e){}
+<script>
+try{var t=localStorage.getItem('theme');if(!localStorage.getItem('hub:skin')&&(t==='dark'||t==='light'))document.documentElement.setAttribute('data-theme',t)}catch(e){}
 /* внутри приложения Hub: версия и проверка обновлений вместо ссылки на APK */
 if(window.HubApp){try{var af=document.getElementById('appfoot');af.innerHTML='Приложение Hub '+HubApp.version()+' · <button type="button" id="upd" style="font:inherit;color:inherit;background:none;border:1px solid var(--line);border-radius:999px;padding:5px 12px;cursor:pointer">Проверить обновления</button>';document.getElementById('upd').onclick=function(){HubApp.checkUpdate()}}catch(e){}}
 /* подсказка «установи Hub»: iPhone — на экран Домой, Android-браузер — скачать приложение */
@@ -217,5 +245,35 @@ if(window.HubApp){try{var af=document.getElementById('appfoot');af.innerHTML='П
   setTimeout(function(){d.classList.add('on')},1200);
 })();
 if('serviceWorker' in navigator&&location.protocol==='https:')navigator.serviceWorker.register('sw.js').catch(function(){});
+</script>
+<script>
+/* выбор оформления начальной страницы: 9 вариантов, запоминается только здесь */
+(function(){
+  var SK=[['auto','Как в системе','#F4F1E8','#1F6B57',''],['light','Бумага','#F4F1E8','#1F6B57','light'],['swiss','Швейцария','#F4F4F2','#C8201A','light'],['sepia','Сепия','#EFE3C8','#8A4B14','light'],['ocean','Океан','#E9F0F6','#1A5FA8','light'],['dark','Ночь','#171611','#5FC2A3','dark'],['graphite','Графит','#15171B','#7BA7F5','dark'],['forest','Лес','#0F1B16','#8FD6A6','dark'],['terminal','Терминал','#0A0A08','#FFB000','dark']];
+  var d=document.documentElement;
+  function st(k,v){try{if(v===undefined)return localStorage.getItem(k);if(v===null)localStorage.removeItem(k);else localStorage.setItem(k,v)}catch(e){return null}}
+  function cur(){var v=st('hub:skin');if(v)return v;var t=st('theme');return t==='dark'||t==='light'?t:'auto'}
+  function apply(id){
+    var x=SK.filter(function(a){return a[0]===id})[0];if(!x){id='auto';x=SK[0]}
+    if(id==='auto'){d.removeAttribute('data-skin');d.removeAttribute('data-theme')}
+    else if(id==='light'||id==='dark'){d.removeAttribute('data-skin');d.setAttribute('data-theme',id)}
+    else{d.setAttribute('data-skin',id);d.setAttribute('data-theme',x[4])}
+    try{var bg=getComputedStyle(d).getPropertyValue('--bg').trim();document.querySelectorAll('meta[name=theme-color]').forEach(function(m){if(bg)m.setAttribute('content',bg)})}catch(e){}
+  }
+  function menu(open){
+    var m=document.getElementById('skm');if(m){m.remove();if(open)return}
+    if(!open)return;
+    var c=cur();m=document.createElement('div');m.id='skm';m.className='skm';m.setAttribute('role','menu');
+    m.innerHTML='<p>Оформление</p>'+SK.map(function(x,i){return (i===1||i===5?'<div class="sep"></div>':'')+'<button type="button" role="menuitemradio" aria-checked="'+(x[0]===c)+'" class="'+(x[0]===c?'on':'')+'" data-skin="'+x[0]+'"><span class="skw" style="background:'+x[2]+'"><i style="background:'+x[3]+'"></i></span>'+x[1]+'</button>'}).join('');
+    document.body.appendChild(m);
+  }
+  var tb=document.getElementById('thm');if(tb)tb.addEventListener('click',function(e){e.stopPropagation();menu(true)});
+  document.addEventListener('click',function(e){
+    var b=e.target.closest&&e.target.closest('#skm [data-skin]');
+    if(b){var id=b.getAttribute('data-skin');st('hub:skin',id);apply(id);menu(false);return}
+    if(document.getElementById('skm')&&!(e.target.closest&&e.target.closest('#skm')))menu(false);
+  });
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')menu(false)});
+})();
 </script>
 </body></html>

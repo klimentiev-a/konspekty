@@ -95,9 +95,8 @@ LOCK_OPEN = '<svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" r
 OLDLINK = "<script>\n/* старые ссылки вида …/#civil-1 ведут в конспекты */\n(function(){var h=location.hash;if(h&&h.length>1)location.replace('ucheba.html'+h)})();\n</script>"
 assert OLDLINK in head, 'oldlink'
 
-THEME_BTN = '<button type="button" class="thm" id="thm" aria-label="Светлая или тёмная тема" title="Тема"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 0 0 16z" fill="currentColor"/></svg></button>'
-THEME_JS = ("<script>document.getElementById('thm').onclick=function(){var r=document.documentElement,d=r.getAttribute('data-theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'),n=d==='dark'?'light':'dark';"
-             "r.setAttribute('data-theme',n);try{localStorage.setItem('theme',n)}catch(e){}}</script>")
+THEME_BTN = '<button type="button" class="thm" id="thm" aria-label="Оформление" title="Оформление"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 0 0 16z" fill="currentColor"/></svg></button>'
+THEME_JS = ''   # кнопка «Оформление» обслуживается скриптом в hub.html (меню 9 оформлений, ключ hub:skin)
 
 def page(title, body, gate_p=None, apple_title='Hub'):
     h = head.replace('<title>Hub</title>', '<title>%s</title>' % title)
