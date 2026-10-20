@@ -274,6 +274,21 @@ main{min-width:0;padding-inline:var(--gut);padding-bottom:96px}
 .zach .zs{flex:none;min-width:104px;height:36px;padding:0 10px;border:1px solid var(--line);border-radius:999px;background:var(--surface);color:var(--muted);font:600 13.5px/1 var(--sans)}
 .zach .zs.s1{background:#3a9d5d;border-color:#3a9d5d;color:#fff}
 .zach .zs.s2{background:#d9534f;border-color:#d9534f;color:#fff}
+.crsum{margin:0 0 22px;font:500 16px/1.4 var(--sans)}
+.crsum b{font-weight:700}
+.cry{margin:0 0 30px}
+.cry .yh{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:0 0 2px}
+.cry .yn{font:600 22px/1.2 var(--serif)}
+.cry .yt{font:600 15px/1.2 var(--sans)}
+.cry .yt b{font-size:22px}
+.cry .ys{margin:0 0 6px;font:400 13.5px/1.4 var(--sans);color:var(--muted)}
+.cry .mh{display:flex;justify-content:space-between;gap:12px;margin:18px 0 0;padding:0 0 6px;border-bottom:1px solid var(--line);font:600 12.5px/1.3 var(--sans);letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+.cry .cr{display:grid;grid-template-columns:minmax(0,1fr) 56px 64px;gap:0 8px;align-items:baseline;padding:10px 0;border-bottom:1px solid var(--line);font:400 15.5px/1.35 var(--sans)}
+.cry .cr.ch{padding:8px 0 4px;border-bottom:0;font:600 11.5px/1.2 var(--sans);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.cry .cr>span:nth-child(n+2){text-align:right;font-variant-numeric:tabular-nums}
+.cry .cr .g{font-weight:700}
+.cry .cr .no{color:var(--muted);font-weight:400}
+.cry .cr small{display:block;font:400 12px/1.3 var(--sans);color:var(--muted)}
 /* ---------- дела ---------- */
 .todo .td-add{margin:0 0 8px;padding:14px;border:1px solid var(--line);border-radius:14px;background:var(--surface)}
 .todo .td-in,.todo .td-edit{width:100%;height:46px;padding:0 14px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);font:500 16px/1 var(--sans);-webkit-appearance:none;appearance:none}
@@ -1465,7 +1480,7 @@ function defaultNote(s){
   return (id&&notes[id]&&notes[id].subject===s)?notes[id]:s.notes[s.notes.length-1];
 }
 function resolve(tok){
-  if(tok==='schedule'||tok==='about'||tok==='session'||tok==='todo')return tok;
+  if(tok==='schedule'||tok==='about'||tok==='session'||tok==='todo'||tok==='credits')return tok;
   if(tok==='tickets')return 'tickets-'+(TK[store('tk')]?store('tk'):'const');
   if(/^tickets-(const|crim|civil)(-\d+)?$/.test(tok))return tok;
   if(/^tickets-/.test(tok))return 'tickets-const';
@@ -1489,7 +1504,7 @@ window.addEventListener('hashchange',function(){
 
 /* ---------- навигация: предметы и вкладки ---------- */
 var withNotes=DATA.subjects.filter(function(s){return s.notes.length});
-$('#subjects').innerHTML='<a class="subj" href="#" data-go="" data-s="notes" style="--h:70"><span class="dot"></span><span class="nm">Конспекты</span><span class="ct">'+allNotes.length+'</span></a><a class="subj" href="#schedule" data-go="schedule" data-s="schedule" style="--h:250"><span class="dot"></span><span class="nm">Расписание</span><span class="ct"></span></a><a class="subj" href="#todo" data-go="todo" data-s="todo" style="--h:250"><span class="dot"></span><span class="nm">Дела</span><span class="ct"></span></a><a class="subj" href="#links-1" data-go="links-1" data-s="links-1" style="--h:310"><span class="dot"></span><span class="nm">Ведомости</span><span class="ct"></span></a><a class="subj" href="#tickets" data-go="tickets" data-s="tickets" style="--h:250"><span class="dot"></span><span class="nm">Билеты</span><span class="ct"></span></a><a class="subj" href="#about" data-go="about" data-s="about" style="--h:250"><span class="dot"></span><span class="nm">О предметах</span><span class="ct"></span></a><a class="subj" href="#session" data-go="session" data-s="session" style="--h:250"><span class="dot"></span><span class="nm">Сессия</span><span class="ct"></span></a>';
+$('#subjects').innerHTML='<a class="subj" href="#" data-go="" data-s="notes" style="--h:70"><span class="dot"></span><span class="nm">Конспекты</span><span class="ct">'+allNotes.length+'</span></a><a class="subj" href="#schedule" data-go="schedule" data-s="schedule" style="--h:250"><span class="dot"></span><span class="nm">Расписание</span><span class="ct"></span></a><a class="subj" href="#todo" data-go="todo" data-s="todo" style="--h:250"><span class="dot"></span><span class="nm">Дела</span><span class="ct"></span></a><a class="subj" href="#links-1" data-go="links-1" data-s="links-1" style="--h:310"><span class="dot"></span><span class="nm">Ведомости</span><span class="ct"></span></a><a class="subj" href="#tickets" data-go="tickets" data-s="tickets" style="--h:250"><span class="dot"></span><span class="nm">Билеты</span><span class="ct"></span></a><a class="subj" href="#about" data-go="about" data-s="about" style="--h:250"><span class="dot"></span><span class="nm">О предметах</span><span class="ct"></span></a><a class="subj" href="#session" data-go="session" data-s="session" style="--h:250"><span class="dot"></span><span class="nm">Сессия</span><span class="ct"></span></a><a class="subj" href="#credits" data-go="credits" data-s="credits" style="--h:250"><span class="dot"></span><span class="nm">Кредиты</span><span class="ct"></span></a>';
 
 function centerIn(box,el){box.scrollLeft=el.offsetLeft-(box.clientWidth-el.offsetWidth)/2}
 
@@ -1925,6 +1940,32 @@ view.addEventListener('click',function(e){
 function renderSession(){
   state.heads=null;
   view.innerHTML='<section class="results aboutp"><h1>Сессия</h1><p class="aboutlead">Что сдано, а что нет. Впиши оценку: от 4 — «Сдал», ниже 4 — «Пересдача». Или просто нажимай на кнопку справа.</p>'+zachHtml()+planHtml()+'</section>';
+}
+
+
+/* ---------- кредиты ---------- */
+/* [предмет, оценка (10-балльная, «зачёт» или пусто), кредиты в диплом, кредиты в рейтинг] — из личного кабинета ВШЭ */
+var CR=[{"y":"2025/26","m":[{"n":1,"r":[["Основы российской государственности","9",2,2]]},{"n":2,"r":[["История государства и права зарубежных стран","6",6,6],["Научно-исследовательский семинар «Информационные технологии в деятельности юриста»","9",3,3],["Научно-исследовательский семинар «Латынь для юристов»","7",3,3],["История России","9",1,1],["Философия","8",3,3],["Английский язык для делового общения. Продвинутый курс - 1","6",3,3],["Экономика","8",3,3],["Цифровая грамотность","8",3,3],["Безопасность жизнедеятельности","8",1,1]]},{"n":3,"r":[["Научно-исследовательский семинар «Основы правового регулирования Big Data»","8",3,3],["Теория государства и права","6",3,3],["Независимый экзамен по цифровой грамотности","8",0,3]]},{"n":4,"r":[["Внутренний экзамен по английскому языку (1 курс)","8",0,4],["Физическая культура","зачёт",0,0],["История России","6",3,3],["Логика и юридическая аргументация","7",3,3],["Научно-исследовательский семинар «Введение в ключевые технологии»","7",3,3],["История государства и права России","7",6,6],["Теория государства и права","6",3,3],["Юридическая теория государства","8",3,3],["Курсовая работа 1 курс","8",3,3],["Судебная власть и правоохранительные органы","5",5,5]]}]},{"y":"2026/27","m":[{"n":1,"r":[["Научно-исследовательский семинар «Введение в цифровое право»","",1,1]]},{"n":2,"r":[["Введение в искусственный интеллект: инструменты и промпты","",3,3],["Вайб-кодинг: как менеджеру быстро собрать MVP и запустить продукт","",3,3],["Гражданское право (Общая часть)","",5,5],["Основы программирования на Python","",3,3],["Конституционное право","",6,6],["Научно-исследовательский семинар «Введение в цифровое право»","",2,2],["Уголовное право (Общая часть)","",3,3],["Независимый экзамен по русскому языку","",0,0],["Финансовый и управленческий учет для предпринимательства","",5,5]]},{"n":3,"r":[["Уголовное право (Общая часть)","",3,3]]},{"n":4,"r":[["Независимый экзамен по алгоритмическому мышлению и программированию. Начальный уровень","",0,3],["Физическая культура","",1,1],["Уголовное право (Особенная часть)","",3,3],["Гражданское право (Общая часть)","",7,7],["Конституционное право","",6,6],["Налогообложение предпринимательской деятельности","",5,5]]}]}];
+function crSum(a,k){return a.reduce(function(s,x){return s+x[k]},0)}
+function crW(n){var a=n%100,b=n%10;return a>10&&a<15?'кредитов':b===1?'кредит':b>1&&b<5?'кредита':'кредитов'}
+function renderCredits(){
+  state.heads=null;
+  var all=0,got=0,h='';
+  CR.forEach(function(y){
+    var it=[];y.m.forEach(function(m){m.r.forEach(function(x){it.push(x)})});
+    var dip=crSum(it,2),rat=crSum(it,3),gt=crSum(it.filter(function(x){return x[1]!==''}),2);
+    all+=dip;got+=gt;
+    h+='<div class="cry"><div class="yh"><span class="yn">'+y.y+'</span><span class="yt"><b>'+dip+'</b> '+crW(dip)+' в диплом</span></div>'
+     +'<p class="ys">получено '+gt+' · в рейтинг '+rat+'</p>';
+    y.m.forEach(function(m){
+      h+='<div class="mh"><span>'+m.n+' модуль</span><span>'+crSum(m.r,2)+'</span></div><div class="cr ch"><span>Предмет</span><span>Оценка</span><span>Кредиты</span></div>';
+      m.r.forEach(function(x){
+        h+='<div class="cr"><span>'+esc(x[0])+'</span><span class="g'+(x[1]===''?' no':'')+'">'+(x[1]===''?'—':esc(x[1]))+'</span><span>'+(x[2]?x[2]:'–')+(x[3]!==x[2]?'<small>рейтинг '+x[3]+'</small>':'')+'</span></div>';
+      });
+    });
+    h+='</div>';
+  });
+  view.innerHTML='<section class="results aboutp"><h1>Кредиты</h1><p class="aboutlead">Предметы, оценки и кредиты в диплом по годам. Данные из личного кабинета.</p><p class="crsum">Получено <b>'+got+'</b> из <b>'+all+'</b></p>'+h+'</section>';
 }
 
 
@@ -2368,6 +2409,7 @@ function show(tok){
   }else if(tok==='schedule'){schedWeek=0;renderSchedule()}
   else if(tok==='about'){renderAbout()}
   else if(tok==='session'){renderSession()}
+  else if(tok==='credits'){renderCredits()}
   else if(tok==='todo'){renderTodo()}
   else if(/^tickets-/.test(tok)){var tm=tok.match(/^tickets-(\w+)(?:-(\d+))?$/);renderTickets(tm[1],tm[2]?+tm[2]:0)}
   else{state.heads=null;renderHome()}

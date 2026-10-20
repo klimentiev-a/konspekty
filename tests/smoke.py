@@ -19,7 +19,7 @@ prof = dict(re.findall(r"'(\w+)': \('[^']+', '(\d+)'", src))
 AUTH = ';'.join("localStorage.setItem('hub:auth:%s','%s')" % (p, tok(p, pw)) for p, pw in prof.items())
 
 PAGES = ['index.html', 'artem.html', 'nastya.html', 'nastya-ucheba.html',
-         'ucheba.html', 'ucheba.html#schedule', 'ucheba.html#tickets', 'ucheba.html#session', 'ucheba.html#about',
+         'ucheba.html', 'ucheba.html#schedule', 'ucheba.html#tickets', 'ucheba.html#session', 'ucheba.html#credits', 'ucheba.html#about',
          'finance.html', 'finance.html#home', 'finance.html#learn', 'finance.html#calc/npv', 'finance.html#calc/dcf', 'finance.html#calc/lbo',
          'finance.html#markets', 'finance.html#markets/news', 'finance.html#markets/ru', 'finance.html#markets/us',
          'finance.html#markets/crypto', 'finance.html#markets/bonds', 'finance.html#markets/fx', 'finance.html#markets/cal',
