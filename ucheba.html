@@ -1400,7 +1400,10 @@ DATA.subjects.forEach(function(s){
   subjects[s.id]=s;
   s.notes.forEach(function(n,i){
     n.subject=s;n.idx=i;notes[n.id]=n;allNotes.push(n);
-    n.text=plain(n.md);n.tl=n.text.toLowerCase();n.ti=n.title.toLowerCase();
+    n.ti=n.title.toLowerCase();
+    /* текст для поиска считаем только когда он понадобился: раньше это тормозило каждое открытие страницы */
+    Object.defineProperty(n,'text',{configurable:true,get:function(){var t=plain(this.md);Object.defineProperty(this,'text',{value:t,writable:true,configurable:true});return t}});
+    Object.defineProperty(n,'tl',{configurable:true,get:function(){var t=this.text.toLowerCase();Object.defineProperty(this,'tl',{value:t,writable:true,configurable:true});return t}});
   });
 });
 
@@ -2352,12 +2355,13 @@ $('#btn-theme').addEventListener('click',function(){
 var hidden=false,lastY=window.scrollY,acc=0,ticking=false;
 function syncHdr(){
   var wide=window.innerWidth>=900;
-  root.style.setProperty('--hdr',(wide||hidden)?'0px':rail.offsetHeight+'px');
+  tabsEl.style.setProperty('--hdr',(wide||hidden)?'0px':rail.offsetHeight+'px');
 }
 function setHidden(h){
   if(h===hidden)return;
   hidden=h;rail.classList.toggle('hide',h);syncHdr();
 }
+var tocIdx=-2,tocHeads=null;
 function updateScroll(){
   var y=window.scrollY,dy=y-lastY;lastY=y;
   var max=document.documentElement.scrollHeight-window.innerHeight;
@@ -2365,9 +2369,11 @@ function updateScroll(){
   else if(dy>0){acc=acc>0?acc+dy:dy;if(acc>24)setHidden(true)}
   else if(dy<0){acc=acc<0?acc+dy:dy;if(acc<-48)setHidden(false)}
   if(state.heads){
-    var side=$('.toc-side a.on'),idx=-1;
-    for(var i=0;i<state.heads.length;i++){if(state.heads[i].getBoundingClientRect().top<=120)idx=i;else break}
-    var links=$$('.toc-side a');
+    var H=state.heads,lo=0,hi=H.length-1,idx=-1;
+    while(lo<=hi){var mid=(lo+hi)>>1;if(H[mid].getBoundingClientRect().top<=120){idx=mid;lo=mid+1}else hi=mid-1}
+    if(idx===tocIdx&&H===tocHeads)return;
+    tocIdx=idx;tocHeads=H;
+    var side=$('.toc-side a.on'),links=$$('.toc-side a');
     links.forEach(function(l,k){l.classList.toggle('on',k===idx)});
     $$('.toc-side .tg').forEach(function(g){g.classList.remove('cur')});
     var cur=links[idx];
