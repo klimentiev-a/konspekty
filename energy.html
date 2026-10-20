@@ -90,6 +90,8 @@ document.addEventListener('DOMContentLoaded',function(){var v=g();document.query
 :root[data-skin="ocean"]{--bg:#E9F0F6;--rail:#DCE7F0;--surface:#F7FAFD;--fg:#14283A;--muted:#4B6277;--faint:#7289A0;--line:#C5D4E1;--line2:#D6E1EB;--accent:#1A5FA8;--accent2:#C2561F;--mark:#FFE08A;--up:#1B7A47;--down:#B3261E}
 :root[data-skin="graphite"]{--bg:#15171B;--rail:#1B1E23;--surface:#1F2227;--fg:#E6E8EC;--muted:#9AA1AD;--faint:#6F7683;--line:#2E3239;--line2:#262A30;--accent:#7BA7F5;--accent2:#F2A65A;--mark:#3C4A66;--up:#4FC27F;--down:#F07167}
 :root[data-skin="terminal"]{--bg:#0A0A08;--rail:#11100C;--surface:#15140F;--fg:#F0D9A0;--muted:#B79A55;--faint:#7E6A3A;--line:#3A3115;--line2:#2A240F;--accent:#FFB000;--accent2:#FF6A3D;--mark:#5A4300;--up:#7DDB6A;--down:#FF6B5B;--sans:var(--mono)}
+:root[data-skin="violet"]{--bg:#130F22;--rail:#0E0A1A;--surface:#1B1530;--fg:#E6E0F5;--muted:#AFA5CC;--faint:#8174A6;--line:#342A55;--line2:#251D40;--accent:#B794FF;--accent2:#FF7AC6;--mark:#4A2E80;--up:#5FD08A;--down:#FF7A8A}
+:root[data-skin="amber"]{--bg:#17110D;--rail:#110C09;--surface:#211812;--fg:#EFE3D3;--muted:#B9A58E;--faint:#8C7A65;--line:#3D2E22;--line2:#2B2018;--accent:#F0A35C;--accent2:#E8D27A;--mark:#6B4220;--up:#8FCB6A;--down:#F0745A}
 .thm{position:fixed;z-index:80;top:calc(54px + env(safe-area-inset-top,0px));right:10px;width:min(280px,calc(100vw - 20px));padding:8px;border:1px solid var(--line);border-radius:16px;background:var(--surface);box-shadow:0 14px 40px rgba(0,0,0,.28)}
 .thm p{margin:6px 8px 8px;font:600 13px/1.2 var(--sans);color:var(--muted)}
 .thm button{display:flex;align-items:center;justify-content:flex-start;gap:12px;width:100%;padding:9px 10px;border-radius:10px;text-align:left;font:500 15px/1.2 var(--sans);color:var(--fg)}
@@ -330,7 +332,7 @@ var root=document.documentElement;
 function $(s,e){return (e||document).querySelector(s)}
 function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
 function store(k){try{return localStorage.getItem(k)}catch(e){return null}}
-var SK={sepia:'light',ocean:'light',graphite:'dark',terminal:'dark'};
+var SK={sepia:'light',ocean:'light',graphite:'dark',terminal:'dark',violet:'dark',amber:'dark'};
 (function(){var id=store('fin:skin')||(store('theme')==='dark'?'dark':'auto');if(SK[id]){root.setAttribute('data-skin',id);root.setAttribute('data-theme',SK[id])}else if(id==='dark'){root.setAttribute('data-theme','dark')}})();
 var D=JSON.parse($('#edata').textContent),R=D.routes,CK=D.chokes,OB=D.objects,REG=D.regions,UN={oil:'млн барр/сут',gas:'млрд м³/год',lng:'млн т/год'},KN={oil:'Нефть',gas:'Газ (труба)',lng:'СПГ'},COL={oil:'#E8A33D',gas:'#4EA8DE',lng:'#2FD3AE'};
 var TN={ref:'НПЗ',field:'Месторождения',lng:'СПГ',port:'Порты'},TS={ref:'Нефтеперерабатывающий завод',field:'Месторождение',lng:'Завод или терминал СПГ',port:'Порт или нефтебаза'},TC={ref:'#E8604C',field:'#A87BE0',lng:'#2FD3AE',port:'#6C8FB5'};

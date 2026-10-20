@@ -92,6 +92,8 @@ document.addEventListener('DOMContentLoaded',function(){var v=g();document.query
 :root[data-skin="ocean"]{--bg:#E9F0F6;--rail:#DCE7F0;--surface:#F7FAFD;--fg:#14283A;--muted:#4B6277;--faint:#7289A0;--line:#C5D4E1;--line2:#D6E1EB;--accent:#1A5FA8;--accent2:#C2561F;--mark:#FFE08A;--up:#1B7A47;--down:#B3261E}
 :root[data-skin="graphite"]{--bg:#15171B;--rail:#1B1E23;--surface:#1F2227;--fg:#E6E8EC;--muted:#9AA1AD;--faint:#6F7683;--line:#2E3239;--line2:#262A30;--accent:#7BA7F5;--accent2:#F2A65A;--mark:#3C4A66;--up:#4FC27F;--down:#F07167}
 :root[data-skin="terminal"]{--bg:#0A0A08;--rail:#11100C;--surface:#15140F;--fg:#F0D9A0;--muted:#B79A55;--faint:#7E6A3A;--line:#3A3115;--line2:#2A240F;--accent:#FFB000;--accent2:#FF6A3D;--mark:#5A4300;--up:#7DDB6A;--down:#FF6B5B;--sans:var(--mono)}
+:root[data-skin="violet"]{--bg:#130F22;--rail:#0E0A1A;--surface:#1B1530;--fg:#E6E0F5;--muted:#AFA5CC;--faint:#8174A6;--line:#342A55;--line2:#251D40;--accent:#B794FF;--accent2:#FF7AC6;--mark:#4A2E80;--up:#5FD08A;--down:#FF7A8A}
+:root[data-skin="amber"]{--bg:#17110D;--rail:#110C09;--surface:#211812;--fg:#EFE3D3;--muted:#B9A58E;--faint:#8C7A65;--line:#3D2E22;--line2:#2B2018;--accent:#F0A35C;--accent2:#E8D27A;--mark:#6B4220;--up:#8FCB6A;--down:#F0745A}
 .thm{position:fixed;z-index:80;top:calc(54px + env(safe-area-inset-top,0px));right:10px;width:min(280px,calc(100vw - 20px));padding:8px;border:1px solid var(--line);border-radius:16px;background:var(--surface);box-shadow:0 14px 40px rgba(0,0,0,.28)}
 .thm p{margin:6px 8px 8px;font:600 13px/1.2 var(--sans);color:var(--muted)}
 .thm button{display:flex;align-items:center;justify-content:flex-start;gap:12px;width:100%;padding:9px 10px;border-radius:10px;text-align:left;font:500 15px/1.2 var(--sans);color:var(--fg)}
@@ -306,7 +308,7 @@ $('#b-back').setAttribute('href',PROF+'.html');
 /* ---------- оформление (общее с разделом «Финансы») ---------- */
 function applyTheme(t){if(t)root.setAttribute('data-theme',t);else root.removeAttribute('data-theme')}
 var SKINS=[['auto','Как в системе','#F4F1E8','#1F6B57',''],['sepia','Сепия','#EFE3C8','#8A4B14','light'],['ocean','Океан','#E9F0F6','#1A5FA8','light'],
-  ['dark','Ночь','#171611','#5FC2A3','dark'],['graphite','Графит','#15171B','#7BA7F5','dark'],['terminal','Терминал','#0A0A08','#FFB000','dark']];
+  ['dark','Ночь','#171611','#5FC2A3','dark'],['graphite','Графит','#15171B','#7BA7F5','dark'],['terminal','Терминал','#0A0A08','#FFB000','dark'],['violet','Ультрафиолет','#130F22','#B794FF','dark'],['amber','Янтарь','#17110D','#F0A35C','dark']];
 function applySkin(id){
   var sk=SKINS.filter(function(x){return x[0]===id})[0];if(!sk){id='auto';sk=SKINS[0]}
   if(id==='auto'){root.removeAttribute('data-skin');applyTheme('')}

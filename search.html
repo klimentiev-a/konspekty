@@ -120,6 +120,8 @@ h1,.lead{animation:up .45s cubic-bezier(.2,.8,.25,1) both}.lead{animation-delay:
 :root[data-skin="ocean"]{--bg:#E9F0F6;--surface:#F7FAFD;--fg:#14283A;--muted:#4B6277;--faint:#7289A0;--line:#C5D4E1;--a1:#1A5FA8;--a2:#C2561F;color-scheme:light}
 :root[data-skin="graphite"]{--bg:#15171B;--surface:#1F2227;--fg:#E6E8EC;--muted:#9AA1AD;--faint:#6F7683;--line:#2E3239;--a1:#7BA7F5;--a2:#F2A65A;color-scheme:dark}
 :root[data-skin="terminal"]{--bg:#0A0A08;--surface:#15140F;--fg:#F0D9A0;--muted:#B79A55;--faint:#7E6A3A;--line:#3A3115;--a1:#FFB000;--a2:#FF6A3D;color-scheme:dark}
+:root[data-skin="violet"]{--bg:#130F22;--surface:#1B1530;--fg:#E6E0F5;--muted:#AFA5CC;--faint:#8174A6;--line:#342A55;--a1:#B794FF;--a2:#FF7AC6;color-scheme:dark}
+:root[data-skin="amber"]{--bg:#17110D;--surface:#211812;--fg:#EFE3D3;--muted:#B9A58E;--faint:#8C7A65;--line:#3D2E22;--a1:#F0A35C;--a2:#E8D27A;color-scheme:dark}
 :root[data-skin="terminal"] body,:root[data-skin="terminal"] h1,:root[data-skin="terminal"] .lead,:root[data-skin="terminal"] .card b,:root[data-skin="terminal"] .card .ic{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
 :root[data-skin] .card.e .ic{color:var(--a2)}
 .skm{position:fixed;z-index:80;top:calc(58px + env(safe-area-inset-top,0px));right:10px;width:min(280px,calc(100vw - 20px));padding:8px;border:1px solid var(--line);border-radius:16px;background:var(--surface);box-shadow:0 14px 40px rgba(0,0,0,.28)}
@@ -136,7 +138,7 @@ h1,.lead{animation:up .45s cubic-bezier(.2,.8,.25,1) both}.lead{animation-delay:
 /* оформление начальной страницы: своё, отдельное от разделов (ключ hub:skin) */
 (function(){try{
   var d=document.documentElement,id=localStorage.getItem('hub:skin');if(!id)return;
-  var T={sepia:'light',ocean:'light',graphite:'dark',terminal:'dark',dark:'dark'};
+  var T={sepia:'light',ocean:'light',graphite:'dark',terminal:'dark',violet:'dark',amber:'dark',dark:'dark'};
   if(!T[id])return;
   if(id==='dark')d.removeAttribute('data-skin');else d.setAttribute('data-skin',id);
   d.setAttribute('data-theme',T[id]);
@@ -242,7 +244,7 @@ if('serviceWorker' in navigator&&location.protocol==='https:')navigator.serviceW
 <script>
 /* выбор оформления начальной страницы: 9 вариантов, запоминается только здесь */
 (function(){
-  var SK=[['auto','Как в системе','#F4F1E8','#1F6B57',''],['sepia','Сепия','#EFE3C8','#8A4B14','light'],['ocean','Океан','#E9F0F6','#1A5FA8','light'],['dark','Ночь','#171611','#5FC2A3','dark'],['graphite','Графит','#15171B','#7BA7F5','dark'],['terminal','Терминал','#0A0A08','#FFB000','dark']];
+  var SK=[['auto','Как в системе','#F4F1E8','#1F6B57',''],['sepia','Сепия','#EFE3C8','#8A4B14','light'],['ocean','Океан','#E9F0F6','#1A5FA8','light'],['dark','Ночь','#171611','#5FC2A3','dark'],['graphite','Графит','#15171B','#7BA7F5','dark'],['terminal','Терминал','#0A0A08','#FFB000','dark'],['violet','Ультрафиолет','#130F22','#B794FF','dark'],['amber','Янтарь','#17110D','#F0A35C','dark']];
   var d=document.documentElement;
   function st(k,v){try{if(v===undefined)return localStorage.getItem(k);if(v===null)localStorage.removeItem(k);else localStorage.setItem(k,v)}catch(e){return null}}
   function cur(){var v=st('hub:skin');if(v)return v;return st('theme')==='dark'?'dark':'auto'}
