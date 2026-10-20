@@ -64,7 +64,10 @@
   }
 
   var applying = false, timer = 0, busy = false, again = false, lastRun = 0, dirty = {};
-  function touch(k) { var m = meta(); m[k] = Date.now(); saveMeta(m); dirty[k] = 1; plan(1500) }
+  /* «мягкие» ключи (последний открытый конспект и т.п.) пишутся при каждом открытии страницы: не гоняем из-за них синхронизацию сразу,
+     а откладываем на 45 с (при закрытии страницы всё равно уйдёт). Отметки и тесты по-прежнему через 1,5 с */
+  var hardWait = false;
+  function touch(k) { var m = meta(); m[k] = Date.now(); saveMeta(m); dirty[k] = 1; if (kind(k) === 2) hardWait = true; plan(hardWait ? 1500 : 45000) }
   function plan(ms) { clearTimeout(timer); timer = setTimeout(function () { sync(false) }, ms) }
 
   SP.setItem = function (k, v) {
@@ -144,7 +147,7 @@
   function sync(first) {
     if (!token()) { setStatus('off'); return }
     if (busy) { again = true; return }
-    busy = true; lastRun = Date.now();
+    busy = true; lastRun = Date.now(); hardWait = false;
     remoteGet().then(function (R) {
       R = isObj(R) ? R : {};
       var m = meta(), out = {}, push = false, hard = false, seen = {}, k;
