@@ -127,6 +127,16 @@ h1.pg{margin:6px 0 4px;font:600 clamp(27px,5.5vw,38px)/1.15 var(--serif);letter-
 <script>
 (function(){
 'use strict';
+
+/* открывать там, где остановился: последний раздел страницы (hash) */
+(function(){
+  var k='lasthash:'+(location.pathname.split('/').pop()||'index.html'),skip=/^#(words\/study|placement)/;
+  try{
+    if(!location.hash){var h=localStorage.getItem(k);if(h&&h.length>1&&!skip.test(h))history.replaceState(null,'',location.pathname+location.search+h)}
+    var sv=function(){try{if(location.hash.length>1&&!/^#home$/.test(location.hash))localStorage.setItem(k,location.hash);else localStorage.removeItem(k)}catch(e){}};
+    window.addEventListener('hashchange',sv);sv();
+  }catch(e){}
+})();
 var root=document.documentElement;
 function $(s,e){return (e||document).querySelector(s)}
 function $$(s,e){return Array.prototype.slice.call((e||document).querySelectorAll(s))}

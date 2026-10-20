@@ -1305,6 +1305,16 @@ html:root[data-skin=k] .toast{background:var(--fg);color:#fff;font-family:var(--
 <script>
 (function(){
 'use strict';
+
+/* открывать там, где остановился: последний раздел страницы (hash) */
+(function(){
+  var k='lasthash:'+(location.pathname.split('/').pop()||'index.html'),skip=/^$a/;
+  try{
+    if(!location.hash){var h=localStorage.getItem(k);if(h&&h.length>1&&!skip.test(h))history.replaceState(null,'',location.pathname+location.search+h)}
+    var sv=function(){try{if(location.hash.length>1&&!/^#home$/.test(location.hash))localStorage.setItem(k,location.hash);else localStorage.removeItem(k)}catch(e){}};
+    window.addEventListener('hashchange',sv);sv();
+  }catch(e){}
+})();
 var root=document.documentElement;
 root.lang='ru';
 var UPDATED='12 окт';
@@ -1361,7 +1371,7 @@ function go(tok){
   tok=resolve(tok);
   try{
     if(tok){if(location.hash.slice(1)!==tok)location.hash=tok}
-    else if(location.hash){history.pushState(null,'',location.pathname+location.search)}
+    else if(location.hash){history.pushState(null,'',location.pathname+location.search);try{localStorage.removeItem('lasthash:'+(location.pathname.split('/').pop()||'index.html'))}catch(e){}}
   }catch(e){}
   show(tok);
 }
@@ -1748,7 +1758,13 @@ function renderAbout(){
 }
 
 view.addEventListener('toggle',function(e){
-  var d=e.target;if(!d.classList||!d.classList.contains('ab'))return;
+  var d=e.target;if(!d.classList)return;
+  if(d.classList.contains('tk')&&/^tickets-/.test(state.tok)){
+    var tid=state.tok.slice(8)+'-'+d.id.slice(3),ta=tkoGet(),ti=ta.indexOf(tid);
+    if(d.open&&ti<0)ta.push(tid);else if(!d.open&&ti>=0)ta.splice(ti,1);else return;
+    store('tkopen',JSON.stringify(ta.slice(-40)));return;
+  }
+  if(!d.classList.contains('ab'))return;
   var id=d.id.slice(3),a=aopenGet(),i=a.indexOf(id);
   if(d.open&&i<0)a.push(id);else if(!d.open&&i>=0)a.splice(i,1);else return;
   store('aopen',JSON.stringify(a));
@@ -1762,6 +1778,7 @@ function tkHtml(md){
   $$('p',d).forEach(function(p){var s=p.firstElementChild;if(s&&s.tagName==='STRONG'&&/^(Нормы|Практика)/.test(s.textContent)&&p.textContent.indexOf(s.textContent)===0)p.className='tkn'});
   return d.innerHTML;
 }
+function tkoGet(){try{var a=JSON.parse(store('tkopen')||'[]');return Array.isArray(a)?a:[]}catch(e){return []}}
 function renderTickets(k,openN){
   state.heads=null;store('tk',k);
   tabsEl.hidden=false;tabsEl.style.setProperty('--h',subjects[k]?subjects[k].hue:250);
@@ -1771,10 +1788,11 @@ function renderTickets(k,openN){
   }).join('');
   var name=subjects[k]?subjects[k].name:'';
   var h='<section class="results aboutp tkp"><h1>Билеты</h1><p class="aboutlead">'+esc(name)+' · вопросы прошлых лет. Нажми на вопрос — краткий ответ на 2–3 минуты.'+(k==='civil'?' Сборника ответов не было, ответы составлены по ГК РФ.':'')+'</p>'+stBar(k)+'<div class="ablist">';
+  var tko=tkoGet();
   TK[k].forEach(function(x,i){
     if(k==='civil'&&(i===0||(x[0]>86&&TK[k][i-1][0]<=86)))h+='<div class="tkmod">'+(x[0]<=86?'1–2 модуль':'3–4 модуль')+'</div>';
     var sd=!!stGet()[k+'-'+x[0]];
-    h+='<details class="tk'+(sd?' st':'')+'" id="tk-'+x[0]+'"><summary><span class="tn">'+x[0]+'</span><span class="tq">'+esc(x[1])+'</span><button type="button" class="tst" data-star="'+k+'-'+x[0]+'" aria-pressed="'+sd+'" aria-label="'+(sd?'Снять отметку «изучил»':'Отметить: изучил')+'">'+(sd?'★':'☆')+'</button><span class="cv"></span></summary><div class="prose">'+tkHtml(x[2])+'</div></details>';
+    h+='<details class="tk'+(sd?' st':'')+'" id="tk-'+x[0]+'"'+(tko.indexOf(k+'-'+x[0])>=0?' open':'')+'><summary><span class="tn">'+x[0]+'</span><span class="tq">'+esc(x[1])+'</span><button type="button" class="tst" data-star="'+k+'-'+x[0]+'" aria-pressed="'+sd+'" aria-label="'+(sd?'Снять отметку «изучил»':'Отметить: изучил')+'">'+(sd?'★':'☆')+'</button><span class="cv"></span></summary><div class="prose">'+tkHtml(x[2])+'</div></details>';
   });
   view.innerHTML=h+'</div></section>';
   var tp=$('.tkp');if(tp){tp.classList.toggle('f-open',TKF==='open');tp.classList.toggle('f-star',TKF==='star')}

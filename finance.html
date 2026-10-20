@@ -761,6 +761,16 @@ details.more{position:relative;flex:none}details.more>summary{list-style:none;cu
 <script>
 (function(){
 'use strict';
+
+/* открывать там, где остановился: последний раздел страницы (hash) */
+(function(){
+  var k='lasthash:'+(location.pathname.split('/').pop()||'index.html'),skip=/^$a/;
+  try{
+    if(!location.hash){var h=localStorage.getItem(k);if(h&&h.length>1&&!skip.test(h))history.replaceState(null,'',location.pathname+location.search+h)}
+    var sv=function(){try{if(location.hash.length>1&&!/^#home$/.test(location.hash))localStorage.setItem(k,location.hash);else localStorage.removeItem(k)}catch(e){}};
+    window.addEventListener('hashchange',sv);sv();
+  }catch(e){}
+})();
 var D=JSON.parse(document.getElementById('fdata').textContent);
 var CH=D.chapters,S=D.static;
 function $(s,r){return (r||document).querySelector(s)}

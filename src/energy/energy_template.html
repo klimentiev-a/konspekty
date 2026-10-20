@@ -196,6 +196,16 @@ select.srch{width:100%;height:44px;box-sizing:border-box;padding:0 10px;border:1
 <script>
 (function(){
 'use strict';
+
+/* открывать там, где остановился: последний раздел страницы (hash) */
+(function(){
+  var k='lasthash:'+(location.pathname.split('/').pop()||'index.html'),skip=/^$a/;
+  try{
+    if(!location.hash){var h=localStorage.getItem(k);if(h&&h.length>1&&!skip.test(h))history.replaceState(null,'',location.pathname+location.search+h)}
+    var sv=function(){try{if(location.hash.length>1&&!/^#home$/.test(location.hash))localStorage.setItem(k,location.hash);else localStorage.removeItem(k)}catch(e){}};
+    window.addEventListener('hashchange',sv);sv();
+  }catch(e){}
+})();
 var root=document.documentElement;
 function $(s,e){return (e||document).querySelector(s)}
 function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
