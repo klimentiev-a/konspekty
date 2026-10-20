@@ -250,7 +250,8 @@ main{min-width:0;padding-inline:var(--gut);padding-bottom:96px}
 .crtab button{height:36px;padding:0 16px;border:1px solid var(--line);border-radius:999px;background:var(--bg);color:var(--fg);font:500 14px/1 var(--sans);cursor:pointer}
 .crtab button.on{background:var(--fg);color:var(--bg);border-color:var(--fg)}
 .crsum{margin:0 0 22px;font:500 16px/1.4 var(--sans)}
-.crsum b{font-weight:700}
+.crsum b{font-weight:700;font-size:26px}
+.crsum span{color:var(--muted);font-size:14.5px}
 .cry{margin:0 0 30px}
 .cry .yh{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:0 0 2px}
 .cry .yn{font:600 22px/1.2 var(--serif)}
@@ -263,6 +264,7 @@ main{min-width:0;padding-inline:var(--gut);padding-bottom:96px}
 .cry .cr>span:nth-child(n+2){text-align:right;font-variant-numeric:tabular-nums}
 .cry .cr .g{font-weight:700}
 .cry .cr .no{color:var(--muted);font-weight:400}
+.cry .cr .g small{font-weight:400}
 .cry .cr small{display:block;font:400 12px/1.3 var(--sans);color:var(--muted)}
 
 .calc{margin-top:26px;padding-top:20px;border-top:1px solid var(--line)}
@@ -1727,6 +1729,21 @@ document.addEventListener('visibilitychange',function(){if(document.visibilitySt
 var CR=[{"y":"2025/26","m":[{"n":1,"r":[["Основы российской государственности","9",2,2]]},{"n":2,"r":[["История государства и права зарубежных стран","6",6,6],["Научно-исследовательский семинар «Информационные технологии в деятельности юриста»","9",3,3],["Научно-исследовательский семинар «Латынь для юристов»","7",3,3],["История России","9",1,1],["Философия","8",3,3],["Английский язык для делового общения. Продвинутый курс - 1","6",3,3],["Экономика","8",3,3],["Цифровая грамотность","8",3,3],["Безопасность жизнедеятельности","8",1,1]]},{"n":3,"r":[["Научно-исследовательский семинар «Основы правового регулирования Big Data»","8",3,3],["Теория государства и права","6",3,3],["Независимый экзамен по цифровой грамотности","8",0,3]]},{"n":4,"r":[["Внутренний экзамен по английскому языку (1 курс)","8",0,4],["Физическая культура","зачёт",0,0],["История России","6",3,3],["Логика и юридическая аргументация","7",3,3],["Научно-исследовательский семинар «Введение в ключевые технологии»","7",3,3],["История государства и права России","7",6,6],["Теория государства и права","6",3,3],["Юридическая теория государства","8",3,3],["Курсовая работа 1 курс","8",3,3],["Судебная власть и правоохранительные органы","5",5,5]]}]},{"y":"2026/27","m":[{"n":1,"r":[["Научно-исследовательский семинар «Введение в цифровое право»","",1,1]]},{"n":2,"r":[["Введение в искусственный интеллект: инструменты и промпты","",3,3],["Вайб-кодинг: как менеджеру быстро собрать MVP и запустить продукт","",3,3],["Гражданское право (Общая часть)","",5,5],["Основы программирования на Python","",3,3],["Конституционное право","",6,6],["Научно-исследовательский семинар «Введение в цифровое право»","",2,2],["Уголовное право (Общая часть)","",3,3],["Независимый экзамен по русскому языку","",0,0],["Финансовый и управленческий учет для предпринимательства","",5,5]]},{"n":3,"r":[["Уголовное право (Общая часть)","",3,3]]},{"n":4,"r":[["Независимый экзамен по алгоритмическому мышлению и программированию. Начальный уровень","",0,3],["Физическая культура","",1,1],["Уголовное право (Особенная часть)","",3,3],["Гражданское право (Общая часть)","",7,7],["Конституционное право","",6,6],["Налогообложение предпринимательской деятельности","",5,5]]}]}];
 function crSum(a,k){return a.reduce(function(s,x){return s+x[k]},0)}
 function crW(n){var a=n%100,b=n%10;return a>10&&a<15?'кредитов':b===1?'кредит':b>1&&b<5?'кредита':'кредитов'}
+var CRMAP=[[/^Гражданское право/,'civil',{2:0,4:1}],[/^Конституционное право/,'const',{2:0,4:1}],[/^Уголовное право \(Общая/,'crim',{2:0,3:1}],[/Python/,'python',{2:0}],[/цифровое право/,'nis',{1:0,2:1}]];
+/* оценка из калькулятора («О предметах») для строки без официальной оценки */
+function crCalc(name,mod){
+  for(var k=0;k<CRMAP.length;k++){
+    if(!CRMAP[k][0].test(name))continue;
+    var id=CRMAP[k][1],mi=CRMAP[k][2][mod],c=CALC[id];
+    if(mi==null||!c||!c.m[mi])return null;
+    var m=c.m[mi],sv=(calcSaved()[id]||{})[mi]||{},ei=0,pt=0,n=0;
+    var vals=m.p.map(function(p,pi){var v=calcNum(sv[pi]==null?'':sv[pi]);if(p[2])ei=pi;if(v!=null){pt+=p[1]*v;n++}return v});
+    if(!n)return null;
+    if(m.block&&vals[ei]!=null&&vals[ei]<4)return {t:'неуд',part:0};
+    return {t:String(calcGrade(pt,m.round)),part:n<m.p.length};
+  }
+  return null;
+}
 function renderCredits(){
   state.heads=null;
   var sel=store('cry')||'all';if(sel!=='all'&&!CR.some(function(y){return y.y===sel}))sel='all';
@@ -1740,17 +1757,21 @@ function renderCredits(){
     var it=[];y.m.forEach(function(m){m.r.forEach(function(x){it.push(x)})});
     var dip=crSum(it,2),rat=crSum(it,3),done=it.filter(function(x){return x[1]!==''}),yR=crSum(done,3),yD=crSum(done,2);
     aR+=rat;gR+=yR;aD+=dip;gD+=yD;
-    h+='<div class="cry"><div class="yh"><span class="yn">'+y.y+'</span><span class="yt"><b>'+rat+'</b> '+crW(rat)+'</span></div>'
-     +'<p class="ys">зачтено '+yR+' из '+rat+' · в диплом '+yD+' из '+dip+'</p>';
+    h+='<div class="cry"><div class="yh"><span class="yn">'+y.y+'</span><span class="yt"><b>'+dip+'</b> '+crW(dip)+' в диплом</span></div>'
+     +'<p class="ys">зачтено '+yD+' из '+dip+' · в рейтинг '+yR+' из '+rat+'</p>';
     y.m.forEach(function(m){
-      h+='<div class="mh"><span>'+m.n+' модуль</span><span>'+crSum(m.r,3)+'</span></div><div class="cr ch"><span>Предмет</span><span>Оценка</span><span>Кредиты</span></div>';
+      h+='<div class="mh"><span>'+m.n+' модуль</span><span>'+crSum(m.r,2)+'</span></div><div class="cr ch"><span>Предмет</span><span>Оценка</span><span>Кредиты</span></div>';
       m.r.forEach(function(x){
-        h+='<div class="cr"><span>'+esc(x[0])+'</span><span class="g'+(x[1]===''?' no':'')+'">'+(x[1]===''?'—':esc(x[1]))+'</span><span>'+(x[3]?x[3]:'–')+(x[2]!==x[3]?'<small>в диплом '+(x[2]?x[2]:'–')+'</small>':'')+'</span></div>';
+        var g,cc=x[1]===''?crCalc(x[0],m.n):null;
+        if(x[1]!=='')g='<span class="g">'+esc(x[1])+'</span>';
+        else if(cc)g='<span class="g'+(cc.part?' no':'')+'">'+(cc.part?'~':'')+cc.t+'<small>калькулятор</small></span>';
+        else g='<span class="g no">—</span>';
+        h+='<div class="cr"><span>'+esc(x[0])+'</span>'+g+'<span class="cn2">'+(x[2]?x[2]:'–')+(x[3]!==x[2]?'<small>рейтинг '+(x[3]?x[3]:'–')+'</small>':'')+'</span></div>';
       });
     });
     h+='</div>';
   });
-  view.innerHTML='<section class="results aboutp"><h1>Кредиты</h1><p class="aboutlead">Предметы, оценки и кредиты по годам. Главное число — кредиты в рейтинг, как «Зачтённые кредиты» в кабинете. Кредиты в диплом считаются отдельно (у части предметов они другие). Данные из личного кабинета.</p>'+tabs+'<p class="crsum">Зачтено <b>'+gR+'</b> из <b>'+aR+'</b> · в диплом <b>'+gD+'</b> из <b>'+aD+'</b></p>'+h+'</section>';
+  view.innerHTML='<section class="results aboutp"><h1>Кредиты</h1><p class="aboutlead">Предметы, оценки и кредиты по годам. Главное число — кредиты в диплом, кредиты в рейтинг (как «Зачтённые кредиты» в кабинете) — мелко рядом. Пока оценки нет в кабинете, показана оценка из калькулятора в «О предметах» (~ — посчитана не по всем полям); в «зачтено» она не входит.</p>'+tabs+'<p class="crsum">В диплом <b>'+gD+'</b> из <b>'+aD+'</b><span> · в рейтинг '+gR+' из '+aR+'</span></p>'+h+'</section>';
 }
 document.addEventListener('click',function(e){
   var b=e.target.closest&&e.target.closest('[data-cry]');if(!b)return;
