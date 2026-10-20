@@ -143,11 +143,6 @@ main{min-width:0;padding-inline:var(--gut);padding-bottom:96px}
 .ab .cv,.tk .cv{width:7px;height:7px;border-right:1.6px solid var(--faint);border-bottom:1.6px solid var(--faint);transform:rotate(45deg) translateY(-2px);transition:transform .2s}
 .ab[open] .cv,.tk[open] .cv{transform:rotate(-135deg) translate(-2px,0)}
 .ab .prose{padding:0 0 24px}
-.zach{margin:0 0 26px}
-.zach .zh{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:0 0 4px;font:600 12.5px/1.3 var(--sans);letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
-.zach .zr{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--line)}
-.zach .dot{flex:none;width:9px;height:9px;border-radius:50%;background:hsl(var(--h) 45% 55%)}
-.zach .zn{flex:1;min-width:0;font:500 16px/1.3 var(--sans)}
 .uh{border-radius:2px;color:inherit;cursor:pointer;-webkit-box-decoration-break:clone;box-decoration-break:clone}
 .uh.c1{background:rgba(255,208,0,.40)}
 .uh.c2{background:rgba(52,199,89,.34)}
@@ -186,29 +181,6 @@ main{min-width:0;padding-inline:var(--gut);padding-bottom:96px}
 #artsheet .ab2 p{margin:0 0 .75em;font:400 16px/1.55 var(--serif)}
 #artsheet .ab2 p.on{margin-inline:-8px;padding:4px 8px;border-radius:6px;background:rgba(255,208,0,.32)}
 #artsheet .src{margin:.5em 0 0;font:400 12.5px/1.4 var(--sans);color:var(--faint)}
-.plan{margin:0 0 26px}
-.plan .zh{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:0 0 10px;font:600 12.5px/1.3 var(--sans);letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
-.plan .pc{margin:0 0 12px;padding:14px;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
-.plan .pn{margin-bottom:8px;font:600 15px/1.3 var(--sans)}
-.plan .pr{display:flex;align-items:center;flex-wrap:wrap;gap:8px 10px;margin:6px 0;font:400 14px/1.3 var(--sans);color:var(--muted)}
-.plan input{height:38px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--fg);font:600 15px/1 var(--sans);text-align:center;-webkit-appearance:none;appearance:none}
-.plan input[type=date]{min-width:150px;padding:0 8px}
-.plan input[type=text]{width:58px;padding:0 4px}
-.plan input:focus{outline:2px solid var(--accent);outline-offset:1px}
-.plan .pch{height:32px;padding:0 12px;border:1px solid var(--line);border-radius:999px;background:var(--bg);color:var(--fg);font:500 13px/1 var(--sans)}
-.plan .pout{margin-top:10px;padding-top:10px;border-top:1px dashed var(--line);font:400 14.5px/1.5 var(--sans);color:var(--muted)}
-.plan .pout b{color:var(--fg);font-weight:600}
-.plan .pout a{color:var(--accent);font-weight:600}
-.tkplan{margin:0 0 18px;padding:11px 14px;border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:8px;background:var(--surface);font:400 14px/1.5 var(--sans);color:var(--muted)}
-.tkplan b{color:var(--fg);font-weight:600}
-.tkplan a{color:var(--accent);font-weight:600}
-.zach .za{display:block;margin-top:2px;font:400 12.5px/1.3 var(--sans);color:var(--muted)}
-.zach .za:empty{display:none}
-.zach .zg{width:54px;height:36px;padding:0 4px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--fg);text-align:center;font:600 15px/1 var(--sans);-webkit-appearance:none;appearance:none}
-.zach .zg:focus{outline:2px solid var(--accent);outline-offset:1px}
-.zach .zs{flex:none;min-width:104px;height:36px;padding:0 10px;border:1px solid var(--line);border-radius:999px;background:var(--surface);color:var(--muted);font:600 13.5px/1 var(--sans)}
-.zach .zs.s1{background:#3a9d5d;border-color:#3a9d5d;color:#fff}
-.zach .zs.s2{background:#d9534f;border-color:#d9534f;color:#fff}
 .crtab{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 16px}
 .crtab button{height:36px;padding:0 16px;border:1px solid var(--line);border-radius:999px;background:var(--bg);color:var(--fg);font:500 14px/1 var(--sans);cursor:pointer}
 .crtab button.on{background:var(--fg);color:var(--bg);border-color:var(--fg)}
@@ -1373,7 +1345,7 @@ function defaultNote(s){
   return (id&&notes[id]&&notes[id].subject===s)?notes[id]:s.notes[s.notes.length-1];
 }
 function resolve(tok){
-  if(tok==='schedule'||tok==='about'||tok==='session'||tok==='credits')return tok;
+  if(tok==='schedule'||tok==='about'||tok==='credits')return tok;
   if(tok==='tickets')return 'tickets-'+(TK[store('tk')]?store('tk'):'const');
   if(/^tickets-(const|crim|civil)(-\d+)?$/.test(tok))return tok;
   if(/^tickets-/.test(tok))return 'tickets-const';
@@ -1397,7 +1369,7 @@ window.addEventListener('hashchange',function(){
 
 /* ---------- навигация: предметы и вкладки ---------- */
 var withNotes=DATA.subjects.filter(function(s){return s.notes.length});
-$('#subjects').innerHTML='<a class="subj" href="#" data-go="" data-s="notes" style="--h:70"><span class="dot"></span><span class="nm">Конспекты</span><span class="ct">'+allNotes.length+'</span></a><a class="subj" href="#schedule" data-go="schedule" data-s="schedule" style="--h:250"><span class="dot"></span><span class="nm">Расписание</span><span class="ct"></span></a><a class="subj" href="#links-1" data-go="links-1" data-s="links-1" style="--h:310"><span class="dot"></span><span class="nm">Ведомости</span><span class="ct"></span></a><a class="subj" href="#tickets" data-go="tickets" data-s="tickets" style="--h:250"><span class="dot"></span><span class="nm">Билеты</span><span class="ct"></span></a><a class="subj" href="#about" data-go="about" data-s="about" style="--h:250"><span class="dot"></span><span class="nm">О предметах</span><span class="ct"></span></a><a class="subj" href="#session" data-go="session" data-s="session" style="--h:250"><span class="dot"></span><span class="nm">Сессия</span><span class="ct"></span></a><a class="subj" href="#credits" data-go="credits" data-s="credits" style="--h:250"><span class="dot"></span><span class="nm">Кредиты</span><span class="ct"></span></a>';
+$('#subjects').innerHTML='<a class="subj" href="#" data-go="" data-s="notes" style="--h:70"><span class="dot"></span><span class="nm">Конспекты</span><span class="ct">'+allNotes.length+'</span></a><a class="subj" href="#schedule" data-go="schedule" data-s="schedule" style="--h:250"><span class="dot"></span><span class="nm">Расписание</span><span class="ct"></span></a><a class="subj" href="#links-1" data-go="links-1" data-s="links-1" style="--h:310"><span class="dot"></span><span class="nm">Ведомости</span><span class="ct"></span></a><a class="subj" href="#tickets" data-go="tickets" data-s="tickets" style="--h:250"><span class="dot"></span><span class="nm">Билеты</span><span class="ct"></span></a><a class="subj" href="#about" data-go="about" data-s="about" style="--h:250"><span class="dot"></span><span class="nm">О предметах</span><span class="ct"></span></a><a class="subj" href="#credits" data-go="credits" data-s="credits" style="--h:250"><span class="dot"></span><span class="nm">Кредиты</span><span class="ct"></span></a>';
 
 function centerIn(box,el){box.scrollLeft=el.offsetLeft-(box.clientWidth-el.offsetWidth)/2}
 
@@ -1685,157 +1657,6 @@ function calcOn(e){
 window.addEventListener('pagehide',calcSave);
 document.addEventListener('visibilitychange',function(){if(document.visibilityState==='hidden')calcSave()});
 
-/* ---------- зачётка: что сдал, что нет ---------- */
-var ZST=['Не сдан','Сдал','Пересдача'];
-function calcFinal(id){
-  var c=CALC[id];if(!c)return null;var sv=calcSaved()[id]||{};
-  for(var mi=c.m.length-1;mi>=0;mi--){
-    var m=c.m[mi],vals=m.p.map(function(p,pi){return calcNum(((sv[mi]||{})[pi])==null?'':sv[mi][pi])});
-    if(vals.some(function(v){return v==null}))continue;
-    var tot=0,ei=0;m.p.forEach(function(p,i){tot+=p[1]*vals[i];if(p[2])ei=i});
-    if(m.block&&vals[ei]<4)return {g:null,fail:1,mod:m.n};
-    return {g:calcGrade(tot,m.round),mod:m.n};
-  }
-  for(var mj=c.m.length-1;mj>=0;mj--){
-    var mm=c.m[mj],vv=mm.p.map(function(p,pi){return calcNum(((sv[mj]||{})[pi])==null?'':sv[mj][pi])});
-    if(!vv.some(function(v){return v!=null}))continue;
-    var pt=0,fw=0,ej=0;mm.p.forEach(function(p,i){if(p[2])ej=i;if(vv[i]!=null){pt+=p[1]*vv[i];fw+=p[1]}});
-    if(mm.block&&vv[ej]!=null&&vv[ej]<4)return {g:null,fail:1,mod:mm.n};
-    return {g:calcGrade(pt,mm.round),tot:pt,partial:1,fw:fw,mod:mm.n};
-  }
-  return null;
-}
-function zachAuto(id){var a=calcFinal(id);if(!a)return null;a.st=a.partial?0:((a.fail||a.g<4)?2:1);return a}
-function zachAll(){try{var o=JSON.parse(store('zach')||'{}');return o&&typeof o==='object'?o:{}}catch(e){return {}}}
-function zachState(r,id){
-  var g=calcNum(r.g==null?'':r.g);if(g!=null&&String(r.g).trim()!=='')return g>=4?1:2;
-  if(r.s!=null)return r.s;
-  var a=id?zachAuto(id):null;return a?a.st:0;
-}
-function zachNote(id,r){
-  if(r.g!=null&&String(r.g).trim()!=='')return '';
-  if(r.s!=null)return '';
-  var a=zachAuto(id);if(!a)return '';
-  if(a.partial)return 'из калькулятора: сейчас '+calcFmt(a.tot)+' → '+a.g+', заполнено '+Math.round(a.fw*100)+'% ('+a.mod+')';
-  return 'из калькулятора: '+(a.fail?'неуд.':a.g)+' ('+a.mod+')';
-}
-function zachHtml(){
-  var z=zachAll(),n=0,t=0,h='';
-  DATA.subjects.forEach(function(s){
-    if(s.id==='links')return;
-    var r=z[s.id]||{},st=zachState(r,s.id),nt=zachNote(s.id,r);t++;if(st===1)n++;
-    h+='<div class="zr" data-z="'+s.id+'" style="--h:'+s.hue+'"><span class="dot"></span><span class="zn">'+esc(s.name)+'<small class="za">'+esc(nt)+'</small></span><input class="zg" type="text" inputmode="decimal" autocomplete="off" placeholder="оц." value="'+(r.g==null?'':esc(r.g))+'" aria-label="Оценка: '+esc(s.name)+'"><button type="button" class="zs s'+st+'" data-zs>'+ZST[st]+'</button></div>';
-  });
-  return '<div class="zach"><div class="zh"><span>Предметы</span><span id="zc">Сдано '+n+' из '+t+'</span></div>'+h+'</div>';
-}
-function zachSync(){
-  var z=zachAll(),n=0;
-  $$('.zach .zr',view).forEach(function(row){
-    var id=row.getAttribute('data-z'),r=z[id]||{},st=zachState(r,id),b=$('.zs',row),a=$('.za',row);
-    b.className='zs s'+st;b.textContent=ZST[st];if(st===1)n++;if(a)a.textContent=zachNote(id,r);
-  });
-  var c=$('#zc');if(c)c.textContent='Сдано '+n+' из '+$$('.zach .zr',view).length;
-}
-function zachSave(){
-  var z=zachAll();
-  $$('.zach .zr',view).forEach(function(row){
-    var id=row.getAttribute('data-z'),r=z[id]||{},v=$('.zg',row).value;
-    if(v.trim()!==''&&r.g!==v)delete r.s;
-    r.g=v;z[id]=r;
-  });
-  store('zach',JSON.stringify(z));
-}
-view.addEventListener('click',function(e){
-  var b=e.target.closest&&e.target.closest('[data-zs]');if(!b)return;
-  var row=b.closest('.zr'),id=row.getAttribute('data-z'),g=$('.zg',row);
-  var z=zachAll(),r=z[id]||{},cur=zachState({g:g.value,s:r.s},id);
-  g.value='';r.g='';
-  r.s=(cur+1)%3;z[id]=r;store('zach',JSON.stringify(z));
-  z=zachAll();z[id]=z[id]||{};z[id].g='';z[id].s=r.s;store('zach',JSON.stringify(z));zachSync();
-});
-['input','change','focusout'].forEach(function(n){view.addEventListener(n,function(e){
-  var t=e.target;if(!t.matches||!t.matches('.zach .zg'))return;zachSave();zachSync();
-})});
-window.addEventListener('pagehide',function(){if($('.zach',view))zachSave()});
-document.addEventListener('visibilitychange',function(){if(document.visibilityState==='hidden'&&$('.zach',view))zachSave()});
-
-/* ---------- план подготовки к экзамену ---------- */
-var PLK=[['const','Конституционное право'],['crim','Уголовное право'],['civil','Гражданское право']];
-function dstr(d){return d.getFullYear()+'-'+two(d.getMonth()+1)+'-'+two(d.getDate())}
-function dnum(x){var m=/^(\d{4})-(\d\d)-(\d\d)$/.exec(x||'');return m?Math.round(Date.UTC(+m[1],+m[2]-1,+m[3])/864e5):NaN}
-function planAll(){try{var o=JSON.parse(store('plan')||'{}');return o&&typeof o==='object'?o:{}}catch(e){return {}}}
-function planGet(k){
-  var p=planAll()[k]||{},nums=TK[k].map(function(x){return x[0]});
-  return {d:p.d||'',a:p.a||nums[0],b:p.b||nums[nums.length-1],s:p.s||dstr(new Date())};
-}
-function planSet(k,patch){var o=planAll(),p=planGet(k);for(var i in patch)p[i]=patch[i];p.s=dstr(new Date());o[k]=p;store('plan',JSON.stringify(o))}
-function planRng(a,b){return a===b?'№ '+a:'№ '+a+'–'+b}
-function planInfo(k){
-  var p=planGet(k);if(!p.d||isNaN(dnum(p.d)))return null;
-  var today=dnum(dstr(new Date())),dl=dnum(p.d)-today,nums=TK[k].map(function(x){return x[0]}).filter(function(n){return n>=p.a&&n<=p.b});
-  if(!nums.length)return {st:'empty'};
-  if(dl<0)return {st:'past'};
-  if(dl===0)return {st:'day0'};
-  var total=Math.max(dnum(p.d)-dnum(p.s),1),sd=Math.max(total-1,1),per=Math.ceil(nums.length/sd),i=Math.max(today-dnum(p.s),0);
-  if(i>=sd)return {st:'review',dl:dl,n:nums.length};
-  var c=nums.slice(i*per,(i+1)*per),t=nums.slice((i+1)*per,(i+2)*per);
-  return {st:'go',dl:dl,per:per,n:nums.length,c:c,t:t.length?t:null};
-}
-function planText(k,info,link){
-  var days=function(n){return plural(n,['день','дня','дней'])};
-  if(!info)return '';
-  if(info.st==='empty')return 'В выбранном диапазоне нет билетов.';
-  if(info.st==='past')return 'Экзамен уже прошёл.';
-  if(info.st==='day0')return '<b>Экзамен сегодня.</b> Удачи!';
-  if(info.st==='review')return 'До экзамена '+days(info.dl)+'. <b>День повторения:</b> пробеги все '+info.n+' билетов по диагонали.';
-  var f=info.c[0],l=info.c[info.c.length-1];
-  var h='До экзамена <b>'+days(info.dl)+'</b> · по <b>'+plural(info.per,['билету','билета','билетов'])+'</b> в день · сегодня <b>'+planRng(f,l)+'</b>';
-  if(link)h+=' <a href="#tickets-'+k+'-'+f+'" data-go="tickets-'+k+'-'+f+'">Открыть</a>';
-  if(info.t)h+='<br>Завтра: '+planRng(info.t[0],info.t[info.t.length-1]);
-  return h;
-}
-function planLine(k){
-  var info=planInfo(k);
-  if(!info)return '<div class="tkplan">План подготовки: <a href="#session" data-go="session">поставить дату экзамена</a></div>';
-  return '<div class="tkplan">'+planText(k,info,true)+'</div>';
-}
-function planHtml(){
-  var h='<div class="plan"><div class="zh"><span>План подготовки к экзамену</span></div>';
-  PLK.forEach(function(x){
-    var k=x[0],p=planGet(k),nums=TK[k].map(function(y){return y[0]});
-    h+='<div class="pc" data-pk="'+k+'"><div class="pn">'+esc(x[1])+'</div>'
-     +'<div class="pr"><span>Экзамен</span><input type="date" data-pf="d" value="'+esc(p.d)+'" aria-label="Дата экзамена"></div>'
-     +'<div class="pr"><span>Билеты с</span><input type="text" inputmode="numeric" data-pf="a" value="'+p.a+'" aria-label="С номера"><span>по</span><input type="text" inputmode="numeric" data-pf="b" value="'+p.b+'" aria-label="По номер">'
-     +(k==='civil'?'<button type="button" class="pch" data-pr="1,86">1–2 модуль</button><button type="button" class="pch" data-pr="1,'+nums[nums.length-1]+'">весь курс</button>':'')+'</div>'
-     +'<div class="pout">'+(planText(k,planInfo(k),true)||'Выбери дату экзамена, и я разложу билеты по дням.')+'</div></div>';
-  });
-  return h+'</div>';
-}
-function planUpdate(card,patch){
-  var k=card.getAttribute('data-pk');planSet(k,patch);
-  var p=planGet(k);
-  $('[data-pf=a]',card).value=p.a;$('[data-pf=b]',card).value=p.b;
-  $('.pout',card).innerHTML=planText(k,planInfo(k),true)||'Выбери дату экзамена, и я разложу билеты по дням.';
-}
-view.addEventListener('change',function(e){
-  var t=e.target,card=t.closest&&t.closest('.plan .pc');if(!card||!t.getAttribute('data-pf'))return;
-  var f=t.getAttribute('data-pf'),patch={};
-  if(f==='d')patch.d=t.value;
-  else{var v=parseInt(t.value,10),k=card.getAttribute('data-pk'),mx=TK[k][TK[k].length-1][0];if(isNaN(v))v=f==='a'?1:mx;patch[f]=Math.max(1,Math.min(mx,v));if(f==='a'&&patch.a>planGet(k).b)patch.b=mx;if(f==='b'&&patch.b<planGet(k).a)patch.a=1}
-  planUpdate(card,patch);
-});
-view.addEventListener('click',function(e){
-  var b=e.target.closest&&e.target.closest('[data-pr]');if(!b)return;
-  var r=b.getAttribute('data-pr').split(',');planUpdate(b.closest('.pc'),{a:+r[0],b:+r[1]});
-});
-
-/* ---------- сессия ---------- */
-function renderSession(){
-  state.heads=null;
-  view.innerHTML='<section class="results aboutp"><h1>Сессия</h1><p class="aboutlead">Что сдано, а что нет. Впиши оценку: от 4 — «Сдал», ниже 4 — «Пересдача». Или просто нажимай на кнопку справа.</p>'+zachHtml()+planHtml()+'</section>';
-}
-
-
 /* ---------- кредиты ---------- */
 /* [предмет, оценка (10-балльная, «зачёт» или пусто), кредиты в диплом, кредиты в рейтинг] — из личного кабинета ВШЭ */
 var CR=[{"y":"2025/26","m":[{"n":1,"r":[["Основы российской государственности","9",2,2]]},{"n":2,"r":[["История государства и права зарубежных стран","6",6,6],["Научно-исследовательский семинар «Информационные технологии в деятельности юриста»","9",3,3],["Научно-исследовательский семинар «Латынь для юристов»","7",3,3],["История России","9",1,1],["Философия","8",3,3],["Английский язык для делового общения. Продвинутый курс - 1","6",3,3],["Экономика","8",3,3],["Цифровая грамотность","8",3,3],["Безопасность жизнедеятельности","8",1,1]]},{"n":3,"r":[["Научно-исследовательский семинар «Основы правового регулирования Big Data»","8",3,3],["Теория государства и права","6",3,3],["Независимый экзамен по цифровой грамотности","8",0,3]]},{"n":4,"r":[["Внутренний экзамен по английскому языку (1 курс)","8",0,4],["Физическая культура","зачёт",0,0],["История России","6",3,3],["Логика и юридическая аргументация","7",3,3],["Научно-исследовательский семинар «Введение в ключевые технологии»","7",3,3],["История государства и права России","7",6,6],["Теория государства и права","6",3,3],["Юридическая теория государства","8",3,3],["Курсовая работа 1 курс","8",3,3],["Судебная власть и правоохранительные органы","5",5,5]]}]},{"y":"2026/27","m":[{"n":1,"r":[["Научно-исследовательский семинар «Введение в цифровое право»","",1,1]]},{"n":2,"r":[["Введение в искусственный интеллект: инструменты и промпты","",3,3],["Вайб-кодинг: как менеджеру быстро собрать MVP и запустить продукт","",3,3],["Гражданское право (Общая часть)","",5,5],["Основы программирования на Python","",3,3],["Конституционное право","",6,6],["Научно-исследовательский семинар «Введение в цифровое право»","",2,2],["Уголовное право (Общая часть)","",3,3],["Независимый экзамен по русскому языку","",0,0],["Финансовый и управленческий учет для предпринимательства","",5,5]]},{"n":3,"r":[["Уголовное право (Общая часть)","",3,3]]},{"n":4,"r":[["Независимый экзамен по алгоритмическому мышлению и программированию. Начальный уровень","",0,3],["Физическая культура","",1,1],["Уголовное право (Особенная часть)","",3,3],["Гражданское право (Общая часть)","",7,7],["Конституционное право","",6,6],["Налогообложение предпринимательской деятельности","",5,5]]}]}];
@@ -1873,20 +1694,29 @@ document.addEventListener('click',function(e){
 
 
 /* ---------- о предметах ---------- */
+function aopenGet(){try{var a=JSON.parse(store('aopen')||'[]');return Array.isArray(a)?a:[]}catch(e){return []}}
 function renderAbout(){
   state.heads=null;
+  var op=aopenGet();if(aboutOpen&&op.indexOf(aboutOpen)<0){op.push(aboutOpen);store('aopen',JSON.stringify(op))}
   var h='<section class="results aboutp"><h1>О предметах</h1><p class="aboutlead">Как считается оценка по каждому предмету. Нажми на предмет.</p><div class="ablist">';
   DATA.subjects.forEach(function(s){
     if(!s.about)return;
     var ml=minLevel(s.about);shift=ml===null?0:3-ml;
-    h+='<details class="ab" style="--h:'+s.hue+'"'+(aboutOpen===s.id?' open':'')+' id="ab-'+s.id+'"><summary><span class="dot"></span><span class="abn">'+esc(s.name)+'</span><span class="cv"></span></summary><div class="prose">'+marked.parse(s.about)+'</div>'+calcHtml(s.id)+'</details>';
+    h+='<details class="ab" style="--h:'+s.hue+'"'+(op.indexOf(s.id)>=0?' open':'')+' id="ab-'+s.id+'"><summary><span class="dot"></span><span class="abn">'+esc(s.name)+'</span><span class="cv"></span></summary><div class="prose">'+marked.parse(s.about)+'</div>'+calcHtml(s.id)+'</details>';
   });
   view.innerHTML=h+'</div></section>';
   $$('.ab td,.ab th',view).forEach(function(c){if(c.textContent.length<=26)c.classList.add('nw')});
   $$('.calc .cm',view).forEach(calcRun);
-  var o=$('.ab[open]',view);aboutOpen='';
+  var o=aboutOpen?$('#ab-'+aboutOpen,view):null;aboutOpen='';
   if(o)setTimeout(function(){window.scrollTo(0,Math.max(0,o.getBoundingClientRect().top+window.scrollY-110))},0);
 }
+
+view.addEventListener('toggle',function(e){
+  var d=e.target;if(!d.classList||!d.classList.contains('ab'))return;
+  var id=d.id.slice(3),a=aopenGet(),i=a.indexOf(id);
+  if(d.open&&i<0)a.push(id);else if(!d.open&&i>=0)a.splice(i,1);else return;
+  store('aopen',JSON.stringify(a));
+},true);
 
 /* ---------- билеты ---------- */
 var TKS=[['const','Конституционное'],['crim','Уголовное'],['civil','Гражданское']];
@@ -1904,7 +1734,7 @@ function renderTickets(k,openN){
     return '<a class="tab'+(on?' on':'')+'" role="tab" aria-selected="'+on+'" href="#tickets-'+x[0]+'" data-go="tickets-'+x[0]+'"><span class="td">'+plural(TK[x[0]].length,['вопрос','вопроса','вопросов'])+'</span><span class="tl">'+x[1]+'</span></a>';
   }).join('');
   var name=subjects[k]?subjects[k].name:'';
-  var h='<section class="results aboutp tkp"><h1>Билеты</h1><p class="aboutlead">'+esc(name)+' · вопросы прошлых лет. Нажми на вопрос — краткий ответ на 2–3 минуты.'+(k==='civil'?' Сборника ответов не было, ответы составлены по ГК РФ.':'')+'</p>'+planLine(k)+stBar(k)+'<div class="ablist">';
+  var h='<section class="results aboutp tkp"><h1>Билеты</h1><p class="aboutlead">'+esc(name)+' · вопросы прошлых лет. Нажми на вопрос — краткий ответ на 2–3 минуты.'+(k==='civil'?' Сборника ответов не было, ответы составлены по ГК РФ.':'')+'</p>'+stBar(k)+'<div class="ablist">';
   TK[k].forEach(function(x,i){
     if(k==='civil'&&(i===0||(x[0]>86&&TK[k][i-1][0]<=86)))h+='<div class="tkmod">'+(x[0]<=86?'1–2 модуль':'3–4 модуль')+'</div>';
     var sd=!!stGet()[k+'-'+x[0]];
@@ -2217,7 +2047,6 @@ function show(tok){
     renderNote(n);
   }else if(tok==='schedule'){schedWeek=0;renderSchedule()}
   else if(tok==='about'){renderAbout()}
-  else if(tok==='session'){renderSession()}
   else if(tok==='credits'){renderCredits()}
   else if(/^tickets-/.test(tok)){var tm=tok.match(/^tickets-(\w+)(?:-(\d+))?$/);renderTickets(tm[1],tm[2]?+tm[2]:0)}
   else{state.heads=null;renderHome()}

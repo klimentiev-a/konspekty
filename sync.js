@@ -14,8 +14,8 @@
 
   /* 2 — отметки и тесты: при подтягивании чужих изменений страница один раз перезагружается;
      1 — «мягкие» настройки и место, где остановились: применяются при следующем открытии */
-  var HARD = /^(fin:(done|quiz|fav|qa)|eng:[^:]+|zach|tk|tkstar|plan|bm|hl)$/;
-  var SOFT = /^(fin:(last|sub|skin)|last(:.+)?|eng:last:.+|fz|skin|theme|siteZoom|calc)$/;
+  var HARD = /^(fin:(done|quiz|fav|qa)|eng:[^:]+|tk|tkstar|bm|hl)$/;
+  var SOFT = /^(fin:(last|sub|skin)|last(:.+)?|eng:last:.+|fz|aopen|skin|theme|siteZoom|calc)$/;
   function kind(k) { return HARD.test(k) ? 2 : SOFT.test(k) ? 1 : 0 }
 
   var P = nget.call(LS, 'hub:last');
