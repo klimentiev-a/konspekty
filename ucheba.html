@@ -259,13 +259,14 @@ main{min-width:0;padding-inline:var(--gut);padding-bottom:96px}
 .cry .yt b{font-size:22px}
 .cry .ys{margin:0 0 6px;font:400 13.5px/1.4 var(--sans);color:var(--muted)}
 .cry .mh{display:flex;justify-content:space-between;gap:12px;margin:18px 0 0;padding:0 0 6px;border-bottom:1px solid var(--line);font:600 12.5px/1.3 var(--sans);letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
-.cry .cr{display:grid;grid-template-columns:minmax(0,1fr) 56px 64px;gap:0 8px;align-items:baseline;padding:10px 0;border-bottom:1px solid var(--line);font:400 15.5px/1.35 var(--sans)}
+.cry .cr{display:grid;grid-template-columns:minmax(0,1fr) 56px 78px;gap:0 8px;align-items:baseline;padding:10px 0;border-bottom:1px solid var(--line);font:400 15.5px/1.35 var(--sans)}
 .cry .cr.ch{padding:8px 0 4px;border-bottom:0;font:600 11.5px/1.2 var(--sans);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
 .cry .cr>span:nth-child(n+2){text-align:right;font-variant-numeric:tabular-nums}
 .cry .cr .g{font-weight:700}
 .cry .cr .no{color:var(--muted);font-weight:400}
 .cry .cr .g small{font-weight:400}
-.cry .cr small{display:block;font:400 12px/1.3 var(--sans);color:var(--muted)}
+.cry .cr.crt{border-bottom:0;border-top:2px solid var(--fg);font-weight:700}
+.cry .cr small{display:block;white-space:nowrap;font:400 12px/1.3 var(--sans);color:var(--muted)}
 
 .calc{margin-top:26px;padding-top:20px;border-top:1px solid var(--line)}
 .calc .ct0{margin:0 0 12px;font:600 12.5px/1.3 var(--sans);letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
@@ -1752,6 +1753,17 @@ function renderCredits(){
     tabs+='<button type="button" role="tab" data-cry="'+t[0]+'" aria-selected="'+(t[0]===sel)+'"'+(t[0]===sel?' class="on"':'')+'>'+t[1]+'</button>';
   });
   tabs+='</div>';
+  if(sel==='all'){
+    var rows=[],tD=0,tR=0;
+    CR.forEach(function(y){y.m.forEach(function(m){m.r.forEach(function(x){if(x[1]!=='')rows.push([x,y.y+' · '+m.n+' модуль'])})})});
+    rows.forEach(function(r){tD+=r[0][2];tR+=r[0][3]});
+    h='<div class="cry"><div class="cr ch"><span>Предмет</span><span>Оценка</span><span>Кредиты</span></div>';
+    rows.forEach(function(r){var x=r[0];
+      h+='<div class="cr"><span>'+esc(x[0])+'<small>'+r[1]+'</small></span><span class="g">'+esc(x[1])+'</span><span class="cn2">'+(x[2]?x[2]:'–')+(x[3]!==x[2]?'<small>рейтинг '+(x[3]?x[3]:'–')+'</small>':'')+'</span></div>';
+    });
+    h+='<div class="cr crt"><span>Итого, '+plural(rows.length,['предмет','предмета','предметов'])+'</span><span></span><span>'+tD+'<small>рейтинг '+tR+'</small></span></div></div>';
+    gD=tD;gR=tR;aD=-1;
+  }else
   CR.forEach(function(y){
     if(sel!=='all'&&y.y!==sel)return;
     var it=[];y.m.forEach(function(m){m.r.forEach(function(x){it.push(x)})});
@@ -1771,7 +1783,7 @@ function renderCredits(){
     });
     h+='</div>';
   });
-  view.innerHTML='<section class="results aboutp"><h1>Кредиты</h1><p class="aboutlead">Предметы, оценки и кредиты по годам. Главное число — кредиты в диплом, кредиты в рейтинг (как «Зачтённые кредиты» в кабинете) — мелко рядом. Пока оценки нет в кабинете, показана оценка из калькулятора в «О предметах» (~ — посчитана не по всем полям); в «зачтено» она не входит.</p>'+tabs+'<p class="crsum">В диплом <b>'+gD+'</b> из <b>'+aD+'</b><span> · в рейтинг '+gR+' из '+aR+'</span></p>'+h+'</section>';
+  view.innerHTML='<section class="results aboutp"><h1>Кредиты</h1><p class="aboutlead">Предметы, оценки и кредиты по годам. Главное число — кредиты в диплом, кредиты в рейтинг (как «Зачтённые кредиты» в кабинете) — мелко рядом. Пока оценки нет в кабинете, показана оценка из калькулятора в «О предметах» (~ — посчитана не по всем полям); в «зачтено» она не входит.</p>'+tabs+'<p class="crsum">В диплом <b>'+gD+'</b>'+(aD<0?'':' из <b>'+aD+'</b>')+'<span> · в рейтинг '+gR+(aD<0?'':' из '+aR)+'</span></p>'+h+'</section>';
 }
 document.addEventListener('click',function(e){
   var b=e.target.closest&&e.target.closest('[data-cry]');if(!b)return;
