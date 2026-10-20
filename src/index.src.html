@@ -224,51 +224,6 @@ main{min-width:0;padding-inline:var(--gut);padding-bottom:96px}
 .cry .cr .g{font-weight:700}
 .cry .cr .no{color:var(--muted);font-weight:400}
 .cry .cr small{display:block;font:400 12px/1.3 var(--sans);color:var(--muted)}
-/* ---------- дела ---------- */
-.todo .td-add{margin:0 0 8px;padding:14px;border:1px solid var(--line);border-radius:14px;background:var(--surface)}
-.todo .td-in,.todo .td-edit{width:100%;height:46px;padding:0 14px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);font:500 16px/1 var(--sans);-webkit-appearance:none;appearance:none}
-.todo .td-edit{height:40px;flex:1;min-width:0}
-.todo .td-in:focus,.todo .td-edit:focus,.todo #tddate:focus{outline:2px solid var(--accent);outline-offset:1px}
-.todo .td-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:10px}
-.todo #tddate{height:36px;min-width:136px;padding:0 8px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--fg);font:500 14px/1 var(--sans)}
-.todo .td-ch{display:flex;flex-wrap:wrap;gap:6px}
-.todo .td-ch button{height:32px;padding:0 12px;border:1px solid var(--line);border-radius:999px;background:var(--bg);color:var(--fg);font:500 13px/1 var(--sans);cursor:pointer}
-.todo .td-ch button.on{background:var(--fg);color:var(--bg);border-color:var(--fg)}
-.todo .td-go{margin-left:auto;height:38px;padding:0 22px;border:0;border-radius:999px;background:var(--fg);color:var(--bg);font:600 14.5px/1 var(--sans);cursor:pointer}
-.todo .td-s{margin:14px 2px 0;font:400 14px/1.4 var(--sans);color:var(--muted)}
-.todo .td-s b{color:var(--fg);font-weight:600}.todo .td-s .bad{color:#d9534f}
-.todo .td-h{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:24px 0 2px;font:600 12.5px/1.3 var(--sans);letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
-.todo .td-h.over{color:#d9534f}
-.todo .td-h.ok{color:#3a9d5d}
-.todo .td-h .n{font-weight:500;letter-spacing:0}
-.todo ul.td-l{list-style:none;margin:0;padding:0}
-.todo .td-i{position:relative;display:flex;align-items:center;gap:12px;margin:0 -10px;padding:13px 10px;border-radius:12px;transition:background .25s}
-.todo .td-i::after{content:"";position:absolute;left:10px;right:10px;bottom:0;height:1px;background:var(--line);transition:opacity .25s}
-.todo .td-i.done{background:color-mix(in srgb,#3a9d5d 16%,transparent)}
-.todo .td-i.done::after,.todo .td-i:last-child::after,.todo .td-i:has(+ .td-i.done)::after{opacity:0}
-.todo .td-c{flex:none;width:26px;height:26px;padding:0;display:grid;place-items:center;border:1.75px solid var(--faint);border-radius:50%;background:transparent;cursor:pointer;transition:background .2s,border-color .2s,transform .15s}
-.todo .td-c:active{transform:scale(.9)}
-.todo .td-c svg{width:16px;height:16px;fill:none;stroke:#fff;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:22;stroke-dashoffset:22;transition:stroke-dashoffset .28s ease}
-.todo .td-c:hover{border-color:#3a9d5d;background:color-mix(in srgb,#3a9d5d 14%,transparent)}
-.todo .done .td-c{background:#3a9d5d;border-color:#3a9d5d}.todo .done .td-c svg{stroke-dashoffset:0}
-.todo .td-t{flex:1;min-width:0;font:500 16px/1.35 var(--sans);overflow-wrap:anywhere;cursor:text}
-.todo .done .td-t{color:var(--fg);cursor:default}
-.todo .td-d{position:relative;flex:none;display:inline-flex;align-items:center;height:28px;padding:0 11px;border:1px solid var(--line);border-radius:999px;font:500 12.5px/1 var(--sans);color:var(--muted);white-space:nowrap;cursor:pointer;overflow:hidden}
-.todo .td-d.now{color:var(--fg);border-color:var(--fg)}
-.todo .td-d.over{color:#d9534f;border-color:#d9534f}
-.todo .td-d.none{border-style:dashed;color:var(--faint)}
-.todo .done .td-d{border-color:color-mix(in srgb,#3a9d5d 55%,transparent);color:var(--muted)}
-.todo .td-d input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer}
-.todo .td-x{flex:none;width:28px;height:28px;padding:0;border:0;border-radius:50%;background:none;color:var(--faint);font:400 22px/1 var(--sans);cursor:pointer}
-.todo .td-x:hover{color:#d9534f;background:color-mix(in srgb,#d9534f 12%,transparent)}
-.todo .td-undo{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:14px 0 0;padding:10px 14px;border-radius:10px;background:var(--fg);color:var(--bg);font:500 14px/1.3 var(--sans)}
-.todo .td-undo button{border:0;background:none;color:inherit;font:700 14px/1 var(--sans);text-decoration:underline;cursor:pointer}
-.todo .td-empty{margin:30px 0;padding:26px 18px;border:1px dashed var(--line);border-radius:14px;text-align:center;color:var(--muted);font:400 15px/1.5 var(--sans)}
-.todo details.td-dn>summary{list-style:none;display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:24px 0 2px;font:600 12.5px/1.3 var(--sans);letter-spacing:.09em;text-transform:uppercase;color:var(--muted);cursor:pointer}
-.todo details.td-dn>summary::-webkit-details-marker{display:none}
-.todo details.td-dn>summary .n{font-weight:500;letter-spacing:0}
-.todo .td-clr{border:0;background:none;color:var(--muted);font:500 13px/1 var(--sans);text-decoration:underline;cursor:pointer;padding:10px 0}
-@media (max-width:520px){.todo .td-go{width:100%;margin-left:0}.todo .td-i{gap:10px}.todo .td-t{font-size:15.5px}}
 
 .calc{margin-top:26px;padding-top:20px;border-top:1px solid var(--line)}
 .calc .ct0{margin:0 0 12px;font:600 12.5px/1.3 var(--sans);letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
@@ -1415,7 +1370,7 @@ function defaultNote(s){
   return (id&&notes[id]&&notes[id].subject===s)?notes[id]:s.notes[s.notes.length-1];
 }
 function resolve(tok){
-  if(tok==='schedule'||tok==='about'||tok==='session'||tok==='todo'||tok==='credits')return tok;
+  if(tok==='schedule'||tok==='about'||tok==='session'||tok==='credits')return tok;
   if(tok==='tickets')return 'tickets-'+(TK[store('tk')]?store('tk'):'const');
   if(/^tickets-(const|crim|civil)(-\d+)?$/.test(tok))return tok;
   if(/^tickets-/.test(tok))return 'tickets-const';
@@ -1439,7 +1394,7 @@ window.addEventListener('hashchange',function(){
 
 /* ---------- навигация: предметы и вкладки ---------- */
 var withNotes=DATA.subjects.filter(function(s){return s.notes.length});
-$('#subjects').innerHTML='<a class="subj" href="#" data-go="" data-s="notes" style="--h:70"><span class="dot"></span><span class="nm">Конспекты</span><span class="ct">'+allNotes.length+'</span></a><a class="subj" href="#schedule" data-go="schedule" data-s="schedule" style="--h:250"><span class="dot"></span><span class="nm">Расписание</span><span class="ct"></span></a><a class="subj" href="#todo" data-go="todo" data-s="todo" style="--h:250"><span class="dot"></span><span class="nm">Дела</span><span class="ct"></span></a><a class="subj" href="#links-1" data-go="links-1" data-s="links-1" style="--h:310"><span class="dot"></span><span class="nm">Ведомости</span><span class="ct"></span></a><a class="subj" href="#tickets" data-go="tickets" data-s="tickets" style="--h:250"><span class="dot"></span><span class="nm">Билеты</span><span class="ct"></span></a><a class="subj" href="#about" data-go="about" data-s="about" style="--h:250"><span class="dot"></span><span class="nm">О предметах</span><span class="ct"></span></a><a class="subj" href="#session" data-go="session" data-s="session" style="--h:250"><span class="dot"></span><span class="nm">Сессия</span><span class="ct"></span></a><a class="subj" href="#credits" data-go="credits" data-s="credits" style="--h:250"><span class="dot"></span><span class="nm">Кредиты</span><span class="ct"></span></a>';
+$('#subjects').innerHTML='<a class="subj" href="#" data-go="" data-s="notes" style="--h:70"><span class="dot"></span><span class="nm">Конспекты</span><span class="ct">'+allNotes.length+'</span></a><a class="subj" href="#schedule" data-go="schedule" data-s="schedule" style="--h:250"><span class="dot"></span><span class="nm">Расписание</span><span class="ct"></span></a><a class="subj" href="#links-1" data-go="links-1" data-s="links-1" style="--h:310"><span class="dot"></span><span class="nm">Ведомости</span><span class="ct"></span></a><a class="subj" href="#tickets" data-go="tickets" data-s="tickets" style="--h:250"><span class="dot"></span><span class="nm">Билеты</span><span class="ct"></span></a><a class="subj" href="#about" data-go="about" data-s="about" style="--h:250"><span class="dot"></span><span class="nm">О предметах</span><span class="ct"></span></a><a class="subj" href="#session" data-go="session" data-s="session" style="--h:250"><span class="dot"></span><span class="nm">Сессия</span><span class="ct"></span></a><a class="subj" href="#credits" data-go="credits" data-s="credits" style="--h:250"><span class="dot"></span><span class="nm">Кредиты</span><span class="ct"></span></a>';
 
 function centerIn(box,el){box.scrollLeft=el.offsetLeft-(box.clientWidth-el.offsetWidth)/2}
 
@@ -1885,118 +1840,24 @@ function crSum(a,k){return a.reduce(function(s,x){return s+x[k]},0)}
 function crW(n){var a=n%100,b=n%10;return a>10&&a<15?'кредитов':b===1?'кредит':b>1&&b<5?'кредита':'кредитов'}
 function renderCredits(){
   state.heads=null;
-  var all=0,got=0,h='';
+  var allR=0,gotR=0,allD=0,gotD=0,h='';
   CR.forEach(function(y){
     var it=[];y.m.forEach(function(m){m.r.forEach(function(x){it.push(x)})});
-    var dip=crSum(it,2),rat=crSum(it,3),gt=crSum(it.filter(function(x){return x[1]!==''}),2);
-    all+=dip;got+=gt;
-    h+='<div class="cry"><div class="yh"><span class="yn">'+y.y+'</span><span class="yt"><b>'+dip+'</b> '+crW(dip)+' в диплом</span></div>'
-     +'<p class="ys">получено '+gt+' · в рейтинг '+rat+'</p>';
+    var dip=crSum(it,2),rat=crSum(it,3),done=it.filter(function(x){return x[1]!==''}),gR=crSum(done,3),gD=crSum(done,2);
+    allR+=rat;gotR+=gR;allD+=dip;gotD+=gD;
+    h+='<div class="cry"><div class="yh"><span class="yn">'+y.y+'</span><span class="yt"><b>'+rat+'</b> '+crW(rat)+'</span></div>'
+     +'<p class="ys">зачтено '+gR+' из '+rat+' · в диплом '+gD+' из '+dip+'</p>';
     y.m.forEach(function(m){
-      h+='<div class="mh"><span>'+m.n+' модуль</span><span>'+crSum(m.r,2)+'</span></div><div class="cr ch"><span>Предмет</span><span>Оценка</span><span>Кредиты</span></div>';
+      h+='<div class="mh"><span>'+m.n+' модуль</span><span>'+crSum(m.r,3)+'</span></div><div class="cr ch"><span>Предмет</span><span>Оценка</span><span>Кредиты</span></div>';
       m.r.forEach(function(x){
-        h+='<div class="cr"><span>'+esc(x[0])+'</span><span class="g'+(x[1]===''?' no':'')+'">'+(x[1]===''?'—':esc(x[1]))+'</span><span>'+(x[2]?x[2]:'–')+(x[3]!==x[2]?'<small>рейтинг '+x[3]+'</small>':'')+'</span></div>';
+        h+='<div class="cr"><span>'+esc(x[0])+'</span><span class="g'+(x[1]===''?' no':'')+'">'+(x[1]===''?'—':esc(x[1]))+'</span><span>'+(x[3]?x[3]:'–')+(x[2]!==x[3]?'<small>в диплом '+(x[2]?x[2]:'–')+'</small>':'')+'</span></div>';
       });
     });
     h+='</div>';
   });
-  view.innerHTML='<section class="results aboutp"><h1>Кредиты</h1><p class="aboutlead">Предметы, оценки и кредиты в диплом по годам. Данные из личного кабинета.</p><p class="crsum">Получено <b>'+got+'</b> из <b>'+all+'</b></p>'+h+'</section>';
+  view.innerHTML='<section class="results aboutp"><h1>Кредиты</h1><p class="aboutlead">Предметы, оценки и кредиты по годам. Главное число — кредиты в рейтинг, как «Зачтённые кредиты» в кабинете. Кредиты в диплом считаются отдельно (у части предметов они другие). Данные из личного кабинета.</p><p class="crsum">Зачтено <b>'+gotR+'</b> из <b>'+allR+'</b> · в диплом <b>'+gotD+'</b> из <b>'+allD+'</b></p>'+h+'</section>';
 }
 
-
-/* ---------- дела ---------- */
-var todoUndo=null;
-function todoAll(){try{var a=JSON.parse(store('todo')||'[]');return Array.isArray(a)?a:[]}catch(e){return []}}
-function todoSave(a){store('todo',JSON.stringify(a));todoCount()}
-function todayStr(){return dstr(new Date())}
-function addDaysStr(n){var x=new Date();x.setHours(12,0,0,0);x.setDate(x.getDate()+n);return dstr(x)}
-function dayDiff(s){return Math.round((new Date(s+'T12:00:00')-new Date(todayStr()+'T12:00:00'))/864e5)}
-function todoCount(){var n=todoAll().filter(function(x){return !x.done}).length,c=$('.subj[data-s=todo] .ct');if(c)c.textContent=n?n:''}
-function todoDue(x){
-  if(!x.d)return 'срок';
-  var k=dayDiff(x.d),d=new Date(x.d+'T12:00:00');
-  if(!x.done&&k<0)return 'просрочено · '+plural(-k,['день','дня','дней']);
-  if(x.done&&k<0)return 'было до '+WD[d.getDay()]+', '+d.getDate()+' '+MON[d.getMonth()];
-  if(k===0)return 'сегодня';if(k===1)return 'завтра';
-  return 'до '+WD[d.getDay()]+', '+d.getDate()+' '+MON[d.getMonth()]+(d.getFullYear()!==new Date().getFullYear()?' '+d.getFullYear():'');
-}
-function todoItem(x){
-  var k=x.d?dayDiff(x.d):null,over=!x.done&&k!==null&&k<0,now=!x.done&&k===0;
-  return '<li class="td-i'+(x.done?' done':'')+'" data-ti="'+esc(x.id)+'"><button type="button" class="td-c" data-tc aria-pressed="'+(x.done?'true':'false')+'" aria-label="'+(x.done?'Вернуть в дела':'Отметить сделанным')+'"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button>'
-   +'<span class="td-t" title="Нажми, чтобы изменить">'+esc(x.t)+'</span>'
-   +'<label class="td-d'+(over?' over':'')+(now?' now':'')+(x.d?'':' none')+'"><span>'+esc(todoDue(x))+'</span><input type="date" data-tdate value="'+esc(x.d||'')+'" aria-label="Срок"></label>'
-   +'<button type="button" class="td-x" data-tdel aria-label="Удалить">×</button></li>';
-}
-function todoDraw(){
-  var box=$('#tdlist');if(!box)return;
-  var a=todoAll(),g={past:[],today:[],tom:[],week:[],later:[],none:[]},doneN=0,overN=0;
-  a.forEach(function(x){
-    if(x.done)doneN++;
-    if(!x.d)g.none.push(x);
-    else{var k=dayDiff(x.d);if(!x.done&&k<0)overN++;(k<0?g.past:k===0?g.today:k===1?g.tom:k<=7?g.week:g.later).push(x)}
-  });
-  var by=function(p,q){var d1=p.done?1:0,d2=q.done?1:0;if(d1!==d2)return d1-d2;var a1=p.d||'9',b1=q.d||'9';return a1<b1?-1:a1>b1?1:(p.at||0)-(q.at||0)};
-  Object.keys(g).forEach(function(k){g[k].sort(by)});
-  var open=a.length-doneN,h='';
-  if(a.length)h+='<p class="td-s">Осталось: <b>'+open+'</b>'+(overN?' · <b class="bad">просрочено: '+overN+'</b>':'')+(doneN?' · сделано: '+doneN:'')+'</p>';
-  if(todoUndo)h+='<div class="td-undo" role="status"><span>Дело удалено</span><button type="button" data-tundo>Вернуть</button></div>';
-  var T=[['past','Просрочено'],['today','Сегодня'],['tom','Завтра'],['week','Ближайшие 7 дней'],['later','Позже'],['none','Без срока']];
-  T.forEach(function(t){
-    var l=g[t[0]];if(!l.length)return;
-    var hasOpen=l.some(function(x){return !x.done}),title=t[1],cls='td-h';
-    if(t[0]==='past'){if(hasOpen)cls+=' over';else{title='Раньше';cls+=' ok'}}
-    h+='<div class="'+cls+'"><span>'+title+'</span><span class="n">'+l.length+'</span></div><ul class="td-l">'+l.map(todoItem).join('')+'</ul>';
-  });
-  if(!a.length)h+='<div class="td-empty">Пока дел нет.<br>Напиши первое выше и поставь срок.</div>';
-  else if(!open)h+='<div class="td-empty">Всё сделано. Можно отдыхать.</div>';
-  if(doneN)h+='<button type="button" class="td-clr" data-tclear>Убрать сделанное из списка</button>';
-  box.innerHTML=h;
-}
-function renderTodo(){
-  state.heads=null;todoUndo=null;
-  view.innerHTML='<section class="results aboutp todo"><h1>Дела</h1><p class="aboutlead">Что нужно сделать. Запиши дело и срок, поставь галочку, когда сделал: дело подсветится зелёным и останется на месте. Нажми на дело, чтобы изменить текст, на срок — чтобы перенести.</p>'
-   +'<form class="td-add" id="tdform" autocomplete="off"><input class="td-in" id="tdtext" type="text" maxlength="200" placeholder="Что нужно сделать?" aria-label="Новое дело" enterkeyhint="done">'
-   +'<div class="td-row"><input type="date" id="tddate" aria-label="Срок"><span class="td-ch"><button type="button" data-tq="0">Сегодня</button><button type="button" data-tq="1">Завтра</button><button type="button" data-tq="7">Через неделю</button></span><button type="submit" class="td-go">Добавить</button></div></form>'
-   +'<div id="tdlist"></div></section>';
-  todoDraw();
-}
-function todoMark(){var v=($('#tddate')||{}).value;$$('.td-ch button',view).forEach(function(b){b.classList.toggle('on',!!v&&addDaysStr(+b.getAttribute('data-tq'))===v)})}
-function todoFind(a,id){for(var i=0;i<a.length;i++)if(a[i].id===id)return i;return -1}
-function todoEdit(li){
-  var id=li.getAttribute('data-ti'),a=todoAll(),i=todoFind(a,id);if(i<0)return;
-  var sp=$('.td-t',li),inp=document.createElement('input'),fin=false;
-  inp.className='td-edit';inp.value=a[i].t;inp.maxLength=200;inp.setAttribute('aria-label','Изменить дело');
-  sp.replaceWith(inp);inp.focus();inp.select();
-  function end(save){if(fin)return;fin=true;var v=inp.value.trim();if(save&&v&&v!==a[i].t){a[i].t=v;todoSave(a)}todoDraw()}
-  inp.addEventListener('blur',function(){end(true)});
-  inp.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();end(true)}else if(e.key==='Escape'){e.preventDefault();end(false)}});
-}
-view.addEventListener('submit',function(e){
-  if(e.target.id!=='tdform')return;e.preventDefault();
-  var t=$('#tdtext'),d=$('#tddate'),v=t.value.trim();if(!v){t.focus();return}
-  var a=todoAll();a.push({id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),t:v,d:d.value||'',done:0,at:Date.now()});
-  todoUndo=null;todoSave(a);t.value='';d.value='';todoMark();todoDraw();t.focus();
-});
-view.addEventListener('change',function(e){
-  var t=e.target;if(t.id==='tddate'){todoMark();return}
-  if(!t.hasAttribute||!t.hasAttribute('data-tdate'))return;
-  var li=t.closest('[data-ti]'),a=todoAll(),i=todoFind(a,li.getAttribute('data-ti'));if(i<0)return;
-  a[i].d=t.value||'';todoSave(a);todoDraw();
-});
-view.addEventListener('click',function(e){
-  var t=e.target;if(!t.closest||!t.closest('.todo'))return;
-  var li=t.closest('[data-ti]'),id=li&&li.getAttribute('data-ti'),a,i;
-  if(t.closest('[data-tc]')){a=todoAll();i=todoFind(a,id);if(i>=0){a[i].done=a[i].done?0:1;a[i].dn=a[i].done?Date.now():0;todoUndo=null;todoSave(a);todoDraw()}return}
-  if(t.closest('[data-tdel]')){a=todoAll();i=todoFind(a,id);if(i>=0){todoUndo={x:a[i],i:i};a.splice(i,1);todoSave(a);todoDraw()}return}
-  if(t.closest('[data-tundo]')){if(todoUndo){a=todoAll();a.splice(Math.min(todoUndo.i,a.length),0,todoUndo.x);todoUndo=null;todoSave(a);todoDraw()}return}
-  if(t.closest('[data-tclear]')){if(confirm('Удалить все сделанные дела?')){a=todoAll().filter(function(x){return !x.done});todoUndo=null;todoSave(a);todoDraw()}return}
-  var q=t.closest('[data-tq]');if(q){var d=$('#tddate');d.value=d.value===addDaysStr(+q.getAttribute('data-tq'))?'':addDaysStr(+q.getAttribute('data-tq'));todoMark();return}
-  var dp=t.closest('.td-d');if(dp){var inp=$('input',dp);try{if(inp&&inp.showPicker)inp.showPicker()}catch(x){}return}
-  var tx=t.closest('.td-t');if(tx&&li&&!li.classList.contains('done'))todoEdit(li);
-});
-document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible'&&state.tok==='todo'&&!$('.td-edit'))todoDraw()});
-window.addEventListener('sync:applied',function(){todoCount();if(state.tok==='todo'&&!$('.td-edit'))todoDraw()});
-todoCount();
 
 /* ---------- о предметах ---------- */
 function renderAbout(){
@@ -2345,7 +2206,6 @@ function show(tok){
   else if(tok==='about'){renderAbout()}
   else if(tok==='session'){renderSession()}
   else if(tok==='credits'){renderCredits()}
-  else if(tok==='todo'){renderTodo()}
   else if(/^tickets-/.test(tok)){var tm=tok.match(/^tickets-(\w+)(?:-(\d+))?$/);renderTickets(tm[1],tm[2]?+tm[2]:0)}
   else{state.heads=null;renderHome()}
   view.classList.remove('rise');void view.offsetWidth;view.classList.add('rise');
