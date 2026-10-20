@@ -150,8 +150,8 @@ $('#b-back').setAttribute('href',PROF+'.html');
 
 /* ---------- оформление (общее с разделом «Финансы») ---------- */
 function applyTheme(t){if(t)root.setAttribute('data-theme',t);else root.removeAttribute('data-theme')}
-var SKINS=[['auto','Как в системе','#F4F1E8','#1F6B57',''],['light','Бумага','#F4F1E8','#1F6B57','light'],['swiss','Швейцария','#F4F4F2','#C8201A','light'],['sepia','Сепия','#EFE3C8','#8A4B14','light'],['ocean','Океан','#E9F0F6','#1A5FA8','light'],
-  ['dark','Ночь','#171611','#5FC2A3','dark'],['graphite','Графит','#15171B','#7BA7F5','dark'],['forest','Лес','#0F1B16','#8FD6A6','dark'],['terminal','Терминал','#0A0A08','#FFB000','dark']];
+var SKINS=[['auto','Как в системе','#F4F1E8','#1F6B57',''],['sepia','Сепия','#EFE3C8','#8A4B14','light'],['ocean','Океан','#E9F0F6','#1A5FA8','light'],
+  ['dark','Ночь','#171611','#5FC2A3','dark'],['graphite','Графит','#15171B','#7BA7F5','dark'],['terminal','Терминал','#0A0A08','#FFB000','dark']];
 function applySkin(id){
   var sk=SKINS.filter(function(x){return x[0]===id})[0];if(!sk){id='auto';sk=SKINS[0]}
   if(id==='auto'){root.removeAttribute('data-skin');applyTheme('')}
@@ -166,7 +166,7 @@ function skinMenu(open){
   if(!open){if(m)m.remove();return}
   if(m){m.remove();return}
   var cur=skinGet();m=document.createElement('div');m.id='thm';m.className='thm';m.setAttribute('role','menu');
-  m.innerHTML='<p>Оформление</p>'+SKINS.map(function(x,i){return (i===1||i===5?'<div class="sep"></div>':'')+'<button type="button" role="menuitemradio" aria-checked="'+(x[0]===cur)+'" class="'+(x[0]===cur?'on':'')+'" data-skin="'+x[0]+'"><span class="skw" style="background:'+x[2]+'"><i style="background:'+x[3]+'"></i></span>'+x[1]+'</button>'}).join('');
+  m.innerHTML='<p>Оформление</p>'+SKINS.map(function(x,i){return (i===1||i===3?'<div class="sep"></div>':'')+'<button type="button" role="menuitemradio" aria-checked="'+(x[0]===cur)+'" class="'+(x[0]===cur?'on':'')+'" data-skin="'+x[0]+'"><span class="skw" style="background:'+x[2]+'"><i style="background:'+x[3]+'"></i></span>'+x[1]+'</button>'}).join('');
   document.body.appendChild(m);
 }
 

@@ -210,8 +210,8 @@ var root=document.documentElement;
 function $(s,e){return (e||document).querySelector(s)}
 function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
 function store(k){try{return localStorage.getItem(k)}catch(e){return null}}
-var SK={swiss:'light',sepia:'light',ocean:'light',graphite:'dark',forest:'dark',terminal:'dark'};
-(function(){var id=store('fin:skin')||'auto';if(SK[id]){root.setAttribute('data-skin',id);root.setAttribute('data-theme',SK[id])}else if(id==='light'||id==='dark'){root.setAttribute('data-theme',id)}else{var t=store('theme');if(t==='dark'||t==='light')root.setAttribute('data-theme',t)}})();
+var SK={sepia:'light',ocean:'light',graphite:'dark',terminal:'dark'};
+(function(){var id=store('fin:skin')||(store('theme')==='dark'?'dark':'auto');if(SK[id]){root.setAttribute('data-skin',id);root.setAttribute('data-theme',SK[id])}else if(id==='dark'){root.setAttribute('data-theme','dark')}})();
 var D=JSON.parse($('#edata').textContent),R=D.routes,CK=D.chokes,OB=D.objects,REG=D.regions,UN={oil:'млн барр/сут',gas:'млрд м³/год',lng:'млн т/год'},KN={oil:'Нефть',gas:'Газ (труба)',lng:'СПГ'},COL={oil:'#E8A33D',gas:'#4EA8DE',lng:'#2FD3AE'};
 var TN={ref:'НПЗ',field:'Месторождения',lng:'СПГ',port:'Порты'},TS={ref:'Нефтеперерабатывающий завод',field:'Месторождение',lng:'Завод или терминал СПГ',port:'Порт или нефтебаза'},TC={ref:'#E8604C',field:'#A87BE0',lng:'#2FD3AE',port:'#6C8FB5'};
 var F={flows:false,kind:'all',ck:false,sel:null,ob:null,lay:{ref:true,field:true,lng:true,port:true},reg:'world',hl:null,cty:null,col:'none'};

@@ -404,7 +404,7 @@ mark{background:var(--mark);color:inherit;border-radius:3px;padding:0 1px}
 
 /* ==================================================================
    СКИНЫ: целиком разное оформление (палитра, шрифты, сетка, формы)
-   A «Бумага» — базовое, выше.  C «Газета»  D «Швейцария»  F «Книга»  G «Поля»  H «Ночь»  I «Сепия»  J «Лес»  K «Графит»
+   C «Газета»  F «Книга»  G «Поля»  H «Ночь»  I «Сепия»  K «Графит»  (Бумага, Швейцария и Лес убраны)
    ================================================================== */
 html[data-skin]:not([data-skin=a]) #btn-theme{display:none}
 
@@ -518,103 +518,6 @@ html:root[data-skin=c] .toast{background:var(--fg);color:var(--bg);font-family:v
   html:root[data-skin=c] .prose h3{font-size:20px}
   html:root[data-skin=c] .tab{padding:10px 12px}
   html:root[data-skin=c] .home .lead{font-size:17px}
-}
-
-/* ============================ D · ШВЕЙЦАРИЯ ============================ */
-html:root[data-skin=d]{--bg:#FFFFFF;--rail:#FFFFFF;--surface:#F3F3F1;--fg:#0A0A0A;--muted:#555555;--faint:#8A8A8A;
-  --line:#0A0A0A;--line2:#E2E2DE;--accent:#E10600;--mark:#FFE14D;--cl:.6;--ch:.2;
-  --serif:'Inter','Helvetica Neue',Helvetica,Arial,sans-serif;--sans:'Inter','Helvetica Neue',Helvetica,Arial,sans-serif;color-scheme:light}
-html:root[data-skin=d] ::selection{background:var(--accent);color:#fff}
-html:root[data-skin=d] .rail{background:var(--bg);border-bottom:1px solid var(--fg)}
-html:root[data-skin=d] .brand{font:700 18px/1 var(--sans);letter-spacing:-.02em}
-html:root[data-skin=d] .brand .sec{color:var(--accent);font-weight:700}
-html:root[data-skin=d] .ibtn{border-radius:0}
-html:root[data-skin=d] .ibtn:hover{background:var(--fg);color:var(--bg)}
-html:root[data-skin=d] #btn-style{font-family:var(--sans)!important;font-weight:700!important;font-size:15px!important}
-html:root[data-skin=d] .searchbar{border:0;border-bottom:1px solid var(--fg);border-radius:0;background:transparent}
-html:root[data-skin=d] .subj{padding:6px 0;margin-right:6px;border:0;border-radius:0;border-bottom:2px solid transparent;color:var(--muted);font:500 14px/1.2 var(--sans)}
-html:root[data-skin=d] .subj .dot,html:root[data-skin=d] .subj .ct{display:none}
-html:root[data-skin=d] .subj:hover{color:var(--fg);background:none}
-html:root[data-skin=d] .subj.on,html:root[data-skin=d] .subj.on:hover{background:none;color:var(--fg);border-bottom-color:var(--accent);box-shadow:none}
-html:root[data-skin=d] .tabs{background:var(--bg);border-bottom:1px solid var(--line2);gap:0}
-html:root[data-skin=d] .tab{padding:12px 20px 12px 0;color:var(--muted);flex-direction:row;align-items:baseline;gap:8px}
-html:root[data-skin=d] .tab .td{font:600 11px/1 var(--sans);letter-spacing:.04em;color:var(--faint)}
-html:root[data-skin=d] .tab .tl{font:500 14px/1.3 var(--sans)}
-html:root[data-skin=d] .tab.on{color:var(--fg)}
-html:root[data-skin=d] .tab.on .td{color:var(--accent)}
-html:root[data-skin=d] .tab.on::after{left:0;right:20px;height:2px;border-radius:0;background:var(--fg)}
-html:root[data-skin=d] .home{max-width:1120px;margin-inline:0;padding-top:48px}
-html:root[data-skin=d] .home h1{font:700 clamp(46px,11vw,128px)/.92 var(--sans);letter-spacing:-.05em}
-html:root[data-skin=d] .home h1 .sec{color:var(--accent);font-weight:700}
-html:root[data-skin=d] .home .lead{max-width:34ch;margin-top:22px;font:400 19px/1.45 var(--sans);color:var(--fg)}
-html:root[data-skin=d] .home .stats{margin-top:22px;font:500 12px/1.4 var(--sans);letter-spacing:.04em;color:var(--faint)}
-html:root[data-skin=d] .resume{border:0;border-top:2px solid var(--fg);border-radius:0;background:none;padding:12px 0 0;margin-top:34px;min-width:260px}
-html:root[data-skin=d] .resume:hover{background:none}
-html:root[data-skin=d] .resume:hover .v{color:var(--accent)}
-html:root[data-skin=d] .resume .k{color:var(--accent)}
-html:root[data-skin=d] .resume .v{font:600 19px/1.3 var(--sans);letter-spacing:-.01em}
-html:root[data-skin=d] .idx{counter-reset:s;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:48px 40px;margin-top:64px}
-html:root[data-skin=d] .isub{padding-top:12px;border-top:3px solid var(--fg)}
-html:root[data-skin=d] .isub h2{font:600 13px/1.2 var(--sans);letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px}
-html:root[data-skin=d] .isub h2::before{counter-increment:s;content:counter(s,decimal-leading-zero);color:var(--accent);margin-right:2px}
-html:root[data-skin=d] .isub h2 .dot{display:none}
-html:root[data-skin=d] .isub h2 .cnt{color:var(--faint)}
-html:root[data-skin=d] .isub li a{grid-template-columns:54px minmax(0,1fr);border-top:1px solid var(--line2);padding:11px 0}
-html:root[data-skin=d] .isub li:last-child a{border-bottom:0}
-html:root[data-skin=d] .isub .d{font:500 12px/1.5 var(--sans);color:var(--faint)}
-html:root[data-skin=d] .isub .t{font:500 16.5px/1.35 var(--sans);letter-spacing:-.01em}
-html:root[data-skin=d] .isub li a:hover .t{color:var(--accent);text-decoration:none}
-html:root[data-skin=d] .note-wrap{padding-top:34px}
-html:root[data-skin=d] .note{max-width:700px;margin-inline:0}
-html:root[data-skin=d] .eyebrow{font:600 11.5px/1.2 var(--sans);letter-spacing:.1em;color:var(--accent)}
-html:root[data-skin=d] .eyebrow .dot,html:root[data-skin=d] .eyebrow .sep{display:none}
-html:root[data-skin=d] .eyebrow span+span::before{content:"/ ";color:var(--faint)}
-html:root[data-skin=d] .note h1{margin:16px 0 26px;font:700 clamp(32px,6.4vw,62px)/1.02 var(--sans);letter-spacing:-.04em}
-html:root[data-skin=d] .back{color:var(--accent);font-family:var(--sans)}
-html:root[data-skin=d] .prose{font:400 17.5px/1.65 var(--sans);color:#161616;letter-spacing:-.003em}
-html:root[data-skin=d] .prose h2{margin:2.9em 0 .8em;padding-top:14px;border-top:3px solid var(--fg);font:700 26px/1.12 var(--sans);letter-spacing:-.03em}
-html:root[data-skin=d] .prose h2:first-child{margin-top:0;padding-top:14px;border-top:3px solid var(--fg)}
-html:root[data-skin=d] .prose h3{margin:2.4em 0 .7em;padding:0;background:none;border:0;border-radius:0;font:600 20px/1.25 var(--sans);letter-spacing:-.02em}
-html:root[data-skin=d] .prose h3::before{content:"";display:inline-block;width:.46em;height:.46em;margin-right:.5em;background:var(--accent);vertical-align:.06em}
-html:root[data-skin=d] .prose h4{font:600 17.5px/1.35 var(--sans)}
-html:root[data-skin=d] .prose p.lbl{margin-top:1.8em;color:var(--accent)}
-html:root[data-skin=d] .prose p.sub{border-bottom:1px solid var(--fg);font-weight:600}
-html:root[data-skin=d] .prose p.verdict{background:none;border:0;border-block:1px solid var(--fg);border-radius:0;padding:14px 0}
-html:root[data-skin=d] .prose p.gist{background:var(--surface);border-radius:0;padding:14px 16px}
-html:root[data-skin=d] .prose a{color:var(--fg);text-decoration-color:var(--accent);text-decoration-thickness:2px}
-html:root[data-skin=d] .prose blockquote{border-left:3px solid var(--fg);font-style:normal;color:var(--muted)}
-html:root[data-skin=d] .prose code,html:root[data-skin=d] .prose pre{border-radius:0;background:var(--surface)}
-html:root[data-skin=d] .tablewrap{border:0;border-top:2px solid var(--fg);border-bottom:1px solid var(--fg);border-radius:0}
-html:root[data-skin=d] .prose th{background:none;color:var(--fg);border-bottom:1px solid var(--fg)}
-html:root[data-skin=d] .toc-inline{border-block:1px solid var(--fg)}
-html:root[data-skin=d] .pager{border-top:3px solid var(--fg)}
-html:root[data-skin=d] .pager a{border:0;border-top:1px solid var(--line2);border-radius:0;padding:14px 0}
-html:root[data-skin=d] .pager a:hover{background:none}
-html:root[data-skin=d] .pager a:hover .v{color:var(--accent)}
-html:root[data-skin=d] .pager .v{font:600 18px/1.3 var(--sans);letter-spacing:-.02em}
-html:root[data-skin=d] .results h1{font:700 clamp(26px,5vw,44px)/1.05 var(--sans);letter-spacing:-.035em}
-html:root[data-skin=d] .hit{border-color:var(--line2)}
-html:root[data-skin=d] .hit h3{font:600 21px/1.25 var(--sans);letter-spacing:-.02em}
-html:root[data-skin=d] .toast{background:var(--fg);color:#fff}
-@media (min-width:900px){
-  html:root[data-skin=d] .app{grid-template-columns:minmax(0,1fr)}
-  html:root[data-skin=d] .rail{position:static;height:auto;flex-direction:row;align-items:center;gap:36px;padding:16px 76px 16px var(--gut);border:0;border-bottom:1px solid var(--fg);background:var(--bg);overflow:visible}
-  html:root[data-skin=d] .brandrow{display:contents}
-  html:root[data-skin=d] .brand{order:0;margin:0;font-size:19px}
-  html:root[data-skin=d] #btn-style{order:3}
-  html:root[data-skin=d] .subjects{order:1;flex:1;min-width:0;overflow-x:auto;flex-direction:row;gap:26px}
-  html:root[data-skin=d] .subj{padding:6px 0;margin:0;font-size:14.5px;white-space:nowrap}
-  html:root[data-skin=d] .searchbar{order:2;width:230px;margin:0}
-  html:root[data-skin=d] .railfoot{display:none}
-  html:root[data-skin=d] main{width:100%;max-width:1180px;margin-inline:auto}
-  html:root[data-skin=d] .tab{padding:14px 22px 13px 0}
-  html:root[data-skin=d] .note-wrap{padding-top:52px}
-  html:root[data-skin=d] .prose{font-size:18px}
-}
-@media (max-width:560px){
-  html:root[data-skin=d] .prose{font-size:17px}
-  html:root[data-skin=d] .prose h2{font-size:23px}
-  html:root[data-skin=d] .home h1{font-size:clamp(44px,15vw,80px)}
 }
 
 /* ============================== F · КНИГА ============================== */
@@ -1004,97 +907,6 @@ html:root[data-skin=i] .toast{background:#3B2A1C;color:#F4E7CB;font:500 16px/1 v
   html:root[data-skin=i] .prose h2{font-size:22px}
   html:root[data-skin=i] .prose h3{font-size:20.5px}
   html:root[data-skin=i] .home .lead{font-size:20px}
-}
-
-/* ============================== J · ЛЕС ============================== */
-html:root[data-skin=j]{--head:'Bitter','PT Serif',Georgia,'Times New Roman',serif;--leaf:16px 3px 16px 3px;
-  --bg:#0F2219;--rail:#0B1A13;--surface:#173025;--fg:#F0E8D2;--muted:#B4C0A8;--faint:#8DA08C;
-  --line:#2D4B3B;--line2:#213B2D;--accent:#F0B24A;--mark:#6F5A1C;--cl:.8;--ch:.13;
-  --serif:'Bitter','PT Serif',Georgia,'Times New Roman',serif;--sans:'IBM Plex Sans',system-ui,-apple-system,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;color-scheme:dark}
-html:root[data-skin=j] body{background:radial-gradient(900px 440px at 10% -60px,rgba(240,178,74,.12),transparent 72%),radial-gradient(800px 520px at 104% 28%,rgba(64,150,96,.13),transparent 72%),var(--bg)}
-html:root[data-skin=j] .bm{opacity:.85;color:var(--muted)}
-html:root[data-skin=j] .bm:hover,html:root[data-skin=j] .bm.on{opacity:1;color:var(--accent)}
-html:root[data-skin=j] ::selection{background:var(--accent);color:#1B1405}
-html:root[data-skin=j] mark{color:#FFF6DC}
-html:root[data-skin=j] .brand{font:800 21px/1 var(--head);letter-spacing:-.01em}
-html:root[data-skin=j] .brand .sec{color:var(--accent);font-weight:800}
-html:root[data-skin=j] .searchbar{border-radius:var(--leaf)}
-html:root[data-skin=j] .searchbar:focus-within{border-color:var(--accent)}
-html:root[data-skin=j] .subj{border-radius:var(--leaf)}
-html:root[data-skin=j] .subj.on{background:var(--accent);border-color:var(--accent);color:#1B1405;font-weight:600}
-html:root[data-skin=j] .subj.on .dot{background:#1B1405}
-html:root[data-skin=j] .tab .td{color:var(--faint)}
-html:root[data-skin=j] .tab.on::after{height:3px;border-radius:3px 0 3px 0;background:var(--accent)}
-html:root[data-skin=j] .home h1{font:800 clamp(42px,8.4vw,68px)/1 var(--head);letter-spacing:-.025em}
-html:root[data-skin=j] .home h1 .sec{color:var(--accent);font-weight:800}
-html:root[data-skin=j] .home .lead{font:400 17.5px/1.55 var(--serif)}
-html:root[data-skin=j] .resume{padding:14px 20px;background:var(--accent);border:0;border-radius:var(--leaf);color:#1B1405}
-html:root[data-skin=j] .resume:hover{background:#F6C269}
-html:root[data-skin=j] .resume .k{color:#43330C;font-weight:700}
-html:root[data-skin=j] .resume .v{font:700 18px/1.3 var(--head)}
-html:root[data-skin=j] .idx{gap:22px;margin-top:46px}
-html:root[data-skin=j] .isub{padding:14px 18px 6px;background:var(--surface);border:1px solid var(--line);border-top:4px solid var(--accent);border-top-color:oklch(var(--cl) var(--ch) var(--h));border-radius:var(--leaf)}
-html:root[data-skin=j] .isub h2{margin:0;padding-bottom:8px;font:800 21px/1.2 var(--head);letter-spacing:-.01em}
-html:root[data-skin=j] .isub li:first-child a{border-top-color:var(--line)}
-html:root[data-skin=j] .isub li:last-child a{border-bottom:0}
-html:root[data-skin=j] .isub li a:hover .t{color:var(--accent);text-decoration:none}
-html:root[data-skin=j] .isub .t{font:400 16px/1.4 var(--serif)}
-html:root[data-skin=j] .next h2,html:root[data-skin=j] .bms h2{color:var(--accent);font-weight:700}
-html:root[data-skin=j] .nx .nt b{font:700 16.5px/1.3 var(--head)}
-html:root[data-skin=j] .nx .rm{border-color:var(--accent);border-radius:var(--leaf);color:var(--accent);padding:3px 11px}
-html:root[data-skin=j] .nx.past{opacity:1}
-html:root[data-skin=j] .nx.past>summary{opacity:.8}
-html:root[data-skin=j] .nx-more a{color:var(--accent)}
-html:root[data-skin=j] .bm-row b{font-family:var(--head);font-weight:700}
-html:root[data-skin=j] .wk button{background:var(--surface);border-color:var(--line);border-radius:var(--leaf)}
-html:root[data-skin=j] .wk button:hover{border-color:var(--accent);color:var(--accent)}
-html:root[data-skin=j] .wk .cur{font-family:var(--head);font-weight:700}
-html:root[data-skin=j] .sd.today h2{color:var(--accent)}
-html:root[data-skin=j] .eyebrow{color:var(--accent);font-weight:600}
-html:root[data-skin=j] .note h1{font:800 clamp(28px,5.2vw,42px)/1.12 var(--head);letter-spacing:-.02em}
-html:root[data-skin=j] .prose{font:400 17px/1.7 var(--serif);font-weight:410;color:#E6DEC8}
-html:root[data-skin=j] .prose strong{font-weight:700;color:#FBF4DE}
-html:root[data-skin=j] .prose h2{margin:2.5em 0 .8em;padding:0;border:0;font:800 25px/1.2 var(--head);letter-spacing:-.015em;color:#FBF4DE}
-html:root[data-skin=j] .prose h2::before{content:"";display:block;width:36px;height:9px;margin-bottom:.55em;border-radius:9px 1px 9px 1px;background:var(--accent)}
-html:root[data-skin=j] .prose h2:first-child{margin-top:0}
-html:root[data-skin=j] .prose h3{border-radius:var(--leaf);font:700 20px/1.3 var(--head);color:#FBF4DE}
-html:root[data-skin=j] .prose h4{font:700 18px/1.38 var(--head)}
-html:root[data-skin=j] .prose p.lbl strong{color:inherit}
-html:root[data-skin=j] .prose p.lbl{display:block;width:fit-content;padding:.3em .85em;background:var(--accent);border-radius:var(--leaf);color:#1B1405;letter-spacing:.12em;font-weight:700}
-html:root[data-skin=j] .prose p.verdict{border-radius:var(--leaf)}
-html:root[data-skin=j] .prose p.gist{background:rgba(240,178,74,.1);border-radius:var(--leaf)}
-html:root[data-skin=j] .prose blockquote{padding:.9em 1.2em;border:0;border-left:4px solid var(--accent);background:var(--surface);border-radius:3px 16px 3px 16px;font-style:normal;color:#CBD3BC}
-html:root[data-skin=j] .prose hr{border-top:2px dotted var(--line)}
-html:root[data-skin=j] .prose code{background:#1F3C2D;color:#F6D58E}
-html:root[data-skin=j] .prose pre{background:#08130D;border:1px solid var(--line);color:#E4DCC4}
-html:root[data-skin=j] .prose pre code{background:none;color:inherit}
-html:root[data-skin=j] .tablewrap{border-radius:var(--leaf);background:var(--surface)}
-html:root[data-skin=j] .prose th{background:#0B1A13;color:var(--accent)}
-html:root[data-skin=j] .prose tbody tr:nth-child(even) td{background:rgba(255,255,255,.025)}
-html:root[data-skin=j] .pager a{background:var(--surface);border-radius:var(--leaf)}
-html:root[data-skin=j] .pager a:hover{border-color:var(--accent)}
-html:root[data-skin=j] .pager .v{font:700 16px/1.3 var(--head)}
-html:root[data-skin=j] .results h1{font:800 clamp(26px,4.8vw,36px)/1.15 var(--head);letter-spacing:-.015em}
-html:root[data-skin=j] .hit{margin-bottom:10px;padding:16px 18px;border:1px solid var(--line);border-radius:var(--leaf);background:var(--surface)}
-html:root[data-skin=j] .hit:last-child{border-bottom:1px solid var(--line)}
-html:root[data-skin=j] .hit:hover{border-color:var(--accent)}
-html:root[data-skin=j] .hit:hover h3{text-decoration:none;color:var(--accent)}
-html:root[data-skin=j] .hit h3{font:700 19px/1.3 var(--head)}
-html:root[data-skin=j] .ab>summary{font:700 19px/1.3 var(--head)}
-html:root[data-skin=j] .tk[open]>summary .tq,html:root[data-skin=j] .ab[open]>summary .abn{color:var(--accent)}
-html:root[data-skin=j] .tkmod{color:var(--accent)}
-html:root[data-skin=j] .toast{background:var(--accent);color:#1B1405;font-weight:600}
-@media (min-width:900px){
-  html:root[data-skin=j] .subj.on{background:var(--surface);border-color:transparent;color:var(--fg);box-shadow:0 0 0 1px var(--line),inset 4px 0 0 var(--accent)}
-  html:root[data-skin=j] .subj.on .dot{background:oklch(var(--cl) var(--ch) var(--h))}
-  html:root[data-skin=j] #btn-style{border-color:var(--line);box-shadow:0 2px 14px rgba(0,0,0,.4)}
-  html:root[data-skin=j] .note-wrap{padding-top:50px}
-  html:root[data-skin=j] .prose{font-size:17.5px}
-}
-@media (max-width:560px){
-  html:root[data-skin=j] .prose{font-size:16.5px}
-  html:root[data-skin=j] .prose h2{font-size:22px}
-  html:root[data-skin=j] .prose h3{font-size:18.5px}
 }
 
 /* ============================== K · ГРАФИТ ============================== */
@@ -1555,11 +1367,11 @@ function hlDom(rootEl,re){
   });
   return count;
 }
-var SKINS={a:'Бумага',c:'Газета',d:'Швейцария',f:'Книга',g:'Поля',h:'Ночь',i:'Сепия',j:'Лес',k:'Графит'},
-SW={a:['#F4F1E8','#A93D28'],c:['#F5F2EA','#B3261E'],d:['#ffffff','#E10600'],f:['#FBF8F1','#8A3A2B'],g:['#FDFDFB','#2F5D8A'],h:['#0D1322','#62D4DC'],i:['#F2E8D0','#9E3C1A'],j:['#0F2219','#F0B24A'],k:['#FFFFFF','#2F3DFF']},
-TCOL={h:'#0D1322',i:'#3B2A1C',j:'#0F2219',k:'#FFFFFF'},
-DEF={civil:'a',const:'f',crim:'c',fin:'d',python:'g',links:'a'};
-function globalSkin(){var v=store('skin');return SKINS[v]?v:'a'}
+var SKINS={c:'Газета',f:'Книга',g:'Поля',h:'Ночь',i:'Сепия',k:'Графит'},
+SW={c:['#F5F2EA','#B3261E'],f:['#FBF8F1','#8A3A2B'],g:['#FDFDFB','#2F5D8A'],h:['#0D1322','#62D4DC'],i:['#F2E8D0','#9E3C1A'],k:['#FFFFFF','#2F3DFF']},
+TCOL={h:'#0D1322',i:'#3B2A1C',k:'#FFFFFF'},
+DEF={civil:'f',const:'f',crim:'c',fin:'f',python:'g',links:'f'};
+function globalSkin(){var v=store('skin');return SKINS[v]?v:'f'}
 function skinOf(s){return globalSkin()}
 function homeSkin(){return globalSkin()}
 var TCM=document.querySelector('meta[name=theme-color]'),TC0=TCM&&TCM.getAttribute('content');

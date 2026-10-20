@@ -88,11 +88,9 @@ document.addEventListener('DOMContentLoaded',function(){var v=g();document.query
   --bg:#171611;--rail:#1D1C16;--surface:#22211A;--fg:#E8E4D8;--muted:#A39D8E;--faint:#7A7466;
   --line:#33312A;--line2:#292820;--accent:#5FC2A3;--accent2:#E8886B;--mark:#5B4A17;--up:#4CC17E;--down:#F07167;color-scheme:dark}
 /* оформления: data-skin (плюс data-theme=light|dark, чтобы карта и графики брали нужную палитру) */
-:root[data-skin="swiss"]{--bg:#F4F4F2;--rail:#EBEBE8;--surface:#FFFFFF;--fg:#141414;--muted:#5A5A58;--faint:#85857F;--line:#D8D8D4;--line2:#E6E6E2;--accent:#C8201A;--accent2:#141414;--mark:#FFE680;--up:#1B7F3B;--down:#C8201A}
 :root[data-skin="sepia"]{--bg:#EFE3C8;--rail:#E6D8B9;--surface:#F7EDD7;--fg:#3B2F1E;--muted:#6F5E45;--faint:#8E7C60;--line:#D2C09A;--line2:#DECDAA;--accent:#8A4B14;--accent2:#A33B2A;--mark:#F0CF7A;--up:#2E6B2E;--down:#A8321F}
 :root[data-skin="ocean"]{--bg:#E9F0F6;--rail:#DCE7F0;--surface:#F7FAFD;--fg:#14283A;--muted:#4B6277;--faint:#7289A0;--line:#C5D4E1;--line2:#D6E1EB;--accent:#1A5FA8;--accent2:#C2561F;--mark:#FFE08A;--up:#1B7A47;--down:#B3261E}
 :root[data-skin="graphite"]{--bg:#15171B;--rail:#1B1E23;--surface:#1F2227;--fg:#E6E8EC;--muted:#9AA1AD;--faint:#6F7683;--line:#2E3239;--line2:#262A30;--accent:#7BA7F5;--accent2:#F2A65A;--mark:#3C4A66;--up:#4FC27F;--down:#F07167}
-:root[data-skin="forest"]{--bg:#0F1B16;--rail:#13231C;--surface:#17291F;--fg:#DDEBDD;--muted:#92AD9A;--faint:#678570;--line:#254233;--line2:#1D3328;--accent:#8FD6A6;--accent2:#E8B45A;--mark:#3F5A24;--up:#5FD08A;--down:#F08A6B}
 :root[data-skin="terminal"]{--bg:#0A0A08;--rail:#11100C;--surface:#15140F;--fg:#F0D9A0;--muted:#B79A55;--faint:#7E6A3A;--line:#3A3115;--line2:#2A240F;--accent:#FFB000;--accent2:#FF6A3D;--mark:#5A4300;--up:#7DDB6A;--down:#FF6B5B;--sans:var(--mono)}
 .thm{position:fixed;z-index:80;top:calc(54px + env(safe-area-inset-top,0px));right:10px;width:min(280px,calc(100vw - 20px));padding:8px;border:1px solid var(--line);border-radius:16px;background:var(--surface);box-shadow:0 14px 40px rgba(0,0,0,.28)}
 .thm p{margin:6px 8px 8px;font:600 13px/1.2 var(--sans);color:var(--muted)}
@@ -307,8 +305,8 @@ $('#b-back').setAttribute('href',PROF+'.html');
 
 /* ---------- оформление (общее с разделом «Финансы») ---------- */
 function applyTheme(t){if(t)root.setAttribute('data-theme',t);else root.removeAttribute('data-theme')}
-var SKINS=[['auto','Как в системе','#F4F1E8','#1F6B57',''],['light','Бумага','#F4F1E8','#1F6B57','light'],['swiss','Швейцария','#F4F4F2','#C8201A','light'],['sepia','Сепия','#EFE3C8','#8A4B14','light'],['ocean','Океан','#E9F0F6','#1A5FA8','light'],
-  ['dark','Ночь','#171611','#5FC2A3','dark'],['graphite','Графит','#15171B','#7BA7F5','dark'],['forest','Лес','#0F1B16','#8FD6A6','dark'],['terminal','Терминал','#0A0A08','#FFB000','dark']];
+var SKINS=[['auto','Как в системе','#F4F1E8','#1F6B57',''],['sepia','Сепия','#EFE3C8','#8A4B14','light'],['ocean','Океан','#E9F0F6','#1A5FA8','light'],
+  ['dark','Ночь','#171611','#5FC2A3','dark'],['graphite','Графит','#15171B','#7BA7F5','dark'],['terminal','Терминал','#0A0A08','#FFB000','dark']];
 function applySkin(id){
   var sk=SKINS.filter(function(x){return x[0]===id})[0];if(!sk){id='auto';sk=SKINS[0]}
   if(id==='auto'){root.removeAttribute('data-skin');applyTheme('')}
@@ -323,7 +321,7 @@ function skinMenu(open){
   if(!open){if(m)m.remove();return}
   if(m){m.remove();return}
   var cur=skinGet();m=document.createElement('div');m.id='thm';m.className='thm';m.setAttribute('role','menu');
-  m.innerHTML='<p>Оформление</p>'+SKINS.map(function(x,i){return (i===1||i===5?'<div class="sep"></div>':'')+'<button type="button" role="menuitemradio" aria-checked="'+(x[0]===cur)+'" class="'+(x[0]===cur?'on':'')+'" data-skin="'+x[0]+'"><span class="skw" style="background:'+x[2]+'"><i style="background:'+x[3]+'"></i></span>'+x[1]+'</button>'}).join('');
+  m.innerHTML='<p>Оформление</p>'+SKINS.map(function(x,i){return (i===1||i===3?'<div class="sep"></div>':'')+'<button type="button" role="menuitemradio" aria-checked="'+(x[0]===cur)+'" class="'+(x[0]===cur?'on':'')+'" data-skin="'+x[0]+'"><span class="skw" style="background:'+x[2]+'"><i style="background:'+x[3]+'"></i></span>'+x[1]+'</button>'}).join('');
   document.body.appendChild(m);
 }
 
