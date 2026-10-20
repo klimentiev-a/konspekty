@@ -209,6 +209,9 @@ main{min-width:0;padding-inline:var(--gut);padding-bottom:96px}
 .zach .zs{flex:none;min-width:104px;height:36px;padding:0 10px;border:1px solid var(--line);border-radius:999px;background:var(--surface);color:var(--muted);font:600 13.5px/1 var(--sans)}
 .zach .zs.s1{background:#3a9d5d;border-color:#3a9d5d;color:#fff}
 .zach .zs.s2{background:#d9534f;border-color:#d9534f;color:#fff}
+.crtab{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 16px}
+.crtab button{height:36px;padding:0 16px;border:1px solid var(--line);border-radius:999px;background:var(--bg);color:var(--fg);font:500 14px/1 var(--sans);cursor:pointer}
+.crtab button.on{background:var(--fg);color:var(--bg);border-color:var(--fg)}
 .crsum{margin:0 0 22px;font:500 16px/1.4 var(--sans)}
 .crsum b{font-weight:700}
 .cry{margin:0 0 30px}
@@ -1840,13 +1843,19 @@ function crSum(a,k){return a.reduce(function(s,x){return s+x[k]},0)}
 function crW(n){var a=n%100,b=n%10;return a>10&&a<15?'кредитов':b===1?'кредит':b>1&&b<5?'кредита':'кредитов'}
 function renderCredits(){
   state.heads=null;
-  var allR=0,gotR=0,allD=0,gotD=0,h='';
+  var sel=store('cry')||'all';if(sel!=='all'&&!CR.some(function(y){return y.y===sel}))sel='all';
+  var aR=0,gR=0,aD=0,gD=0,h='',tabs='<div class="crtab" role="tablist">';
+  [['all','Все']].concat(CR.map(function(y){return [y.y,y.y]})).forEach(function(t){
+    tabs+='<button type="button" role="tab" data-cry="'+t[0]+'" aria-selected="'+(t[0]===sel)+'"'+(t[0]===sel?' class="on"':'')+'>'+t[1]+'</button>';
+  });
+  tabs+='</div>';
   CR.forEach(function(y){
+    if(sel!=='all'&&y.y!==sel)return;
     var it=[];y.m.forEach(function(m){m.r.forEach(function(x){it.push(x)})});
-    var dip=crSum(it,2),rat=crSum(it,3),done=it.filter(function(x){return x[1]!==''}),gR=crSum(done,3),gD=crSum(done,2);
-    allR+=rat;gotR+=gR;allD+=dip;gotD+=gD;
+    var dip=crSum(it,2),rat=crSum(it,3),done=it.filter(function(x){return x[1]!==''}),yR=crSum(done,3),yD=crSum(done,2);
+    aR+=rat;gR+=yR;aD+=dip;gD+=yD;
     h+='<div class="cry"><div class="yh"><span class="yn">'+y.y+'</span><span class="yt"><b>'+rat+'</b> '+crW(rat)+'</span></div>'
-     +'<p class="ys">зачтено '+gR+' из '+rat+' · в диплом '+gD+' из '+dip+'</p>';
+     +'<p class="ys">зачтено '+yR+' из '+rat+' · в диплом '+yD+' из '+dip+'</p>';
     y.m.forEach(function(m){
       h+='<div class="mh"><span>'+m.n+' модуль</span><span>'+crSum(m.r,3)+'</span></div><div class="cr ch"><span>Предмет</span><span>Оценка</span><span>Кредиты</span></div>';
       m.r.forEach(function(x){
@@ -1855,8 +1864,12 @@ function renderCredits(){
     });
     h+='</div>';
   });
-  view.innerHTML='<section class="results aboutp"><h1>Кредиты</h1><p class="aboutlead">Предметы, оценки и кредиты по годам. Главное число — кредиты в рейтинг, как «Зачтённые кредиты» в кабинете. Кредиты в диплом считаются отдельно (у части предметов они другие). Данные из личного кабинета.</p><p class="crsum">Зачтено <b>'+gotR+'</b> из <b>'+allR+'</b> · в диплом <b>'+gotD+'</b> из <b>'+allD+'</b></p>'+h+'</section>';
+  view.innerHTML='<section class="results aboutp"><h1>Кредиты</h1><p class="aboutlead">Предметы, оценки и кредиты по годам. Главное число — кредиты в рейтинг, как «Зачтённые кредиты» в кабинете. Кредиты в диплом считаются отдельно (у части предметов они другие). Данные из личного кабинета.</p>'+tabs+'<p class="crsum">Зачтено <b>'+gR+'</b> из <b>'+aR+'</b> · в диплом <b>'+gD+'</b> из <b>'+aD+'</b></p>'+h+'</section>';
 }
+document.addEventListener('click',function(e){
+  var b=e.target.closest&&e.target.closest('[data-cry]');if(!b)return;
+  store('cry',b.getAttribute('data-cry'));renderCredits();
+});
 
 
 /* ---------- о предметах ---------- */
