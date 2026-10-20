@@ -7,12 +7,16 @@
 <script>(function(){
 var Z=[0.8,0.9,1,1.1,1.2,1.3,1.45,1.6];
 function g(){try{var v=parseFloat(localStorage.getItem('siteZoom'));return v>0?v:1}catch(e){return 1}}
-function ap(v){document.documentElement.style.zoom=(v===1?'':String(v))}
+function ap(v){var d=document.documentElement;d.style.zoom=(v===1?'':String(v));d.style.setProperty('--iz',String(+(1/v).toFixed(4)));
+  if(!document.getElementById('iz-css')){var s=document.createElement('style');s.id='iz-css';s.textContent='.zm,.zmr,.skinmenu{zoom:var(--iz,1)}html,body{overflow-x:clip}';(document.head||d).appendChild(s)}}
 ap(g());
 window.siteZoomGet=g;
 window.siteZoom=function(d){var v=g(),i=Z.indexOf(v);if(i<0)i=2;i=d===0?2:Math.max(0,Math.min(Z.length-1,i+d));v=Z[i];try{localStorage.setItem('siteZoom',String(v))}catch(e){}ap(v);
   document.querySelectorAll('.szv').forEach(function(o){o.textContent=Math.round(v*100)+'%'});try{window.dispatchEvent(new Event('resize'))}catch(e){}return v};
-document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('[data-sz]');if(!b)return;e.preventDefault();e.stopPropagation();siteZoom(+b.getAttribute('data-sz'))},true);
+document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('[data-sz]');if(!b)return;e.preventDefault();e.stopPropagation();var r0=b.getBoundingClientRect();siteZoom(+b.getAttribute('data-sz'));
+  var r1=b.getBoundingClientRect(),dx=r1.left-r0.left,dy=r1.top-r0.top;if(dx||dy){try{window.scrollBy(dx,dy)}catch(er){}}
+  var w=b.closest('.zm,.zmr,.skinmenu'),r2=b.getBoundingClientRect(),ex=r2.left-r0.left,ey=r2.top-r0.top;
+  if(w&&(Math.abs(ex)>.5||Math.abs(ey)>.5)){var t=w.__t||[0,0];t=[t[0]-ex,t[1]-ey];w.__t=t;w.style.transform='translate('+t[0]+'px,'+t[1]+'px)'}},true);   // кнопка остаётся под курсором
 window.addEventListener('storage',function(e){if(e.key==='siteZoom')ap(g())});
 document.addEventListener('DOMContentLoaded',function(){var v=g();document.querySelectorAll('.szv').forEach(function(o){o.textContent=Math.round(v*100)+'%'})});
 })();
