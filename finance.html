@@ -2835,6 +2835,38 @@ function renderLife(){
   Promise.all([wLoad(),LF.tax?LF.tax:wGet('world/tax.json').catch(function(){return null})]).then(function(r){LF.tax=r[1];if(state!=='world'||!$('#lf-body'))return;if(!WM.wages){$('#lf-body').innerHTML='<p class="empty">Данных о зарплатах нет.</p>';return}lfDraw()}).catch(function(){var e=$('#lf-body');if(e)e.innerHTML='<p class="empty">Не удалось загрузить данные. <button type="button" class="chip sm" data-wretry>Повторить</button></p>'});
 }
 
+/* ---------- запоминаем место чтения ---------- */
+(function(){
+  var SK='scrollpos',hold=0,tgt=null,st=0;
+  try{history.scrollRestoration='manual'}catch(e){}
+  function rd(){try{var o=JSON.parse(localStorage.getItem(SK)||'{}');return o&&typeof o==='object'?o:{}}catch(e){return {}}}
+  function wr(o){try{var ks=Object.keys(o);if(ks.length>80){ks.sort(function(a,b){return (o[a].t||0)-(o[b].t||0)});ks.slice(0,ks.length-80).forEach(function(k){delete o[k]})}localStorage.setItem(SK,JSON.stringify(o))}catch(e){}}
+  function key(){return window.__scrollKey?window.__scrollKey():location.pathname.split('/').pop()+location.hash}
+  function save(){
+    if(Date.now()<hold)return;var k=key();if(!k)return;
+    var y=Math.round(window.scrollY),o=rd();if(y<120)delete o[k];else o[k]={y:y,t:Date.now()};wr(o);
+  }
+  window.addEventListener('scroll',function(){clearTimeout(st);st=setTimeout(save,250)},{passive:true});
+  ['touchstart','wheel','keydown','mousedown'].forEach(function(ev){window.addEventListener(ev,function(){hold=0;tgt=null},{passive:true,capture:true})});
+  window.addEventListener('pagehide',save);
+  document.addEventListener('visibilitychange',function(){if(document.hidden)save()});
+  window.__holdScroll=function(){hold=Date.now()+600};
+  window.__restoreScroll=function(){
+    var k=key(),e=k&&rd()[k];hold=Date.now()+2500;tgt=e&&e.y>0?e.y:null;
+    if(tgt===null){hold=Date.now()+300;return false}
+    var tries=0;
+    (function go(){
+      if(tgt===null)return;
+      var max=document.documentElement.scrollHeight-window.innerHeight;
+      window.scrollTo({top:Math.min(tgt,Math.max(0,max)),behavior:'instant'});
+      if(max>=tgt-2){hold=Date.now()+400;return}
+      if(++tries>20){hold=0;return}
+      setTimeout(go,150);
+    })();
+    return true;
+  };
+})();
+
 /* ---------------- роутинг ---------------- */
 var state='',LASTCARD='';
 function route(){
@@ -2870,8 +2902,8 @@ function route(){
   }
 }
 function enter(){view.classList.remove('enter');void view.offsetWidth;view.classList.add('enter')}
-window.addEventListener('hashchange',function(){window.scrollTo(0,0);route();enter();if(!Q)return;});
-route();
+window.addEventListener('hashchange',function(){window.__holdScroll();window.scrollTo(0,0);route();enter();if(!Q)return;});
+route();window.__restoreScroll();
 })();
 </script>
 </body></html>
