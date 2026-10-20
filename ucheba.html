@@ -1755,14 +1755,16 @@ function renderCredits(){
   tabs+='</div>';
   if(sel==='all'){
     var rows=[],tD=0,tR=0;
-    CR.forEach(function(y){y.m.forEach(function(m){m.r.forEach(function(x){if(x[1]!=='')rows.push([x,y.y+' · '+m.n+' модуль'])})})});
-    rows.forEach(function(r){tD+=r[0][2];tR+=r[0][3]});
+    CR.forEach(function(y){y.m.forEach(function(m){m.r.forEach(function(x){rows.push([x,y.y+' · '+m.n+' модуль',m.n])})})});
     h='<div class="cry"><div class="cr ch"><span>Предмет</span><span>Оценка</span><span>Кредиты</span></div>';
-    rows.forEach(function(r){var x=r[0];
-      h+='<div class="cr"><span>'+esc(x[0])+'<small>'+r[1]+'</small></span><span class="g">'+esc(x[1])+'</span><span class="cn2">'+(x[2]?x[2]:'–')+(x[3]!==x[2]?'<small>рейтинг '+(x[3]?x[3]:'–')+'</small>':'')+'</span></div>';
+    rows.forEach(function(r){var x=r[0],cc=x[1]===''?crCalc(x[0],r[2]):null,g;
+      tD+=x[2];tR+=x[3];aD+=x[2];aR+=x[3];if(x[1]!==''){gD+=x[2];gR+=x[3]}
+      if(x[1]!=='')g='<span class="g">'+esc(x[1])+'</span>';
+      else if(cc)g='<span class="g'+(cc.part?' no':'')+'">'+(cc.part?'~':'')+cc.t+'<small>калькулятор</small></span>';
+      else g='<span class="g no">—</span>';
+      h+='<div class="cr"><span>'+esc(x[0])+'<small>'+r[1]+'</small></span>'+g+'<span class="cn2">'+(x[2]?x[2]:'–')+(x[3]!==x[2]?'<small>рейтинг '+(x[3]?x[3]:'–')+'</small>':'')+'</span></div>';
     });
-    h+='<div class="cr crt"><span>Итого, '+plural(rows.length,['предмет','предмета','предметов'])+'</span><span></span><span>'+tD+'<small>рейтинг '+tR+'</small></span></div></div>';
-    gD=tD;gR=tR;aD=-1;
+    h+='<div class="cr crt"><span>Итого за два года, '+plural(rows.length,['предмет','предмета','предметов'])+'</span><span></span><span>'+tD+'<small>рейтинг '+tR+'</small></span></div></div>';
   }else
   CR.forEach(function(y){
     if(sel!=='all'&&y.y!==sel)return;
@@ -1783,7 +1785,7 @@ function renderCredits(){
     });
     h+='</div>';
   });
-  view.innerHTML='<section class="results aboutp"><h1>Кредиты</h1><p class="aboutlead">Предметы, оценки и кредиты по годам. Главное число — кредиты в диплом, кредиты в рейтинг (как «Зачтённые кредиты» в кабинете) — мелко рядом. Пока оценки нет в кабинете, показана оценка из калькулятора в «О предметах» (~ — посчитана не по всем полям); в «зачтено» она не входит.</p>'+tabs+'<p class="crsum">В диплом <b>'+gD+'</b>'+(aD<0?'':' из <b>'+aD+'</b>')+'<span> · в рейтинг '+gR+(aD<0?'':' из '+aR)+'</span></p>'+h+'</section>';
+  view.innerHTML='<section class="results aboutp"><h1>Кредиты</h1><p class="aboutlead">Предметы, оценки и кредиты по годам. Главное число — кредиты в диплом, кредиты в рейтинг (как «Зачтённые кредиты» в кабинете) — мелко рядом. Пока оценки нет в кабинете, показана оценка из калькулятора в «О предметах» (~ — посчитана не по всем полям); в «зачтено» она не входит.</p>'+tabs+'<p class="crsum">В диплом <b>'+gD+'</b> из <b>'+aD+'</b><span> · в рейтинг '+gR+' из '+aR+'</span></p>'+h+'</section>';
 }
 document.addEventListener('click',function(e){
   var b=e.target.closest&&e.target.closest('[data-cry]');if(!b)return;
