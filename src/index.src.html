@@ -329,6 +329,19 @@ html:root[data-skin=c] .next,html:root[data-skin=c] .bms,html:root[data-skin=f] 
 .toc-inline .list{display:flex;flex-direction:column;padding:0 0 12px;max-height:56vh;overflow-y:auto}
 .toc a{display:block;padding:6px 0;text-decoration:none;color:var(--muted)}
 .toc a:hover{color:var(--fg)}
+.toc .tr{display:flex;align-items:center}
+.toc .tr a{flex:1;min-width:0}
+.toc .tx{flex:none;width:34px;height:34px;margin-left:4px;padding:0;border:0;background:none;color:var(--muted);cursor:pointer;display:grid;place-items:center;-webkit-tap-highlight-color:transparent}
+.toc .tx::after{content:"";width:7px;height:7px;border-right:1.6px solid currentColor;border-bottom:1.6px solid currentColor;transform:rotate(45deg) translateY(-2px);transition:transform .2s}
+.toc .tx[aria-expanded=true]::after{transform:rotate(-135deg)}
+.toc .tx:hover{color:var(--fg)}
+.toc .ts[hidden]{display:none}
+.toc .tg a.d0{font-weight:500}
+.toc-side .tg.cur>.tr a.d0{color:var(--fg)}
+.toc-side .tg.cur>.tr a.d0{border-left-color:var(--accent)}
+.toc-side .tr a.d0{padding-left:12px}
+.toc-inline .tr a.d0{padding-left:0}
+.toc-inline .ts a.d1{padding-left:14px}
 .toc a.d1{padding-left:14px}
 .toc a.d2{padding-left:28px}
 .toc-side{display:none}
@@ -1544,8 +1557,23 @@ function buildToc(heads){
     var d=Math.min(stack.length,2);stack.push(lv);
     return {d:d,t:el.textContent.replace(/\s+/g,' ').trim()};
   });
-  return items.map(function(it,i){return '<a href="#" class="d'+it.d+'" data-i="'+i+'">'+esc(it.t)+'</a>'}).join('');
+  var out='',open=false,top=0;
+  function link(it,i){return '<a href="#" class="d'+it.d+'" data-i="'+i+'">'+esc(it.t)+'</a>'}
+  items.forEach(function(it,i){
+    if(it.d===0){
+      if(open)out+='</div></div>';
+      top++;
+      var kids=i+1<items.length&&items[i+1].d>0;
+      out+='<div class="tg"><div class="tr">'+link(it,i)+(kids?'<button type="button" class="tx" data-tx aria-expanded="false" aria-label="Показать подпункты"></button>':'')+'</div>'+(kids?'<div class="ts" hidden>':'');
+      open=kids;
+      if(!kids)out+='</div>';
+    }else out+=link(it,i);
+  });
+  if(open)out+='</div></div>';
+  tocTop=top;
+  return out;
 }
+var tocTop=0;
 function hlDom(rootEl,re){
   var w=document.createTreeWalker(rootEl,NodeFilter.SHOW_TEXT,null),list=[],n,count=0;
   while((n=w.nextNode()))list.push(n);
@@ -1602,7 +1630,7 @@ function renderNote(n){
   if(state.heads.length>=3){
     var toc=buildToc(state.heads);
     var det=document.createElement('details');det.className='toc toc-inline';
-    det.innerHTML='<summary>Содержание <span class="n">'+state.heads.length+'</span></summary><div class="list">'+toc+'</div>';
+    det.innerHTML='<summary>Содержание <span class="n">'+tocTop+'</span></summary><div class="list">'+toc+'</div>';
     $('.note',view).insertBefore(det,prose);
     var side=document.createElement('aside');side.className='toc toc-side';side.setAttribute('aria-label','Содержание');
     side.innerHTML='<p class="h">Содержание</p>'+toc;
@@ -2396,6 +2424,13 @@ document.addEventListener('click',function(e){
   }
   var bx=t.closest('[data-bmdel]');
   if(bx){e.preventDefault();var a2=getBm();a2.splice(+bx.getAttribute('data-bmdel'),1);setBm(a2);renderHome();return}
+  var tx=t.closest('.toc [data-tx]');
+  if(tx){
+    e.preventDefault();
+    var g=tx.closest('.tg'),sb=g&&$('.ts',g),op=tx.getAttribute('aria-expanded')==='true';
+    if(sb){sb.hidden=op;tx.setAttribute('aria-expanded',op?'false':'true')}
+    return;
+  }
   var ti=t.closest('.toc a[data-i]');
   if(ti){
     e.preventDefault();
@@ -2471,8 +2506,13 @@ function updateScroll(){
     for(var i=0;i<state.heads.length;i++){if(state.heads[i].getBoundingClientRect().top<=120)idx=i;else break}
     var links=$$('.toc-side a');
     links.forEach(function(l,k){l.classList.toggle('on',k===idx)});
+    $$('.toc-side .tg').forEach(function(g){g.classList.remove('cur')});
     var cur=links[idx];
-    if(cur&&cur!==side){var box=cur.parentNode;if(box.scrollHeight>box.clientHeight)box.scrollTop=cur.offsetTop-box.clientHeight/2}
+    if(cur){
+      var gr=cur.closest('.tg');if(gr)gr.classList.add('cur');
+      var vis=cur.offsetParent?cur:(gr&&$('a',gr))||cur;
+      if(cur!==side){var box=$('.toc-side');if(box&&box.scrollHeight>box.clientHeight){var tp=vis.getBoundingClientRect().top-box.getBoundingClientRect().top+box.scrollTop;box.scrollTop=tp-box.clientHeight/2}}
+    }
   }
 }
 window.addEventListener('scroll',function(){
