@@ -1699,6 +1699,7 @@ function renderCredits(){
       else g='<span class="g no">—</span>';
       h+='<div class="cr"><span>'+esc(x[0])+'<small>'+r[1]+'</small></span>'+g+'<span class="cn2">'+(x[2]?x[2]:'–')+(x[3]!==x[2]?'<small>рейтинг '+(x[3]?x[3]:'–')+'</small>':'')+'</span></div>';
     });
+    h='<div class="cry"><div class="yh"><span class="yn">Оба года</span><span class="yt"><b>'+tD+'</b> '+crW(tD)+' в диплом</span></div><p class="ys">зачтено '+gD+' из '+tD+' · в рейтинг '+gR+' из '+tR+'</p></div>'+h;
     h+='<div class="cr crt"><span>Итого за два года, '+plural(rows.length,['предмет','предмета','предметов'])+'</span><span></span><span>'+tD+'<small>рейтинг '+tR+'</small></span></div></div>';
   }else
   CR.forEach(function(y){
@@ -1720,7 +1721,7 @@ function renderCredits(){
     });
     h+='</div>';
   });
-  view.innerHTML='<section class="results aboutp"><h1>Кредиты</h1><p class="aboutlead">Предметы, оценки и кредиты по годам. Главное число — кредиты в диплом, кредиты в рейтинг (как «Зачтённые кредиты» в кабинете) — мелко рядом. Пока оценки нет в кабинете, показана оценка из калькулятора в «О предметах» (~ — посчитана не по всем полям); в «зачтено» она не входит.</p>'+tabs+'<p class="crsum">В диплом <b>'+gD+'</b> из <b>'+aD+'</b><span> · в рейтинг '+gR+' из '+aR+'</span></p>'+h+'</section>';
+  view.innerHTML='<section class="results aboutp"><h1>Кредиты</h1><p class="aboutlead">Предметы, оценки и кредиты по годам. Главное число — кредиты в диплом, кредиты в рейтинг (как «Зачтённые кредиты» в кабинете) — мелко рядом. Пока оценки нет в кабинете, показана оценка из калькулятора в «О предметах» (~ — посчитана не по всем полям); в «зачтено» она не входит.</p>'+tabs+(sel==='all'?'':'<p class="crsum">В диплом <b>'+gD+'</b> из <b>'+aD+'</b><span> · в рейтинг '+gR+' из '+aR+'</span></p>')+h+'</section>';
 }
 document.addEventListener('click',function(e){
   var b=e.target.closest&&e.target.closest('[data-cry]');if(!b)return;
