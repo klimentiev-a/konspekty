@@ -1003,6 +1003,7 @@ function termCards(q,trx){
     try{ex=ok=new RegExp('^(?:'+x.p.join('|')+')$','i').test(qq)}catch(e){}
     var head=lc(x.t.split(/\s+[—(]/)[0]);
     if(!ok&&(head===ql||(ql.length>=3&&head.indexOf(ql)===0)))ok=true;
+    if(!ok&&ql.length>=5&&head.split(/[^a-zа-я0-9]+/).some(function(w){return w.length>=5&&w.indexOf(ql)===0}))ok=true;
     if(!ok&&trx&&trx.test(head)&&head.length<=Math.max(8,ql.length*2))ok=true;
     if(ok){x._ex=ex||head===ql;out.push(x)}});
   out.sort(function(a,b){return (b._ex?1:0)-(a._ex?1:0)});
