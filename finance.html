@@ -747,7 +747,7 @@ details.more{position:relative;flex:none}details.more>summary{list-style:none;cu
     <div class="zm" role="group" aria-label="Масштаб страницы"><button type="button" data-sz="-1" aria-label="Уменьшить">A−</button><button type="button" class="szv" data-sz="0" title="Сбросить масштаб">100%</button><button type="button" data-sz="1" aria-label="Увеличить">A+</button></div><button class="ibtn" id="b-search" type="button" aria-label="Поиск"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg></button>
     <button class="ibtn" id="b-theme" type="button" aria-label="Сменить тему"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 1 0 16z" fill="currentColor" stroke="none"/></svg></button>
   </div>
-  <div class="search" id="search"><input id="q" type="search" placeholder="Поиск: WACC, EBITDA, банки…" autocomplete="off" enterkeyhint="search" aria-label="Поиск по справочнику"></div>
+  <div class="search" id="search"><input id="q" type="search" placeholder="Поиск: слово или формула (WACC, FV=PV*(1+r))" autocomplete="off" enterkeyhint="search" aria-label="Поиск по справочнику"></div>
   <nav class="sw" id="sw"><a href="#home" data-s="home">Главная</a><a href="#learn" data-s="learn">Обучение</a><a href="#markets" data-s="markets">Рынки</a><a href="#world" data-s="world">Мир</a><a href="#calc" data-s="calc">Расчёты</a><a href="ucheba.html" class="out" title="Перейти в раздел «Учёба»">Учёба →</a></nav>
 </header>
 <div id="prog"></div><button id="totop" type="button" aria-label="Наверх" hidden>↑</button>
@@ -957,7 +957,7 @@ function renderChapter(c){
     var bar=document.createElement('div');bar.className='rq';bar.innerHTML='<button type="button" class="chip on" data-rq>Случайный вопрос</button><span>Подумай над ответом вслух, потом открой и сверься.</span>';
     var pr=view.querySelector('.prose');pr.insertBefore(bar,pr.firstChild.nextSibling);
   }
-  if(Q){hl(view.querySelector('.prose'),Q)}
+  if(Q){hl(view.querySelector('.prose'),Q,HS)}
   qzInit(c);
 }
 function qaStore(){try{return JSON.parse(store('fin:qa')||'{}')||{}}catch(e){return {}}}
@@ -1024,25 +1024,64 @@ var prog=document.getElementById('prog'),totop=document.getElementById('totop');
 function onScroll(){var h=document.documentElement,max=h.scrollHeight-innerHeight;var art=state==='learn'&&view.querySelector('.art');prog.style.transform='scaleX('+(art&&max>0?Math.min(1,scrollY/max):0)+')';totop.hidden=scrollY<900}
 window.addEventListener('scroll',onScroll,{passive:true});window.addEventListener('hashchange',function(){setTimeout(onScroll,50)});
 totop.onclick=function(){scrollTo({top:0,behavior:'smooth'})};
-/* поиск */
-var Q='';
-function hl(el,q){
-  var re=new RegExp('('+q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','gi'),w=document.createTreeWalker(el,NodeFilter.SHOW_TEXT),n,list=[];
+/* поиск: по разделам глав, по словам (с окончаниями) и по формулам */
+var Q='',HS='';
+function lc(x){return String(x).toLowerCase().replace(/ё/g,'е')}
+function nzf(x){return lc(x).replace(/\s+/g,'').replace(/\*/g,'×').replace(/[-–—]/g,'−').replace(/÷/g,'/').replace(/[`$]/g,'')}
+function escRe(c){return c.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')}
+function isFormula(q){return /[=×*÷\/^+−\-()<>≈≥≤]/.test(q)&&q.replace(/\s+/g,'').length>=3}
+function toks(q){return lc(q).split(/[\s,;]+/).filter(Boolean).map(function(t){return t.length>5?t.slice(0,t.length-2):t})}
+function qrx(q,g){
+  var f=isFormula(q);
+  var src=f?Array.from(q.replace(/\s+/g,'')).map(function(c){
+    if(c==='*'||c==='×')return '[*×]';if(c==='-'||c==='−'||c==='–')return '[-−–]';if(c==='/'||c==='÷')return '[/÷]';
+    if(c==='е'||c==='ё'||c==='Е'||c==='Ё')return '[еёЕЁ]';return escRe(c)}).join('\\s*')
+  :toks(q).map(function(t){return escRe(t).replace(/[её]/g,'[её]')}).join('|');
+  return new RegExp(src,g?'gi':'i')
+}
+function secsOf(c){
+  if(c.secs)return c.secs;
+  var secs=[],cur={h:c.title,t:[c.short||'']},code=false;
+  c.md.split('\n').forEach(function(l){
+    if(/^```/.test(l))code=!code;
+    var m=!code&&l.match(/^#{2,3}\s+(.*)/);
+    if(m){secs.push(cur);cur={h:m[1].replace(/[*`]/g,'').trim(),t:[]}}else cur.t.push(l)});
+  secs.push(cur);
+  secs.forEach(function(x){x.text=x.t.join(' ').replace(/<[^>]+>/g,' ').replace(/\*\*/g,'').replace(/[#>|`]/g,' ').replace(/\s+/g,' ').trim();x.low=lc(x.text);x.nz=nzf(x.text);x.hlow=lc(x.h);x.t=null});
+  return c.secs=secs}
+function hl(el,q,hs){
+  if(!el)return;var re=qrx(q,false),rg=qrx(q,true),w=document.createTreeWalker(el,NodeFilter.SHOW_TEXT),n,list=[];
   while(n=w.nextNode())if(re.test(n.nodeValue))list.push(n);
-  list.forEach(function(t){var s=document.createElement('span');s.innerHTML=esc(t.nodeValue).replace(re,'<mark>$1</mark>');t.parentNode.replaceChild(s,t)});
-  var m=el.querySelector('mark');if(m){var d=m.closest('details');if(d)d.open=true;setTimeout(function(){m.scrollIntoView({block:'center'})},50)}
+  list.forEach(function(t){var sp=document.createElement('span');sp.innerHTML=esc(t.nodeValue).replace(rg,function(m){return '<mark>'+m+'</mark>'});t.parentNode.replaceChild(sp,t)});
+  var ms=[].slice.call(el.querySelectorAll('mark')),m=ms[0];
+  if(hs){var hd=[].filter.call(el.querySelectorAll('h2,h3'),function(h){return h.textContent.replace(/\s+/g,' ').trim()===hs.replace(/\s+/g,' ').trim()})[0];
+    if(hd){m=ms.filter(function(x){return hd.compareDocumentPosition(x)&Node.DOCUMENT_POSITION_FOLLOWING})[0]||m;if(!m){setTimeout(function(){hd.scrollIntoView({block:'start'})},50);return}}}
+  if(m){var d=m.closest('details');if(d)d.open=true;setTimeout(function(){m.scrollIntoView({block:'center'})},50)}
 }
 function renderSearch(q){
-  var ql=q.toLowerCase(),res=[];
-  CH.concat(SEC).forEach(function(c){ensurePlain(c);var i=c.low.indexOf(ql),n=0,j=i;while(j>=0){n++;j=c.low.indexOf(ql,j+1)}if(i>=0||c.title.toLowerCase().indexOf(ql)>=0)res.push({c:c,i:i,n:n})});
-  res.sort(function(a,b){return b.n-a.n});
-  var re=new RegExp('('+q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','gi');
-  view.innerHTML='<section class="results"><p class="eyebrow">Поиск</p>'+(res.length?res.map(function(r){
-    var s=r.i>=0?r.c.plain.slice(Math.max(0,r.i-80),r.i+160):r.c.short;
-    return '<a class="hit" href="'+(r.c.sec?'#world/sectors/':'#learn/')+r.c.id+'" data-hl="1"><small>'+(r.c.sec?'Сектор · ':'Глава · ')+'совпадений: '+r.n+'</small><b>'+esc(r.c.title)+'</b><p>…'+esc(s).replace(re,'<mark>$1</mark>')+'…</p></a>'}).join(''):'<p class="empty">Ничего не найдено по запросу «'+esc(q)+'».</p>')+'</section>';
+  var f=isFormula(q),qn=nzf(q),tk=toks(q),phr=lc(q.trim()),res=[],chs=new Set();
+  function scan(formula){
+    res=[];chs=new Set();
+    CH.concat(SEC).forEach(function(c){secsOf(c).forEach(function(x){
+      var sc=0;
+      if(formula){var k=x.nz.indexOf(qn);if(k<0)return;sc=10;var o=0,j=k;while(j>=0&&o<20){o++;j=x.nz.indexOf(qn,j+1)}sc+=o;if(x.hlow.indexOf(lc(q))>=0)sc+=4}
+      else{
+        for(var a=0;a<tk.length;a++){if(x.low.indexOf(tk[a])<0&&x.hlow.indexOf(tk[a])<0)return;
+          var cnt=0,jj=x.low.indexOf(tk[a]);while(jj>=0&&cnt<10){cnt++;jj=x.low.indexOf(tk[a],jj+1)}sc+=cnt;if(x.hlow.indexOf(tk[a])>=0)sc+=6}
+        if(tk.length>1&&x.low.indexOf(phr)>=0)sc+=8}
+      res.push({c:c,x:x,sc:sc});chs.add(c.id)})});
+  }
+  scan(f);if(f&&!res.length){scan(false)}
+  res.sort(function(a,b){return b.sc-a.sc});
+  var total=res.length,rg=qrx(f&&res.length&&res[0].sc>=10?q:q,true),rr=res.slice(0,60);
+  view.innerHTML='<section class="results"><p class="eyebrow">Поиск</p>'+(total?'<p class="note">Найдено мест: '+total+' · глав: '+chs.size+(total>60?' · показаны лучшие 60':'')+'</p>'+rr.map(function(r){
+    var m=qrx(q,false).exec(r.x.text),i=m?m.index:0,sn=r.x.text.slice(Math.max(0,i-70),i+170);
+    var isI=r.x.h===r.c.title;
+    return '<a class="hit" href="'+(r.c.sec?'#world/sectors/':'#learn/')+r.c.id+'" data-hl="1" data-hs="'+esc(isI?'':r.x.h)+'"><small>'+(r.c.sec?'Сектор':'Глава')+' · '+esc(r.c.title)+'</small><b>'+esc(isI?r.c.title:r.x.h)+'</b><p>…'+esc(sn).replace(qrx(q,true),function(t){return '<mark>'+t+'</mark>'})+'…</p></a>'}).join(''):'<p class="empty">Ничего не найдено по запросу «'+esc(q)+'». Попробуй часть слова или формулу без пробелов, например FV=PV*(1+r).</p>')+'</section>';
 }
 var qi=$('#q'),sb=$('#search');
-$('#b-search').onclick=function(){sb.classList.toggle('on');if(sb.classList.contains('on'))qi.focus();else{qi.value='';Q='';route()}};
+$('#b-search').onclick=function(){sb.classList.toggle('on');if(sb.classList.contains('on'))qi.focus();else{qi.value='';Q='';HS='';route()}};
+document.addEventListener('keydown',function(e){var t=e.target,tag=t&&t.tagName;if((e.key==='/'&&tag!=='INPUT'&&tag!=='TEXTAREA'&&!e.ctrlKey&&!e.metaKey)||((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k')){e.preventDefault();sb.classList.add('on');qi.focus();qi.select()}});
 var qt;qi.addEventListener('input',function(){clearTimeout(qt);qt=setTimeout(function(){Q=qi.value.trim();if(Q.length>=2)renderSearch(Q);else route()},180)});
 view.addEventListener('click',function(e){
   var k=e.target.closest('[data-ck]');if(k){e.preventDefault();var id=k.getAttribute('data-ck'),on=!doneIs(id);doneSet(id,on);
@@ -1050,7 +1089,7 @@ view.addEventListener('click',function(e){
     document.querySelectorAll('.track').forEach(function(t){var ids=[].map.call(t.querySelectorAll('[data-ck]'),function(b){return b.getAttribute('data-ck')}),n=doneStat(ids),tp=t.querySelector('.tp');if(tp){tp.textContent=n+' из '+ids.length;tp.classList.toggle('all',n===ids.length&&ids.length>0)}});learnProg();return}
   var kc=e.target.closest('[data-ckc]');if(kc){var cid=kc.getAttribute('data-ckc'),on2=!doneIs(cid);doneSet(cid,on2);kc.classList.toggle('on',on2);kc.setAttribute('aria-pressed',on2?'true':'false');kc.textContent=on2?'✓ Урок пройден':'Отметить пройденным';return}
   if(e.target.closest('[data-dreset]')){if(confirm('Сбросить все отметки о прохождении?')){store('fin:done','{}');renderLearn()}return}
-  var a=e.target.closest('a[data-hl]');if(a){/* Q остаётся для подсветки */}});
+  var a=e.target.closest('a[data-hl]');if(a){HS=a.getAttribute('data-hs')||''}});
 
 /* ---------------- рынки: загрузка ---------------- */
 function getJSON(url,ms){
