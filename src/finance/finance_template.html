@@ -801,9 +801,10 @@ SEC.forEach(function(c,i){prepDoc(c,i);c.sec=1});
 var TRACKS=[
  ['Шаг 1. Основы','Бухучёт, отчётность, МСФО, деньги во времени, статистика',['ib','buhuchet-s-nulya','otchetnost','msfo-standarty','us-gaap-vs-msfo','konsolidatsiya-goodwill','model-3-otchetov','analiz-otchetnosti','npv-irr','koeffitsienty','kolichestvennye-metody']],
  ['Шаг 2. Оценка компаний','Ядро работы аналитика',['portfel-capm','wacc','dcf','multiplikatory','comps','metody','sektory','otraslevoy-analiz','banki-fig','kpi','chuvstvitelnost-stsenarii']],
- ['Шаг 3. Сделки','Как это применяют в банке: M&A, ECM/DCM, LBO, венчур',['ma-lbo','lbo-poshagovo','accretion-dilution','process-sdelki','vrazhdebnye-sdelki','ecm-dcm','dolgovoe-finansirovanie','leveraged-finance','restrukturizatsiya','struktura-kapitala','oborotny-kapital','teoriya-nwc','praktikum-nwc','venchur','alternativnye-investitsii','private-equity-v-rabote']],
- ['Шаг 4. Рынки и макро','Рынки, облигации, деривативы, микро и макро, валюты, Россия, этика',['rynki-kapitala','organizatsiya-rynkov','obligatsii','derivativy','mikroekonomika-rynki','makro','mezhdunarodnye','rossiya','povedencheskie-esg','etika-regulirovanie']],
+ ['Шаг 3. Сделки','Как это применяют в банке: M&A, ECM/DCM, LBO, венчур',['ma-lbo','lbo-poshagovo','accretion-dilution','process-sdelki','vrazhdebnye-sdelki','sdelki-v-rossii','ecm-dcm','ipo-v-rossii','dolgovoe-finansirovanie','leveraged-finance','restrukturizatsiya','struktura-kapitala','oborotny-kapital','teoriya-nwc','praktikum-nwc','venchur','alternativnye-investitsii','private-equity-v-rabote']],
+ ['Шаг 4. Рынки и макро','Рынки, облигации, деривативы, микро и макро, валюты, Россия, этика',['rynki-kapitala','organizatsiya-rynkov','moex-infrastruktura','obligatsii','derivativy','mikroekonomika-rynki','makro','mezhdunarodnye','rossiya','povedencheskie-esg','etika-regulirovanie']],
  ['Шаг 5. Практика и собеседование','Кейсы, задачи, подготовка к стажировке',['stazhirovka','keysy','sobesedovanie','praktikum','excel','project-black','karera']],
+ ['Шпаргалка: формулы и понятия','Все формулы и термины кратко: деньги во времени, отчётность, оценка, акции, облигации, деривативы, портфель, сделки, макро',['shpargalka-osnovy','shpargalka-otchetnost','shpargalka-otsenka','shpargalka-aktsii-rynok','shpargalka-obligatsii','shpargalka-derivativy','shpargalka-portfel-risk','shpargalka-korpfin-sdelki','shpargalka-makro-valyuty']],
  ['Справка','Возвращайся по необходимости: маршрут на год, глоссарий, источники',['marshrut','glossariy','istochniki']]];
 (function(){var order=[];TRACKS.forEach(function(tr){tr[2].forEach(function(id){var c=CH.filter(function(x){return x.id===id})[0];if(c&&order.indexOf(c)<0)order.push(c)})});
   CH.forEach(function(c){if(order.indexOf(c)<0)order.push(c)});CH=order;CH.forEach(function(c,i){c.i=i})})();
@@ -818,7 +819,7 @@ function lessonPos(c){for(var i=0;i<TRACKS.length;i++){var ids=TRACKS[i][2].filt
   if(k>=0){var nxid=ids[k+1]||(TRACKS[i+1]&&TRACKS[i+1][2][0]),nx=nxid?CH.filter(function(x){return x.id===nxid})[0]:null;return {step:i,name:TRACKS[i][0],k:k+1,n:ids.length,next:nx}}}return null}
 /* следующий урок: последний открытый, если он не пройден; иначе первый непройденный по порядку шагов */
 function nextLesson(){var last=CH.filter(function(x){return x.id===store('fin:last')})[0];if(last&&!doneIs(last.id)&&last.id!=='glossariy'&&last.id!=='istochniki'&&last.id!=='marshrut')return last;
-  for(var i=0;i<TRACKS.length;i++){if(TRACKS[i][0]==='Справка')continue;for(var j=0;j<TRACKS[i][2].length;j++){var c=CH.filter(function(x){return x.id===TRACKS[i][2][j]})[0];if(c&&!doneIs(c.id))return c}}return null}
+  for(var i=0;i<TRACKS.length;i++){if(TRACKS[i][0]==='Справка'||/^Шпаргалка/.test(TRACKS[i][0]))continue;for(var j=0;j<TRACKS[i][2].length;j++){var c=CH.filter(function(x){return x.id===TRACKS[i][2][j]})[0];if(c&&!doneIs(c.id))return c}}return null}
 function renderLearn(){
   var last=CH.filter(function(x){return x.id===store('fin:last')})[0];
   var nx=nextLesson(),np=nx?lessonPos(nx):null,allN=CH.filter(function(x){return x.id!=='glossariy'&&x.id!=='istochniki'}),doneN=doneStat(allN.map(function(x){return x.id}));
@@ -839,7 +840,7 @@ function renderLearn(){
 }
 
 function renderHome(){
-  var last=CH.filter(function(x){return x.id===store('fin:last')})[0],all=CH.filter(function(x){return x.id!=='glossariy'&&x.id!=='istochniki'}),n=doneStat(all.map(function(x){return x.id}));
+  var last=CH.filter(function(x){return x.id===store('fin:last')})[0],all=CH.filter(function(x){return x.id!=='glossariy'&&x.id!=='istochniki'&&x.id.indexOf('shpargalka-')!==0}),n=doneStat(all.map(function(x){return x.id}));
   function I(d){return '<svg viewBox="0 0 24 24" aria-hidden="true">'+d+'</svg>'}
   var cards=[['#learn','Обучение','Справочник по корпоративным финансам: от основ до M&A',n+' из '+all.length+' пройдено',I('<path d="M5 4h9a4 4 0 0 1 4 4v12H9a4 4 0 0 1-4-4z"/><path d="M5 16a4 4 0 0 1 4-4h9"/>')],
     ['#markets','Рынки','Котировки, новости, облигации, дивиденды, макро','Живые данные',I('<path d="M4 17l5-5 4 4 7-8"/><path d="M15 8h5v5"/>')],
@@ -856,7 +857,7 @@ function renderHome(){
   view.innerHTML=h;
 }
 function learnProg(){   // общая полоса прогресса в шапке «Обучения»
-  var el=document.getElementById('lprog');if(!el)return;var all=CH.filter(function(x){return x.id!=='glossariy'&&x.id!=='istochniki'}),n=doneStat(all.map(function(x){return x.id}));
+  var el=document.getElementById('lprog');if(!el)return;var all=CH.filter(function(x){return x.id!=='glossariy'&&x.id!=='istochniki'&&x.id.indexOf('shpargalka-')!==0}),n=doneStat(all.map(function(x){return x.id}));
   var pc=all.length?Math.round(n/all.length*100):0;
   el.innerHTML='<div class="pbar"><i style="width:'+pc+'%"></i></div><p>Пройдено '+n+' из '+all.length+' уроков · '+pc+'%</p>';
 }
