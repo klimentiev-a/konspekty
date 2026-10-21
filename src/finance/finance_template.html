@@ -957,12 +957,17 @@ function nzf(x){return lc(x).replace(/\s+/g,'').replace(/\*/g,'×').replace(/[-�
 function escRe(c){return c.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')}
 function isFormula(q){return /[=×*÷\/^+−\-()<>≈≥≤]/.test(q)&&q.replace(/\s+/g,'').length>=3}
 function toks(q){return lc(q).split(/[\s,;]+/).filter(Boolean).map(function(t){return t.length>5&&/[а-яе]/.test(t)?t.slice(0,t.length-2):t})}
+var RU='йцукенгшщзхъфывапролджэячсмитьбю',EN="qwertyuiop[]asdfghjkl;'zxcvbnm,.";
+function cyr(q){return /[а-яё]/i.test(q)&&!/[a-z]/i.test(q)}
+function layoutFix(q){return Array.from(q.toLowerCase()).map(function(c){var k=RU.indexOf(c);return k>=0?EN[k]:c}).join('').replace(/[\[\];',.]/g,'')}
+var TR={а:'a',б:'b',в:'[wv]',г:'g',д:'d',е:'[ei]',ё:'e',ж:'(?:zh|j)',з:'z',и:'[ie]',й:'[yji]',к:'[kc]',л:'l',м:'m',н:'n',о:'o',п:'p',р:'r',с:'[sc]',т:'t',у:'[uy]',ф:'(?:f|ph)',х:'[hx]',ц:'c',ч:'(?:ch|c)',ш:'(?:sh|s)',щ:'(?:sh|s)',ы:'[yi]',э:'e',ю:'(?:yu|u)',я:'(?:ya|a)',ь:'',ъ:''};
+function translitSrc(q){var pv='';return '\\b'+Array.from(lc(q).replace(/\s+/g,'')).map(function(c){var r=TR[c]!=null?TR[c]:escRe(c);if(c===pv&&r)r=r+'?';pv=c;return r}).join('')}
 function qrx(q,g){
   var f=isFormula(q);
   var src=f?Array.from(q.replace(/\s+/g,'')).map(function(c){
     if(c==='*'||c==='×')return '[*×]';if(c==='-'||c==='−'||c==='–')return '[-−–]';if(c==='/'||c==='÷')return '[/÷]';
     if(c==='е'||c==='ё'||c==='Е'||c==='Ё')return '[еёЕЁ]';return escRe(c)}).join('\\s*')
-  :toks(q).map(function(t){return escRe(t).replace(/[её]/g,'[её]')}).join('|');
+  :toks(q).map(function(t){return escRe(t).replace(/[её]/g,'[её]')}).join('|')+(cyr(q)&&q.replace(/\s+/g,'').length>=3?'|'+translitSrc(q):'');
   return new RegExp(src,g?'gi':'i')
 }
 function leadOf(l){return lc(l.replace(/^[\s|>*#\-–—\d.)(]+/,'').replace(/\*\*/g,'')).slice(0,60)}
@@ -991,18 +996,26 @@ function hl(el,q,hs){
     if(hd){m=ms.filter(function(x){return hd.compareDocumentPosition(x)&Node.DOCUMENT_POSITION_FOLLOWING})[0]||m;if(!m){setTimeout(function(){hd.scrollIntoView({block:'start'})},50);return}}}
   if(m){var d=m.closest('details');if(d)d.open=true;setTimeout(function(){m.scrollIntoView({block:'center'})},50)}
 }
-function termCards(q){
+function termCards(q,trx){
   var qq=q.trim(),ql=lc(qq),out=[];if(qq.length<2)return out;
   TT.forEach(function(x){
     var ok=false,ex=false;
     try{ex=ok=new RegExp('^(?:'+x.p.join('|')+')$','i').test(qq)}catch(e){}
     var head=lc(x.t.split(/\s+[—(]/)[0]);
     if(!ok&&(head===ql||(ql.length>=3&&head.indexOf(ql)===0)))ok=true;
+    if(!ok&&trx&&trx.test(head)&&head.length<=Math.max(8,ql.length*2))ok=true;
     if(ok){x._ex=ex||head===ql;out.push(x)}});
   out.sort(function(a,b){return (b._ex?1:0)-(a._ex?1:0)});
   return out.slice(0,2)}
-function renderSearch(q){
-  var f=isFormula(q),qn=nzf(q),tk=toks(q),phr=lc(q.trim()),res=[],chs=new Set();
+function core(q,tr){
+  var f=isFormula(q),qn=nzf(q),tk=toks(q),phr=lc(q.trim()),res=[],chs=new Set(),trx=tr?new RegExp(translitSrc(q),'i'):null;
+  function scanT(){
+    res=[];chs=new Set();
+    CH.concat(SEC).forEach(function(c){var ct=trx.test(lc(c.title));secsOf(c).forEach(function(x){
+      var h=trx.test(x.hlow),m=trx.test(x.low);if(!h&&!m)return;
+      var sc=(m?2:0)+(h?30:0)+(h&&x.hlow.length<=22?20:0)+(ct&&x.intro?40:0);if(x.weak)sc*=.3;if(x.term)sc*=.5;
+      res.push({c:c,x:x,sc:sc});chs.add(c.id)})});
+  }
   function scan(formula){
     res=[];chs=new Set();
     CH.concat(SEC).forEach(function(c){
@@ -1029,12 +1042,22 @@ function renderSearch(q){
           if(x.text.length<40)sc*=.5}
         res.push({c:c,x:x,sc:sc});chs.add(c.id)})});
   }
-  scan(f);if(f&&!res.length){scan(false)}
+  if(trx)scanT();else{scan(f);if(f&&!res.length){scan(false)}}
   res.sort(function(a,b){return b.sc-a.sc});
+  return {res:res,chs:chs,f:f,cards:f?[]:termCards(q,trx)}
+}
+function renderSearch(q){
+  var R=core(q),qe=q,note='';
+  if(cyr(q)&&R.cards.length===0){
+    var q2=layoutFix(q);
+    if(/^[a-z0-9 ]{2,}$/.test(q2)){var R2=core(q2);if(R2.res.length>R.res.length){R=R2;qe=q2;Q=q2;note='Раскладка: искали «'+q2+'»'}}
+    if(q.replace(/\s+/g,'').length>=3){var R3=core(q,true);if(R3.cards.length||(R.res.length<4&&R3.res.length>R.res.length)){R=R3;note='Похоже на латинское написание, показаны совпадения по звучанию'}}
+  }
+  var res=R.res,chs=R.chs,f=R.f,q0=q;q=qe;
   var per={},rr=[];res.forEach(function(r){per[r.c.id]=(per[r.c.id]||0)+1;if(per[r.c.id]<=4&&rr.length<60)rr.push(r)});
-  var total=res.length,cards=f?[]:termCards(q);
+  var total=res.length,cards=R.cards;
   var cardsH=cards.map(function(x){return '<div class="hit tcard"><small>Определение</small><b>'+esc(x.t)+'</b><p>'+esc(x.d)+'</p></div>'}).join('');
-  view.innerHTML='<section class="results"><p class="eyebrow">Поиск</p>'+cardsH+(total?'<p class="note">Найдено мест: '+total+' · глав: '+chs.size+(total>rr.length?' · показаны лучшие '+rr.length:'')+'</p>'+rr.map(function(r,ix){
+  view.innerHTML='<section class="results"><p class="eyebrow">Поиск</p>'+(note?'<p class="note">'+esc(note)+'</p>':'')+cardsH+(total?'<p class="note">Найдено мест: '+total+' · глав: '+chs.size+(total>rr.length?' · показаны лучшие '+rr.length:'')+'</p>'+rr.map(function(r,ix){
     var m=qrx(q,false).exec(r.x.text),i=m?m.index:0,sn=r.x.text.slice(Math.max(0,i-70),i+170);
     var isI=r.x.intro;
     return '<a class="hit" href="'+(r.c.sec?'#world/sectors/':'#learn/')+r.c.id+'" data-hl="1" data-hs="'+esc(isI?'':r.x.h)+'"><small>'+(ix===0&&!f?'Главное · ':'')+(r.c.sec?'Сектор':'Глава')+' · '+esc(r.c.title)+'</small><b>'+esc(isI?r.c.title:r.x.h)+'</b><p>…'+esc(sn).replace(qrx(q,true),function(t){return '<mark>'+t+'</mark>'})+'…</p></a>'}).join(''):(cardsH?'':'<p class="empty">Ничего не найдено по запросу «'+esc(q)+'». Попробуй часть слова или формулу без пробелов, например FV=PV*(1+r).</p>'))+'</section>';
