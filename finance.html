@@ -428,6 +428,7 @@ tr[data-bond],table[data-t="ru"] tbody tr,table[data-t="us"] tbody tr,table[data
 .results{padding-top:24px;max-width:760px}
 .hit{display:block;padding:16px 0;border-top:1px solid var(--line);text-decoration:none}
 .hit:last-child{border-bottom:1px solid var(--line)}
+.tcard{padding:16px 16px;margin:0 0 10px;border:1px solid var(--line);border-radius:12px;background:var(--surface)}.tcard p{color:var(--fg)}
 .hit small{font:500 11.5px/1.2 var(--sans);letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
 .hit b{display:block;margin:6px 0 4px;font:600 18px/1.3 var(--serif)}
 .hit p{margin:0;font:400 14.5px/1.55 var(--sans);color:var(--muted)}
@@ -1030,7 +1031,7 @@ function lc(x){return String(x).toLowerCase().replace(/ё/g,'е')}
 function nzf(x){return lc(x).replace(/\s+/g,'').replace(/\*/g,'×').replace(/[-–—]/g,'−').replace(/÷/g,'/').replace(/[`$]/g,'')}
 function escRe(c){return c.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')}
 function isFormula(q){return /[=×*÷\/^+−\-()<>≈≥≤]/.test(q)&&q.replace(/\s+/g,'').length>=3}
-function toks(q){return lc(q).split(/[\s,;]+/).filter(Boolean).map(function(t){return t.length>5?t.slice(0,t.length-2):t})}
+function toks(q){return lc(q).split(/[\s,;]+/).filter(Boolean).map(function(t){return t.length>5&&/[а-яе]/.test(t)?t.slice(0,t.length-2):t})}
 function qrx(q,g){
   var f=isFormula(q);
   var src=f?Array.from(q.replace(/\s+/g,'')).map(function(c){
@@ -1039,15 +1040,22 @@ function qrx(q,g){
   :toks(q).map(function(t){return escRe(t).replace(/[её]/g,'[её]')}).join('|');
   return new RegExp(src,g?'gi':'i')
 }
+function leadOf(l){return lc(l.replace(/^[\s|>*#\-–—\d.)(]+/,'').replace(/\*\*/g,'')).slice(0,60)}
 function secsOf(c){
   if(c.secs)return c.secs;
-  var secs=[],cur={h:c.title,t:[c.short||'']},code=false;
+  var secs=[],cur={h:c.title,t:[c.short||''],intro:1},code=false,gl=c.id==='glossariy';
   c.md.split('\n').forEach(function(l){
     if(/^```/.test(l))code=!code;
     var m=!code&&l.match(/^#{2,3}\s+(.*)/);
-    if(m){secs.push(cur);cur={h:m[1].replace(/[*`]/g,'').trim(),t:[]}}else cur.t.push(l)});
+    if(m){secs.push(cur);cur={h:m[1].replace(/[*`]/g,'').trim(),t:[]};return}
+    var r=gl&&l.match(/^\|\s*\*\*(.+?)\*\*\s*\|/);
+    if(r){secs.push(cur);cur={h:r[1].trim(),t:[l],term:1};return}
+    cur.t.push(l)});
   secs.push(cur);
-  secs.forEach(function(x){x.text=x.t.join(' ').replace(/<[^>]+>/g,' ').replace(/\*\*/g,'').replace(/[#>|`]/g,' ').replace(/\s+/g,' ').trim();x.low=lc(x.text);x.nz=nzf(x.text);x.hlow=lc(x.h);x.t=null});
+  secs.forEach(function(x){
+    x.lead=x.t.map(leadOf).filter(Boolean);
+    x.text=x.t.join(' ').replace(/<[^>]+>/g,' ').replace(/\*\*/g,'').replace(/[#>|`]/g,' ').replace(/\s+/g,' ').trim();
+    x.low=lc(x.text);x.nz=nzf(x.text);x.hlow=lc(x.h);x.weak=/^(проверь себя|что почитать|типичные ошибки|как это спрашивают)/i.test(x.h);x.t=null});
   return c.secs=secs}
 function hl(el,q,hs){
   if(!el)return;var re=qrx(q,false),rg=qrx(q,true),w=document.createTreeWalker(el,NodeFilter.SHOW_TEXT),n,list=[];
@@ -1058,26 +1066,53 @@ function hl(el,q,hs){
     if(hd){m=ms.filter(function(x){return hd.compareDocumentPosition(x)&Node.DOCUMENT_POSITION_FOLLOWING})[0]||m;if(!m){setTimeout(function(){hd.scrollIntoView({block:'start'})},50);return}}}
   if(m){var d=m.closest('details');if(d)d.open=true;setTimeout(function(){m.scrollIntoView({block:'center'})},50)}
 }
+function termCards(q){
+  var qq=q.trim(),ql=lc(qq),out=[];if(qq.length<2)return out;
+  TT.forEach(function(x){
+    var ok=false,ex=false;
+    try{ex=ok=new RegExp('^(?:'+x.p.join('|')+')$','i').test(qq)}catch(e){}
+    var head=lc(x.t.split(/\s+[—(]/)[0]);
+    if(!ok&&(head===ql||(ql.length>=3&&head.indexOf(ql)===0)))ok=true;
+    if(ok){x._ex=ex||head===ql;out.push(x)}});
+  out.sort(function(a,b){return (b._ex?1:0)-(a._ex?1:0)});
+  return out.slice(0,2)}
 function renderSearch(q){
   var f=isFormula(q),qn=nzf(q),tk=toks(q),phr=lc(q.trim()),res=[],chs=new Set();
   function scan(formula){
     res=[];chs=new Set();
-    CH.concat(SEC).forEach(function(c){secsOf(c).forEach(function(x){
-      var sc=0;
-      if(formula){var k=x.nz.indexOf(qn);if(k<0)return;sc=10;var o=0,j=k;while(j>=0&&o<20){o++;j=x.nz.indexOf(qn,j+1)}sc+=o;if(x.hlow.indexOf(lc(q))>=0)sc+=4}
-      else{
-        for(var a=0;a<tk.length;a++){if(x.low.indexOf(tk[a])<0&&x.hlow.indexOf(tk[a])<0)return;
-          var cnt=0,jj=x.low.indexOf(tk[a]);while(jj>=0&&cnt<10){cnt++;jj=x.low.indexOf(tk[a],jj+1)}sc+=cnt;if(x.hlow.indexOf(tk[a])>=0)sc+=6}
-        if(tk.length>1&&x.low.indexOf(phr)>=0)sc+=8}
-      res.push({c:c,x:x,sc:sc});chs.add(c.id)})});
+    CH.concat(SEC).forEach(function(c){
+      var ct=lc(c.title),ctHit=tk.length&&tk.every(function(t){return ct.indexOf(t)>=0}),
+          cs=lc(c.short||''),csHit=tk.length&&tk.every(function(t){return cs.indexOf(t)>=0});
+      secsOf(c).forEach(function(x){
+        var sc=0;
+        if(formula){var k=x.nz.indexOf(qn);if(k<0)return;sc=10;var o=0,j=k;while(j>=0&&o<5){o++;j=x.nz.indexOf(qn,j+1)}sc+=o;if(x.hlow.indexOf(lc(q))>=0)sc+=6}
+        else{
+          var first=-1,all=true;
+          for(var a=0;a<tk.length;a++){
+            var pl=x.low.indexOf(tk[a]),ph=x.hlow.indexOf(tk[a]);
+            if(pl<0&&ph<0&&!(x.intro&&(ct.indexOf(tk[a])>=0||cs.indexOf(tk[a])>=0)))return;
+            var cnt=0,jj=pl;while(jj>=0&&cnt<5){cnt++;jj=x.low.indexOf(tk[a],jj+1)}sc+=cnt;
+            if(pl>=0&&(first<0||pl<first))first=pl}
+          var hAll=tk.every(function(t){return x.hlow.indexOf(t)>=0});
+          if(hAll){sc+=30;if(tk.length&&x.hlow.indexOf(tk[0])<=1)sc+=10;if(x.term)sc+=40}
+          else if(tk.some(function(t){return x.hlow.indexOf(t)>=0}))sc+=5;
+          if(x.lead.some(function(l){return tk.length&&l.indexOf(tk[0])===0&&(tk.length<2||tk.every(function(t){return l.indexOf(t)>=0}))}))sc+=14;
+          if(first>=0&&first<160)sc+=4;
+          if(tk.length>1&&x.low.indexOf(phr)>=0)sc+=8;
+          if(ctHit)sc+=x.intro?45:8;else if(csHit&&x.intro)sc+=12;
+          if(x.weak)sc*=.3;if(x.term)sc*=.5;if(/^(praktikum|shpargalka-|keysy)/.test(c.id))sc*=.7;
+          if(x.text.length<40)sc*=.5}
+        res.push({c:c,x:x,sc:sc});chs.add(c.id)})});
   }
   scan(f);if(f&&!res.length){scan(false)}
   res.sort(function(a,b){return b.sc-a.sc});
-  var total=res.length,rg=qrx(f&&res.length&&res[0].sc>=10?q:q,true),rr=res.slice(0,60);
-  view.innerHTML='<section class="results"><p class="eyebrow">Поиск</p>'+(total?'<p class="note">Найдено мест: '+total+' · глав: '+chs.size+(total>60?' · показаны лучшие 60':'')+'</p>'+rr.map(function(r){
+  var per={},rr=[];res.forEach(function(r){per[r.c.id]=(per[r.c.id]||0)+1;if(per[r.c.id]<=4&&rr.length<60)rr.push(r)});
+  var total=res.length,cards=f?[]:termCards(q);
+  var cardsH=cards.map(function(x){return '<div class="hit tcard"><small>Определение</small><b>'+esc(x.t)+'</b><p>'+esc(x.d)+'</p></div>'}).join('');
+  view.innerHTML='<section class="results"><p class="eyebrow">Поиск</p>'+cardsH+(total?'<p class="note">Найдено мест: '+total+' · глав: '+chs.size+(total>rr.length?' · показаны лучшие '+rr.length:'')+'</p>'+rr.map(function(r,ix){
     var m=qrx(q,false).exec(r.x.text),i=m?m.index:0,sn=r.x.text.slice(Math.max(0,i-70),i+170);
-    var isI=r.x.h===r.c.title;
-    return '<a class="hit" href="'+(r.c.sec?'#world/sectors/':'#learn/')+r.c.id+'" data-hl="1" data-hs="'+esc(isI?'':r.x.h)+'"><small>'+(r.c.sec?'Сектор':'Глава')+' · '+esc(r.c.title)+'</small><b>'+esc(isI?r.c.title:r.x.h)+'</b><p>…'+esc(sn).replace(qrx(q,true),function(t){return '<mark>'+t+'</mark>'})+'…</p></a>'}).join(''):'<p class="empty">Ничего не найдено по запросу «'+esc(q)+'». Попробуй часть слова или формулу без пробелов, например FV=PV*(1+r).</p>')+'</section>';
+    var isI=r.x.intro;
+    return '<a class="hit" href="'+(r.c.sec?'#world/sectors/':'#learn/')+r.c.id+'" data-hl="1" data-hs="'+esc(isI?'':r.x.h)+'"><small>'+(ix===0&&!f?'Главное · ':'')+(r.c.sec?'Сектор':'Глава')+' · '+esc(r.c.title)+'</small><b>'+esc(isI?r.c.title:r.x.h)+'</b><p>…'+esc(sn).replace(qrx(q,true),function(t){return '<mark>'+t+'</mark>'})+'…</p></a>'}).join(''):(cardsH?'':'<p class="empty">Ничего не найдено по запросу «'+esc(q)+'». Попробуй часть слова или формулу без пробелов, например FV=PV*(1+r).</p>'))+'</section>';
 }
 var qi=$('#q'),sb=$('#search');
 $('#b-search').onclick=function(){sb.classList.toggle('on');if(sb.classList.contains('on'))qi.focus();else{qi.value='';Q='';HS='';route()}};
