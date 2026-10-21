@@ -207,7 +207,8 @@ J('news.json').then(function(n){
 artem_body = ('<div class="w">\n  ' + topbar('index.html', 'Профили', 'artem') + '\n  <h1>Артем</h1>\n  '
               + cards_artem + '\n  ' + foot + '\n</div>\n' + LOGOUT_JS)
 SEARCH_BTN = '<a class="sbtn" href="search.html" aria-label="Поиск по сайту"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>Поиск</a>'
-artem_body = artem_body.replace('<div class="tr">', '<div class="tr">' + SEARCH_BTN, 1)
+SLOVAR_BTN = '<a class="sbtn" href="slovar.html" aria-label="Словарь терминов">Словарь</a>'
+artem_body = artem_body.replace('<div class="tr">', '<div class="tr">' + SLOVAR_BTN + SEARCH_BTN, 1)
 artem_html = page('Hub · Артем', artem_body, 'artem')   # просто: Артем → Учёба, Финансы (сводку «Сегодня» убрали)
 
 # ---------------- nastya.html ----------------
@@ -336,6 +337,106 @@ search_body = ('<div class="w">\n  ' + topbar('artem.html', 'Артем') + '\n 
                '<input id="q" type="search" placeholder="Что найти?" autocomplete="off" enterkeyhint="search" aria-label="Поиск по сайту"></div>\n'
                '  <div class="sf" id="sf" role="group" aria-label="Фильтр"></div>\n  <div class="sr" id="sr" aria-live="polite"></div>\n</div>\n')
 search_html = page('Hub · Поиск', search_body, 'artem').replace('</head>', SEARCH_CSS + '</head>', 1).replace('</body>', SEARCH_JS + '</body>', 1)
+
+
+# ---------------- slovar.html: «Словарь» — термин на русском или английском → расшифровка, перевод, суть, формула ----------------
+import json as _json
+sys.path.insert(0, os.path.join(ROOT, 'src', 'finance'))
+import terms as _T
+def _slovar_data():
+    out = []; seen = set()
+    for l in open(os.path.join(ROOT, 'src', 'finance', 'content', '98_glossary.md'), encoding='utf-8'):
+        m = re.match(r'^\| \*\*(.+?)\*\* \|(.*?)\|(.*?)\|(.*)\|\s*$', l)
+        if not m: continue
+        t, full, d, f = [x.strip() for x in m.groups()]
+        out.append({'t': t, 'f': full, 'd': d, 'x': f, 'u': 'finance.html#learn/glossariy'}); seen.add(t.lower())
+    for pats, title, d in list(_T.RICH) + list(_T.EXTRA):
+        head = re.split(r'\s[—-]\s', title)[0].strip()
+        if head.lower() in seen: continue
+        seen.add(head.lower())
+        out.append({'t': title, 'f': '', 'd': d, 'x': '', 'u': 'finance.html#learn/glossariy'})
+    return out
+SLOVAR_DATA = _json.dumps(_slovar_data(), ensure_ascii=False).replace('</', '<\\/')
+SLOVAR_CSS = """<style>
+.sq{position:relative;margin:6px 0 12px}.sq input{width:100%;font:500 17px/1.2 system-ui,sans-serif;padding:14px 16px;border:1px solid var(--line);border-radius:14px;background:var(--surface);color:var(--fg);outline:none}
+.sq input:focus{border-color:var(--a2,#1F6B57);box-shadow:0 0 0 3px color-mix(in srgb,var(--a2,#1F6B57) 18%,transparent)}
+.tk{border:1px solid var(--line);background:var(--surface);border-radius:14px;padding:14px 16px;margin:0 0 12px}
+.tk h2{margin:0 0 2px;font:700 19px/1.3 system-ui,sans-serif}.tk .en{color:var(--muted);font:500 13.5px/1.4 system-ui,sans-serif;margin:0 0 8px}
+.tk .lb{color:var(--faint);font:600 11px/1 system-ui,sans-serif;letter-spacing:.06em;text-transform:uppercase;margin:10px 0 3px}
+.tk p{margin:0;font:400 15px/1.5 system-ui,sans-serif}.tk code{display:block;margin-top:2px;padding:8px 10px;background:color-mix(in srgb,var(--fg) 6%,transparent);border-radius:8px;font:500 14px/1.45 ui-monospace,Menlo,monospace;white-space:normal}
+.tk .fx{display:block;color:var(--muted);font:400 13px/1.45 system-ui,sans-serif;margin-top:4px}
+.tk a{color:var(--a2,#1F6B57);font:500 13.5px/1 system-ui,sans-serif;text-decoration:none;display:inline-block;margin-top:10px}
+.tk.web{border-style:dashed}.tk.web .src{color:var(--faint);font:400 12px/1.4 system-ui,sans-serif;margin-top:6px}
+.sh{margin:18px 0 8px;color:var(--faint);font:600 12px/1 system-ui,sans-serif;letter-spacing:.06em;text-transform:uppercase}
+.sm{color:var(--muted);font:400 14px/1.5 system-ui,sans-serif;padding:8px 0}
+</style>"""
+SLOVAR_JS = r"""<script>
+(function(){
+var D=__DATA__;
+var RU='йцукенгшщзхъфывапролджэячсмитьбю',EN="qwertyuiop[]asdfghjkl;'zxcvbnm,.";
+var TR={а:'a',б:'b',в:'[wv]',г:'g',д:'d',е:'[ei]',ё:'e',ж:'(?:zh|j)',з:'z',и:'[ie]',й:'[yji]',к:'[kc]',л:'l',м:'m',н:'n',о:'o',п:'p',р:'r',с:'[sc]',т:'t',у:'[uy]',ф:'(?:f|ph)',х:'[hx]',ц:'c',ч:'(?:ch|c)',ш:'(?:sh|s)',щ:'(?:sh|s)',ы:'[yi]',э:'e',ю:'(?:yu|u)',я:'(?:ya|a)',ь:'',ъ:''};
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function lc(x){return String(x||'').toLowerCase().replace(/ё/g,'е')}
+function plain(h){return String(h||'').replace(/<[^>]+>/g,'')}
+function escRe(x){return x.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')}
+function isCyr(q){return /[а-яё]/i.test(q)&&!/[a-z]/i.test(q)}
+function layout(q){return Array.from(q.toLowerCase()).map(function(c){var k=RU.indexOf(c);return k>=0?EN[k]:c}).join('').replace(/[\[\];',.]/g,'')}
+function tsrc(q){var pv='';return '\\b'+Array.from(lc(q).replace(/\s+/g,'')).map(function(c){var r=TR[c]!=null?TR[c]:escRe(c);if(c===pv&&r)r=r+'?';pv=c;return r}).join('')}
+D.forEach(function(e){var h=e.t.split(/\s[—-]\s/)[0];e.head=lc(h);e.all=lc(e.t+' '+e.f);e.words=e.all.split(/[^a-zа-я0-9&]+/).filter(Boolean)});
+function local(q){
+  var ql=lc(q.trim()),out=[];if(ql.length<2)return out;
+  var rxs=[new RegExp('^'+escRe(ql))];
+  var alts=[ql];
+  if(isCyr(q)){var lf=layout(q);if(/^[a-z0-9 ]{2,}$/.test(lf))alts.push(lf);}
+  D.forEach(function(e){
+    var sc=0;
+    alts.forEach(function(a){
+      if(e.head===a)sc=Math.max(sc,100);
+      else if(e.head.indexOf(a)===0&&a.length>=2)sc=Math.max(sc,70-Math.min(30,e.head.length-a.length));
+      else if(e.words.indexOf(a)>=0)sc=Math.max(sc,60);
+      else if(a.length>=4&&e.all.indexOf(a)>=0)sc=Math.max(sc,35)});
+    if(!sc&&isCyr(q)&&ql.replace(/\s+/g,'').length>=3){var rx=new RegExp(tsrc(q),'i');if(rx.test(e.head)&&e.head.length<=Math.max(8,ql.length*2+2))sc=80;else if(e.words.some(function(w){return rx.test(w)&&w.length<=ql.length*2+2}))sc=45}
+    if(!sc&&ql.length>=4){var st=ql.length>5?ql.slice(0,-2):ql;if(e.all.indexOf(st)>=0)sc=25}
+    if(sc)out.push({e:e,sc:sc})});
+  out.sort(function(a,b){return b.sc-a.sc});return out.slice(0,5);
+}
+function card(e){
+  var h='<div class="tk"><h2>'+esc(e.t.split(/\s[—-]\s/)[0])+'</h2>';
+  if(e.f)h+='<div class="en">'+esc(e.f)+'</div>';
+  else if(e.t.indexOf(' — ')>0)h+='<div class="en">'+esc(e.t.split(' — ').slice(1).join(' — '))+'</div>';
+  h+='<div class="lb">Суть</div><p>'+esc(e.d)+'</p>';
+  if(e.x)h+='<div class="lb">Формула</div>'+e.x.replace(/<code>/g,'<code>').replace(/<span class="fx">/g,'<span class="fx">');
+  h+='<a href="'+esc(e.u)+'">Разобрано в курсе →</a></div>';return h}
+var box=document.getElementById('sr'),web=document.getElementById('web'),inp=document.getElementById('q'),tmr=null,seq=0;
+function wiki(q){
+  var my=++seq,cy=isCyr(q),lang=cy?'ru':'en',other=cy?'en':'ru';
+  web.innerHTML='<div class="sh">Из интернета (Википедия)</div><p class="sm">Ищу…</p>';
+  var u='https://'+lang+'.wikipedia.org/w/api.php?action=query&format=json&origin=*&generator=search&gsrlimit=3&gsrsearch='+encodeURIComponent(q+(cy?' финансы':' finance'))+'&prop=extracts|langlinks|info&exintro=1&explaintext=1&exchars=650&lllang='+other+'&lllimit=1&inprop=url';
+  fetch(u).then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(j){
+    if(my!==seq)return;var pg=j.query&&j.query.pages?Object.keys(j.query.pages).map(function(k){return j.query.pages[k]}).sort(function(a,b){return a.index-b.index}):[];
+    if(!pg.length){web.innerHTML='<div class="sh">Из интернета (Википедия)</div><p class="sm">Ничего не нашлось. Попробуй написать по-английски или иначе.</p>';return}
+    web.innerHTML='<div class="sh">Из интернета (Википедия)</div>'+pg.map(function(p){
+      var ll=p.langlinks&&p.langlinks[0]?p.langlinks[0]['*']:'';
+      return '<div class="tk web"><h2>'+esc(p.title)+'</h2>'+(ll?'<div class="en">'+(cy?'По-английски':'По-русски')+': '+esc(ll)+'</div>':'')+'<div class="lb">Суть</div><p>'+esc(p.extract||'')+'</p><div class="src">Википедия, не проверено по курсу. Формул здесь нет — их смотри в карточках выше.</div><a href="'+esc(p.fullurl)+'" target="_blank" rel="noopener">Открыть статью →</a></div>'}).join('')})
+  .catch(function(){if(my!==seq)return;web.innerHTML='<div class="sh">Из интернета (Википедия)</div><p class="sm">Не получилось достучаться до Википедии. Проверь интернет.</p>'});
+}
+function run(){
+  var q=inp.value.trim();
+  if(q.length<2){box.innerHTML='<p class="sm">Напиши термин по-русски или по-английски: «WACC», «вакк», «чистый долг», «accretion», «ebitda». Покажу расшифровку, перевод, суть и формулу из курса, а ниже — что есть в Википедии.</p>';web.innerHTML='';seq++;return}
+  var r=local(q);
+  box.innerHTML=r.length?'<div class="sh">Из курса</div>'+r.map(function(x){return card(x.e)}).join(''):'<div class="sh">Из курса</div><p class="sm">В курсе такого термина нет. Напиши мне в чат — добавлю.</p>';
+  clearTimeout(tmr);tmr=setTimeout(function(){wiki(q)},450);
+}
+inp.addEventListener('input',run);
+var q0=new URLSearchParams(location.search).get('q');if(q0)inp.value=q0;run();inp.focus();
+})();
+</script>"""
+slovar_body = ('<div class="w">\n  ' + topbar('artem.html', 'Артем') + '\n  <h1>Словарь</h1>\n'
+               '  <div class="sq"><input id="q" type="search" placeholder="Любой финансовый термин: WACC, вакк, чистый долг…" autocomplete="off" enterkeyhint="search" aria-label="Термин"></div>\n'
+               '  <div id="sr"></div><div id="web"></div>\n</div>\n')
+slovar_html = page('Hub · Словарь', slovar_body, 'artem').replace('</head>', SLOVAR_CSS + '</head>', 1).replace('</body>', SLOVAR_JS.replace('__DATA__', SLOVAR_DATA) + '</body>', 1)
+open(os.path.join(ROOT, 'slovar.html'), 'w', encoding='utf-8').write(slovar_html)
+print('ok slovar.html', len(slovar_html))
 
 # замок для страниц Артема (ucheba.html, finance.html) — его вставляют make_ucheba.py и build_finance.py
 open(os.path.join(ROOT, 'src', 'finance', 'gate_artem.html'), 'w', encoding='utf-8').write(gate('artem'))
