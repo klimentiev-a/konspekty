@@ -109,4 +109,12 @@ def build(glossary_md):
         if key in seen: continue
         seen.add(key)
         terms.append({'p': pats, 't': enrich(title, OVR), 'd': d})
+    import json, os
+    mp = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'terms_more.json')
+    if os.path.exists(mp):
+        for e in json.load(open(mp, encoding='utf-8')):
+            key = e['p'][0].lower()
+            if key in seen: continue
+            seen.add(key)
+            terms.append({'p': [re.escape(x) for x in e['p']], 't': e['t'], 'd': e['d']})
     return terms
