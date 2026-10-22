@@ -1,6 +1,17 @@
 # Подсказки к терминам: глоссарий (14_glossary.md) + русские термины ниже.
 # Каждая запись: (паттерны regex, заголовок, объяснение). Паттерны ищутся без учёта регистра, целыми словами.
 import re
+from abbr import enrich
+
+OVR = {
+ 'AFFO — Adjusted FFO': 'AFFO — Adjusted Funds From Operations',
+ 'PPA — Power Purchase Agreement': 'PPA — Power Purchase Agreement',
+ 'ESOP — Employee Stock Option Plan': 'ESOP — Employee Stock Option Plan',
+ 'MoM / MOIC — Multiple of Money / Multiple on Invested Capital': 'MoM / MOIC — Multiple of Money / Multiple on Invested Capital',
+ 'MIRR — Modified IRR': 'MIRR — Modified Internal Rate of Return',
+ 'PEG — P/E to Growth': 'PEG — Price/Earnings to Growth',
+ 'Excel: ПС / БС (PV / FV)': 'Excel: ПС / БС (PV — Present Value / FV — Future Value)',
+}
 
 EXTRA = [
  (['чист(ый|ого|ому|ым) долг\\w*'], 'Чистый долг (Net Debt)', 'Всё, что компания должна, минус деньги, которые у неё уже есть на счетах. Пример: долг 100 млн, на счетах 30 млн — чистый долг 70 млн. Если денег больше, чем долга, чистый долг отрицательный — это хорошо.'),
@@ -97,5 +108,5 @@ def build(glossary_md):
         key = pats[0].lower()
         if key in seen: continue
         seen.add(key)
-        terms.append({'p': pats, 't': title, 'd': d})
+        terms.append({'p': pats, 't': enrich(title, OVR), 'd': d})
     return terms
