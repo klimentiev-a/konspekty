@@ -4,7 +4,6 @@
 #   src/index.src.html + make_ucheba.py     → ucheba.html
 #   src/finance/content/*.md + шаблон       → finance.html
 #   src/english/lessons|ref/*.md + шаблон   → english.html (курс английского)
-#   src/city/city_template.html             → city.html (симулятор города)
 set -e
 cd "$(git rev-parse --show-toplevel)"
 python3 src/finance/make_hub.py
@@ -13,12 +12,11 @@ python3 src/finance/build_finance.py src/finance/content src/marked.min.js finan
 python3 src/english/build_english.py
 python3 src/energy/build_energy.py
 python3 src/deep/build_deep.py
-python3 src/city/build_city.py
 python3 src/finance/make_search.py
 # Синхронизация прогресса между устройствами: подключаем sync.js первым скриптом (идемпотентно)
 python3 - <<'PY'
 import re
-for f in ['index.html','artem.html','nastya.html','nastya-ucheba.html','ucheba.html','finance.html','english.html','energy.html','city.html']:
+for f in ['index.html','artem.html','nastya.html','nastya-ucheba.html','ucheba.html','finance.html','english.html','energy.html']:
     if f=='energy.html' and not __import__('os').path.exists(f): continue
     s = open(f, encoding='utf-8').read()
     if 'src="tables.js"' not in s:
