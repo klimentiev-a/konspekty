@@ -1,0 +1,9 @@
+/* Остров-курорт: дополнительные стили */
+#panel .good,#tip .good{color:var(--ok)}
+#panel span.bad,#tip .bad{color:var(--bad)}
+#panel .row small{color:var(--dim);font-size:11px}
+#tip{white-space:normal;max-width:300px;line-height:1.35}
+#tip small{color:var(--dim)}
+.bi.poor .p{color:var(--bad);opacity:.8}
+#goal .bar i{background:linear-gradient(90deg,var(--acc),#ffe8a6)}
+#hint b{color:var(--ink)}
