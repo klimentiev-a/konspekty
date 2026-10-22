@@ -38,7 +38,6 @@
 
     var renderer = new THREE.WebGLRenderer({ antialias: Q[ql].aa, powerPreference: 'high-performance' });
     renderer.setPixelRatio(Math.min(devicePixelRatio || 1, Q[ql].pr));
-    renderer.outputEncoding = THREE.sRGBEncoding;
     renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 0.9;
     renderer.shadowMap.enabled = Q[ql].shadow; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     host.appendChild(renderer.domElement);
