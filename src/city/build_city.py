@@ -8,6 +8,9 @@ def span(a, b):
 css = span(':root{', '::selection')
 zoom = open(os.path.join(ROOT, 'src', 'finance', 'zoom.js'), encoding='utf-8').read()
 html = open(os.path.join(HERE, 'city_template.html'), encoding='utf-8').read()
+parts = ['r3d_scene.js', 'r3d_build.js', 'r3d_people.js', 'r3d_fx.js']
+r3d = '\n'.join(open(os.path.join(HERE, f), encoding='utf-8').read() for f in parts)
+html = html.replace('/*R3D*/', r3d)
 html = html.replace('/*FINCSS*/', css).replace('<!--ZOOM-->', '<script>' + zoom + '</script>')
 gate = open(os.path.join(ROOT, 'src', 'finance', 'gate_artem.html'), encoding='utf-8').read().strip()
 html = html.replace('<meta charset="utf-8">', '<meta charset="utf-8">' + gate, 1)
