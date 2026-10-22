@@ -1,0 +1,32 @@
+<!doctype html><html lang="ru"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0f1a24">
+<link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="favicon.svg?v=31" type="image/svg+xml"><link rel="apple-touch-icon" href="apple-touch-icon.png?v=31">
+<title>Игры</title>
+<style>
+:root{--bg:#F4F1E8;--surface:#FBF9F3;--fg:#25221C;--muted:#665F52;--faint:#857E6E;--line:#D9D3C2;color-scheme:light}
+@media (prefers-color-scheme:dark){:root{--bg:#171611;--surface:#22211A;--fg:#E8E4D8;--muted:#A39D8E;--faint:#7A7466;--line:#33312A;color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:var(--bg);color:var(--fg);font:400 16px/1.5 'IBM Plex Sans',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif}
+.w{max-width:920px;margin:0 auto;padding:28px 18px 60px}
+.top a{display:inline-flex;height:36px;align-items:center;padding:0 14px;border:1px solid var(--line);border-radius:999px;background:var(--surface);color:var(--muted);font:500 13.5px/1 inherit;text-decoration:none}
+h1{margin:22px 0 4px;font:600 clamp(30px,6vw,44px)/1.1 'Literata',Georgia,serif;letter-spacing:-.01em}
+.lead{margin:0 0 24px;color:var(--muted);font:400 17px/1.5 'Literata',Georgia,serif}
+.g{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px}
+.gc{position:relative;display:flex;flex-direction:column;gap:8px;padding:22px;min-height:230px;border:1px solid var(--line);border-radius:20px;background:var(--surface);text-decoration:none;color:inherit;overflow:hidden;transition:transform .18s,border-color .18s}
+.gc:hover{transform:translateY(-3px);border-color:var(--c)}
+.gc:before{content:"";position:absolute;right:-40px;top:-40px;width:140px;height:140px;border-radius:50%;background:var(--c);opacity:.22}
+.em{font-size:46px;line-height:1}
+.gc b{font:600 21px/1.2 'Literata',Georgia,serif}
+.gc span{color:var(--muted);font-size:15px}
+.gc i{margin-top:auto;font-style:normal;font-weight:600;color:var(--fg)}
+.foot{margin-top:26px;color:var(--faint);font-size:13.5px}
+</style>
+<!--GATE-->
+</head><body><div class="w">
+<div class="top"><a href="artem.html">← Артем</a></div>
+<h1>Игры</h1>
+<p class="lead">Просто поиграть и потупить. Сохраняется само, работает на телефоне.</p>
+<div class="g"><!--CARDS--></div>
+<p class="foot">Управление: мышь — вращать, колесо — зум, правая кнопка или Shift — двигать. На телефоне: один палец вращает, два — зум и перемещение. Качество графики подстраивается само.</p>
+</div></body></html>

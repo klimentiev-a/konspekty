@@ -1,0 +1,103 @@
+<!doctype html><html lang="ru"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#0f1a24">
+<meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="favicon.svg?v=31" type="image/svg+xml"><link rel="apple-touch-icon" href="apple-touch-icon.png?v=31">
+<title>/*TITLE*/</title>
+<style>
+:root{--ink:#eef3f6;--dim:#9db0bd;--glass:rgba(14,24,34,.72);--glass2:rgba(255,255,255,.08);--edge:rgba(255,255,255,.14);--ok:#6fe3a4;--bad:#ff7a6b;--gold:#ffd166;--acc:/*ACC*/;--r:14px;color-scheme:dark}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;overflow:hidden;background:#0f1a24;color:var(--ink);font:500 14px/1.35 'IBM Plex Sans',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;-webkit-user-select:none;user-select:none;overscroll-behavior:none}
+#stage{position:fixed;inset:0}
+#stage canvas{display:block}
+#hud{position:fixed;inset:0;pointer-events:none;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+#hud>*,#hud .pe{pointer-events:auto}
+.gbar{position:absolute;top:10px;left:10px;right:10px;display:flex;gap:8px;align-items:flex-start;pointer-events:none}
+.gbar>*{pointer-events:auto}
+.gl{display:flex;gap:6px;align-items:center;flex:none}
+.ib{height:38px;min-width:38px;padding:0 11px;display:inline-flex;align-items:center;justify-content:center;gap:6px;border:1px solid var(--edge);border-radius:12px;background:var(--glass);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);color:var(--ink);font:600 13px/1 inherit;text-decoration:none;cursor:pointer}
+.ib:hover{background:rgba(30,46,62,.85)}
+.ib:active{transform:scale(.96)}
+#res{display:flex;flex-wrap:wrap;gap:6px;flex:1;min-width:0}
+.rc{display:inline-flex;align-items:center;gap:6px;height:38px;padding:0 11px;border:1px solid var(--edge);border-radius:12px;background:var(--glass);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);font:600 14px/1 inherit;white-space:nowrap}
+.rc b{font-weight:700}.rc small{color:var(--dim);font-weight:500;font-size:12px}
+.rc .ic{font-size:16px}
+.rc.warn b{color:var(--bad)}.rc.good b{color:var(--ok)}
+.gr{display:flex;gap:6px;flex:none}
+#dock{position:absolute;left:0;right:0;bottom:calc(8px + env(safe-area-inset-bottom));display:flex;justify-content:center;pointer-events:none;padding:0 8px}
+#dock .in{display:flex;gap:6px;padding:7px;border:1px solid var(--edge);border-radius:18px;background:var(--glass);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);pointer-events:auto;max-width:100%;overflow-x:auto;scrollbar-width:none}
+#dock .in::-webkit-scrollbar{display:none}
+.bi{flex:none;position:relative;width:74px;min-height:68px;padding:7px 4px 6px;border:1px solid transparent;border-radius:12px;background:var(--glass2);color:var(--ink);font:600 11.5px/1.15 inherit;text-align:center;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px}
+.bi:hover{background:rgba(255,255,255,.14)}
+.bi.on{border-color:var(--acc);background:rgba(255,255,255,.16);box-shadow:0 0 0 2px color-mix(in srgb,var(--acc) 35%,transparent)}
+.bi.off{opacity:.42}
+.bi .e{font-size:24px;line-height:1}
+.bi .p{color:var(--gold);font-size:11px;font-weight:700}
+.bi .k{position:absolute;top:3px;left:5px;color:var(--dim);font-size:9.5px}
+#panel{position:absolute;top:60px;right:10px;width:min(320px,calc(100vw - 20px));max-height:calc(100% - 170px);overflow:auto;border:1px solid var(--edge);border-radius:var(--r);background:var(--glass);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);padding:14px;display:none}
+#panel.on{display:block}
+#panel h3{margin:0 0 4px;font:700 16px/1.25 inherit}
+#panel p{margin:4px 0 10px;color:var(--dim);font-size:13px}
+#panel .row{display:flex;justify-content:space-between;gap:10px;padding:4px 0;border-top:1px solid var(--edge);font-size:13px}
+#panel .row span:first-child{color:var(--dim)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;height:38px;padding:0 14px;border:0;border-radius:11px;background:var(--acc);color:#0b1620;font:700 13.5px/1 inherit;cursor:pointer}
+.btn.alt{background:var(--glass2);color:var(--ink);border:1px solid var(--edge)}
+.btn.bad{background:rgba(255,122,107,.18);color:var(--bad);border:1px solid rgba(255,122,107,.4)}
+.btn[disabled]{opacity:.4;cursor:default}
+.btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+#toasts{position:absolute;top:60px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;gap:6px;align-items:center;pointer-events:none;width:min(420px,calc(100vw - 20px))}
+.toast{padding:9px 14px;border-radius:12px;background:rgba(14,24,34,.88);border:1px solid var(--edge);font-weight:600;font-size:13px;animation:tin .25s ease;text-align:center}
+.toast.good{border-color:rgba(111,227,164,.6)}.toast.bad{border-color:rgba(255,122,107,.6)}.toast.gold{border-color:rgba(255,209,102,.7);color:var(--gold)}
+.toast.out{opacity:0;transition:opacity .4s}
+@keyframes tin{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
+#tip{position:absolute;pointer-events:none;padding:6px 10px;border-radius:9px;background:rgba(14,24,34,.9);border:1px solid var(--edge);font-size:12.5px;display:none;white-space:nowrap;z-index:5}
+#goal{position:absolute;left:10px;top:60px;max-width:min(300px,calc(100vw - 20px));padding:10px 12px;border:1px solid var(--edge);border-radius:var(--r);background:var(--glass);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);font-size:12.5px;display:none}
+#goal.on{display:block}
+#goal b{display:block;color:var(--gold);font-size:11px;letter-spacing:.06em;text-transform:uppercase;margin-bottom:3px}
+#goal .bar{height:5px;border-radius:3px;background:var(--glass2);margin-top:6px;overflow:hidden}
+#goal .bar i{display:block;height:100%;background:var(--acc);width:0;transition:width .4s}
+#modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;padding:16px;background:rgba(5,10,16,.62);pointer-events:auto;z-index:20}
+#modal.on{display:flex}
+#modal .box{width:min(440px,100%);max-height:90%;overflow:auto;padding:22px;border:1px solid var(--edge);border-radius:20px;background:#13202c}
+#modal h2{margin:0 0 8px;font:700 22px/1.2 inherit}
+#modal p{margin:6px 0;color:var(--dim);font-size:14px;line-height:1.5}
+#modal p b{color:var(--ink)}
+#modal ul{margin:6px 0 10px;padding-left:18px;color:var(--dim);font-size:13.5px;line-height:1.55}
+.hint{position:absolute;left:0;right:0;bottom:calc(96px + env(safe-area-inset-bottom));text-align:center;color:rgba(255,255,255,.75);font-size:12.5px;pointer-events:none;text-shadow:0 1px 3px rgba(0,0,0,.6)}
+#fps{position:absolute;left:10px;bottom:calc(96px + env(safe-area-inset-bottom));font:600 11px/1 ui-monospace,monospace;color:rgba(255,255,255,.55);pointer-events:none}
+@media (max-width:640px){
+  .gbar{flex-wrap:wrap}#res{order:3;flex-basis:100%}
+  .ib.lbl span{display:none}
+  .bi{width:64px;min-height:62px;font-size:10.5px}.bi .e{font-size:21px}
+  #panel{top:auto;bottom:calc(92px + env(safe-area-inset-bottom));right:8px;left:8px;width:auto;max-height:42%}
+  #goal{top:auto;bottom:calc(168px + env(safe-area-inset-bottom));left:8px}
+  #toasts{top:104px}
+}
+/*GAMECSS*/
+</style>
+<!--GATE-->
+</head><body>
+<div id="stage"></div>
+<div id="hud">
+  <div class="gbar">
+    <div class="gl"><a class="ib" href="games.html" title="К списку игр">←<span class="lbl"> Игры</span></a></div>
+    <div id="res"></div>
+    <div class="gr"><button class="ib" id="bSpeed" title="Скорость времени">×1</button><button class="ib" id="bPause" title="Пауза (пробел)">⏸</button><button class="ib" id="bQual" title="Качество графики">Авто</button><button class="ib" id="bMute" title="Звук">🔊</button><button class="ib" id="bHelp" title="Как играть">?</button></div>
+  </div>
+  <div id="goal"></div>
+  <div id="toasts"></div>
+  <div id="panel"></div>
+  <div class="hint" id="hint"></div>
+  <div id="fps"></div>
+  <div id="tip"></div>
+  <div id="dock"><div class="in" id="dockIn"></div></div>
+</div>
+<div id="modal"><div class="box" id="modalBox"></div></div>
+<script src="vendor/three.min.js"></script>
+<script>
+/*ENGINE*/
+</script>
+<script>
+/*GAME*/
+</script>
+</body></html>
