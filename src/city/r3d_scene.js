@@ -39,7 +39,7 @@ function initScene(){
   var gm=new THREE.Mesh(new THREE.PlaneGeometry(N,N),new THREE.MeshLambertMaterial({map:groundTex}));gm.rotation.x=-Math.PI/2;gm.position.set(N/2,0,N/2);gm.receiveShadow=true;scene.add(gm);
   slabMesh=new THREE.Mesh(GEO.box,new THREE.MeshLambertMaterial({color:'#8a6a4a'}));slabMesh.scale.set(N+.6,.9,N+.6);slabMesh.position.set(N/2,-.46,N/2);scene.add(slabMesh);
   waterMesh=new THREE.Mesh(new THREE.PlaneGeometry(900,900),new THREE.MeshLambertMaterial({color:'#5fa6c8'}));waterMesh.rotation.x=-Math.PI/2;waterMesh.position.set(N/2,-.7,N/2);scene.add(waterMesh);
-  initGround();drawGroundTex();buildTrees();buildLamps();setQuality(QL);resize()}
+  initGround();drawGroundTex();buildTrees();buildLamps();setQuality(QL);resize();GPUN=gpuName();if(/swiftshader|llvmpipe|basic render|software/i.test(GPUN)){QL=0;setQuality(0);setTimeout(function(){toast('Браузер рисует без видеокарты ('+GPUN+'). Включи аппаратное ускорение в настройках браузера — тогда лагать не будет.','warn')},1500)}}
 /* --- деревья и фонари (instanced) --- */
 var TRM=null,TRC=null,TRP=null,lampHead=null;
 function buildTrees(){if(treeG)scene.remove(treeG);treeG=new THREE.Group();var n=TREES.length;
@@ -73,9 +73,12 @@ function daylight(){var h=(S.t%1440)/60,se=Math.sin((h-6)/13.5*Math.PI),d=clamp(
 function setQuality(l){QL=l;var sh=l>=2;renderer.shadowMap.enabled=sh;renderer.shadowMap.type=THREE.PCFSoftShadowMap;sun.castShadow=sh;
   if(sh&&!sun.shadow.map){sun.shadow.mapSize.set(2048,2048)}
   scene.traverse(function(o){if(o.material){(Array.isArray(o.material)?o.material:[o.material]).forEach(function(m){m.needsUpdate=true})}});resize()}
-function resize(){var r=cv.parentElement.getBoundingClientRect();W=r.width;H=r.height;if(!renderer)return;var dpr=Math.min(window.devicePixelRatio||1,QL>=2?2:QL===1?1.5:1);renderer.setPixelRatio(dpr);renderer.setSize(W,H,false);camera.aspect=W/H;camera.updateProjectionMatrix()}
-var qAcc=0,qN=0,qLast=0;
-function qualityWatch(dt,now){if(FF||document.hidden)return;qAcc+=dt;qN++;if(qN>=90){var avg=qAcc/qN;qAcc=0;qN=0;if(now-qLast>2500){if(avg>.034&&QL>0){qLast=now;setQuality(QL-1)}}}}
+function resize(){var r=cv.parentElement.getBoundingClientRect();W=r.width;H=r.height;if(!renderer)return;var dpr=Math.min(window.devicePixelRatio||1,QL>=2?1.5:QL===1?1.25:1);renderer.setPixelRatio(dpr);renderer.setSize(W,H,false);camera.aspect=W/H;camera.updateProjectionMatrix()}
+var qAcc=0,qN=0,qLast=0,QAUTO=true,fpsN=0,fpsT=0,GPUN='',QN=['низкое','среднее','высокое'];
+function gpuName(){try{var gl=renderer.getContext(),e=gl.getExtension('WEBGL_debug_renderer_info');return e?String(gl.getParameter(e.UNMASKED_RENDERER_WEBGL)):''}catch(er){return ''}}
+function fpsTick(dt,now){fpsN++;fpsT+=dt;if(fpsT>=.8){var el=$('#fps');if(el){var f=Math.round(fpsN/fpsT);el.textContent=f+' fps · '+QN[QL];el.style.color=f<30?'#ff8a80':'#fff'}fpsN=0;fpsT=0}}
+function cycleQ(){QAUTO=false;setQuality((QL+2)%3)}
+function qualityWatch(dt,now){fpsTick(dt,now);if(FF||document.hidden||!QAUTO)return;qAcc+=dt;qN++;if(qN>=90){var avg=qAcc/qN;qAcc=0;qN=0;if(now-qLast>2500){if(avg>.034&&QL>0){qLast=now;setQuality(QL-1)}}}}
 
 /* --- камера --- */
 function applyCam(){cam.dist=clamp(cam.dist,cam.minD,cam.maxD);cam.pitch=clamp(cam.pitch,.35,1.4);cam.tx=clamp(cam.tx,0,N);cam.tz=clamp(cam.tz,0,N);

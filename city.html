@@ -190,6 +190,7 @@ input.q{width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid var(-
 #ff{position:absolute;left:50%;top:10px;transform:translateX(-50%);z-index:6;padding:7px 14px;border-radius:999px;background:rgba(30,28,24,.9);color:#fff;font:600 13px var(--sans);display:none;white-space:nowrap}
 #ff.on{display:block}
 #lbl{position:absolute;z-index:3;display:none;transform:translate(-50%,-130%);padding:3px 8px;border-radius:8px;background:rgba(20,20,20,.85);color:#fff;font:600 12px var(--sans);pointer-events:none;white-space:nowrap}
+#fps{position:absolute;left:8px;bottom:8px;z-index:3;padding:4px 9px;border-radius:999px;border:0;background:rgba(20,20,20,.6);color:#fff;font:600 11.5px var(--sans)}
 #recenter{position:absolute;right:10px;bottom:10px;z-index:3;width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:var(--surface);font:400 20px/1 var(--sans);box-shadow:0 4px 14px rgba(0,0,0,.2)}
 #zoomb{position:absolute;right:10px;top:10px;z-index:3;display:flex;flex-direction:column;gap:6px}
 #zoomb button{width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:var(--surface);font:500 20px/1 var(--sans);box-shadow:0 4px 14px rgba(0,0,0,.2)}
@@ -207,7 +208,7 @@ input.q{width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid var(-
  </div>
  <div id="stage">
   <canvas id="cv"></canvas>
-  <div id="zoomb"><button data-a="zoom" data-d="1" aria-label="Приблизить">+</button><button data-a="zoom" data-d="-1" aria-label="Отдалить">−</button><button data-a="rotl" aria-label="Повернуть влево">⟲</button><button data-a="rotr" aria-label="Повернуть вправо">⟳</button><button data-a="pitch" aria-label="Угол камеры">◢</button></div><div id="lbl"></div>
+  <div id="zoomb"><button data-a="zoom" data-d="1" aria-label="Приблизить">+</button><button data-a="zoom" data-d="-1" aria-label="Отдалить">−</button><button data-a="rotl" aria-label="Повернуть влево">⟲</button><button data-a="rotr" aria-label="Повернуть вправо">⟳</button><button data-a="pitch" aria-label="Угол камеры">◢</button></div><div id="lbl"></div><button id="fps" data-a="fps" aria-label="Качество графики">…</button>
   <button id="recenter" data-a="recenter" aria-label="Весь город">⌖</button>
   <div id="toast"></div><div id="ff"></div>
   <div id="card"></div>
@@ -611,7 +612,7 @@ function initScene(){
   var gm=new THREE.Mesh(new THREE.PlaneGeometry(N,N),new THREE.MeshLambertMaterial({map:groundTex}));gm.rotation.x=-Math.PI/2;gm.position.set(N/2,0,N/2);gm.receiveShadow=true;scene.add(gm);
   slabMesh=new THREE.Mesh(GEO.box,new THREE.MeshLambertMaterial({color:'#8a6a4a'}));slabMesh.scale.set(N+.6,.9,N+.6);slabMesh.position.set(N/2,-.46,N/2);scene.add(slabMesh);
   waterMesh=new THREE.Mesh(new THREE.PlaneGeometry(900,900),new THREE.MeshLambertMaterial({color:'#5fa6c8'}));waterMesh.rotation.x=-Math.PI/2;waterMesh.position.set(N/2,-.7,N/2);scene.add(waterMesh);
-  initGround();drawGroundTex();buildTrees();buildLamps();setQuality(QL);resize()}
+  initGround();drawGroundTex();buildTrees();buildLamps();setQuality(QL);resize();GPUN=gpuName();if(/swiftshader|llvmpipe|basic render|software/i.test(GPUN)){QL=0;setQuality(0);setTimeout(function(){toast('Браузер рисует без видеокарты ('+GPUN+'). Включи аппаратное ускорение в настройках браузера — тогда лагать не будет.','warn')},1500)}}
 /* --- деревья и фонари (instanced) --- */
 var TRM=null,TRC=null,TRP=null,lampHead=null;
 function buildTrees(){if(treeG)scene.remove(treeG);treeG=new THREE.Group();var n=TREES.length;
@@ -645,9 +646,12 @@ function daylight(){var h=(S.t%1440)/60,se=Math.sin((h-6)/13.5*Math.PI),d=clamp(
 function setQuality(l){QL=l;var sh=l>=2;renderer.shadowMap.enabled=sh;renderer.shadowMap.type=THREE.PCFSoftShadowMap;sun.castShadow=sh;
   if(sh&&!sun.shadow.map){sun.shadow.mapSize.set(2048,2048)}
   scene.traverse(function(o){if(o.material){(Array.isArray(o.material)?o.material:[o.material]).forEach(function(m){m.needsUpdate=true})}});resize()}
-function resize(){var r=cv.parentElement.getBoundingClientRect();W=r.width;H=r.height;if(!renderer)return;var dpr=Math.min(window.devicePixelRatio||1,QL>=2?2:QL===1?1.5:1);renderer.setPixelRatio(dpr);renderer.setSize(W,H,false);camera.aspect=W/H;camera.updateProjectionMatrix()}
-var qAcc=0,qN=0,qLast=0;
-function qualityWatch(dt,now){if(FF||document.hidden)return;qAcc+=dt;qN++;if(qN>=90){var avg=qAcc/qN;qAcc=0;qN=0;if(now-qLast>2500){if(avg>.034&&QL>0){qLast=now;setQuality(QL-1)}}}}
+function resize(){var r=cv.parentElement.getBoundingClientRect();W=r.width;H=r.height;if(!renderer)return;var dpr=Math.min(window.devicePixelRatio||1,QL>=2?1.5:QL===1?1.25:1);renderer.setPixelRatio(dpr);renderer.setSize(W,H,false);camera.aspect=W/H;camera.updateProjectionMatrix()}
+var qAcc=0,qN=0,qLast=0,QAUTO=true,fpsN=0,fpsT=0,GPUN='',QN=['низкое','среднее','высокое'];
+function gpuName(){try{var gl=renderer.getContext(),e=gl.getExtension('WEBGL_debug_renderer_info');return e?String(gl.getParameter(e.UNMASKED_RENDERER_WEBGL)):''}catch(er){return ''}}
+function fpsTick(dt,now){fpsN++;fpsT+=dt;if(fpsT>=.8){var el=$('#fps');if(el){var f=Math.round(fpsN/fpsT);el.textContent=f+' fps · '+QN[QL];el.style.color=f<30?'#ff8a80':'#fff'}fpsN=0;fpsT=0}}
+function cycleQ(){QAUTO=false;setQuality((QL+2)%3)}
+function qualityWatch(dt,now){fpsTick(dt,now);if(FF||document.hidden||!QAUTO)return;qAcc+=dt;qN++;if(qN>=90){var avg=qAcc/qN;qAcc=0;qN=0;if(now-qLast>2500){if(avg>.034&&QL>0){qLast=now;setQuality(QL-1)}}}}
 
 /* --- камера --- */
 function applyCam(){cam.dist=clamp(cam.dist,cam.minD,cam.maxD);cam.pitch=clamp(cam.pitch,.35,1.4);cam.tx=clamp(cam.tx,0,N);cam.tz=clamp(cam.tz,0,N);
@@ -1093,7 +1097,7 @@ document.addEventListener('click',function(e){var b=e.target.closest('[data-a]')
    case'flt':flt=b.dataset.f;shB.innerHTML=SH.people();break;
    case'fly':{var ev=S.log[i];if(ev&&ev.u!==undefined){closeSheet();flyTo(ev.u,ev.v,18)}break}
    case'toempty':{var em=S.lots.filter(function(L){return L.type==='empty'});if(em.length){var L2=pick(em);closeSheet();S.build={hint:1};flyTo(L2.x+1,L2.y+1,16);selL(L2)}break}
-   case'zoom':zoomBy(+b.dataset.d>0?1.35:1/1.35);break;case'rotl':rotBy(.6);break;case'rotr':rotBy(-.6);break;case'pitch':cyclePitch();break;case'recenter':fitCam();follow=-1;break;
+   case'zoom':zoomBy(+b.dataset.d>0?1.35:1/1.35);break;case'rotl':rotBy(.6);break;case'rotr':rotBy(-.6);break;case'pitch':cyclePitch();break;case'fps':cycleQ();toast('Качество графики: '+QN[QL],'');break;case'recenter':fitCam();follow=-1;break;
    case'newcity':if(confirm('Удалить этот город и начать заново?')){try{localStorage.removeItem('city:save')}catch(er){}FF=null;closeSheet();selClear();newCity();buildStatic();setSpeed(S.spd);fitCam()}break}});
 card.addEventListener('input',function(e){var el=e.target;if(el.dataset.k==='pr'&&S.sel&&S.sel.k==='l'){var L=S.lots[S.sel.id];L.pr=+el.value/100;var o=$('#o_pr');if(o)o.textContent=el.value+'%'}});
 shB.addEventListener('input',function(e){var el=e.target;if(el.id==='pq'){qtxt=el.value;var pl2=$('#plist');if(pl2)pl2.innerHTML=plist();return}var k=el.dataset.k;if(!k)return;var v=+el.value;if(k==='ndfl'||k==='profit'||k==='prop')S.tax[k]=v;else S[k]=v;
@@ -1119,7 +1123,7 @@ window.addEventListener('resize',function(){resize()});
 document.addEventListener('visibilitychange',function(){if(document.hidden)save();else last=performance.now()});window.addEventListener('pagehide',save);
 document.addEventListener('keydown',function(e){if(e.target&&e.target.tagName==='INPUT')return;if(e.key===' '){e.preventDefault();setSpeed(S.spd?0:3)}else if(e.key==='+'||e.key==='=')zoomBy(1.25);else if(e.key==='-')zoomBy(1/1.25);else if(e.key==='Escape'){if(cur)closeSheet();else selClear()}});
 function boot(){if(!load())newCity();try{initR3D()}catch(e){var nb=document.createElement('div');nb.style.cssText='position:absolute;inset:0;display:grid;place-items:center;padding:24px;text-align:center;font:15px var(--sans);color:var(--fg)';nb.textContent='Не удалось запустить 3D в этом браузере. Попробуй обновить страницу или открыть в Chrome/Safari.';$('#stage').appendChild(nb);window.CITY_NOGL=1;return}initHud();setSpeed(S.spd);resize();fitCam();updHud();requestAnimationFrame(frame)}
-window.CITY={get S(){return S},step:function(min){for(var i=0;i<min;i++)advance(1)},stats:function(){calcStats();return S.st},hist:function(){return S.hist},newCity:function(){newCity();buildStatic()},riot:riot,terror:terror,cam:cam,pPos:pPos,flyTo:flyTo,fitCam:fitCam,cutaway:cutaway,ip:function(p){return interiorPos(p)},setQ:function(q){setQuality(q)},get QL(){return QL},pickL:function(x,y){applyCam();camera.updateMatrixWorld();var L=pickL(x,y);return L?L.id:-1},picks:function(){return PICKS.length},proj:function(u,y,v){applyCam();camera.updateMatrixWorld();var q=new THREE.Vector3(u,y,v).project(camera);return [(q.x+1)/2*W,(1-q.y)/2*H]},info:function(){return {c:renderer.info.render.calls,t:renderer.info.render.triangles,g:renderer.info.memory.geometries,tx:renderer.info.memory.textures}},fire:fire,build:build,speed:setSpeed};
+window.CITY={get S(){return S},step:function(min){for(var i=0;i<min;i++)advance(1)},stats:function(){calcStats();return S.st},hist:function(){return S.hist},newCity:function(){newCity();buildStatic()},riot:riot,terror:terror,cam:cam,pPos:pPos,flyTo:flyTo,fitCam:fitCam,cutaway:cutaway,ip:function(p){return interiorPos(p)},setQ:function(q){setQuality(q)},get QL(){return QL},perf:function(n){var o={lots:0,ppl:0,fx:0,rend:0},t;for(var i=0;i<n;i++){var now=performance.now();t=performance.now();daylight();updateLots(now);o.lots+=performance.now()-t;t=performance.now();updatePeople(now);o.ppl+=performance.now()-t;t=performance.now();updateFx(now);o.fx+=performance.now()-t;t=performance.now();applyCam();renderer.render(scene,camera);o.rend+=performance.now()-t}for(var k in o)o[k]=+(o[k]/n).toFixed(2);return o},pickL:function(x,y){applyCam();camera.updateMatrixWorld();var L=pickL(x,y);return L?L.id:-1},picks:function(){return PICKS.length},proj:function(u,y,v){applyCam();camera.updateMatrixWorld();var q=new THREE.Vector3(u,y,v).project(camera);return [(q.x+1)/2*W,(1-q.y)/2*H]},info:function(){return {c:renderer.info.render.calls,t:renderer.info.render.triangles,g:renderer.info.memory.geometries,tx:renderer.info.memory.textures}},fire:fire,build:build,speed:setSpeed};
 boot();
 })();
 </script></body></html>
