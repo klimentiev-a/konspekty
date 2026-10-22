@@ -1,10 +1,10 @@
-2026-10-22T16:55Z
+2026-10-22T17:55Z
 ответ без dividends: ['description', 'boards'] {'description': {'columns': ['name', 'title', 'value', 'type', 'sort_order', 'is_hidden', 'precision'], 'data': [['SECID', 'Код ценной бумаги', 'SBER', 'string', 1, 0, None], ['ISSUENAME', 'Наименование ценной бумаги', 'Акции обыкновенные', 'string', 2, 0, None], ['NAME', 'Полное наименование', 'Сбе
 div SBER 'dividends'
 div LKOH 'dividends'
 div ROSN 'dividends'
 ISS дивиденды недоступны, пробую запасной источник
-smartlab SBER байт 56181 строк 0 []
+smartlab SBER байт 55879 строк 0 []
 dohod SBER ошибка HTTP Error 502: Bad Gateway
 альтернативный источник: эмитентов с данными 0 записей 0
 corp_cal: слишком мало ответов, файл не трогаем
