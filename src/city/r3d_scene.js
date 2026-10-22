@@ -58,7 +58,7 @@ function buildLamps(){var pts=[];for(var a=0;a<=N;a+=3)for(var b=0;b<=N;b+=R){if
 /* --- день и ночь --- */
 var FACM=[],_dk=-1,C1=new THREE.Color(),C2=new THREE.Color(),SKY_D=new THREE.Color('#a8d8ee'),SKY_S=new THREE.Color('#f2a574'),SKY_N=new THREE.Color('#0e1736'),SUN_L=new THREE.Color('#ffcf94'),SUN_H=new THREE.Color('#fff6e6'),MOON=new THREE.Color('#8fa4e8');
 var DAYK=1,EMI=0;
-function daylight(){var h=(S.t%1440)/60,se=Math.sin((h-6)/13.5*Math.PI),d=clamp((se+.14)/.5,0,1),k=Math.round(d*40);if(k===_dk)return;_dk=k;DAYK=d;
+function daylight(){var h=(S.t%1440)/60,se=Math.sin((h-6)/13.5*Math.PI),d=clamp((se+.14)/.5,0,1),k=Math.round(h*10);if(k===_dk)return;_dk=k;DAYK=d;renderer.shadowMap.needsUpdate=true;
   var dusk=clamp(1-Math.abs(d-.4)/.4,0,1)*(1-clamp(se*2,0,1)*.6);
   C1.copy(SKY_N).lerp(SKY_D,d).lerp(SKY_S,dusk*.55);scene.background.copy(C1);scene.fog.color.copy(C1);
   hemi.intensity=.55+.65*d;hemi.color.set('#9fb2e8').lerp(C2.set('#d6ecff'),d);hemi.groundColor.set('#1c2038').lerp(C2.set('#7a8a66'),d);
@@ -70,7 +70,7 @@ function daylight(){var h=(S.t%1440)/60,se=Math.sin((h-6)/13.5*Math.PI),d=clamp(
   if(lampHead)lampHead.material.color.set('#3a3d44').lerp(C2.set('#ffe9a8'),clamp((nf-.3)*1.6,0,1))}
 
 /* --- размер и качество --- */
-function setQuality(l){QL=l;var sh=l>=2;renderer.shadowMap.enabled=sh;renderer.shadowMap.type=THREE.PCFSoftShadowMap;sun.castShadow=sh;
+function setQuality(l){QL=l;var sh=l>=2;renderer.shadowMap.enabled=sh;renderer.shadowMap.autoUpdate=false;renderer.shadowMap.needsUpdate=true;renderer.shadowMap.type=THREE.PCFShadowMap;sun.castShadow=sh;
   if(sh&&!sun.shadow.map){sun.shadow.mapSize.set(2048,2048)}
   scene.traverse(function(o){if(o.material){(Array.isArray(o.material)?o.material:[o.material]).forEach(function(m){m.needsUpdate=true})}});resize()}
 function resize(){var r=cv.parentElement.getBoundingClientRect();W=r.width;H=r.height;if(!renderer)return;var dpr=Math.min(window.devicePixelRatio||1,QL>=2?1.5:QL===1?1.25:1);renderer.setPixelRatio(dpr);renderer.setSize(W,H,false);camera.aspect=W/H;camera.updateProjectionMatrix()}
@@ -113,3 +113,5 @@ var PICKS=[];
 function pickP(x,y){var best=null,bd=1e9;S.people.forEach(function(p){if(!visP(p))return;var ps=pPos(p);V3.set(ps[0],.32,ps[1]);var dc=V3.distanceTo(camera.position);V3.project(camera);if(V3.z>1)return;var sx=(V3.x+1)/2*W,sy=(1-V3.y)/2*H,ppu=H/(2*Math.tan(FOVD*Math.PI/360)*dc),rad=Math.max(15,.5*ppu),d=Math.hypot(sx-x,sy-y);if(d<rad&&d<bd){bd=d;best=p}});return best}
 function pickL(x,y){V2.set(x/W*2-1,-(y/H)*2+1);RC.setFromCamera(V2,camera);var hit=RC.intersectObjects(PICKS,false);return hit.length?hit[0].object.userData.L:null}
 function tap(x,y){applyCam();camera.updateMatrixWorld();var p=pickP(x,y);if(p){selP(p);return}var L=pickL(x,y);if(L){selL(L);flyTo(L.x+1,L.y+1,Math.min(cam.dist,17));return}selClear()}
+
+var lastIn=0;['pointerdown','pointermove','wheel','keydown','touchstart'].forEach(function(e){window.addEventListener(e,function(){lastIn=performance.now()},{passive:true})});

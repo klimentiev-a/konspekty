@@ -108,7 +108,7 @@ function makeLot(L){var old=LG[L.id];if(old){scene.remove(old.g)}
   if(cl&&L.type!=='empty'){var b1=bx(1.9,.08,.04,0,.5,.95,MAT('#3a2a20'),shell);b1.rotation.z=.5;var b2=bx(1.9,.08,.04,0,.5,.95,MAT('#3a2a20'),shell);b2.rotation.z=-.5}
   if(dm&&!L._sm)L._sm=smokeP(shell,0,top,0);
   bake(shell);
-  scene.add(g);var pk=old&&old.pick;
+  scene.add(g);if(renderer)renderer.shadowMap.needsUpdate=true;var pk=old&&old.pick;
   if(!pk){pk=new THREE.Mesh(GEO.box,new THREE.MeshBasicMaterial({visible:false}));pk.userData.L=L;PICKS.push(pk)}
   pk.scale.set(1.9,top+.2,1.9);pk.position.set(L.x+1,(top+.2)/2,L.y+1);pk.updateMatrixWorld();
   LG[L.id]={g:g,shell:shell,pick:pk,sig:lotSig(L),inter:null}}

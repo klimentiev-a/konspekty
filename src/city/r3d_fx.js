@@ -42,7 +42,7 @@ function interBuild(L){var g=new THREE.Group(),P_=palOf(L),T=L.type,dX=L.doorX,s
     spots.stand=[[-.7,.55,0],[0,.6,0],[.7,.55,0],[.4,.4,0]]}
   g.userData.spots=spots;return g}
 function cutBuild(L){var G=LG[L.id];if(!G)return;if(!G.inter){var ig=interBuild(L);G.inter=ig;if(ig)G.g.add(ig)}if(G.inter)G.inter.visible=true;G.shell.visible=false;L._spots=G.inter?G.inter.userData.spots:null}
-function cutaway(L){
+function cutaway(L){renderer.shadowMap.needsUpdate=true;
   if(cutL!=null&&LG[cutL]&&(L==null||L.id!==cutL)){var o=LG[cutL];o.shell.visible=true;if(o.inter)o.inter.visible=false}
   if(L==null||L.type==='park'||L.type==='empty'){cutL=null;return}
   cutL=L.id;cutBuild(L);L._ins=null;cam.pitch=Math.max(cam.pitch,1.12)}

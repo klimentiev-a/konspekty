@@ -6,7 +6,7 @@ function initPeople(){
   DBOX=new THREE.InstancedMesh(GEO.box,new THREE.MeshLambertMaterial({color:'#ffffff'}),MAXS*PB);DSPH=new THREE.InstancedMesh(GEO.sph,new THREE.MeshLambertMaterial({color:'#ffffff'}),MAXS*2);
   DSHD=new THREE.InstancedMesh(new THREE.CircleGeometry(1,12),new THREE.MeshBasicMaterial({color:'#000',transparent:true,opacity:.27,depthWrite:false}),MAXS);
   [DBOX,DSPH,DSHD].forEach(function(m){m.frustumCulled=false;m.count=0;for(var i=0;i<m.instanceMatrix.count;i++)m.setMatrixAt(i,ZERO);m.instanceMatrix.setUsage(THREE.DynamicDrawUsage)});
-  DBOX.castShadow=DSPH.castShadow=true;scene.add(DBOX);scene.add(DSPH);scene.add(DSHD);
+  DBOX.castShadow=DSPH.castShadow=false;scene.add(DBOX);scene.add(DSPH);scene.add(DSHD);
   selRing=new THREE.Mesh(new THREE.RingGeometry(.2,.26,28),new THREE.MeshBasicMaterial({color:'#ff3b4a',side:THREE.DoubleSide,transparent:true,opacity:.95,depthTest:false}));selRing.rotation.x=-Math.PI/2;selRing.visible=false;selRing.renderOrder=9;scene.add(selRing)}
 function hash(id,k){var h=(id*2654435761+k*40503)>>>0;h^=h>>>13;h=Math.imul(h,1274126177)>>>0;return ((h^h>>>16)>>>0)/4294967296}
 function colSig(p){var J=p.job>=0?S.lots[p.job]:null;return (J?J.type:'')+(p.riot?'R':'')}
@@ -60,7 +60,7 @@ function updatePeople(now){var dt=Math.min(.1,(now-lastDraw)/1000);lastDraw=now;
       p._lx=ps[0];p._lz=ps[1];
       putDoll(p,sl,ps[0],0,ps[1],p._yw||0,sc,p._wp||0,0,d>.0015&&d<2)}}
   for(var s=0;s<nextSlot;s++){if(!SEEN[s]&&SLOTS[s]!=null){SLOTS[s]=null;FREES.push(s);hideSlot(s)}}
-  DBOX.count=maxs*PB;DSPH.count=maxs*2;DSHD.count=maxs;DBOX.instanceMatrix.needsUpdate=DSPH.instanceMatrix.needsUpdate=DSHD.instanceMatrix.needsUpdate=true;DSHD.visible=QL<2;
+  DBOX.count=maxs*PB;DSPH.count=maxs*2;DSHD.count=maxs;DBOX.instanceMatrix.needsUpdate=DSPH.instanceMatrix.needsUpdate=DSHD.instanceMatrix.needsUpdate=true;DSHD.visible=true;
   var sp=S.sel&&S.sel.k==='p'?P(S.sel.id):null,lb=$('#lbl');
   if(sp&&(visP(sp)||(cutL!=null&&sp.loc===cutL))){var pp=cutL!=null&&sp.loc===cutL?interiorPos(sp):null,u=pp?pp.x:pPos(sp)[0],v=pp?pp.z:pPos(sp)[1];selRing.visible=true;selRing.position.set(u,.05,v);var pl=1+Math.sin(now/200)*.12;selRing.scale.set(pl,pl,pl);
     _v.set(u,.9,v).project(camera);if(lb&&_v.z<1){lb.style.display='block';lb.textContent=dsp(sp);lb.style.left=((_v.x+1)/2*W)+'px';lb.style.top=((1-_v.y)/2*H)+'px'}}

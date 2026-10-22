@@ -625,7 +625,8 @@ function load(){try{var j=localStorage.getItem('city:save');if(!j)return false;v
 
 /* ============ главный цикл ============ */
 var last=performance.now(),lastHud=0,lastSave=0,lastCard=0;
-function frame(now){var dt=Math.min(.25,(now-last)/1000);last=now;
+function frame(now){var minI=document.hasFocus()?((S.spd===0&&!FF&&now-lastIn>3000)?50:15.5):90;if(now-last<minI){requestAnimationFrame(frame);return}
+  var dt=Math.min(.25,(now-last)/1000);last=now;
   if(FF){var t0=performance.now();while(FF.left>0&&performance.now()-t0<14){advance(1);FF.left--}if(FF.left<=0){FF=null;$('#ff').classList.remove('on')}else $('#ff').textContent='⏩ Перемотка… '+Math.round((1-FF.left/FF.all)*100)+'%'}
   else if(S.spd>0)advance(dt*SPEEDS[S.spd]);
   stepFly();stepFollow();draw();qualityWatch(dt,now);
