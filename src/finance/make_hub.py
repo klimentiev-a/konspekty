@@ -375,6 +375,7 @@ SLOVAR_CSS = """<style>
 .tk.web{border-style:dashed}.tk.web .src{color:var(--faint);font:400 12px/1.4 system-ui,sans-serif;margin-top:6px}
 .sh{margin:18px 0 8px;color:var(--faint);font:600 12px/1 system-ui,sans-serif;letter-spacing:.06em;text-transform:uppercase}
 .sm{color:var(--muted);font:400 14px/1.5 system-ui,sans-serif;padding:8px 0}
+.wbtn{display:block;width:100%;min-height:48px;margin:18px 0 4px;padding:0 16px;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--fg);font:600 15px system-ui,sans-serif;cursor:pointer}
 </style>"""
 SLOVAR_JS = r"""<script>
 (function(){
@@ -414,13 +415,14 @@ function card(e){
   if(e.x)h+='<div class="lb">Формула</div>'+e.x.replace(/<code>/g,'<code>').replace(/<span class="fx">/g,'<span class="fx">');
   h+='<a href="'+esc(e.u)+'">Разобрано в курсе →</a></div>';return h}
 var box=document.getElementById('sr'),web=document.getElementById('web'),inp=document.getElementById('q'),tmr=null,seq=0;
+var FIN=/финанс|эконом|бухгалтер|учёт|учет|аудит|инвест|банк|акци[июя]|облигац|кредит|займ|налог|рынок|рынк|бирж|капитал|прибыл|выруч|доход|стоимост|валют|страхов|торгов|бизнес|компани|предприят|производств|логистик|цепочк|автомобил|сборк|таможн|пошлин|товар|актив|долг|процент|ставк|менеджмент|маркетинг|контракт|финтех|криптовалют|\b(financ|econom|account|audit|invest|bank|stock|share|bond|credit|loan|debt|tax|market|exchange|capital|profit|revenue|income|valuation|currency|insurance|trading|trade|business|company|corporat|manufactur|supply chain|logistic|asset|equity|interest rate|management|marketing|customs|tariff|assembl|automotive|vehicle)/i;
 function wiki(q){
   var my=++seq,cy=isCyr(q),lang=cy?'ru':'en',other=cy?'en':'ru';
   web.innerHTML='<div class="sh">Из интернета (Википедия)</div><p class="sm">Ищу…</p>';
-  var u='https://'+lang+'.wikipedia.org/w/api.php?action=query&format=json&origin=*&generator=search&gsrlimit=3&gsrsearch='+encodeURIComponent(q+(cy?' финансы':' finance'))+'&prop=extracts|langlinks|info&exintro=1&explaintext=1&exchars=650&lllang='+other+'&lllimit=1&inprop=url';
+  var u='https://'+lang+'.wikipedia.org/w/api.php?action=query&format=json&origin=*&generator=search&gsrlimit=12&gsrsearch='+encodeURIComponent(q+(cy?' финансы':' finance'))+'&prop=extracts|langlinks|info&exintro=1&explaintext=1&exchars=900&lllang='+other+'&lllimit=1&inprop=url';
   fetch(u).then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(j){
-    if(my!==seq)return;var pg=j.query&&j.query.pages?Object.keys(j.query.pages).map(function(k){return j.query.pages[k]}).sort(function(a,b){return a.index-b.index}):[];
-    if(!pg.length){web.innerHTML='<div class="sh">Из интернета (Википедия)</div><p class="sm">Ничего не нашлось. Попробуй написать по-английски или иначе.</p>';return}
+    if(my!==seq)return;var pg=j.query&&j.query.pages?Object.keys(j.query.pages).map(function(k){return j.query.pages[k]}).sort(function(a,b){return a.index-b.index}).filter(function(p){return FIN.test(p.title+' '+(p.extract||''))}).slice(0,3):[];
+    if(!pg.length){web.innerHTML='<div class="sh">Из интернета (Википедия)</div><p class="sm">Ничего по финансам и смежным темам не нашлось. Попробуй написать по-английски или иначе.</p>';return}
     web.innerHTML='<div class="sh">Из интернета (Википедия)</div>'+pg.map(function(p){
       var ll=p.langlinks&&p.langlinks[0]?p.langlinks[0]['*']:'';
       return '<div class="tk web"><h2>'+esc(p.title)+'</h2>'+(ll?'<div class="en">'+(cy?'По-английски':'По-русски')+': '+esc(ll)+'</div>':'')+'<div class="lb">Суть</div><p>'+esc(p.extract||'')+'</p><div class="src">Википедия, не проверено по курсу. Формул здесь нет — их смотри в карточках выше.</div><a href="'+esc(p.fullurl)+'" target="_blank" rel="noopener">Открыть статью →</a></div>'}).join('')})
@@ -428,10 +430,10 @@ function wiki(q){
 }
 function run(){
   var q=inp.value.trim();
-  if(q.length<2){box.innerHTML='<p class="sm">Напиши термин по-русски или по-английски: «WACC», «вакк», «чистый долг», «accretion», «ebitda». Покажу расшифровку, перевод, суть и формулу из курса, а ниже — что есть в Википедии.</p>';web.innerHTML='';seq++;return}
+  if(q.length<2){box.innerHTML='<p class="sm">Напиши термин по-русски или по-английски: «WACC», «вакк», «чистый долг», «accretion», «ebitda». Покажу расшифровку, перевод, суть и формулу из курса, а если в курсе нет — можно поискать в Википедии кнопкой.</p>';web.innerHTML='';seq++;return}
   var r=local(q);
   box.innerHTML=r.length?'<div class="sh">Из курса</div>'+r.map(function(x){return card(x.e)}).join(''):'<div class="sh">Из курса</div><p class="sm">В курсе такого термина нет. Напиши мне в чат — добавлю.</p>';
-  clearTimeout(tmr);tmr=setTimeout(function(){wiki(q)},450);
+  clearTimeout(tmr);seq++;web.innerHTML='<button type="button" class="wbtn" id="wbtn">Поискать «'+esc(q)+'» в интернете</button><p class="sm">Покажу только статьи Википедии про финансы и смежные темы.</p>';document.getElementById('wbtn').onclick=function(){wiki(q)};
 }
 inp.addEventListener('input',run);
 var q0=new URLSearchParams(location.search).get('q');if(q0)inp.value=q0;run();inp.focus();
