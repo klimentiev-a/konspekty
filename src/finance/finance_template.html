@@ -571,6 +571,9 @@ html.wfs-lock,html.wfs-lock body{overflow:hidden}
 
 .wtabs{display:flex;gap:4px;margin:14px -2px 0;padding:6px 2px;position:sticky;top:-1px;z-index:3;background:var(--surface);overflow-x:auto;scrollbar-width:none;border-bottom:1px solid var(--line2)}
 .wtabs::-webkit-scrollbar{display:none}
+@media (max-width:760px){html .zq{bottom:calc(66px + env(safe-area-inset-bottom,0px))}}
+.wtabs{flex-wrap:wrap;overflow:visible;gap:4px 4px;padding:8px 2px}.wtabs button{flex:0 1 auto;min-height:36px;padding:8px 12px}
+.wcard .wcmpb{margin:14px 0 6px;gap:8px}.wck.rc>div:first-child{padding:2px 0 2px 12px}.wck h3{margin-bottom:2px}.wcard .wbig+.wsm,.wcard .wck~.wsm{margin-top:10px}
 .wtabs button{flex:1 1 auto;padding:9px 8px;border:0;border-radius:10px;background:none;color:var(--muted);font:600 14px/1.1 var(--sans);cursor:pointer;min-height:40px}
 .wtabs button.on{background:var(--fg);color:var(--bg)}
 .wx.wfull{display:none}
