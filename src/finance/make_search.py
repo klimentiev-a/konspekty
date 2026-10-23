@@ -59,6 +59,15 @@ for l in ix['layers']:
         d = det.get(it['name']) or {}
         txt = ' · '.join(x for x in [it.get('region', ''), d.get('what', ''), (d.get('ceo') or {}).get('n', ''), it.get('ticker', '')] if x)
         out.append(['co', it['name'], txt, 'finance.html#world/' + l['id'] + '/' + it.get('region', '')])
+# финансы по-английски (fin-english.html)
+for f in sorted(glob.glob(os.path.join(ROOT, 'src', 'finenglish', 'lessons', '[0-9]*.md'))):
+    t = open(f, encoding='utf-8').read().strip().split('\n')
+    title = re.sub(r'^# Topic \d+\. ', '', t[0]).strip(); short = t[1][6:].strip() if len(t) > 1 and t[1].startswith('short:') else ''
+    fid = re.sub(r'^\d+_', '', os.path.splitext(os.path.basename(f))[0])
+    body = '\n'.join(t[2:]).split('## Words')[0].replace('## Theory', '')
+    for h, x in sections(body):
+        if h == 'Theory': h = ''
+        out.append(['en', title, (short + '. ' + x).strip() if not h else x, 'fin-english.html#t/' + fid, h])
 # билеты и конспекты (Учёба)
 tk = json.load(open(os.path.join(ROOT, 'src', 'tickets.json'), encoding='utf-8'))
 KEY = {'konst': 'const', 'ugol': 'crim', 'grazh': 'civil'}; LAB = {'konst': 'Конституционное право', 'ugol': 'Уголовное право', 'grazh': 'Гражданское право'}

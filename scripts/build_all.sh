@@ -10,12 +10,13 @@ python3 src/finance/make_hub.py
 python3 src/finance/make_ucheba.py src/index.src.html ucheba.html
 python3 src/finance/build_finance.py src/finance/content src/marked.min.js finance.html
 python3 src/english/build_english.py
+python3 src/finenglish/build.py
 python3 src/energy/build_energy.py
 python3 src/finance/make_search.py
 # Синхронизация прогресса между устройствами: подключаем sync.js первым скриптом (идемпотентно)
 python3 - <<'PY'
 import re
-for f in ['index.html','artem.html','nastya.html','nastya-ucheba.html','ucheba.html','finance.html','politika.html','english.html','energy.html']:
+for f in ['index.html','artem.html','nastya.html','nastya-ucheba.html','ucheba.html','finance.html','politika.html','english.html','fin-english.html','energy.html']:
     if f=='energy.html' and not __import__('os').path.exists(f): continue
     s = open(f, encoding='utf-8').read()
     if 'src="tables.js"' not in s:

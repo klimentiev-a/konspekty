@@ -1,0 +1,213 @@
+<!doctype html><html lang="ru"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#F4F1E8" media="(prefers-color-scheme: light)"><meta name="theme-color" content="#171611" media="(prefers-color-scheme: dark)">
+<meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="Finance English">
+<link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="favicon.svg?v=31" type="image/svg+xml"><link rel="icon" href="icon-192.png?v=31" sizes="192x192"><link rel="apple-touch-icon" href="apple-touch-icon.png?v=31">
+<title>Английский · Финансы</title>
+<!--ZOOM-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Literata:opsz,wght@7..72,400..700&family=JetBrains+Mono:wght@400;500&display=swap" media="print" onload="this.media='all'">
+<style>
+/*FINCSS*/
+.bar .brand{margin-right:auto}
+main{padding-top:18px;max-width:860px}
+h1.pg{margin:6px 0 4px;font:600 clamp(27px,5.5vw,38px)/1.15 var(--serif);letter-spacing:-.01em}
+.lead{margin:0 0 18px;color:var(--muted);font:400 16px/1.55 var(--sans);max-width:62ch}
+.hero{display:grid;grid-template-columns:1.4fr 1fr;gap:14px;margin:6px 0 22px}
+@media(max-width:760px){.hero{grid-template-columns:1fr}}
+.box{padding:16px 18px;border:1px solid var(--line);border-radius:16px;background:var(--surface)}
+.box h3{margin:0 0 8px;font:600 11.5px/1.2 var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.big{font:600 28px/1.1 var(--serif)}.big small{font:500 14px var(--sans);color:var(--muted)}
+.bar2{height:8px;border-radius:99px;background:var(--line2);overflow:hidden;margin:10px 0 6px}.bar2 i{display:block;height:100%;border-radius:99px;background:var(--accent);transition:width .5s}
+.stats{display:flex;gap:18px;flex-wrap:wrap;margin-top:10px;color:var(--muted);font:500 13.5px/1.3 var(--sans)}.stats b{color:var(--fg);font-weight:650}
+.cont{display:flex;flex-direction:column;gap:8px;text-decoration:none}
+.cont:hover{border-color:var(--faint)}
+.cont b{font:600 19px/1.3 var(--serif)}.cont small{color:var(--muted);font:400 14px/1.4 var(--sans)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:42px;padding:0 18px;border-radius:12px;background:var(--accent);color:var(--bg);font:600 15px/1 var(--sans);text-decoration:none;border:1px solid var(--accent);cursor:pointer}
+.btn:hover{filter:brightness(1.07)}.btn.ghost{background:none;color:var(--fg);border-color:var(--line)}.btn.ghost:hover{border-color:var(--faint)}
+.btn.sm{min-height:34px;padding:0 13px;font-size:13.5px;border-radius:10px}
+.tools{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:0 0 14px}
+.tools input[type=search]{flex:1;min-width:160px;height:40px;padding:0 14px;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--fg);font:400 16px var(--sans);outline:0}
+.unit{margin:30px 0 8px;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}.unit h2{margin:0;font:600 22px/1.25 var(--serif)}.unit span{color:var(--muted);font:400 14px var(--sans)}
+.lrow{display:grid;grid-template-columns:40px 1fr auto;gap:12px;align-items:center;padding:12px 4px;border-top:1px solid var(--line2);text-decoration:none;color:inherit}
+.lrow:last-child{border-bottom:1px solid var(--line2)}
+.lrow:hover{background:color-mix(in srgb,var(--fg) 4%,transparent)}
+.ln{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;border:1px solid var(--line);font:600 14px var(--sans);font-variant-numeric:tabular-nums;color:var(--muted)}
+.lrow.done .ln{background:var(--accent);border-color:var(--accent);color:var(--bg)}
+.lt b{display:block;font:600 16px/1.3 var(--sans)}.lt small{display:block;margin-top:2px;color:var(--muted);font:400 13.5px/1.4 var(--sans)}
+.lm{display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+.tag{padding:3px 9px;border-radius:99px;border:1px solid var(--line);font:600 11.5px/1.3 var(--sans);color:var(--muted);white-space:nowrap}
+.tag.sc{border-color:var(--accent);color:var(--accent)}
+@media(max-width:560px){.lrow{grid-template-columns:36px 1fr}.lm{grid-column:2;justify-content:flex-start}}
+.snav{position:sticky;top:var(--hh,96px);z-index:20;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:8px 0;margin:0 0 14px;background:var(--bg);border-bottom:1px solid var(--line2)}
+.snav::-webkit-scrollbar{display:none}
+.lh{margin:4px 0 10px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;color:var(--muted);font:500 13.5px var(--sans)}
+.sec{margin:34px 0 0;scroll-margin-top:calc(var(--hh,96px) + 56px)}
+.sec>h2{margin:0 0 12px;padding-top:18px;border-top:1px solid var(--line);font:600 24px/1.25 var(--serif)}
+.prose{font:400 17px/1.7 var(--sans)}
+.prose h2{scroll-margin-top:calc(var(--hh,96px) + 56px)}
+.prose h3{margin:1.7em 0 .5em}
+.prose blockquote{margin:1.2em 0;padding:12px 16px;border-left:3px solid var(--accent);background:var(--surface);border-radius:0 12px 12px 0}
+.prose blockquote p{margin:0}
+.wt{width:100%;border-collapse:collapse;font:400 15px/1.45 var(--sans)}
+.wt th{position:static;text-align:left;padding:8px 10px;font:600 11.5px/1.3 var(--sans);letter-spacing:.05em;text-transform:uppercase;color:var(--muted);background:var(--rail);border-bottom:1px solid var(--line)}
+.wt td{padding:9px 10px;vertical-align:top;border-bottom:1px solid var(--line2)}
+.wt td:first-child{font-weight:650}
+.wt .ex{color:var(--muted);font-size:14px}
+.hidet .wt .tr{filter:blur(6px);cursor:pointer;user-select:none}.hidet .wt .tr.show{filter:none}
+.done-bar{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin:30px 0 0;padding:16px;border:1px solid var(--line);border-radius:16px;background:var(--surface)}
+.done-bar.ok{border-color:var(--accent)}
+.pager{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:36px;padding-top:22px;border-top:1px solid var(--line)}
+.pager a{display:flex;flex-direction:column;gap:5px;padding:14px 16px;border:1px solid var(--line);border-radius:12px;text-decoration:none;min-width:0}
+.pager a:hover{border-color:var(--faint);background:var(--surface)}.pager .nx{grid-column:2;text-align:right}
+.pager small{font:500 11px/1 var(--sans);letter-spacing:.07em;text-transform:uppercase;color:var(--faint)}.pager b{font:600 16px/1.3 var(--serif)}
+.crumb{display:inline-block;margin:2px 0 4px;color:var(--muted);font:500 14px var(--sans);text-decoration:none}.crumb:hover{color:var(--fg)}
+.empty{margin:30px 0;padding:30px 20px;border:1px dashed var(--line);border-radius:16px;text-align:center;color:var(--muted)}
+.zm{display:none!important}
+mark.hl{background:var(--mark);color:inherit;border-radius:3px;padding:0 2px}
+@keyframes pulse{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--accent) 55%,transparent)}100%{box-shadow:0 0 0 14px transparent}}
+.pulse{animation:pulse 1.1s ease-out 2}
+@media (prefers-reduced-motion:reduce){.pulse{animation:none}.bar2 i{transition:none}}
+</style></head><body>
+<header class="top" id="top">
+  <div class="bar">
+    <a class="home" id="b-back" href="artem.html" aria-label="Назад"><svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></a>
+    <a class="brand" href="#home"><b>Aa</b> Finance English</a>
+    <button class="ibtn" id="b-theme" type="button" aria-label="Сменить оформление"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 1 0 16z" fill="currentColor" stroke="none"/></svg></button>
+  </div>
+</header>
+<main id="view"></main>
+<!--DATA-->
+<!--MARKED-->
+<script>
+(function(){
+'use strict';
+(function(){
+  var k='lasthash:'+(location.pathname.split('/').pop()||'index.html');
+  try{
+    if(!location.hash){var h=localStorage.getItem(k);if(h&&h.length>1)history.replaceState(null,'',location.pathname+location.search+h)}
+    var sv=function(){try{if(location.hash.length>1&&!/^#home$/.test(location.hash))localStorage.setItem(k,location.hash);else localStorage.removeItem(k)}catch(e){}};
+    window.addEventListener('hashchange',sv);sv();
+  }catch(e){}
+})();
+var root=document.documentElement;
+function $(s,e){return (e||document).querySelector(s)}
+function $$(s,e){return Array.prototype.slice.call((e||document).querySelectorAll(s))}
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function store(k,v){try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v)}catch(e){return null}}
+var view=$('#view');
+var D=JSON.parse($('#edata').textContent),LS=D.lessons,UN=D.units,BYID={};
+LS.forEach(function(l,i){l.i=i;BYID[l.id]=l});
+var PROF='artem';
+
+/* оформление (общее с разделом «Финансы») */
+function applyTheme(t){if(t)root.setAttribute('data-theme',t);else root.removeAttribute('data-theme')}
+var SKINS=[['auto','Как в системе','#F4F1E8','#1F6B57',''],['ocean','Океан','#E9F0F6','#1A5FA8','light'],
+  ['dark','Ночь','#171611','#5FC2A3','dark'],['graphite','Графит','#15171B','#7BA7F5','dark'],['news','Газета','#161512','#E0483B','dark']];
+function applySkin(id){
+  var sk=SKINS.filter(function(x){return x[0]===id})[0];if(!sk){id='auto';sk=SKINS[0]}
+  if(id==='auto'){root.removeAttribute('data-skin');applyTheme('')}
+  else if(id==='light'||id==='dark'){root.removeAttribute('data-skin');applyTheme(id)}
+  else{root.setAttribute('data-skin',id);applyTheme(sk[4])}
+  try{var bg=getComputedStyle(root).getPropertyValue('--bg').trim();$$('meta[name=theme-color]').forEach(function(m){if(bg)m.setAttribute('content',bg)})}catch(e){}
+}
+function skinGet(){var v=store('fin:skin');if(v)return v;var t=store('theme');return t==='dark'||t==='light'?t:'auto'}
+applySkin(skinGet());
+function skinMenu(open){
+  var m=document.getElementById('thm');
+  if(!open){if(m)m.remove();return}
+  if(m){m.remove();return}
+  var cur=skinGet();m=document.createElement('div');m.id='thm';m.className='thm';m.setAttribute('role','menu');
+  m.innerHTML='<p>Оформление</p>'+SKINS.map(function(x,i){return (i===1||i===3?'<div class="sep"></div>':'')+'<button type="button" role="menuitemradio" aria-checked="'+(x[0]===cur)+'" class="'+(x[0]===cur?'on':'')+'" data-skin="'+x[0]+'"><span class="skw" style="background:'+x[2]+'"><i style="background:'+x[3]+'"></i></span>'+x[1]+'</button>'}).join('');
+  document.body.appendChild(m);
+}
+
+/* прогресс: только отметки «прочитано» */
+var P=(function(){try{return JSON.parse(store('feng:'+PROF)||'{}')||{}}catch(e){return {}}})();
+P.done=P.done||{};
+function pSave(){store('feng:'+PROF,JSON.stringify(P))}
+
+/* markdown */
+marked.use({gfm:true,breaks:false,renderer:{
+  table:function(h,b){return '<div class="tablewrap"><table><thead>'+h+'</thead><tbody>'+b+'</tbody></table></div>\n'},
+  link:function(href,title,text){return '<a href="'+esc(href)+'" target="_blank" rel="noopener noreferrer">'+text+'</a>'}
+}});
+function md(s){return marked.parse(s||'')}
+function slug(s){return s.toLowerCase().replace(/[^a-z0-9а-яё]+/g,'-').replace(/^-|-$/g,'')}
+
+function nextLesson(){for(var i=0;i<LS.length;i++)if(!P.done[LS[i].id])return LS[i];return null}
+function lessonRow(l){
+  var d=!!P.done[l.id];
+  return '<a class="lrow'+(d?' done':'')+'" href="#t/'+l.id+'" data-q="'+esc((l.title+' '+l.short+' '+l.words.map(function(w){return w.w+' '+w.t}).join(' ')).toLowerCase())+'"><span class="ln">'+(d?'✓':l.n)+'</span><span class="lt"><b>'+esc(l.title)+'</b><small>'+esc(l.short)+'</small></span><span class="lm"><span class="tag">'+esc(l.level)+'</span><span class="tag">≈ '+l.min+' мин</span></span></a>';
+}
+function renderHome(){
+  document.title='Английский · Финансы';
+  var done=Object.keys(P.done).filter(function(k){return BYID[k]}).length,tot=LS.length,nx=nextLesson(),words=LS.reduce(function(s,l){return s+l.words.length},0);
+  var h='<h1 class="pg">Finance English</h1><p class="lead">'+tot+' тем по 7–10 минут: теория финансов по-английски, как её объясняют в учебниках и на собеседованиях. Русский перевод у каждого термина в скобках, список слов с примерами в конце темы. Без заданий: читай и отмечай прочитанное.</p>';
+  h+='<div class="hero"><div class="box"><h3>Прогресс</h3><div class="big">'+done+' <small>из '+tot+' тем</small></div><div class="bar2"><i style="width:'+Math.round(done/tot*100)+'%"></i></div>'
+    +'<div class="stats"><span>Слов в курсе: <b>'+words+'</b></span><span>Уровень: <b>B1 → C1</b></span></div></div>';
+  h+= nx?'<a class="box cont" href="#t/'+nx.id+'"><h3>'+(done?'Продолжить':'Начать')+'</h3><b>'+nx.n+'. '+esc(nx.title)+'</b><small>'+esc(nx.short)+'</small><span class="btn sm" style="align-self:flex-start">Открыть тему</span></a>'
+    : '<div class="box"><h3>Курс прочитан</h3><b style="font:600 19px var(--serif)">Все темы отмечены</b><p class="lead" style="margin:6px 0 0">Перечитывай слова: в конце каждой темы есть список.</p></div>';
+  h+='</div>';
+  h+='<div class="tools"><input type="search" id="lq" placeholder="Найти тему или слово: WACC, облигации, leverage…" aria-label="Поиск темы"></div>';
+  for(var u=1;u<=4;u++){var ls=LS.filter(function(l){return l.unit===u});if(!ls.length)continue;
+    h+='<div class="unit" data-u="'+u+'"><h2>'+esc(UN[u][0])+'</h2><span>'+esc(UN[u][1])+' · '+ls.length+' '+plural(ls.length,['тема','темы','тем'])+'</span></div><div data-ul="'+u+'">'+ls.map(lessonRow).join('')+'</div>'}
+  h+='<div class="empty" id="lnone" hidden>Ничего не найдено.</div>';
+  view.innerHTML=h;
+}
+function filterHome(){
+  var q=($('#lq')||{}).value||'';q=q.toLowerCase().trim();var any=false;
+  $$('.lrow').forEach(function(a){var ok=!q||a.getAttribute('data-q').indexOf(q)>=0;a.hidden=!ok;if(ok)any=true});
+  $$('.unit').forEach(function(u){var box=$('[data-ul="'+u.getAttribute('data-u')+'"]');var vis=$$('.lrow',box).some(function(a){return !a.hidden});u.hidden=!vis;box.hidden=!vis});
+  var n=$('#lnone');if(n)n.hidden=any;
+}
+function plural(n,f){var m=n%10,c=n%100;return m===1&&c!==11?f[0]:(m>=2&&m<=4&&(c<10||c>=20)?f[1]:f[2])}
+
+function renderLesson(id,sub){
+  var l=BYID[id];if(!l){location.hash='#home';return}
+  document.title=l.title+' · Finance English';store('feng:last:'+PROF,id);
+  var done=!!P.done[l.id],pv=LS[l.i-1],nx=LS[l.i+1];
+  var body=md(l.theory),tmp=document.createElement('div');tmp.innerHTML=body;
+  var heads=[];$$('h2',tmp).forEach(function(h2){var s='s-'+slug(h2.textContent);h2.id=s;heads.push([s,h2.textContent])});
+  body=tmp.innerHTML;
+  var h='<a class="crumb" href="#home">← Все темы</a><h1 class="pg">'+l.n+'. '+esc(l.title)+'</h1>'
+   +'<div class="lh"><span class="tag">'+esc(l.level)+'</span><span class="tag">≈ '+l.min+' мин</span><span>'+esc(UN[l.unit][0])+'</span>'+(done?'<span class="tag sc">прочитано</span>':'')+'</div>'
+   +'<p class="lead">'+esc(l.short)+'</p>';
+  if(heads.length)h+='<nav class="snav" id="snav">'+heads.map(function(x){return '<button type="button" class="chip" data-go="'+x[0]+'">'+esc(x[1])+'</button>'}).join('')+'<button type="button" class="chip" data-go="s-words">Words</button></nav>';
+  h+='<div class="prose" id="theory">'+body+'</div>';
+  h+='<section class="sec" id="s-words"><h2>Words <small style="font:500 14px var(--sans);color:var(--muted)">'+l.words.length+'</small></h2><div class="tools"><button type="button" class="btn sm ghost" data-hidet>Скрыть переводы</button></div>'
+   +'<div class="tablewrap" id="wbox"><table class="wt"><thead><tr><th>Term</th><th>Перевод</th><th>Example</th></tr></thead><tbody>'
+   +l.words.map(function(w){return '<tr><td>'+esc(w.w)+'</td><td class="tr">'+esc(w.t)+'</td><td class="ex">'+esc(w.x)+'</td></tr>'}).join('')+'</tbody></table></div></section>';
+  h+='<div class="done-bar'+(done?' ok':'')+'" id="donebar"><button type="button" class="btn" data-done="'+l.id+'">'+(done?'✓ Прочитано (снять отметку)':'Отметить прочитанным')+'</button></div>';
+  h+='<div class="pager">'+(pv?'<a class="pv" href="#t/'+pv.id+'"><small>← Предыдущая</small><b>'+pv.n+'. '+esc(pv.title)+'</b></a>':'<span></span>')+(nx?'<a class="nx" href="#t/'+nx.id+'"><small>Следующая →</small><b>'+nx.n+'. '+esc(nx.title)+'</b></a>':'')+'</div>';
+  view.innerHTML=h;
+  var hh=$('#top').offsetHeight;root.style.setProperty('--hh',hh+'px');
+  if(sub){var el=document.getElementById(sub);if(el)setTimeout(function(){el.scrollIntoView({block:'start'});el.classList.add('pulse')},30)}
+}
+
+var lastRoute='';
+function route(){
+  var h=decodeURIComponent(location.hash.slice(1)||'home'),p=h.split('/');lastRoute=h;
+  skinMenu(false);
+  if(p[0]==='t'){renderLesson(p[1],p[2])}
+  else renderHome();
+  if(!(p[0]==='t'&&p[2]))window.scrollTo(0,0);
+}
+window.addEventListener('hashchange',route);
+document.addEventListener('click',function(e){
+  var t=e.target,b;
+  if(!t.closest)return;
+  if(t.closest('#b-theme')){e.stopPropagation();skinMenu(true);return}
+  if(b=t.closest('#thm [data-skin]')){var id=b.getAttribute('data-skin');store('fin:skin',id);if(id==='light'||id==='dark')store('theme',id);applySkin(id);skinMenu(false);return}
+  if(document.getElementById('thm')&&!t.closest('#thm'))skinMenu(false);
+  if(b=t.closest('[data-sz]')){if(window.siteZoom)window.siteZoom(+b.getAttribute('data-sz'));return}
+  if(b=t.closest('[data-go]')){var el=document.getElementById(b.getAttribute('data-go'));if(el)el.scrollIntoView({behavior:'smooth',block:'start'});return}
+  if(b=t.closest('[data-hidet]')){var bx=$('#wbox').parentNode;bx.classList.toggle('hidet');b.textContent=bx.classList.contains('hidet')?'Показать переводы':'Скрыть переводы';return}
+  if(b=t.closest('.hidet .tr')){b.classList.toggle('show');return}
+  if(b=t.closest('[data-done]')){var l2=BYID[b.getAttribute('data-done')];if(P.done[l2.id]){delete P.done[l2.id]}else{P.done[l2.id]=Date.now()}pSave();var bar=$('#donebar'),dn=!!P.done[l2.id];bar.classList.toggle('ok',dn);b.textContent=dn?'✓ Прочитано (снять отметку)':'Отметить прочитанным';return}
+});
+document.addEventListener('input',function(e){if(e.target.id==='lq')filterHome()});
+route();
+})();
+</script>
+</body></html>

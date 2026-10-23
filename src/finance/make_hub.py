@@ -309,7 +309,7 @@ SEARCH_CSS = """<style>
 SEARCH_JS = r"""<script>
 /* Поиск по всему сайту: тот же алгоритм, что в разделе «Финансы» — основы слов (окончания), формулы, раскладка в обе стороны, транслит, совпадение по заголовку раздела выше, чем по тексту. Переход открывает нужный раздел с подсветкой. */
 (function(){
-var KIND={ch:'Глава',sec:'Сектор',term:'Термин',co:'Компания',tk:'Билет',nt:'Конспект'},TAB=[['',['ch','sec','term','co','tk','nt'],'Всё'],['f',['ch','sec','term'],'Финансы'],['c',['co'],'Компании'],['u',['tk','nt'],'Учёба']];
+var KIND={ch:'Глава',sec:'Сектор',term:'Термин',co:'Компания',tk:'Билет',nt:'Конспект',en:'English'},TAB=[['',['ch','sec','term','co','tk','nt','en'],'Всё'],['f',['ch','sec','term'],'Финансы'],['e',['en'],'English'],['c',['co'],'Компании'],['u',['tk','nt'],'Учёба']];
 var IDX=null,Q='',tab='',box=document.getElementById('sr'),inp=document.getElementById('q'),tabs=document.getElementById('sf'),kb=-1,res=[];
 function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
 function lc(x){return String(x==null?'':x).toLowerCase().replace(/ё/g,'е')}
