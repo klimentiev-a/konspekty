@@ -1216,7 +1216,7 @@ function loadCR(){
 function usdRub(){try{return M.fx.Valute.USD.Value}catch(e){return 83.9153}}
 
 /* ---------------- рынки: виды ---------------- */
-var SUBS=[['summary','Сводка'],['daily','Утро и вечер'],['week','Итоги недели'],['news','Новости'],['ru','Россия'],['us','Мир'],['crypto','Крипта'],['bonds','Облигации'],['fx','Валюты'],['macro','Макро России'],['divs','Дивиденды'],['events','События'],['cal','Календарь']],cur='summary';
+var SUBS=[['summary','Сводка'],['daily','Утро и вечер'],['week','Итоги недели'],['ru','Россия'],['us','Мир'],['news','Новости'],['crypto','Крипта'],['bonds','Облигации'],['fx','Валюты'],['macro','Макро России'],['divs','Дивиденды'],['events','События'],['cal','Календарь']],cur='summary';
 var SGRP=[['Обзор','Что происходит',['summary','daily','week','news']],['Рынки','Россия, мир, крипта, облигации',['ru','us','crypto','bonds','fx']],['Экономика','Макро, дивиденды, календарь',['macro','divs','events','cal']]];
 var SLBL={};SUBS.forEach(function(s){SLBL[s[0]]=s[1]});
 function sgrp(k){for(var i=0;i<SGRP.length;i++)if(SGRP[i][2].indexOf(k)>=0)return i;return 0}
@@ -1583,7 +1583,9 @@ function autoBrief(){
 }
 function svShort(t){var m=[[/^Коротко/,'Коротко'],[/^Что случилось/,'За ночь'],[/^Как закрылась/,'Итоги дня'],[/^Россия/,'Россия'],[/Америка|США/,'США и мир'],[/Главные новости/,'Новости'],[/^Ставки/,'Ставки'],[/^Календарь/,'Календарь'],[/^Утром ждали/,'Ждали и вышло'],[/^Завтра/,'Завтра'],[/запомнить/i,'Главное'],[/^Термин/i,'Термины']];for(var i=0;i<m.length;i++)if(m[i][0].test(t))return m[i][1];return t.length>18?t.slice(0,17)+'…':t}
 /* markdown сводки → секции-карточки: «Коротко» выделено, «Почему это важно» — врезкой, «Главное» и «Термины» — отдельными блоками */
-function svBuild(md){heads=[];var t=document.createElement('div');t.innerHTML=marked.parse(md||'');var out=document.createElement('div'),sec=null,nav=[];
+function svExp(md){var seen={};(TT||[]).forEach(function(x){var m=/^([A-Za-z][A-Za-z0-9&\/\.\-]{1,9}) \(([^)]+)\) —/.exec(x.t||'');if(m&&!seen[m[1]]){seen[m[1]]=m[2]}});
+  Object.keys(seen).forEach(function(k){var re=new RegExp('(^|[^A-Za-z0-9А-Яа-я])('+k.replace(/[.*+?^${}()|[\]\\\/]/g,'\\$&')+')(?![A-Za-z0-9А-Яа-я])(?!\\s*\\()(?![^\\n]*\\*\\*\\s*—)');md=md.replace(re,function(a,b,c){return b+c+' ('+seen[k]+')'})});return md}
+function svBuild(md){heads=[];md=svExp(md);var t=document.createElement('div');t.innerHTML=marked.parse(md||'');var out=document.createElement('div'),sec=null,nav=[];
   [].slice.call(t.children).forEach(function(el){
     if(el.tagName==='H2'){var tt=el.textContent.trim(),k=/^Коротко/.test(tt)?' sv-lead':/запомнить/i.test(tt)?' sv-one':/^Термин/i.test(tt)?' sv-terms':'';sec=document.createElement('section');sec.className='sv-s'+k;sec.id='sv'+nav.length;nav.push([sec.id,svShort(tt)]);out.appendChild(sec);el.removeAttribute('id')}
     if(!sec){sec=document.createElement('section');sec.className='sv-s';out.appendChild(sec)}
@@ -2786,19 +2788,35 @@ function cmpToggle(k){var a=cmpGet(),i=a.indexOf(k);if(i>=0)a.splice(i,1);else i
   if($('#cmp-body'))cmpDraw();else{if(WS.sel)wCard();var nv=document.querySelector('nav.sub a[href="#world/compare"]');if(nv)nv.textContent='Сравнение'+(a.length?' · '+a.length:'')}}
 function cmpLabel(k){if(k.indexOf('c:')===0)return WM.names[k.slice(2)]||k.slice(2);var q=k.slice(2).split('|'),l=WLAY.filter(function(x){return x[0]===q[0]})[0];return q[1]+(l?' · '+l[1]:'')}
 function cmpCell(txt,v,mx){return '<td class="v">'+txt+(v!=null&&mx>0?'<i style="width:'+Math.max(2,Math.abs(v)/mx*100).toFixed(0)+'%"></i>':'')+'</td>'}
+var WFXO=null,WFXO_try=0;
 function cmpDraw(){
-  var el=$('#cmp-body');if(!el)return;var it=cmpGet().filter(function(k){return k.indexOf('c:')===0?!!(WM.names[k.slice(2)]):!!(WM.reg[k.slice(2).split('|')[0]])}),h='';
+  var el=$('#cmp-body');if(!el)return;if(!WFXO&&!WFXO_try){WFXO_try=1;wFx().then(function(o){WFXO=o;if($('#cmp-body'))cmpDraw()})}var it=cmpGet().filter(function(k){return k.indexOf('c:')===0?!!(WM.names[k.slice(2)]):!!(WM.reg[k.slice(2).split('|')[0]])}),h='';
   if(!it.length){el.innerHTML='<p class="wsm">Пока пусто. Найди страну или регион в строке выше или нажми «⇄ Сравнить» в карточке на карте (до 5 позиций).</p>'+'<div class="cmp-sug" id="cmp-sug"></div>';return}
   h+='<div class="cmp-chips">'+it.map(function(k){return '<span class="chip on">'+esc(cmpLabel(k))+' <button type="button" data-wcmpx="'+esc(k)+'" aria-label="Убрать">×</button></span>'}).join('')+'</div>';
   var cs=it.filter(function(k){return k.indexOf('c:')===0}),yi=WM.data?wyi():0;
   if(cs.length&&WM.data){h+='<p class="wsm" style="margin:14px 0 4px"><b>Страны · '+WS.year+(WS.year>WM.la?' (прогноз МВФ)':'')+'</b></p><div class="cmp-sc"><table class="wkv wcmp"><thead><tr><td></td>'+cs.map(function(k){return '<td class="v">'+esc(cmpLabel(k))+'</td>'}).join('')+'</tr></thead>'+
-    WORD.map(function(c){var vs=cs.map(function(k){return wv(k.slice(2),c,yi)}),mx=Math.max.apply(null,vs.map(function(v){return v==null?0:Math.abs(v)}));return '<tr><td>'+esc(WI[c][0])+'</td>'+vs.map(function(v){return cmpCell(wfmt(c,v,1),v,mx)}).join('')+'</tr>'}).join('')+'</table></div>'}
-  var byL={};it.filter(function(k){return k.indexOf('r:')===0}).forEach(function(k){var q=k.slice(2).split('|');(byL[q[0]]=byL[q[0]]||[]).push(q[1])});
-  Object.keys(byL).forEach(function(l){var L=WM.reg[l],xs=byL[l].map(function(n){return L.items.filter(function(x){return x.name===n})[0]}).filter(Boolean),ll=WLAY.filter(function(x){return x[0]===l})[0];
-    var rows=[['gdp',L.metric||'ВВП'],['gdp_pc','На душу'],['pop','Население'],['growth','Реальный рост'],['wage','Средняя зарплата'],['rev','Доходы бюджета'],['exp','Расходы бюджета'],['bal','Баланс бюджета'],['debt','Долг']].filter(function(r){return xs.some(function(x){return x[r[0]]!=null})});
-    h+='<p class="wsm" style="margin:14px 0 4px"><b>'+esc(ll?ll[1]:l)+(L.year?' · '+L.year:'')+'</b></p><div class="cmp-sc"><table class="wkv wcmp"><thead><tr><td></td>'+xs.map(function(x){return '<td class="v">'+esc(x.name)+'</td>'}).join('')+'</tr></thead>'+
-      rows.map(function(r){var mx=Math.max.apply(null,xs.map(function(x){return x[r[0]]==null?0:Math.abs(x[r[0]])}));return '<tr><td>'+esc(r[1])+'</td>'+xs.map(function(x){return cmpCell(wfmtB(x,r[0],L),x[r[0]],mx)}).join('')+'</tr>'}).join('')+'</table></div>'});
-  if(cs.length&&it.some(function(k){return k.indexOf('r:')===0}))h+='<p class="wsm">Страны и регионы сравниваются в разных единицах (ВВП страны — в долларах, региона — в местной валюте), поэтому они в разных таблицах.</p>';
+    WORD.map(function(c){var vs=cs.map(function(k){return wv(k.slice(2),c,yi)}),mx=Math.max.apply(null,vs.map(function(v){return v==null?0:Math.abs(v)}));return '<tr><td>'+esc(WI[c][0])+'</td>'+vs.map(function(v){var rb=(c==='NGDPD'||c==='NGDPDPC')&&v!=null&&WFXO&&WFXO.r&&WFXO.r.RUB?'<br><small>≈ '+(c==='NGDPD'?(function(m){return m>=1000?nf(m/1000,m>=10000?0:1)+' трлн':nf(m,m>=100?0:1)+' млрд'})(v*WFXO.r.RUB):nf(v*WFXO.r.RUB/1000,0)+' тыс.')+' ₽</small>':'';return cmpCell(wfmt(c,v,1)+rb,v,mx)}).join('')+'</tr>'}).join('')+'</table></div>'}
+  var rk=it.filter(function(k){return k.indexOf('r:')===0}),fx=WFXO&&WFXO.r?WFXO.r:null;
+  if(rk.length){
+    var ents=rk.map(function(k){var q=k.slice(2).split('|'),L=WM.reg[q[0]],x=L&&L.items.filter(function(y){return y.name===q[1]})[0],ll=WLAY.filter(function(z){return z[0]===q[0]})[0];return x?{x:x,L:L,ln:ll?ll[1]:q[0]}:null}).filter(Boolean);
+    var fm=function(v,sc){var a=Math.abs(v);return sc==='b'?(a>=1000?nf(a/1000,a>=10000?0:1)+' трлн':nf(a,a>=100?0:a>=10?1:2)+' млрд'):nf(a,a>=100?0:1)+' тыс.'};
+    var CS={RUB:'₽',USD:'$',EUR:'€',CAD:'C$',CNY:'¥',INR:'₹'};
+    var uc=function(u){u=u||'';return /C\$/.test(u)?'CAD':/\$/.test(u)?'USD':/₽/.test(u)?'RUB':/¥/.test(u)?'CNY':/€/.test(u)?'EUR':/₹/.test(u)?'INR':null};
+    var spec={gdp:['b',function(L){return uc(L.unit)}],gdp_pc:['t',function(L){return uc(L.unit_pc)}],wage:['t',function(L){return L.wg&&L.wg.cur}],rev:['b',function(L){return uc(L.bunit||L.unit)}],exp:['b',function(L){return uc(L.bunit||L.unit)}],bal:['b',function(L){return uc(L.bunit||L.unit)}],debt:['b',function(L){return uc(L.bunit||L.unit)}]};
+    var perk=function(L){var g=L.wg||{};return g.per==='мес'?12:g.per==='нед'?52:1};
+    var rows=[['gdp','ВВП / ВРП'],['gdp_pc','На душу'],['pop','Население'],['growth','Реальный рост'],['wage','Средняя зарплата'],['rev','Доходы бюджета'],['exp','Расходы бюджета'],['bal','Баланс бюджета'],['debt','Долг']].filter(function(r){return ents.some(function(e){return e.x[r[0]]!=null})});
+    h+='<p class="wsm" style="margin:14px 0 4px"><b>Регионы</b></p><div class="cmp-sc"><table class="wkv wcmp"><thead><tr><td></td>'+ents.map(function(e){return '<td class="v">'+esc(e.x.name)+'<br><small>'+esc(e.ln)+(e.L.year?' · '+e.L.year:'')+'</small></td>'}).join('')+'</tr></thead>'+
+      rows.map(function(r){var sp=spec[r[0]],us=ents.map(function(e){var v=e.x[r[0]],c=sp&&sp[1](e.L);if(v==null||!sp)return null;if(c==='USD')return v*(r[0]==='wage'?perk(e.L):1);if(!fx||!fx[c])return null;return v/fx[c]*(r[0]==='wage'?perk(e.L):1)}),mx=Math.max.apply(null,us.map(function(v){return v==null?0:Math.abs(v)}));
+        return '<tr><td>'+esc(r[1])+'</td>'+ents.map(function(e,i){var v=e.x[r[0]],txt=wfmtB(v==null?{}:e.x,r[0],e.L),extra='';
+          if(sp&&v!=null&&fx&&us[i]!=null){var c=sp[1](e.L),per=r[0]==='wage'?' в год':'',pr=r[0]==='wage'?perk(e.L):1,sg=us[i]<0?'−':'',parts=[];
+            if(c!=='USD')parts.push(sg+fm(us[i],sp[0])+' $');if(c!=='RUB'&&fx.RUB)parts.push(sg+fm(us[i]*fx.RUB,sp[0])+' ₽');
+            extra='<br><small>≈ '+parts.join(' · ')+per+'</small>'}
+          var bar=us[i]!=null&&mx>0?'<i style="width:'+Math.max(2,Math.abs(us[i])/mx*100).toFixed(0)+'%"></i>':(!sp&&v!=null?'':'');
+          if(!sp&&v!=null){var mm=Math.max.apply(null,ents.map(function(z){return z.x[r[0]]==null?0:Math.abs(z.x[r[0]])}));bar=mm>0?'<i style="width:'+Math.max(2,Math.abs(v)/mm*100).toFixed(0)+'%"></i>':''}
+          return '<td class="v">'+txt+extra+bar+'</td>'}).join('')+'</tr>'}).join('')+'</table></div>';
+    h+='<p class="wsm">Суммы пересчитаны в доллары и рубли по текущему курсу'+(fx?' ('+esc(WFXO.src||'')+')':' — курс сейчас не загрузился, показаны только местные валюты')+'. Полоски сравнивают значения в долларах. Данные разных регионов могут быть за разные годы.</p>';
+    if(!fx&&!WFXO_try){WFXO_try=1;wFx().then(function(o){WFXO=o;if($('#cmp-body'))cmpDraw()})}
+  }
   el.innerHTML=h+'<div class="cmp-sug" id="cmp-sug"></div>'}
 function cmpSuggest(){
   var q=($('#cmp-q').value||'').toLowerCase().replace(/ё/g,'е').trim(),el=$('#cmp-sug');if(!el)return;if(q.length<2){el.innerHTML='';return}
