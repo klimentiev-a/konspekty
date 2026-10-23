@@ -284,6 +284,8 @@ html:root[data-skin=c] .next,html:root[data-skin=c] .bms,html:root[data-skin=f] 
 .toc .tx[aria-expanded=true]::after{transform:rotate(-135deg)}
 .toc .tx:hover{color:var(--fg)}
 .toc .ts[hidden]{display:none}
+.toc .tg2>.tr a.d1{font-weight:400}
+.toc .tg2 .ts a.d2{padding-left:28px}
 .toc .tg a.d0{font-weight:500}
 .toc-side .tg.cur>.tr a.d0{color:var(--fg)}
 .toc-side .tg.cur>.tr a.d0{border-left-color:var(--accent)}
@@ -1482,18 +1484,27 @@ function buildToc(heads){
     var d=Math.min(stack.length,2);stack.push(lv);
     return {d:d,t:el.textContent.replace(/\s+/g,' ').trim()};
   });
-  var out='',open=false,top=0;
+  var out='',open=false,open2=false,top=0;
+  var BTN='<button type="button" class="tx" data-tx aria-expanded="false" aria-label="Показать подпункты"></button>';
   function link(it,i){return '<a href="#" class="d'+it.d+'" data-i="'+i+'">'+esc(it.t)+'</a>'}
+  function close2(){if(open2){out+='</div></div>';open2=false}}
   items.forEach(function(it,i){
     if(it.d===0){
+      close2();
       if(open)out+='</div></div>';
       top++;
       var kids=i+1<items.length&&items[i+1].d>0;
-      out+='<div class="tg"><div class="tr">'+link(it,i)+(kids?'<button type="button" class="tx" data-tx aria-expanded="false" aria-label="Показать подпункты"></button>':'')+'</div>'+(kids?'<div class="ts" hidden>':'');
+      out+='<div class="tg"><div class="tr">'+link(it,i)+(kids?BTN:'')+'</div>'+(kids?'<div class="ts" hidden>':'');
       open=kids;
       if(!kids)out+='</div>';
+    }else if(it.d===1){
+      close2();
+      var k2=i+1<items.length&&items[i+1].d>1;
+      if(k2){out+='<div class="tg2"><div class="tr">'+link(it,i)+BTN+'</div><div class="ts" hidden>';open2=true}
+      else out+=link(it,i);
     }else out+=link(it,i);
   });
+  close2();
   if(open)out+='</div></div>';
   tocTop=top;
   return out;
@@ -2192,7 +2203,7 @@ document.addEventListener('click',function(e){
   var tx=t.closest('.toc [data-tx]');
   if(tx){
     e.preventDefault();
-    var g=tx.closest('.tg'),sb=g&&$('.ts',g),op=tx.getAttribute('aria-expanded')==='true';
+    var g=tx.closest('.tg2')||tx.closest('.tg'),sb=g&&$(':scope>.ts',g),op=tx.getAttribute('aria-expanded')==='true';
     if(sb){sb.hidden=op;tx.setAttribute('aria-expanded',op?'false':'true');g.dataset.man='1'}
     return;
   }
@@ -2277,7 +2288,9 @@ function updateScroll(){
     var cur=links[idx];
     if(cur){
       var gr=cur.closest('.tg');if(gr)gr.classList.add('cur');
-      $$('.toc-side .tg').forEach(function(g){var ts=$('.ts',g),tx=$('.tx',g);if(!ts||!tx)return;var want=g===gr;if(want||!g.dataset.man){ts.hidden=!want;tx.setAttribute('aria-expanded',want?'true':'false')}});
+      $$('.toc-side .tg').forEach(function(g){var ts=$(':scope>.ts',g),tx=$(':scope>.tr>.tx',g);if(!ts||!tx)return;var want=g===gr;if(want||!g.dataset.man){ts.hidden=!want;tx.setAttribute('aria-expanded',want?'true':'false')}});
+      var g2=cur.closest('.tg2');
+      $$('.toc-side .tg2').forEach(function(g){var ts=$(':scope>.ts',g),tx=$(':scope>.tr>.tx',g);if(!ts||!tx)return;var want=g===g2;if(want||!g.dataset.man){ts.hidden=!want;tx.setAttribute('aria-expanded',want?'true':'false')}});
       var vis=cur.offsetParent?cur:(gr&&$('a',gr))||cur;
       if(cur!==side){var box=$('.toc-side');if(box&&box.scrollHeight>box.clientHeight){var tp=vis.getBoundingClientRect().top-box.getBoundingClientRect().top+box.scrollTop;box.scrollTop=tp-box.clientHeight/2}}
     }
