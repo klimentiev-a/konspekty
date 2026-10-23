@@ -15,6 +15,11 @@ import hub as LOGO   # логотип: знак h и надпись hub рису
 # надпись «hub» для заголовка: «ub» цветом текста, «h» — фирменным изумрудом (цвета задаются CSS, тема меняется сама)
 WORD = LOGO.wordmark('#25221C', 'hub', first='#0A9466').replace('<svg ', '<svg class="wm" role="img" aria-label="Hub" ', 1)
 TPL = open(os.path.join(ROOT, 'src', 'finance', 'hub.html'), encoding='utf-8').read()
+_zj = open(os.path.join(ROOT, 'src', 'finance', 'zoom.js'), encoding='utf-8').read()
+ZQ_JS = '<script>' + _zj[_zj.index('/* Hub: полосы прокрутки'):] + '</script>'
+_zold = "w.__t=t;w.style.transform='translate('+t[0]+'px,'+t[1]+'px)'}},true);"
+_znew = "w.__t=t;w.style.transition='none';w.style.transform='translate('+t[0]+'px,'+t[1]+'px)'}\n  if(w&&w.__t){clearTimeout(w.__tm);w.__tm=setTimeout(function(){w.style.transition='transform .25s';w.style.transform='';w.__t=null},1400)}},true);"
+TPL = TPL.replace(_zold, _znew).replace(".zm,.zmr,.skinmenu{zoom:var(--iz,1)}", ".zm,.zmr,.skinmenu,.zq{zoom:var(--iz,1)}")
 PROF = {'artem': ('Артем', '11231', 'artem.html'), 'nastya': ('Настя', '1591', 'nastya.html')}
 TOK = {p: hashlib.sha256(('hub:%s:%s' % (p, v[1])).encode()).hexdigest()[:24] for p, v in PROF.items()}
 
@@ -104,7 +109,7 @@ def page(title, body, gate_p=None, apple_title='Hub'):
     if gate_p:
         h = h.replace('<meta charset="utf-8">', '<meta charset="utf-8">' + gate(gate_p), 1)
     h = h.replace('</head>', EXTRA_CSS + '</head>', 1)
-    return h + '<body>\n' + body + '\n' + THEME_JS + tail_js + '</body></html>\n'
+    return h + '<body>\n' + body + '\n' + THEME_JS + tail_js + ZQ_JS + '</body></html>\n'
 
 
 def topbar(back_href, back_text, logout=None):

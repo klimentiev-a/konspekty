@@ -2,7 +2,7 @@
 var Z=[0.8,0.9,1,1.1,1.2,1.3,1.45,1.6];
 function g(){try{if(!localStorage.getItem('siteZoomLocal')){localStorage.removeItem('siteZoom');localStorage.setItem('siteZoomLocal','1')}var v=parseFloat(localStorage.getItem('siteZoom'));return v>0?v:1}catch(e){return 1}}
 function ap(v){var d=document.documentElement;d.style.zoom=(v===1?'':String(v));d.style.setProperty('--iz',String(+(1/v).toFixed(4)));
-  if(!document.getElementById('iz-css')){var s=document.createElement('style');s.id='iz-css';s.textContent='.zm,.zmr,.skinmenu{zoom:var(--iz,1)}html,body{overflow-x:clip}';(document.head||d).appendChild(s)}}
+  if(!document.getElementById('iz-css')){var s=document.createElement('style');s.id='iz-css';s.textContent='.zm,.zmr,.skinmenu,.zq{zoom:var(--iz,1)}html,body{overflow-x:clip}';(document.head||d).appendChild(s)}}
 ap(g());
 window.siteZoomGet=g;
 window.siteZoom=function(d){var v=g(),i=Z.indexOf(v);if(i<0)i=2;i=d===0?2:Math.max(0,Math.min(Z.length-1,i+d));v=Z[i];try{localStorage.setItem('siteZoom',String(v))}catch(e){}ap(v);
@@ -10,7 +10,8 @@ window.siteZoom=function(d){var v=g(),i=Z.indexOf(v);if(i<0)i=2;i=d===0?2:Math.m
 document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('[data-sz]');if(!b)return;e.preventDefault();e.stopPropagation();var r0=b.getBoundingClientRect();siteZoom(+b.getAttribute('data-sz'));
   var r1=b.getBoundingClientRect(),dx=r1.left-r0.left,dy=r1.top-r0.top;if(dx||dy){try{window.scrollBy(dx,dy)}catch(er){}}
   var w=b.closest('.zm,.zmr,.skinmenu'),r2=b.getBoundingClientRect(),ex=r2.left-r0.left,ey=r2.top-r0.top;
-  if(w&&(Math.abs(ex)>.5||Math.abs(ey)>.5)){var t=w.__t||[0,0];t=[t[0]-ex,t[1]-ey];w.__t=t;w.style.transform='translate('+t[0]+'px,'+t[1]+'px)'}},true);   // кнопка остаётся под курсором
+  if(w&&(Math.abs(ex)>.5||Math.abs(ey)>.5)){var t=w.__t||[0,0];t=[t[0]-ex,t[1]-ey];w.__t=t;w.style.transition='none';w.style.transform='translate('+t[0]+'px,'+t[1]+'px)'}
+  if(w&&w.__t){clearTimeout(w.__tm);w.__tm=setTimeout(function(){w.style.transition='transform .25s';w.style.transform='';w.__t=null},1400)}},true);   // кнопка остаётся под курсором
 window.addEventListener('storage',function(e){if(e.key==='siteZoom')ap(g())});
 document.addEventListener('DOMContentLoaded',function(){var v=g();document.querySelectorAll('.szv').forEach(function(o){o.textContent=Math.round(v*100)+'%'})});
 })();
@@ -66,4 +67,38 @@ document.addEventListener('DOMContentLoaded',function(){var v=g();document.query
   function warm(){try{if(!navigator.serviceWorker||!navigator.serviceWorker.controller||navigator.onLine===false)return;if(navigator.connection&&navigator.connection.saveData)return;
     var t=+localStorage.getItem('hub:warm')||0;if(Date.now()-t<432e5)return;localStorage.setItem('hub:warm',String(Date.now()));navigator.serviceWorker.controller.postMessage({t:'hub-warm'})}catch(e){}}
   window.addEventListener('load',function(){setTimeout(warm,6000)});
+})();
+
+/* Hub: полосы прокрутки в цвет темы, без стрелок; маленькие кнопки масштаба в правом верхнем углу всех страниц */
+(function(){
+  var css='::-webkit-scrollbar{width:10px;height:10px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-corner{background:transparent}'+
+  '::-webkit-scrollbar-thumb{background:var(--faint,#857E6E);border-radius:8px;border:2px solid transparent;background-clip:padding-box}::-webkit-scrollbar-thumb:hover{background:var(--muted,#665F52);background-clip:padding-box;border:2px solid transparent}'+
+  '::-webkit-scrollbar-button{display:none;width:0;height:0}'+
+  '@supports not selector(::-webkit-scrollbar){*{scrollbar-width:thin;scrollbar-color:var(--faint,#857E6E) transparent}}'+
+  '.zq{position:fixed;top:6px;right:6px;z-index:60;display:flex;align-items:center;height:24px;border:1px solid var(--line,#D9D3C2);border-radius:999px;background:color-mix(in srgb,var(--surface,var(--bg,#FBF9F3)) 88%,transparent);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);overflow:hidden;opacity:.62;transition:opacity .15s;zoom:var(--iz,1)}'+
+  '.zq:hover,.zq:focus-within{opacity:1}.zq button{height:24px;min-width:26px;padding:0 7px;border:0;background:none;color:var(--muted,#665F52);font:600 11px/1 system-ui,sans-serif;cursor:pointer}'+
+  '.zq button:hover{color:var(--fg,#25221C);background:color-mix(in srgb,var(--fg,#25221C) 8%,transparent)}.zq i{width:1px;height:12px;background:var(--line,#D9D3C2)}';
+  function go(){
+    if(!document.head||document.getElementById('zq-css'))return;
+    var st=document.createElement('style');st.id='zq-css';st.textContent=css;document.head.appendChild(st);
+    var d=document.createElement('div');d.className='zq';d.setAttribute('role','group');d.setAttribute('aria-label','Масштаб страницы');
+    d.innerHTML='<button type="button" data-sz="-1" aria-label="Уменьшить" title="Уменьшить масштаб">A−</button><i></i><button type="button" data-sz="1" aria-label="Увеличить" title="Увеличить масштаб">A+</button>';
+    document.body.appendChild(d);
+    function vis(e){var r=e.getBoundingClientRect(),cs=getComputedStyle(e);return r.width>=8&&r.height>=8&&cs.visibility!=='hidden'&&cs.display!=='none'&&cs.opacity!=='0'}
+    function place(){
+      var W=window.innerWidth,els=[].slice.call(document.querySelectorAll('a,button,input,select')).filter(function(e){return !d.contains(e)&&vis(e)}),
+          top=els.filter(function(e){var r=e.getBoundingClientRect();return r.top<64&&r.bottom>0&&r.right>W-300&&r.left>W*0.55});
+      d.style.top='6px';d.style.right='6px';
+      if(!top.length)return;
+      var L=Math.min.apply(null,top.map(function(e){return e.getBoundingClientRect().left})),
+          r0=top.filter(function(e){return e.getBoundingClientRect().left===L})[0].getBoundingClientRect();
+      d.style.right=Math.round(W-L+6)+'px';d.style.top=Math.max(2,Math.round(r0.top+(r0.height-24)/2))+'px';
+      var a=d.getBoundingClientRect(),hit=els.some(function(e){var r=e.getBoundingClientRect();return r.top<a.bottom&&r.bottom>a.top&&r.left<a.right&&r.right>a.left&&r.top<90});
+      if(hit){d.style.right='6px';d.style.top=Math.round(Math.max.apply(null,top.map(function(e){return e.getBoundingClientRect().bottom}))+4)+'px'}
+    }
+    window.__zqPlace=place;
+    [200,900,2500].forEach(function(t){setTimeout(place,t)});
+    window.addEventListener('resize',function(){setTimeout(place,60)});
+  }
+  if(document.body)go();else document.addEventListener('DOMContentLoaded',go);
 })();
