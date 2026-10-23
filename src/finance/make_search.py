@@ -12,6 +12,18 @@ def clean(md, n):
     t = re.sub(r'[*_`>#|]+', ' ', t); t = re.sub(r'\s+', ' ', t).strip()
     return t[:n]
 
+def sections(md, n=600):
+    """Разделы по заголовкам ##/###: [(заголовок или '', текст)]. Первый — вводный (без заголовка)."""
+    out = []; cur = ['', []]; code = False
+    for l in md.split('\n'):
+        if l.startswith('```'): code = not code
+        m = None if code else re.match(r'^#{2,3}\s+(.*)', l)
+        if m:
+            out.append(cur); cur = [re.sub(r'[*`]', '', m.group(1)).strip(), []]; continue
+        cur[1].append(l)
+    out.append(cur)
+    return [(h, clean('\n'.join(t), n)) for h, t in out if clean('\n'.join(t), 60)]
+
 src = open(os.path.join(HERE, 'build_finance.py'), encoding='utf-8').read()
 IDS = ast.literal_eval(re.search(r'IDS = (\{.*?\})\n', src, re.S).group(1))
 out = []
@@ -20,12 +32,15 @@ for f in sorted(glob.glob(os.path.join(HERE, 'content', '*.md'))):
     t = open(f, encoding='utf-8').read().strip().split('\n')
     title = t[0].lstrip('# ').strip(); short = t[1][6:].strip() if len(t) > 1 and t[1].startswith('short:') else ''
     fid = IDS.get(b) or re.sub(r'^\d+_', '', os.path.splitext(name)[0])
-    out.append(['ch', title, (short + '. ' + clean('\n'.join(t[2:]), 5500)).strip(), 'finance.html#learn/' + fid])
+    secs = sections('\n'.join(t[2:]))
+    for h, x in secs:
+        out.append(['ch', title, (short + '. ' + x).strip() if not h else x, 'finance.html#learn/' + fid, h])
 for f in sorted(glob.glob(os.path.join(HERE, 'sectors', '*.md'))):
     t = open(f, encoding='utf-8').read().strip().split('\n')
     title = t[0].lstrip('# ').strip(); short = t[1][6:].strip() if len(t) > 1 and t[1].startswith('short:') else ''
     sid = re.sub(r'^\d+_', '', os.path.splitext(os.path.basename(f))[0])
-    out.append(['sec', title, (short + '. ' + clean('\n'.join(t[2:]), 3500)).strip(), 'finance.html#world/sectors/' + sid])
+    for h, x in sections('\n'.join(t[2:])):
+        out.append(['sec', title, (short + '. ' + x).strip() if not h else x, 'finance.html#world/sectors/' + sid, h])
 for tt in T.RICH:
     out.append(['term', tt[1], tt[2], 'finance.html#learn/glossariy'])
 for tt in T.EXTRA:
@@ -49,14 +64,15 @@ tk = json.load(open(os.path.join(ROOT, 'src', 'tickets.json'), encoding='utf-8')
 KEY = {'konst': 'const', 'ugol': 'crim', 'grazh': 'civil'}; LAB = {'konst': 'Конституционное право', 'ugol': 'Уголовное право', 'grazh': 'Гражданское право'}
 for k, lst in tk.items():
     for t in lst:
-        out.append(['tk', '№ %s. %s' % (t['n'], t['q']), LAB.get(k, k) + '. ' + clean(t['a'], 1200), 'ucheba.html#tickets-%s-%s' % (KEY.get(k, k), t['n'])])
+        out.append(['tk', '№ %s. %s' % (t['n'], t['q']), LAB.get(k, k) + '. ' + clean(t["a"], 800), 'ucheba.html#tickets-%s-%s' % (KEY.get(k, k), t['n'])])
 html = open(os.path.join(ROOT, 'src', 'index.src.html'), encoding='utf-8').read()
 m = re.search(r'id="data">(.*?)</script>', html, re.S)
 if m:
     d = json.loads(m.group(1))
     for sj in d.get('subjects', []):
         for n in sj.get('notes', []):
-            out.append(['nt', n['title'], sj['name'] + '. ' + clean(n.get('md', ''), 3000), 'ucheba.html#' + n['id']])
+            for h, x in sections(n.get('md', '')):
+                out.append(['nt', n['title'], (sj['name'] + '. ' + x) if not h else x, 'ucheba.html#' + n['id'], h])
 p = os.path.join(ROOT, 'search-index.json')
 open(p, 'w', encoding='utf-8').write(json.dumps(out, ensure_ascii=False, separators=(',', ':')))
 print('ok search-index', len(out), os.path.getsize(p) // 1024, 'KB')

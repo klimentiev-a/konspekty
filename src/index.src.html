@@ -1577,6 +1577,7 @@ function renderNote(n){
     side.innerHTML='<p class="h">Содержание</p>'+toc;
     wrap.appendChild(side);
   }else{wrap.classList.add('no-toc');state.heads=null}
+  if(!state.hl){var pd=null;try{pd=JSON.parse(sessionStorage.getItem('uch:hl')||'null');sessionStorage.removeItem('uch:hl')}catch(x){}if(pd&&pd.id===n.id&&pd.q){state.hl={toks:toksOf(pd.q),re:qrx(pd.q,true)};state.hs=pd.hs||'';state.hlOnce=true}}
   if(state.hl)hlDom(prose,state.hl.re);
   var bms=getBm();
   $$('h2,h3',prose).forEach(function(h){
@@ -2097,6 +2098,7 @@ function show(tok){
       if(hd){var ms=[].slice.call($$('mark',view)),m2=ms.filter(function(x){return hd.compareDocumentPosition(x)&Node.DOCUMENT_POSITION_FOLLOWING})[0];mk=m2||hd}}
     if(mk){var d0=mk.closest&&mk.closest('details');if(d0)d0.open=true;window.scrollTo(0,Math.max(0,mk.getBoundingClientRect().top+window.scrollY-140))}
   }else if(firstShow||n){window.__restoreScroll()}
+  if(state.hlOnce){state.hl=null;state.hlOnce=false}
   firstShow=false;
   updateScroll();
 }

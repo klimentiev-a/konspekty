@@ -306,37 +306,75 @@ SEARCH_CSS = """<style>
 .sm{color:var(--muted);font:400 14px/1.5 system-ui,sans-serif;padding:18px 0}
 </style>"""
 SEARCH_JS = r"""<script>
+/* Поиск по всему сайту: тот же алгоритм, что в разделе «Финансы» — основы слов (окончания), формулы, раскладка в обе стороны, транслит, совпадение по заголовку раздела выше, чем по тексту. Переход открывает нужный раздел с подсветкой. */
 (function(){
 var KIND={ch:'Глава',sec:'Сектор',term:'Термин',co:'Компания',tk:'Билет',nt:'Конспект'},TAB=[['',['ch','sec','term','co','tk','nt'],'Всё'],['f',['ch','sec','term'],'Финансы'],['c',['co'],'Компании'],['u',['tk','nt'],'Учёба']];
 var IDX=null,Q='',tab='',box=document.getElementById('sr'),inp=document.getElementById('q'),tabs=document.getElementById('sf'),kb=-1,res=[];
 function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
-function norm(s){return String(s||'').toLowerCase().replace(/ё/g,'е')}
-function toks(q){return norm(q).split(/[^a-zа-я0-9]+/).filter(function(x){return x.length>0})}
-function stem(w){return w.length>5?w.slice(0,w.length-2):w.length>3?w.slice(0,w.length-1):w}
+function lc(x){return String(x==null?'':x).toLowerCase().replace(/ё/g,'е')}
+function nzf(x){return lc(x).replace(/\s+/g,'').replace(/\*/g,'×').replace(/[-–—]/g,'−').replace(/÷/g,'/').replace(/[`$]/g,'')}
+function escRe(c){return c.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')}
+function isFormula(q){return /[=×*÷\/^+−\-()<>≈≥≤]/.test(q)&&q.replace(/\s+/g,'').length>=3}
+function toks(q){return lc(q).split(/[\s,;]+/).filter(Boolean).map(function(t){return t.length>5&&/[а-яе]/.test(t)?t.slice(0,t.length-2):t})}
+var RU='йцукенгшщзхъфывапролджэячсмитьбю',EN="qwertyuiop[]asdfghjkl;'zxcvbnm,.";
+function cyr(q){return /[а-яё]/i.test(q)&&!/[a-z]/i.test(q)}
+function layoutFix(q){return Array.from(q.toLowerCase()).map(function(c){var k=RU.indexOf(c);return k>=0?EN[k]:c}).join('').replace(/[\[\];',.]/g,'')}
+function layoutRev(q){return Array.from(q.toLowerCase()).map(function(c){var k=EN.indexOf(c);return k>=0?RU[k]:c}).join('')}
+var TR={а:'a',б:'b',в:'[wv]',г:'g',д:'d',е:'[ei]',ё:'e',ж:'(?:zh|j)',з:'z',и:'[ie]',й:'[yji]',к:'[kc]',л:'l',м:'m',н:'n',о:'o',п:'p',р:'r',с:'[sc]',т:'t',у:'[uy]',ф:'(?:f|ph)',х:'[hx]',ц:'c',ч:'(?:ch|c)',ш:'(?:sh|s)',щ:'(?:sh|s)',ы:'[yi]',э:'e',ю:'(?:yu|u)',я:'(?:ya|a)',ь:'',ъ:''};
+function translitSrc(q){var pv='';return '\\b'+Array.from(lc(q).replace(/\s+/g,'')).map(function(c){var r=TR[c]!=null?TR[c]:escRe(c);if(c===pv&&r)r=r+'?';pv=c;return r}).join('')}
+function qrx(q,g){var f=isFormula(q);
+  var src=f?Array.from(q.replace(/\s+/g,'')).map(function(c){if(c==='*'||c==='×')return '[*×]';if(c==='-'||c==='−'||c==='–')return '[-−–]';if(c==='/'||c==='÷')return '[/÷]';if(/[еёЕЁ]/.test(c))return '[еёЕЁ]';return escRe(c)}).join('\\s*')
+  :toks(q).map(function(t){return escRe(t).replace(/[её]/g,'[её]')}).join('|')+(cyr(q)&&q.replace(/\s+/g,'').length>=3?'|'+translitSrc(q):'');
+  return new RegExp(src,g?'gi':'i')}
+function wsIn(h,t){var i=-1;while((i=h.indexOf(t,i+1))>=0){if(i===0||/[^а-яa-z0-9]/.test(h.charAt(i-1)))return true}return false}
 function load(){box.innerHTML='<p class="sm">Загружаю индекс…</p>';
-  fetch('search-index.json').then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(j){IDX=j.map(function(x){return {k:x[0],t:x[1],x:x[2],u:x[3],tn:norm(x[1]),xn:norm(x[2])}});run()})
+  fetch('search-index.json').then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(j){IDX=j.map(function(x){var h=x[4]||'';return {k:x[0],t:x[1],x:x[2],u:x[3],h:h,tn:lc(x[1]),hn:lc(h),xn:lc(x[2]),nz:nzf(x[2]),intro:!h}});run()})
   .catch(function(){box.innerHTML='<p class="sm">Не удалось загрузить индекс поиска. <button type="button" class="sbtn" id="rt">Повторить</button></p>';var b=document.getElementById('rt');if(b)b.onclick=load})}
-function score(it,ts,ph){var s=0,i,t,tn=it.tn,xn=it.xn;
-  if(ph&&tn.indexOf(ph)>=0)s+=30;if(ph&&xn.indexOf(ph)>=0)s+=6;
-  for(i=0;i<ts.length;i++){t=ts[i];var st=stem(t),a=tn.indexOf(st),b=xn.indexOf(st);
-    if(a<0&&b<0)return 0;
-    if(a>=0)s+=(a===0||tn.charAt(a-1)===' ')?12:7;if(b>=0)s+=2+Math.min(3,(xn.split(st).length-1)*.5)}
-  return s}
-function snip(it,ts){var x=it.x,xn=it.xn,p=-1,i,st;for(i=0;i<ts.length&&p<0;i++){st=stem(ts[i]);p=xn.indexOf(st)}
-  var a=Math.max(0,p<0?0:p-60),sn=x.slice(a,a+170);if(a>0)sn='…'+sn;if(a+170<x.length)sn+='…';return hl(sn,ts)}
-function hl(t,ts){var h=esc(t);ts.forEach(function(w){var st=stem(w);if(st.length<2)return;h=h.replace(new RegExp('('+st.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'[а-яa-z0-9]*)','gi'),'<mark>$1</mark>')});return h}
-function run(){if(!IDX)return;var ts=toks(Q);
-  if(!ts.length){box.innerHTML='<p class="sm">Начни вводить: «WACC», «Сбербанк», «ст. 125», «лизинг»… Ищет по главам, терминам, секторам, компаниям, билетам и конспектам.</p>';tabs.innerHTML='';res=[];return}
-  var ph=norm(Q).trim(),all=[];IDX.forEach(function(it){var s=score(it,ts,ph);if(s>0)all.push({it:it,s:s})});all.sort(function(a,b){return b.s-a.s});
+function core(q,tr){
+  var f=isFormula(q),qn=nzf(q),tk=toks(q),phr=lc(q.trim()),out=[],trx=tr?new RegExp(translitSrc(q),'i'):null,trh=tr?new RegExp('^'+translitSrc(q).replace(/^\\b/,'')+'.{0,3}$','i'):null;
+  IDX.forEach(function(it){var sc=0,head=it.intro?it.tn:it.hn;
+    if(trx){var h=trx.test(head)||trx.test(it.tn),m=trx.test(it.xn);if(!h&&!m)return;sc=(m?2:0)+(h?30:0)+(trx.test(it.tn)&&it.intro?40:0);if(trh.test(head))sc+=60}
+    else if(f){var k=it.nz.indexOf(qn);if(k<0)return;sc=10;var o=0,j=k;while(j>=0&&o<5){o++;j=it.nz.indexOf(qn,j+1)}sc+=o;if(head.indexOf(lc(q))>=0)sc+=6}
+    else{var first=-1,inWord=false,ctHit=tk.every(function(t){return it.tn.indexOf(t)>=0});
+      for(var a=0;a<tk.length;a++){var t=tk[a],pl=it.xn.indexOf(t),ph=head.indexOf(t),pt=it.tn.indexOf(t);
+        if(pl<0&&ph<0&&pt<0)return;
+        var cnt=0,jj=pl;while(jj>=0&&cnt<5){cnt++;jj=it.xn.indexOf(t,jj+1)}sc+=cnt;
+        if(!wsIn(it.xn,t)&&!wsIn(head,t)&&!wsIn(it.tn,t))inWord=true;
+        if(pl>=0&&(first<0||pl<first))first=pl}
+      var hAll=tk.every(function(t){return head.indexOf(t)>=0}),hs0=head.replace(/^[\d.\s№]+/,'');
+      if(hs0===phr||(hs0.indexOf(phr)===0&&hs0.length<=phr.length+3))sc+=60;
+      if(hAll){sc+=30;if(head.indexOf(tk[0])<=1)sc+=10;if(it.k==='term'||it.k==='co')sc+=25}
+      else if(tk.some(function(t){return head.indexOf(t)>=0}))sc+=5;
+      if(first>=0&&first<160)sc+=4;if(tk.length>1&&it.xn.indexOf(phr)>=0)sc+=8;
+      if(ctHit)sc+=it.intro?45:8;
+      if(inWord)sc*=.2;if(it.k==='tk')sc*=.7;if(it.x.length<40)sc*=.5}
+    if(sc>0)out.push({it:it,s:sc})});
+  out.sort(function(a,b){return b.s-a.s});return out}
+function hl(t,re){return esc(t).replace(new RegExp(re.source,'gi'),function(m){return '<mark>'+m+'</mark>'})}
+function snip(it,re){var x=it.x,m=new RegExp(re.source,'i').exec(x),i=m?m.index:0,a=Math.max(0,i-60),b=Math.min(x.length,i+170);
+  if(a>0){var sa=x.indexOf(' ',a);if(sa>-1&&sa<i)a=sa+1}if(b<x.length){var sb=x.lastIndexOf(' ',b);if(sb>i)b=sb}
+  return (a>0?'…':'')+hl(x.slice(a,b),re)+(b<x.length?'…':'')}
+function run(){if(!IDX)return;var q=Q.trim();
+  if(q.length<2){box.innerHTML='<p class="sm">Начни вводить: «WACC», «Сбербанк», «ст. 125», «лизинг», «FV=PV*(1+r)»… Ищет по главам, терминам, секторам, компаниям, билетам и конспектам.</p>';tabs.innerHTML='';res=[];return}
+  var all=core(q),qe=q,note='';
+  if(!cyr(q)&&/^[a-z\[\];',.\s]{2,}$/i.test(q)&&!all.length){var qr=layoutRev(q),Ar=core(qr);if(Ar.length){all=Ar;qe=qr;note='Раскладка: искали «'+qr+'»'}}
+  if(cyr(q)){var q2=layoutFix(q);if(/^[a-z0-9 ]{2,}$/.test(q2)){var A2=core(q2);if(A2.length>all.length){all=A2;qe=q2;note='Раскладка: искали «'+q2+'»'}}
+    if(q.replace(/\s+/g,'').length>=3&&all.length<4){var A3=core(q,true);if(A3.length>all.length){all=A3;note='Похоже на латинское написание, показаны совпадения по звучанию'}}}
+  var re=qrx(qe,true);
   var cnt={};TAB.forEach(function(t){cnt[t[0]]=all.filter(function(r){return t[1].indexOf(r.it.k)>=0}).length});
   tabs.innerHTML=TAB.map(function(t){return '<button type="button" data-t="'+t[0]+'" class="'+(t[0]===tab?'on':'')+'">'+t[2]+'<em>'+cnt[t[0]]+'</em></button>'}).join('');
-  var cur=TAB.filter(function(t){return t[0]===tab})[0],list=all.filter(function(r){return cur[1].indexOf(r.it.k)>=0}).slice(0,40);res=list;kb=-1;
-  box.innerHTML=list.length?list.map(function(r,i){var it=r.it;return '<a href="'+esc(it.u)+'" data-i="'+i+'"><small>'+KIND[it.k]+'</small><b>'+hl(it.t,ts)+'</b><p>'+snip(it,ts)+'</p></a>'}).join(''):'<p class="sm">Ничего не найдено по «'+esc(Q)+'». Попробуй другое слово или часть слова.</p>'}
+  var cur=TAB.filter(function(t){return t[0]===tab})[0],per={},list=[];
+  all.forEach(function(r){if(cur[1].indexOf(r.it.k)<0)return;var key=r.it.u;per[key]=(per[key]||0)+1;if(per[key]<=3&&list.length<50)list.push(r)});res=list;kb=-1;
+  box.innerHTML=(note?'<p class="sm">'+esc(note)+'</p>':'')+(list.length?list.map(function(r,i){var it=r.it;
+    return '<a href="'+esc(it.u)+'" data-i="'+i+'" data-q="'+esc(qe)+'" data-hs="'+esc(it.intro?'':it.h)+'"><small>'+KIND[it.k]+(it.intro||it.k==='co'||it.k==='term'||it.k==='tk'?'':' · '+esc(it.t))+'</small><b>'+hl(it.intro||!it.h?it.t:it.h,re)+'</b><p>'+snip(it,re)+'</p></a>'}).join('')
+    :'<p class="sm">Ничего не найдено по «'+esc(q)+'». Попробуй корень слова, другое написание или формулу без пробелов.</p>')}
 var tm=null;inp.addEventListener('input',function(){Q=inp.value;clearTimeout(tm);tm=setTimeout(function(){run();try{history.replaceState(null,'',Q?'?q='+encodeURIComponent(Q):location.pathname)}catch(e){}},120)});
 tabs.addEventListener('click',function(e){var b=e.target.closest('[data-t]');if(!b)return;tab=b.getAttribute('data-t');run()});
+box.addEventListener('click',function(e){var a=e.target.closest('a[data-q]');if(!a)return;var u=a.getAttribute('href'),m=u.match(/^(finance|ucheba)\.html#(.+)$/);if(!m)return;
+  var id=m[2].replace(/^(learn|world\/sectors)\//,'');try{sessionStorage.setItem(m[1]==='finance'?'fin:hl':'uch:hl',JSON.stringify({id:id,q:a.getAttribute('data-q'),hs:a.getAttribute('data-hs')||''}))}catch(x){}});
 inp.addEventListener('keydown',function(e){var as=box.querySelectorAll('a');if(!as.length)return;
   if(e.key==='ArrowDown'||e.key==='ArrowUp'){e.preventDefault();kb=Math.max(0,Math.min(as.length-1,kb+(e.key==='ArrowDown'?1:-1)));as.forEach(function(a,i){a.classList.toggle('kb',i===kb)});as[kb].scrollIntoView({block:'nearest'})}
-  if(e.key==='Enter'){var a=as[Math.max(0,kb)];if(a)location.href=a.getAttribute('href')}});
+  if(e.key==='Enter'){var a=as[Math.max(0,kb)];if(a)a.click()}});
 document.addEventListener('keydown',function(e){if(e.key==='/'&&document.activeElement!==inp){e.preventDefault();inp.focus()}});
 var q0=new URLSearchParams(location.search).get('q');if(q0){inp.value=q0;Q=q0}
 inp.focus();load();
