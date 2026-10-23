@@ -27,6 +27,14 @@
 :root[data-skin="ocean"]{--bg:#E9F0F6;--rail:#DCE7F0;--surface:#F7FAFD;--fg:#14283A;--muted:#4B6277;--faint:#7289A0;--line:#C5D4E1;--line2:#D6E1EB;--accent:#1A5FA8;--accent2:#C2561F;--mark:#FFE08A;--up:#1B7A47;--down:#B3261E}
 :root[data-skin="graphite"]{--bg:#15171B;--rail:#1B1E23;--surface:#1F2227;--fg:#E6E8EC;--muted:#9AA1AD;--faint:#6F7683;--line:#2E3239;--line2:#262A30;--accent:#7BA7F5;--accent2:#F2A65A;--mark:#3C4A66;--up:#4FC27F;--down:#F07167}
 :root[data-skin="terminal"]{--bg:#0A0A08;--rail:#11100C;--surface:#15140F;--fg:#F0D9A0;--muted:#B79A55;--faint:#7E6A3A;--line:#3A3115;--line2:#2A240F;--accent:#FFB000;--accent2:#FF6A3D;--mark:#5A4300;--up:#7DDB6A;--down:#FF6B5B;--sans:var(--mono)}
+:root[data-skin="news"]{--bg:#161512;--rail:#1C1B17;--surface:#201F1A;--fg:#EAE3D2;--muted:#B3AA96;--faint:#847C6A;--line:#3A372E;--line2:#2C2A23;--accent:#E0483B;--accent2:#D8B25A;--mark:#5A4A1C;--up:#86C783;--down:#E0483B;--sans:var(--serif)}
+/* «Газета ночью»: гарнитура с засечками, двойная линия под шапкой, зерно бумаги, прямые углы */
+:root[data-skin="news"] body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:900;opacity:.05;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .9 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
+:root[data-skin="news"] .top{border-bottom:3px double var(--line)}
+:root[data-skin="news"] .wm.pol{--pa:#E0483B;--pat:#fff;--accent:var(--pa)}
+:root[data-skin="news"] h1{font-weight:800;letter-spacing:-.015em}
+:root[data-skin="news"] h2{border-bottom:1px solid var(--line);padding-bottom:6px}
+:root[data-skin="news"] .chip,:root[data-skin="news"] .seg,:root[data-skin="news"] .seg .sg,:root[data-skin="news"] .wmap,:root[data-skin="news"] .wcard{border-radius:3px}
 :root[data-skin="violet"]{--bg:#130F22;--rail:#0E0A1A;--surface:#1B1530;--fg:#E6E0F5;--muted:#AFA5CC;--faint:#8174A6;--line:#342A55;--line2:#251D40;--accent:#B794FF;--accent2:#FF7AC6;--mark:#4A2E80;--up:#5FD08A;--down:#FF7A8A}
 :root[data-skin="amber"]{--bg:#17110D;--rail:#110C09;--surface:#211812;--fg:#EFE3D3;--muted:#B9A58E;--faint:#8C7A65;--line:#3D2E22;--line2:#2B2018;--accent:#F0A35C;--accent2:#E8D27A;--mark:#6B4220;--up:#8FCB6A;--down:#F0745A}
 .thm{position:fixed;z-index:80;top:calc(54px + env(safe-area-inset-top,0px));right:10px;width:min(280px,calc(100vw - 20px));padding:8px;border:1px solid var(--line);border-radius:16px;background:var(--surface);box-shadow:0 14px 40px rgba(0,0,0,.28)}
@@ -789,7 +797,7 @@ var root=document.documentElement;
 function applyTheme(t){if(t)root.setAttribute('data-theme',t);else root.removeAttribute('data-theme')}
 /* оформление раздела: store('fin:skin') = '' (системное) | 'light' | 'dark' | id из SKINS */
 var SKINS=[['auto','Как в системе','#F4F1E8','#1F6B57',''],['ocean','Океан','#E9F0F6','#1A5FA8','light'],
-  ['dark','Ночь','#171611','#5FC2A3','dark'],['graphite','Графит','#15171B','#7BA7F5','dark'],['terminal','Терминал','#0A0A08','#FFB000','dark']];
+  ['dark','Ночь','#171611','#5FC2A3','dark'],['graphite','Графит','#15171B','#7BA7F5','dark'],['terminal','Терминал','#0A0A08','#FFB000','dark'],['news','Газета','#161512','#E0483B','dark']];
 function applySkin(id){
   var sk=SKINS.filter(function(x){return x[0]===id})[0];if(!sk){id='auto';sk=SKINS[0]}
   if(id==='auto'){root.removeAttribute('data-skin');applyTheme('')}
