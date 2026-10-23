@@ -892,6 +892,7 @@ function renderChapter(c){
     var pr=view.querySelector('.prose');pr.insertBefore(bar,pr.firstChild.nextSibling);
   }
   if(Q){hl(view.querySelector('.prose'),Q,HS)}
+  else{var pd=null;try{pd=JSON.parse(sessionStorage.getItem('fin:hl')||'null');sessionStorage.removeItem('fin:hl')}catch(x){}if(pd&&pd.id===c.id&&pd.q)hl(view.querySelector('.prose'),pd.q,pd.hs)}
   qzInit(c);
 }
 function qaStore(){try{return JSON.parse(store('fin:qa')||'{}')||{}}catch(e){return {}}}

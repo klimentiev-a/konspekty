@@ -354,18 +354,79 @@ import json as _json
 sys.path.insert(0, os.path.join(ROOT, 'src', 'finance'))
 import urllib.parse
 import terms as _T
+def _lesson_index():
+    import ast, glob
+    src = open(os.path.join(ROOT, 'src', 'finance', 'build_finance.py'), encoding='utf-8').read()
+    m = re.search(r'IDS = (\{.*?\})', src, re.S); ids = ast.literal_eval(m.group(1))
+    L = []
+    for f in sorted(glob.glob(os.path.join(ROOT, 'src', 'finance', 'content', '*.md'))):
+        nm = os.path.basename(f); nn = nm[:2]
+        if nn in ('98', '99', '35', '69'): continue
+        fid = ids.get(nn) or re.sub(r'\.md$', '', nm[3:])
+        lines = open(f, encoding='utf-8').read().split('\n')
+        title = next((x.lstrip('# ').strip() for x in lines if x.strip()), fid)
+        L.append((fid, title, lines, fid.startswith('shpargalka-')))
+    return L
+_LESS = _lesson_index()
+_WEAK = ('sobesedovanie', 'stazhirovka', 'praktikum', 'keysy', 'karera', 'project-black', 'interesnoe')
+def _find_lesson(names):
+    best = None
+    for ni, n in enumerate(names):
+        n = n.strip()
+        if len(n) < 3: continue
+        if re.search(r'[A-Z]{2,}', n) or (' ' not in n and n.isascii()):
+            rx = re.compile(r'(?<![A-Za-zА-Яа-яЁё0-9])' + re.escape(n).replace('\\/', r'\s*/\s*') + r'(?![A-Za-zА-Яа-яЁё0-9])', re.I)
+        else:
+            rx = re.compile(re.escape(n[:-1] if len(n) > 6 else n), re.I)
+        wn = 1.0 if ni == 0 else .5
+        for fid, title, lines, sh in _LESS:
+            tot = 0; top = (0, '')
+            hd = ''
+            for ln in lines:
+                ishd = ln.startswith('#')
+                if ishd: hd = ln.lstrip('# ').strip()
+                if not rx.search(ln): continue
+                if re.match(r'(Проверь себя|Вопросы|Частые)', hd) and not ishd: ls = .3
+                elif ishd: ls = 25
+                elif '**' in ln and any(rx.search(x) for x in re.findall(r'\*\*([^*]+)\*\*', ln)): ls = 6
+                else: ls = 1
+                tot += ls
+                if ls > top[0]: top = (ls, hd)
+            if not tot: continue
+            sc = min(tot, 45) * wn
+            if rx.search(title): sc += 20 * wn
+            if sh: sc *= .3
+            if fid in _WEAK: sc *= .35
+            if best is None or sc > best[0]: best = (sc, fid, title, top[1], n)
+    return best
+_ALIAS = {'Модель Гордона': ['Гордон'], 'Gordon growth model': ['Гордон'], 'EBITDA margin': ['маржа EBITDA', 'рентабельность по EBITDA']}
 def _slovar_data():
     out = []; seen = set()
+    def lesson(head, full):
+        names = [head] + [x for x in re.split(r'\s*[/,;]\s*', full or '') if x]
+        names += re.findall(r'\(([^)]{3,40})\)', head + ' ' + (full or ''))
+        names += [re.sub(r'\s*\(.*?\)', '', x) for x in names]
+        names += _ALIAS.get(head, [])
+        b = _find_lesson([x for x in dict.fromkeys(names)])
+        if not b or b[0] < 3: return None
+        return b
+    def entry(t, full, d, f, gl):
+        head = re.split(r'\s[—-]\s', t)[0].strip()
+        e = {'t': t, 'f': full, 'd': d, 'x': f, 'u': gl, 'g': gl}
+        b = lesson(head, full)
+        if b:
+            e['u'] = 'finance.html#learn/' + b[1]; e['ut'] = b[2]; e['hq'] = b[4]; e['hs'] = b[3]
+        return e
     for l in open(os.path.join(ROOT, 'src', 'finance', 'content', '98_glossary.md'), encoding='utf-8'):
         m = re.match(r'^\| \*\*(.+?)\*\* \|(.*?)\|(.*?)\|(.*)\|\s*$', l)
         if not m: continue
         t, full, d, f = [x.strip() for x in m.groups()]
-        out.append({'t': t, 'f': full, 'd': d, 'x': f, 'u': 'finance.html#learn/glossariy/' + urllib.parse.quote(re.sub(r'\s+', ' ', t), safe='')}); seen.add(t.lower())
+        out.append(entry(t, full, d, f, 'finance.html#learn/glossariy/' + urllib.parse.quote(re.sub(r'\s+', ' ', t), safe=''))); seen.add(t.lower())
     for pats, title, d in list(_T.RICH) + list(_T.EXTRA):
         head = re.split(r'\s[—-]\s', title)[0].strip()
         if head.lower() in seen: continue
         seen.add(head.lower())
-        out.append({'t': title, 'f': '', 'd': d, 'x': '', 'u': 'finance.html#learn/glossariy'})
+        out.append(entry(title, '', d, '', 'finance.html#learn/glossariy'))
     return out
 SLOVAR_DATA = _json.dumps(_slovar_data(), ensure_ascii=False).replace('</', '<\\/')
 SLOVAR_CSS = """<style>
@@ -377,7 +438,7 @@ SLOVAR_CSS = """<style>
 .tk p{margin:0;font:400 15px/1.5 system-ui,sans-serif}.tk code{display:block;margin-top:2px;padding:8px 10px;background:color-mix(in srgb,var(--fg) 6%,transparent);border-radius:8px;font:500 14px/1.45 ui-monospace,Menlo,monospace;white-space:normal}
 .tk .fx{display:block;color:var(--muted);font:400 13px/1.45 system-ui,sans-serif;margin-top:4px}
 .tk a{color:var(--a2,#1F6B57);font:500 13.5px/1 system-ui,sans-serif;text-decoration:none;display:inline-block;margin-top:10px}
-.tk.web{border-style:dashed}.tk.web .src{color:var(--faint);font:400 12px/1.4 system-ui,sans-serif;margin-top:6px}
+.tk .gl{display:block;margin-top:8px;color:var(--faint);font-weight:400}.tk .ls{display:block}.tk.web{border-style:dashed}.tk.web .src{color:var(--faint);font:400 12px/1.4 system-ui,sans-serif;margin-top:6px}
 .sh{margin:18px 0 8px;color:var(--faint);font:600 12px/1 system-ui,sans-serif;letter-spacing:.06em;text-transform:uppercase}
 .sm{color:var(--muted);font:400 14px/1.5 system-ui,sans-serif;padding:8px 0}
 .wbtn{display:block;width:100%;min-height:48px;margin:18px 0 4px;padding:0 16px;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--fg);font:600 15px system-ui,sans-serif;cursor:pointer}
@@ -418,7 +479,10 @@ function card(e){
   else if(e.t.indexOf(' — ')>0)h+='<div class="en">'+esc(e.t.split(' — ').slice(1).join(' — '))+'</div>';
   h+='<div class="lb">Суть</div><p>'+esc(e.d)+'</p>';
   if(e.x)h+='<div class="lb">Формула</div>'+e.x.replace(/<code>/g,'<code>').replace(/<span class="fx">/g,'<span class="fx">');
-  h+='<a href="'+esc(e.u)+'">Разобрано в курсе →</a></div>';return h}
+  if(e.ut)h+='<a class="ls" href="'+esc(e.u)+'" data-hq="'+esc(e.hq||'')+'" data-hs="'+esc(e.hs||'')+'" data-lid="'+esc(e.u.split('#learn/')[1])+'">Разобрано в уроке: '+esc(e.ut)+' →</a><a class="gl" href="'+esc(e.g)+'">Вариант в глоссарии</a>';
+  else h+='<a class="ls" href="'+esc(e.g)+'">Разобрано в курсе →</a>';
+  return h+'</div>'}
+document.addEventListener('click',function(ev){var a=ev.target.closest&&ev.target.closest('a[data-lid]');if(a)try{sessionStorage.setItem('fin:hl',JSON.stringify({id:a.getAttribute('data-lid'),q:a.getAttribute('data-hq'),hs:a.getAttribute('data-hs')}))}catch(x){}});
 var box=document.getElementById('sr'),web=document.getElementById('web'),inp=document.getElementById('q'),tmr=null,seq=0;
 var FIN=/финанс|эконом|бухгалтер|учёт|учет|аудит|инвест|банк|акци[июя]|облигац|кредит|займ|налог|рынок|рынк|бирж|капитал|прибыл|выруч|доход|стоимост|валют|страхов|торгов|бизнес|компани|предприят|производств|логистик|цепочк|автомобил|сборк|таможн|пошлин|товар|актив|долг|процент|ставк|менеджмент|маркетинг|контракт|финтех|криптовалют|\b(financ|econom|account|audit|invest|bank|stock|share|bond|credit|loan|debt|tax|market|exchange|capital|profit|revenue|income|valuation|currency|insurance|trading|trade|business|company|corporat|manufactur|supply chain|logistic|asset|equity|interest rate|management|marketing|customs|tariff|assembl|automotive|vehicle)/i;
 function nrm(x){return String(x||'').toLowerCase().replace(/[^a-zа-яё0-9]+/g,'')}
