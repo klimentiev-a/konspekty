@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded',function(){var v=g();document.query
   '::-webkit-scrollbar-thumb{background:var(--faint,#857E6E);border-radius:8px;border:2px solid transparent;background-clip:padding-box}::-webkit-scrollbar-thumb:hover{background:var(--muted,#665F52);background-clip:padding-box;border:2px solid transparent}'+
   '::-webkit-scrollbar-button{display:none;width:0;height:0}'+
   '@supports not selector(::-webkit-scrollbar){*{scrollbar-width:thin;scrollbar-color:var(--faint,#857E6E) transparent}}'+
-  '.zq{position:fixed;top:6px;right:6px;z-index:60;display:flex;align-items:center;height:24px;border:1px solid var(--line,#D9D3C2);border-radius:999px;background:color-mix(in srgb,var(--surface,var(--bg,#FBF9F3)) 88%,transparent);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);overflow:hidden;opacity:.62;transition:opacity .15s;zoom:var(--iz,1)}'+
+  '.zq{position:fixed;bottom:14px;right:14px;top:auto;z-index:60;display:flex;align-items:center;height:24px;border:1px solid var(--line,#D9D3C2);border-radius:999px;background:color-mix(in srgb,var(--surface,var(--bg,#FBF9F3)) 88%,transparent);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);overflow:hidden;opacity:.62;transition:opacity .15s;zoom:var(--iz,1)}'+
   '.zq:hover,.zq:focus-within{opacity:1}.zq button{height:24px;min-width:26px;padding:0 7px;border:0;background:none;color:var(--muted,#665F52);font:600 11px/1 system-ui,sans-serif;cursor:pointer}'+
   '.zq button:hover{color:var(--fg,#25221C);background:color-mix(in srgb,var(--fg,#25221C) 8%,transparent)}.zq i{width:1px;height:12px;background:var(--line,#D9D3C2)}';
   function go(){
@@ -85,11 +85,10 @@ document.addEventListener('DOMContentLoaded',function(){var v=g();document.query
     d.innerHTML='<button type="button" data-sz="-1" aria-label="Уменьшить" title="Уменьшить масштаб">A−</button><i></i><button type="button" data-sz="1" aria-label="Увеличить" title="Увеличить масштаб">A+</button>';
     document.body.appendChild(d);
     function vis(e){var r=e.getBoundingClientRect(),cs=getComputedStyle(e);return r.width>=8&&r.height>=8&&cs.visibility!=='hidden'&&cs.display!=='none'&&cs.opacity!=='0'}
-    function place(){
+    function place(){return;
       var W=window.innerWidth,els=[].slice.call(document.querySelectorAll('a,button,input,select')).filter(function(e){return !d.contains(e)&&vis(e)}),
           top=els.filter(function(e){var r=e.getBoundingClientRect();return r.top<64&&r.bottom>0&&r.right>W-300&&r.left>W*0.55});
-      d.style.top='6px';d.style.right='6px';
-      if(!top.length)return;
+      return;
       var L=Math.min.apply(null,top.map(function(e){return e.getBoundingClientRect().left})),
           r0=top.filter(function(e){return e.getBoundingClientRect().left===L})[0].getBoundingClientRect();
       d.style.right=Math.round(W-L+6)+'px';d.style.top=Math.max(2,Math.round(r0.top+(r0.height-24)/2))+'px';
