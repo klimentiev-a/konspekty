@@ -258,7 +258,7 @@ html:root:root .ab .prose h3::before,html:root:root .ab .prose h3::after{content
 .bm{margin-left:.45em;padding:0 .2em;font:inherit;font-size:.72em;line-height:1;color:var(--faint);opacity:.55;vertical-align:.08em;cursor:pointer;background:none;border:0}
 .bm:hover,.bm.on{opacity:1;color:var(--accent)}
 .prose{zoom:var(--fz,1)}
-html:root[data-skin=c] .next,html:root[data-skin=c] .bms,html:root[data-skin=f] .next,html:root[data-skin=f] .bms{margin-inline:auto;text-align:left}
+html:root:is([data-skin=c],[data-skin=n]) .next,html:root:is([data-skin=c],[data-skin=n]) .bms,html:root[data-skin=f] .next,html:root[data-skin=f] .bms{margin-inline:auto;text-align:left}
 
 /* ---------- страница конспекта ---------- */
 .note-wrap{display:grid;grid-template-columns:minmax(0,1fr);justify-content:center;gap:0 64px;padding-top:30px}
@@ -411,115 +411,120 @@ mark{background:var(--mark);color:inherit;border-radius:3px;padding:0 1px}
 html[data-skin]:not([data-skin=a]) #btn-theme{display:none}
 
 /* ============================== C · ГАЗЕТА ============================== */
-html:root[data-skin=c]{--head:'Playfair Display','PT Serif',Georgia,'Times New Roman',serif;
+html:root:is([data-skin=c],[data-skin=n]){--head:'Playfair Display','PT Serif',Georgia,'Times New Roman',serif;
   --bg:#F5F2EA;--rail:#F5F2EA;--surface:#FFFFFF;--fg:#141414;--muted:#4b4740;--faint:#77726a;
   --line:#141414;--line2:#CFCABD;--accent:#B3261E;--mark:#FFE58A;--cl:.5;--ch:.15;
   --serif:'PT Serif',Georgia,'Times New Roman',serif;--sans:'PT Sans','Helvetica Neue',Arial,sans-serif;color-scheme:light}
-html:root[data-skin=c] ::selection{background:var(--mark)}
-html:root[data-skin=c] .rail{background:var(--bg);border-bottom:1px solid var(--fg)}
-html:root[data-skin=c] .brandrow{position:relative;justify-content:center;padding:6px 92px}
-html:root[data-skin=c] .brand{margin:0;font:900 clamp(28px,7.4vw,86px)/1 var(--head);text-transform:uppercase;letter-spacing:-.005em;white-space:nowrap}
-html:root[data-skin=c] .brand .sec{display:none}
-html:root[data-skin=c] .brandrow .ibtn{position:absolute;top:50%;margin-top:-20px;border-radius:0;color:var(--fg)}
-html:root[data-skin=c] #btn-search{right:46px}
-html:root[data-skin=c] #btn-style{right:4px;font-family:var(--head)!important;font-weight:900!important}
-html:root[data-skin=c] .ibtn:hover{background:var(--fg);color:var(--bg)}
-html:root[data-skin=c] .searchbar{border:0;border-bottom:1px solid var(--fg);border-radius:0;background:transparent}
-html:root[data-skin=c] .searchbar:focus-within{border-color:var(--accent)}
-html:root[data-skin=c] .subjects{padding:0 var(--gut);gap:0;border-top:3px solid var(--fg)}
-html:root[data-skin=c] .subj{border:0;border-radius:0;padding:10px 14px;color:var(--fg);font:700 12px/1.2 var(--sans);letter-spacing:.14em;text-transform:uppercase}
-html:root[data-skin=c] .subj+.subj{border-left:1px solid var(--line2)}
-html:root[data-skin=c] .subj:first-child{margin-left:auto}
-html:root[data-skin=c] .subj:last-child{margin-right:auto}
-html:root[data-skin=c] .subj .dot,html:root[data-skin=c] .subj .ct{display:none}
-html:root[data-skin=c] .subj:hover{background:none;color:var(--accent)}
-html:root[data-skin=c] .subj.on,html:root[data-skin=c] .subj.on:hover{background:var(--fg);color:var(--bg);box-shadow:none}
-html:root[data-skin=c] .railfoot{color:var(--fg)}
-html:root[data-skin=c] .tabs{background:var(--bg);border-bottom:1px solid var(--fg);gap:0}
-html:root[data-skin=c] .tab{flex-direction:row;align-items:baseline;gap:9px;padding:11px 16px;color:var(--fg)}
-html:root[data-skin=c] .tab+.tab{border-left:1px solid var(--line2)}
-html:root[data-skin=c] .tab .td{font:italic 700 14px/1 var(--head);letter-spacing:0;text-transform:none;color:var(--accent)}
-html:root[data-skin=c] .tab .tl{font:700 12px/1.3 var(--sans);letter-spacing:.1em;text-transform:uppercase}
-html:root[data-skin=c] .tab:hover{color:var(--accent)}
-html:root[data-skin=c] .tab.on{background:var(--surface);color:var(--fg)}
-html:root[data-skin=c] .tab.on .td{color:var(--accent)}
-html:root[data-skin=c] .tab.on::after{left:0;right:0;bottom:-1px;height:3px;border-radius:0;background:var(--fg)}
+html:root:is([data-skin=c],[data-skin=n]) ::selection{background:var(--mark)}
+/* N · ГАЗЕТА (ТЁМНАЯ): та же вёрстка, что у «Газеты», палитра ночной бумаги */
+html:root[data-skin=n]{--bg:#151412;--rail:#151412;--surface:#1F1D19;--fg:#ECE6D6;--muted:#B8B0A0;--faint:#8A8272;
+  --line:#CFC8B6;--line2:#3A372F;--accent:#FF6B5E;--mark:#5A4A1C;--cl:.8;--ch:.12;color-scheme:dark}
+html:root[data-skin=n] body{background:var(--bg)}
 
-html:root[data-skin=c] .home{max-width:none;padding-top:26px}
-html:root[data-skin=c] .home h1{display:none}
-html:root[data-skin=c] .home .lead{margin:0 auto;max-width:58ch;text-align:center;font:italic 400 clamp(17px,2.4vw,22px)/1.45 var(--head);color:var(--fg)}
-html:root[data-skin=c] .home .stats{justify-content:center;margin-top:18px;padding:6px 0;border-block:1px solid var(--fg);font:700 11px/1.4 var(--sans);letter-spacing:.16em;color:var(--fg)}
-html:root[data-skin=c] .resume{display:flex;align-items:center;margin:22px auto 0;max-width:460px;background:var(--surface);border:3px double var(--fg);border-radius:0;text-align:center}
-html:root[data-skin=c] .resume:hover{border-color:var(--accent)}
-html:root[data-skin=c] .resume .k{font-family:var(--sans);letter-spacing:.16em;color:var(--accent)}
-html:root[data-skin=c] .resume .v{font:700 19px/1.3 var(--head)}
-html:root[data-skin=c] .idx{display:block;column-count:3;column-width:290px;column-gap:38px;column-rule:1px solid var(--fg);margin-top:34px}
-html:root[data-skin=c] .isub{break-inside:avoid;margin-bottom:30px}
-html:root[data-skin=c] .isub h2{font:900 21px/1.2 var(--head);letter-spacing:0;padding-bottom:7px;border-bottom:3px solid var(--fg);margin-bottom:2px}
-html:root[data-skin=c] .isub h2 .dot{display:none}
-html:root[data-skin=c] .isub h2 .cnt{font:italic 700 15px var(--head);color:var(--accent)}
-html:root[data-skin=c] .isub li a{grid-template-columns:52px minmax(0,1fr);border-top:1px solid var(--line2)}
-html:root[data-skin=c] .isub li:last-child a{border-bottom:0}
-html:root[data-skin=c] .isub .d{font:italic 700 14px/1.35 var(--head);color:var(--accent)}
-html:root[data-skin=c] .isub .t{font:400 16.5px/1.35 var(--serif)}
+html:root:is([data-skin=c],[data-skin=n]) .rail{background:var(--bg);border-bottom:1px solid var(--fg)}
+html:root:is([data-skin=c],[data-skin=n]) .brandrow{position:relative;justify-content:center;padding:6px 92px}
+html:root:is([data-skin=c],[data-skin=n]) .brand{margin:0;font:900 clamp(28px,7.4vw,86px)/1 var(--head);text-transform:uppercase;letter-spacing:-.005em;white-space:nowrap}
+html:root:is([data-skin=c],[data-skin=n]) .brand .sec{display:none}
+html:root:is([data-skin=c],[data-skin=n]) .brandrow .ibtn{position:absolute;top:50%;margin-top:-20px;border-radius:0;color:var(--fg)}
+html:root:is([data-skin=c],[data-skin=n]) #btn-search{right:46px}
+html:root:is([data-skin=c],[data-skin=n]) #btn-style{right:4px;font-family:var(--head)!important;font-weight:900!important}
+html:root:is([data-skin=c],[data-skin=n]) .ibtn:hover{background:var(--fg);color:var(--bg)}
+html:root:is([data-skin=c],[data-skin=n]) .searchbar{border:0;border-bottom:1px solid var(--fg);border-radius:0;background:transparent}
+html:root:is([data-skin=c],[data-skin=n]) .searchbar:focus-within{border-color:var(--accent)}
+html:root:is([data-skin=c],[data-skin=n]) .subjects{padding:0 var(--gut);gap:0;border-top:3px solid var(--fg)}
+html:root:is([data-skin=c],[data-skin=n]) .subj{border:0;border-radius:0;padding:10px 14px;color:var(--fg);font:700 12px/1.2 var(--sans);letter-spacing:.14em;text-transform:uppercase}
+html:root:is([data-skin=c],[data-skin=n]) .subj+.subj{border-left:1px solid var(--line2)}
+html:root:is([data-skin=c],[data-skin=n]) .subj:first-child{margin-left:auto}
+html:root:is([data-skin=c],[data-skin=n]) .subj:last-child{margin-right:auto}
+html:root:is([data-skin=c],[data-skin=n]) .subj .dot,html:root:is([data-skin=c],[data-skin=n]) .subj .ct{display:none}
+html:root:is([data-skin=c],[data-skin=n]) .subj:hover{background:none;color:var(--accent)}
+html:root:is([data-skin=c],[data-skin=n]) .subj.on,html:root:is([data-skin=c],[data-skin=n]) .subj.on:hover{background:var(--fg);color:var(--bg);box-shadow:none}
+html:root:is([data-skin=c],[data-skin=n]) .railfoot{color:var(--fg)}
+html:root:is([data-skin=c],[data-skin=n]) .tabs{background:var(--bg);border-bottom:1px solid var(--fg);gap:0}
+html:root:is([data-skin=c],[data-skin=n]) .tab{flex-direction:row;align-items:baseline;gap:9px;padding:11px 16px;color:var(--fg)}
+html:root:is([data-skin=c],[data-skin=n]) .tab+.tab{border-left:1px solid var(--line2)}
+html:root:is([data-skin=c],[data-skin=n]) .tab .td{font:italic 700 14px/1 var(--head);letter-spacing:0;text-transform:none;color:var(--accent)}
+html:root:is([data-skin=c],[data-skin=n]) .tab .tl{font:700 12px/1.3 var(--sans);letter-spacing:.1em;text-transform:uppercase}
+html:root:is([data-skin=c],[data-skin=n]) .tab:hover{color:var(--accent)}
+html:root:is([data-skin=c],[data-skin=n]) .tab.on{background:var(--surface);color:var(--fg)}
+html:root:is([data-skin=c],[data-skin=n]) .tab.on .td{color:var(--accent)}
+html:root:is([data-skin=c],[data-skin=n]) .tab.on::after{left:0;right:0;bottom:-1px;height:3px;border-radius:0;background:var(--fg)}
 
-html:root[data-skin=c] .note-wrap{padding-top:28px}
-html:root[data-skin=c] .note{max-width:720px}
-html:root[data-skin=c] .eyebrow{justify-content:center;padding:6px 0;border-block:1px solid var(--fg);font:700 11px/1.2 var(--sans);letter-spacing:.18em;color:var(--fg)}
-html:root[data-skin=c] .eyebrow .dot,html:root[data-skin=c] .eyebrow .sep{display:none}
-html:root[data-skin=c] .eyebrow span+span::before{content:"· ";}
-html:root[data-skin=c] .note h1{margin:18px 0 20px;padding-bottom:16px;border-bottom:3px double var(--fg);font:900 clamp(30px,6.2vw,56px)/1.05 var(--head);letter-spacing:-.02em;text-wrap:balance}
-html:root[data-skin=c] .back{color:var(--accent);font-family:var(--sans)}
-html:root[data-skin=c] .prose{font:400 18.5px/1.65 var(--serif);color:var(--fg)}
-html:root[data-skin=c] .prose>p:first-child::first-letter{float:left;margin:.04em .09em 0 0;font:900 3.8em/.8 var(--head);color:var(--accent)}
-html:root[data-skin=c] .prose>p:first-child::after{content:"";display:block;clear:both}
-html:root[data-skin=c] .prose h2{margin:2.6em 0 1em;padding:.5em 0;border-top:3px solid var(--fg);border-bottom:1px solid var(--fg);text-align:center;font:800 24px/1.2 var(--head);letter-spacing:0}
-html:root[data-skin=c] .prose h2:first-child{margin-top:0;padding-top:.5em;border-top:3px solid var(--fg)}
-html:root[data-skin=c] .prose h3{margin:2.4em 0 .8em;padding:.5em 0 .3em;background:none;border:0;border-top:2px solid var(--fg);border-bottom:1px solid var(--fg);border-radius:0;font:700 22px/1.25 var(--head)}
-html:root[data-skin=c] .prose h4{font:italic 700 19.5px/1.35 var(--head)}
-html:root[data-skin=c] .prose h5,html:root[data-skin=c] .prose h6{color:var(--accent);letter-spacing:.14em}
-html:root[data-skin=c] .prose p.lbl{font:700 11.5px/1.2 var(--sans);letter-spacing:.18em;color:var(--accent)}
-html:root[data-skin=c] .prose p.lbl::before{content:"■ ";font-size:.8em}
-html:root[data-skin=c] .prose p.sub{border-bottom:1px solid var(--fg);font:italic 700 1.05em/1.4 var(--head)}
-html:root[data-skin=c] .prose p.verdict{background:var(--surface);border:3px double var(--fg);border-radius:0;padding:14px 18px}
-html:root[data-skin=c] .prose p.gist{background:none;border-radius:0;padding:.7em 0;border-block:1px solid var(--fg);font:italic 400 1.08em/1.5 var(--head)}
-html:root[data-skin=c] .prose ul>li::marker{content:"■  ";font-size:.7em;color:var(--accent)}
-html:root[data-skin=c] .prose blockquote{margin:1.7em 0;padding:.8em 1.2em;border:0;border-block:1px solid var(--fg);text-align:center;font:italic 400 1.1em/1.55 var(--head)}
-html:root[data-skin=c] .prose hr{border-top:3px double var(--fg)}
-html:root[data-skin=c] .prose code,html:root[data-skin=c] .prose pre{background:color-mix(in srgb,var(--fg) 7%,transparent);border-radius:0}
-html:root[data-skin=c] .tablewrap{border:0;border-top:3px solid var(--fg);border-bottom:1px solid var(--fg);border-radius:0}
-html:root[data-skin=c] .prose th{background:none;border-bottom:2px solid var(--fg);font-family:var(--sans);color:var(--fg)}
-html:root[data-skin=c] .toc-inline{border-block:1px solid var(--fg)}
-html:root[data-skin=c] .toc-inline summary{font-family:var(--sans);color:var(--fg)}
-html:root[data-skin=c] .pager{border-top:3px double var(--fg)}
-html:root[data-skin=c] .pager a{border:0;border-top:1px solid var(--fg);border-radius:0;padding:12px 0}
-html:root[data-skin=c] .pager a:hover{background:none}
-html:root[data-skin=c] .pager a:hover .v{color:var(--accent)}
-html:root[data-skin=c] .pager .v{font:700 18px/1.3 var(--head)}
-html:root[data-skin=c] .results h1{font:900 clamp(24px,4.6vw,34px)/1.15 var(--head)}
-html:root[data-skin=c] .hit h3{font:700 22px/1.25 var(--head)}
-html:root[data-skin=c] .hit{border-color:var(--fg)}
-html:root[data-skin=c] .toast{background:var(--fg);color:var(--bg);font-family:var(--sans)}
+html:root:is([data-skin=c],[data-skin=n]) .home{max-width:none;padding-top:26px}
+html:root:is([data-skin=c],[data-skin=n]) .home h1{display:none}
+html:root:is([data-skin=c],[data-skin=n]) .home .lead{margin:0 auto;max-width:58ch;text-align:center;font:italic 400 clamp(17px,2.4vw,22px)/1.45 var(--head);color:var(--fg)}
+html:root:is([data-skin=c],[data-skin=n]) .home .stats{justify-content:center;margin-top:18px;padding:6px 0;border-block:1px solid var(--fg);font:700 11px/1.4 var(--sans);letter-spacing:.16em;color:var(--fg)}
+html:root:is([data-skin=c],[data-skin=n]) .resume{display:flex;align-items:center;margin:22px auto 0;max-width:460px;background:var(--surface);border:3px double var(--fg);border-radius:0;text-align:center}
+html:root:is([data-skin=c],[data-skin=n]) .resume:hover{border-color:var(--accent)}
+html:root:is([data-skin=c],[data-skin=n]) .resume .k{font-family:var(--sans);letter-spacing:.16em;color:var(--accent)}
+html:root:is([data-skin=c],[data-skin=n]) .resume .v{font:700 19px/1.3 var(--head)}
+html:root:is([data-skin=c],[data-skin=n]) .idx{display:block;column-count:3;column-width:290px;column-gap:38px;column-rule:1px solid var(--fg);margin-top:34px}
+html:root:is([data-skin=c],[data-skin=n]) .isub{break-inside:avoid;margin-bottom:30px}
+html:root:is([data-skin=c],[data-skin=n]) .isub h2{font:900 21px/1.2 var(--head);letter-spacing:0;padding-bottom:7px;border-bottom:3px solid var(--fg);margin-bottom:2px}
+html:root:is([data-skin=c],[data-skin=n]) .isub h2 .dot{display:none}
+html:root:is([data-skin=c],[data-skin=n]) .isub h2 .cnt{font:italic 700 15px var(--head);color:var(--accent)}
+html:root:is([data-skin=c],[data-skin=n]) .isub li a{grid-template-columns:52px minmax(0,1fr);border-top:1px solid var(--line2)}
+html:root:is([data-skin=c],[data-skin=n]) .isub li:last-child a{border-bottom:0}
+html:root:is([data-skin=c],[data-skin=n]) .isub .d{font:italic 700 14px/1.35 var(--head);color:var(--accent)}
+html:root:is([data-skin=c],[data-skin=n]) .isub .t{font:400 16.5px/1.35 var(--serif)}
+
+html:root:is([data-skin=c],[data-skin=n]) .note-wrap{padding-top:28px}
+html:root:is([data-skin=c],[data-skin=n]) .note{max-width:720px}
+html:root:is([data-skin=c],[data-skin=n]) .eyebrow{justify-content:center;padding:6px 0;border-block:1px solid var(--fg);font:700 11px/1.2 var(--sans);letter-spacing:.18em;color:var(--fg)}
+html:root:is([data-skin=c],[data-skin=n]) .eyebrow .dot,html:root:is([data-skin=c],[data-skin=n]) .eyebrow .sep{display:none}
+html:root:is([data-skin=c],[data-skin=n]) .eyebrow span+span::before{content:"· ";}
+html:root:is([data-skin=c],[data-skin=n]) .note h1{margin:18px 0 20px;padding-bottom:16px;border-bottom:3px double var(--fg);font:900 clamp(30px,6.2vw,56px)/1.05 var(--head);letter-spacing:-.02em;text-wrap:balance}
+html:root:is([data-skin=c],[data-skin=n]) .back{color:var(--accent);font-family:var(--sans)}
+html:root:is([data-skin=c],[data-skin=n]) .prose{font:400 18.5px/1.65 var(--serif);color:var(--fg)}
+html:root:is([data-skin=c],[data-skin=n]) .prose>p:first-child::first-letter{float:left;margin:.04em .09em 0 0;font:900 3.8em/.8 var(--head);color:var(--accent)}
+html:root:is([data-skin=c],[data-skin=n]) .prose>p:first-child::after{content:"";display:block;clear:both}
+html:root:is([data-skin=c],[data-skin=n]) .prose h2{margin:2.6em 0 1em;padding:.5em 0;border-top:3px solid var(--fg);border-bottom:1px solid var(--fg);text-align:center;font:800 24px/1.2 var(--head);letter-spacing:0}
+html:root:is([data-skin=c],[data-skin=n]) .prose h2:first-child{margin-top:0;padding-top:.5em;border-top:3px solid var(--fg)}
+html:root:is([data-skin=c],[data-skin=n]) .prose h3{margin:2.4em 0 .8em;padding:.5em 0 .3em;background:none;border:0;border-top:2px solid var(--fg);border-bottom:1px solid var(--fg);border-radius:0;font:700 22px/1.25 var(--head)}
+html:root:is([data-skin=c],[data-skin=n]) .prose h4{font:italic 700 19.5px/1.35 var(--head)}
+html:root:is([data-skin=c],[data-skin=n]) .prose h5,html:root:is([data-skin=c],[data-skin=n]) .prose h6{color:var(--accent);letter-spacing:.14em}
+html:root:is([data-skin=c],[data-skin=n]) .prose p.lbl{font:700 11.5px/1.2 var(--sans);letter-spacing:.18em;color:var(--accent)}
+html:root:is([data-skin=c],[data-skin=n]) .prose p.lbl::before{content:"■ ";font-size:.8em}
+html:root:is([data-skin=c],[data-skin=n]) .prose p.sub{border-bottom:1px solid var(--fg);font:italic 700 1.05em/1.4 var(--head)}
+html:root:is([data-skin=c],[data-skin=n]) .prose p.verdict{background:var(--surface);border:3px double var(--fg);border-radius:0;padding:14px 18px}
+html:root:is([data-skin=c],[data-skin=n]) .prose p.gist{background:none;border-radius:0;padding:.7em 0;border-block:1px solid var(--fg);font:italic 400 1.08em/1.5 var(--head)}
+html:root:is([data-skin=c],[data-skin=n]) .prose ul>li::marker{content:"■  ";font-size:.7em;color:var(--accent)}
+html:root:is([data-skin=c],[data-skin=n]) .prose blockquote{margin:1.7em 0;padding:.8em 1.2em;border:0;border-block:1px solid var(--fg);text-align:center;font:italic 400 1.1em/1.55 var(--head)}
+html:root:is([data-skin=c],[data-skin=n]) .prose hr{border-top:3px double var(--fg)}
+html:root:is([data-skin=c],[data-skin=n]) .prose code,html:root:is([data-skin=c],[data-skin=n]) .prose pre{background:color-mix(in srgb,var(--fg) 7%,transparent);border-radius:0}
+html:root:is([data-skin=c],[data-skin=n]) .tablewrap{border:0;border-top:3px solid var(--fg);border-bottom:1px solid var(--fg);border-radius:0}
+html:root:is([data-skin=c],[data-skin=n]) .prose th{background:none;border-bottom:2px solid var(--fg);font-family:var(--sans);color:var(--fg)}
+html:root:is([data-skin=c],[data-skin=n]) .toc-inline{border-block:1px solid var(--fg)}
+html:root:is([data-skin=c],[data-skin=n]) .toc-inline summary{font-family:var(--sans);color:var(--fg)}
+html:root:is([data-skin=c],[data-skin=n]) .pager{border-top:3px double var(--fg)}
+html:root:is([data-skin=c],[data-skin=n]) .pager a{border:0;border-top:1px solid var(--fg);border-radius:0;padding:12px 0}
+html:root:is([data-skin=c],[data-skin=n]) .pager a:hover{background:none}
+html:root:is([data-skin=c],[data-skin=n]) .pager a:hover .v{color:var(--accent)}
+html:root:is([data-skin=c],[data-skin=n]) .pager .v{font:700 18px/1.3 var(--head)}
+html:root:is([data-skin=c],[data-skin=n]) .results h1{font:900 clamp(24px,4.6vw,34px)/1.15 var(--head)}
+html:root:is([data-skin=c],[data-skin=n]) .hit h3{font:700 22px/1.25 var(--head)}
+html:root:is([data-skin=c],[data-skin=n]) .hit{border-color:var(--fg)}
+html:root:is([data-skin=c],[data-skin=n]) .toast{background:var(--fg);color:var(--bg);font-family:var(--sans)}
 @media (min-width:900px){
-  html:root[data-skin=c] .app{grid-template-columns:minmax(0,1fr)}
-  html:root[data-skin=c] .rail{position:static;height:auto;display:flex;flex-direction:column;align-items:center;padding:20px var(--gut) 0;border:0;overflow:visible;max-width:1180px;width:100%;margin-inline:auto;background:var(--bg)}
-  html:root[data-skin=c] .railfoot{display:block;order:-1;width:100%;margin:0;padding:0 0 7px;border-bottom:1px solid var(--fg);text-align:center;font:700 11px/1.2 var(--sans);letter-spacing:.2em;text-transform:uppercase}
-  html:root[data-skin=c] .brandrow{width:100%;margin:0;padding:12px 100px 14px}
-  html:root[data-skin=c] .brandrow .ibtn{top:50%}
-  html:root[data-skin=c] .subjects{width:100%;flex-direction:row;flex-wrap:wrap;justify-content:center;overflow:visible}
-  html:root[data-skin=c] .subj{padding:11px 18px;font-size:12.5px}
-  html:root[data-skin=c] .subj:first-child,html:root[data-skin=c] .subj:last-child{margin-inline:0}
-  html:root[data-skin=c] .searchbar{order:3;width:100%;max-width:440px;margin:12px 0 2px}
-  html:root[data-skin=c] main{width:100%;max-width:1180px;margin-inline:auto}
-  html:root[data-skin=c] .note-wrap{padding-top:36px}
-  html:root[data-skin=c] .prose{font-size:19px}
+  html:root:is([data-skin=c],[data-skin=n]) .app{grid-template-columns:minmax(0,1fr)}
+  html:root:is([data-skin=c],[data-skin=n]) .rail{position:static;height:auto;display:flex;flex-direction:column;align-items:center;padding:20px var(--gut) 0;border:0;overflow:visible;max-width:1180px;width:100%;margin-inline:auto;background:var(--bg)}
+  html:root:is([data-skin=c],[data-skin=n]) .railfoot{display:block;order:-1;width:100%;margin:0;padding:0 0 7px;border-bottom:1px solid var(--fg);text-align:center;font:700 11px/1.2 var(--sans);letter-spacing:.2em;text-transform:uppercase}
+  html:root:is([data-skin=c],[data-skin=n]) .brandrow{width:100%;margin:0;padding:12px 100px 14px}
+  html:root:is([data-skin=c],[data-skin=n]) .brandrow .ibtn{top:50%}
+  html:root:is([data-skin=c],[data-skin=n]) .subjects{width:100%;flex-direction:row;flex-wrap:wrap;justify-content:center;overflow:visible}
+  html:root:is([data-skin=c],[data-skin=n]) .subj{padding:11px 18px;font-size:12.5px}
+  html:root:is([data-skin=c],[data-skin=n]) .subj:first-child,html:root:is([data-skin=c],[data-skin=n]) .subj:last-child{margin-inline:0}
+  html:root:is([data-skin=c],[data-skin=n]) .searchbar{order:3;width:100%;max-width:440px;margin:12px 0 2px}
+  html:root:is([data-skin=c],[data-skin=n]) main{width:100%;max-width:1180px;margin-inline:auto}
+  html:root:is([data-skin=c],[data-skin=n]) .note-wrap{padding-top:36px}
+  html:root:is([data-skin=c],[data-skin=n]) .prose{font-size:19px}
 }
 @media (max-width:560px){
-  html:root[data-skin=c] .prose{font-size:17.5px}
-  html:root[data-skin=c] .prose h2{font-size:21px}
-  html:root[data-skin=c] .prose h3{font-size:20px}
-  html:root[data-skin=c] .tab{padding:10px 12px}
-  html:root[data-skin=c] .home .lead{font-size:17px}
+  html:root:is([data-skin=c],[data-skin=n]) .prose{font-size:17.5px}
+  html:root:is([data-skin=c],[data-skin=n]) .prose h2{font-size:21px}
+  html:root:is([data-skin=c],[data-skin=n]) .prose h3{font-size:20px}
+  html:root:is([data-skin=c],[data-skin=n]) .tab{padding:10px 12px}
+  html:root:is([data-skin=c],[data-skin=n]) .home .lead{font-size:17px}
 }
 
 /* ============================== F · КНИГА ============================== */
@@ -1530,9 +1535,9 @@ function hlDom(rootEl,re){
   });
   return count;
 }
-var SKINS={c:'Газета',f:'Книга',g:'Поля',h:'Ночь',k:'Графит',l:'Тёмный графит'},
-SW={c:['#F5F2EA','#B3261E'],f:['#FBF8F1','#8A3A2B'],g:['#FDFDFB','#2F5D8A'],h:['#0D1322','#62D4DC'],k:['#FFFFFF','#2F3DFF'],l:['#101215','#7BA7F5']},
-TCOL={h:'#0D1322',k:'#FFFFFF',l:'#101215'},
+var SKINS={c:'Газета',n:'Газета (тёмная)',f:'Книга',g:'Поля',h:'Ночь',k:'Графит',l:'Тёмный графит'},
+SW={c:['#F5F2EA','#B3261E'],n:['#151412','#FF6B5E'],f:['#FBF8F1','#8A3A2B'],g:['#FDFDFB','#2F5D8A'],h:['#0D1322','#62D4DC'],k:['#FFFFFF','#2F3DFF'],l:['#101215','#7BA7F5']},
+TCOL={n:'#151412',h:'#0D1322',k:'#FFFFFF',l:'#101215'},
 DEF={civil:'f',const:'f',crim:'c',fin:'f',python:'g',links:'f'};
 function globalSkin(){var v=store('skin');return SKINS[v]?v:'f'}
 function skinOf(s){return globalSkin()}
