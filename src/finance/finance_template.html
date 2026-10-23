@@ -411,6 +411,16 @@ tr[data-bond],table[data-t="ru"] tbody tr,table[data-t="us"] tbody tr,table[data
 .wlead b{color:var(--fg);font-weight:600;white-space:nowrap}
 .wctl .sub{margin-top:12px}
 .wctl #w-ind{margin-top:8px}
+.wctl .seg{margin-top:12px}.wctl .seg.wgrp{margin-top:8px}.wctl .wmode .sg{height:34px;padding:0 16px}
+.wcat{display:flex;flex-wrap:wrap;gap:6px 16px;flex:1 1 100%}.wcat>span{display:inline-flex;align-items:center;gap:6px;font:500 12.5px/1.2 var(--sans);color:var(--muted);cursor:default}
+.wcat>span>i{width:14px;height:12px;border-radius:3px;display:inline-block;flex:none}
+.wtop:has(.wcg){columns:1}.wcg details{border-bottom:1px solid var(--line2)}
+.wcg summary{display:flex;align-items:center;gap:10px;padding:10px 2px;cursor:pointer;font:500 14.5px/1.3 var(--sans);list-style:none}.wcg summary::-webkit-details-marker{display:none}
+.wcg summary i{width:14px;height:14px;border-radius:4px;flex:none}.wcg summary span{flex:1}.wcg summary b{font-variant-numeric:tabular-nums;color:var(--muted)}
+.wcgl{display:flex;flex-wrap:wrap;gap:6px;padding:2px 0 12px}
+.wpr{display:flex;align-items:center;gap:10px;font:600 20px/1.2 var(--serif);letter-spacing:0}.wpr i,.wdot{width:14px;height:14px;border-radius:4px;flex:none;display:inline-block}.wdot{margin-right:8px;vertical-align:-1px}
+.wbk-l{display:flex;flex-wrap:wrap;gap:6px}.wbk{display:inline-block;padding:3px 10px;border:1px solid var(--line);border-radius:999px;font:500 12.5px/1.4 var(--sans);color:var(--muted)}.wbk.on{background:color-mix(in srgb,var(--accent) 14%,transparent);border-color:var(--accent);color:var(--fg)}
+.wpsp{cursor:default}.wkv.wpol td.v{white-space:normal;text-align:right}.wkv.wpol td:first-child{padding-right:8px}
 @media (min-width:900px){.wctl .sub{flex-wrap:wrap;overflow:visible}}
 .wctl #w-ind .chip{min-height:34px;padding:5px 12px;font-size:13.5px}
 .wgrid{display:grid;grid-template-columns:minmax(0,1fr);gap:18px;margin-top:14px}
@@ -2222,8 +2232,162 @@ var WCUR=(function(){var m={},s='USD:USA ECU SLV PAN TLS FSM MHL PLW PRI GUM ASM
   s.split('|').forEach(function(p){var a=p.split(':');a[1].split(' ').forEach(function(i){m[i]=a[0]})});return m})();
 var WM={load:null,geo:null,data:null,reg:{},feat:[],byId:{},names:{},svg:null,g:null,zoom:null,proj:null,path:null,w:0,h:0,k:1,play:null,act:false,tap:null,rk:{},bub:[],hint:null};
 var WS=(function(){var s={};try{s=JSON.parse(store('world:st')||'{}')||{}}catch(e){}
-  return {layer:'countries',ind:WI[s.ind]?s.ind:'NGDPD',year:0,bm:WBL[s.bm]?s.bm:'gdp',desc:s.desc!==false,sel:null}})();
-function wSave(){store('world:st',JSON.stringify({ind:WS.ind,year:WS.year,bm:WS.bm,desc:WS.desc}))}
+  return {layer:'countries',mode:'eco',ind:WI[s.ind]&&!WI[s.ind].pol?s.ind:'NGDPD',pind:s.pind||'VREG',pgrp:s.pgrp||'reg',year:0,bm:WBL[s.bm]?s.bm:'gdp',desc:s.desc!==false,sel:null}})();
+function wSave(){var p=WS.mode==='pol';store('world:st',JSON.stringify({ind:p?WS.eind:WS.ind,year:p?WS.eyear:WS.year,bm:WS.bm,desc:WS.desc,pind:p?WS.ind:WS.pind,pgrp:WS.pgrp}))}
+/* ---------- политическая карта (режим «Политика») ---------- */
+var WPG=[['reg','Режим'],['fre','Свобода и демократия'],['led','Выборы и руководство'],['blk','Союзы и блоки']];
+var WPI={reg:['VREG','GOVF'],fre:['VPOLY','VLIB','VCIV','VRULE','VCORR','FHST','FHSC'],led:['TENURE','NEXTEL'],blk:[]};
+(function(){
+  function d(code,label,ch,type,th,o){var e=[label,type,th];e.pol=1;e.ch=ch;for(var k in o)e[k]=o[k];WI[code]=e}
+  var ix=[.2,.4,.6,.8];
+  d('VREG','Тип режима (Regimes of the World)','Тип режима','cat',[1,2,3],{src:'vdem',labs:['Закрытая автократия','Электоральная автократия','Электоральная демократия','Либеральная демократия'],
+    cl:['#8A2F2A','#E08A45','#8CC3B4','#0B7A5E'],cd:['#C9605A','#E6A064','#6FB8A4','#35C79B']});
+  d('GOVF','Форма правления (Government type)','Форма правления','cat',[1,2,3,4,5,6,7,8,9],{src:'fb',st:1,
+    labs:['Президентская республика','Полупрезидентская республика','Парламентская республика','Парламентская монархия','Конституционная монархия (не парламентская)','Абсолютная монархия, султанат, эмират','Однопартийное государство, диктатура','Теократия','Военное или переходное правление','Зависимая территория'],
+    cl:['#3E6FB5','#7FB0DC','#2D9C85','#B68AD3','#8667AD','#D29A2D','#B5443A','#6E5C3F','#7B7B7B','#CDC6B3'],cd:['#6C9BE0','#9CC6EB','#4CC2A8','#CBA6E3','#A98BD0','#E3B24D','#E07369','#A8946B','#A5A5A5','#4A473D']});
+  d('VPOLY','Электоральная демократия (Electoral Democracy Index)','Электоральная демократия','seq',ix,{src:'vdem',note:'0–1'});
+  d('VLIB','Либеральная демократия (Liberal Democracy Index)','Либеральная демократия','seq',ix,{src:'vdem',note:'0–1'});
+  d('VCIV','Гражданские свободы (Civil Liberties Index)','Гражданские свободы','seq',ix,{src:'vdem',note:'0–1'});
+  d('VRULE','Верховенство права (Rule of Law Index)','Верховенство права','seq',ix,{src:'vdem',note:'0–1'});
+  d('VCORR','Политическая коррупция (Political Corruption Index)','Коррупция','bad',ix,{src:'vdem',note:'0–1, чем выше, тем хуже'});
+  d('FHST','Статус свободы (Freedom House)','Статус (Freedom House)','cat',[1,2],{src:'fh',labs:['Не свободна','Частично свободна','Свободна'],cl:['#8A2F2A','#E0B04A','#0B7A5E'],cd:['#C9605A','#E3B85E','#35C79B']});
+  d('FHSC','Балл свободы, 0–100 (Freedom House)','Балл (Freedom House)','seq',[20,40,60,80],{src:'fh',note:'0–100'});
+  d('TENURE','Лет у власти главы государства','Лет у власти','seq',[2,5,10,20,30],{src:'fb',st:1});
+  d('NEXTEL','Следующие выборы главы государства','Следующие выборы','cat',[1,2,3,4,5],{src:'fb',st:1,labs:['Дата не названа или выборов нет','2026','2027','2028','2029–2030','2031 и позже'],
+    cl:['#D9D5C8','#1F4E8C','#3F76B8','#6FA0D4','#A2C3E3','#CFE0F0'],cd:['#3A382F','#9CC0F0','#779FDB','#5586C6','#3E6BA6','#2E5282']});
+  WUNIT.VPOLY=WUNIT.VLIB=WUNIT.VCIV=WUNIT.VRULE='индекс 0–1';WUNIT.VCORR='индекс 0–1, выше — хуже';WUNIT.FHSC='баллов из 100';WUNIT.TENURE='лет';
+})();
+function wCatCols(code){var d=WI[code],R=wR();if(d.bloc)return [R.land,wDark()?'#E3B05F':'#E0A24A',R.seq[3]];return (wDark()?d.cd:d.cl).slice()}
+function wfmtP(code,v,sh){var d=WI[code];if(v==null||isNaN(v))return '—';
+  if(d[1]==='cat')return d.labs[Math.round(v)]||'—';
+  if(code==='FHSC')return nf(v,0)+(sh?'':' из 100');
+  if(code==='TENURE')return v<1?'меньше года':plural(Math.floor(v),['год','года','лет']);
+  return nf(v,2)}
+function wYmax(){return WS.mode==='pol'&&WM.pol?WM.pol.vdem_last:WM.y1}
+function wStat(){var d=WI[WS.ind];return !!(WS.mode==='pol'&&d&&d.st)}
+function wPolLoad(){
+  if(WM.pol)return Promise.resolve(WM.pol);if(WM.polP)return WM.polP;
+  WM.polP=wLoad().then(function(){return wGet('world/politics.json')}).then(function(j){wPolMerge(j);return j}).catch(function(e){WM.polP=null;throw e});
+  return WM.polP}
+function wPolMerge(j){
+  var D=WM.data;if(!D||!j||!j.years||!j.data)throw new Error('нет данных');
+  var off=j.years[0]-WM.y0,now=Date.now(),names=Object.keys(WM.names);
+  Object.keys(j.data).forEach(function(iso){if(!WM.names[iso])return;var rec=D.data[iso]||(D.data[iso]={}),s=j.data[iso];
+    Object.keys(s).forEach(function(c){var a=[];for(var i=0;i<WM.Y.length;i++)a.push(null);s[c].forEach(function(v,i){if(off+i>=0&&off+i<a.length)a[off+i]=v});rec[c]=a})});
+  names.forEach(function(iso){var st=j.st[iso];if(!st)return;var rec=D.data[iso]||(D.data[iso]={});
+    if(st.GOVF!=null)rec.GOVF=[st.GOVF];rec.NEXTEL=[st.NEXTEL];
+    if(st.cs&&st.cs.since)rec.TENURE=[Math.max(0,(now-Date.parse(st.cs.since))/31557600000)]});
+  WPI.blk=[];
+  j.blocs.forEach(function(b){var code='B_'+b.id,e=[b.name+(b.en&&b.en!==b.name?' ('+b.en+')':''),'cat',[1,2]];
+    e.pol=1;e.st=1;e.src='bloc';e.bloc=b;e.ch=b.name;e.labs=['Не участвует',b.mid_label||'','Член'];WI[code]=e;WPI.blk.push(code);
+    names.forEach(function(iso){var rec=D.data[iso]||(D.data[iso]={});rec[code]=[b.full.indexOf(iso)>=0?2:b.mid.indexOf(iso)>=0?1:0]})});
+  WM.pol=j}
+function wMode(){
+  var el=$('#w-mode'),h1=document.querySelector('.wh h1');if(!el)return;var on=WS.layer==='countries'&&!!WM.data;el.hidden=!on;if(h1)h1.textContent=WS.mode==='pol'&&WS.layer==='countries'?'Политика мира':'Экономика мира';if(!on)return;
+  el.innerHTML=[['eco','Экономика'],['pol','Политика']].map(function(x){return '<button type="button" role="tab" class="sg'+(WS.mode===x[0]?' on':'')+'" data-wmode="'+x[0]+'" aria-selected="'+(WS.mode===x[0])+'">'+x[1]+'</button>'}).join('')}
+function wCtlPol(){
+  var g=$('#w-grp'),ind=$('#w-ind');if(!WPI[WS.pgrp])WS.pgrp='reg';
+  var gi=WPI[WS.pgrp];if(gi.indexOf(WS.ind)<0)WS.ind=gi[0];
+  g.hidden=false;g.innerHTML=WPG.map(function(x){return '<button type="button" class="sg'+(WS.pgrp===x[0]?' on':'')+'" data-wgrp="'+x[0]+'">'+x[1]+'</button>'}).join('');
+  ind.hidden=false;ind.innerHTML=gi.map(function(k){var e=WI[k];return '<button type="button" class="chip'+(WS.ind===k?' on':'')+'" data-wi="'+k+'">'+esc(e.ch||e[0])+'</button>'}).join('')}
+function wSetMode(m){
+  if(m===WS.mode||WS.layer!=='countries'||!WM.data)return;wStop();
+  if(m==='pol'){
+    var go=function(){WS.eind=WS.ind;WS.eyear=WS.year;WS.mode='pol';
+      var pi=WI[WS.pind]&&WI[WS.pind].pol?WS.pind:'VREG';WS.ind=pi;
+      WS.pgrp=WPG.map(function(x){return x[0]}).filter(function(g){return WPI[g].indexOf(pi)>=0})[0]||'reg';
+      WS.year=Math.min(WS.year,WM.pol.vdem_last);WM.rk={};wTipHide();wCtl();wPaint();wCard();wSave()};
+    if(WM.pol){go();return}
+    var lead=$('#w-lead');if(lead)lead.textContent='Загружаю политические данные…';
+    wPolLoad().then(function(){if(state==='world'&&$('#wm'))go()}).catch(function(){var l2=$('#w-lead');if(l2)l2.textContent='Не удалось загрузить политические данные. Нажми «Политика» ещё раз.'})
+  }else{WS.pind=WS.ind;WS.ind=WS.eind||WORD[0];WS.year=WS.eyear||WS.year;WS.mode='eco';wTipHide();wCtl();wPaint();wCard();wSave()}}
+function wCatLegend(d){
+  var cols=wCatCols(WS.ind),h='<span class="wlt">'+esc(d[0])+(d.st?'':' · '+WS.year)+'</span><div class="wcat">';
+  d.labs.forEach(function(l,i){if(l)h+='<span data-wbin="'+i+'"><i style="background:'+cols[i]+'"></i>'+esc(l)+'</span>'});
+  return h+'<span class="wna"><i></i>нет данных</span></div>'}
+function wPolCount(code){   // сколько стран в каждой группе категориального показателя
+  var d=WI[code],n=d.labs.map(function(){return 0}),t=0,yi=wyi();
+  WM.feat.forEach(function(f){if(!f.iso)return;var v=wv(f.iso,code,yi);if(v!=null&&n[Math.round(v)]!=null){n[Math.round(v)]++;t++}});return {n:n,t:t}}
+function wSrcPol(d){
+  var P=WM.pol,s=[];
+  if(d.src==='vdem')s.push(P.src.vdem+'. Данные по '+P.vdem_last+' год. Все индексы — от 0 до 1, оценивают эксперты; тип режима (Regimes of the World) — четыре категории по наличию настоящих многопартийных выборов и свободам.');
+  if(d.src==='fh')s.push(P.src.fh+'. Оценки по '+P.fh_last+' год включительно (год в таблице — год, который оценивается; балл 0–100 есть с 2012 года).');
+  if(d.src==='fb')s.push(P.src.fb+'. '+(d===WI.GOVF?'Категория присвоена по ключевым словам в тексте Factbook, исходная формулировка — в карточке страны.':d===WI.TENURE?'Считаю от даты вступления в должность главы государства (для монархов — от даты вступления на престол).':'Год следующих выборов — как указано в Factbook; «дата не названа» — если выборы отложены, не назначены или у должности нет выборов.'));
+  if(d.bloc)s.push(d.bloc.src+' (проверено '+new Date(d.bloc.asof).toLocaleDateString('ru-RU')+'). <a href="'+eu(d.bloc.url)+'" target="_blank" rel="noopener">страница ↗</a>. Списки Factbook в части блоков отстают (например, нет Индии и Ирана среди членов ШОС), поэтому я сверял с сайтами организаций и Википедией.');
+  if(WS.pgrp==='fre')s.push('Индекс демократии Economist Intelligence Unit в открытом доступе не нашёл (архивный набор OWID пуст), поэтому его здесь нет.');
+  return '<details class="wcalc wsrcd"><summary>ⓘ Источник данных</summary>'+s.join('<br>')+'</details>'}
+function wLeadPol(el,s){
+  var d=WI[WS.ind],yi=wyi(),h;
+  if(d[1]==='cat'){var c=wPolCount(WS.ind);
+    h=(d.st?'':WS.year+': ')+esc(d.ch||d[0])+' — стран с данными <b>'+c.t+'</b>: '+d.labs.map(function(l,i){return l&&c.n[i]?esc(l.toLowerCase())+' <b>'+c.n[i]+'</b>':''}).filter(Boolean).join(' · ')}
+  else{var v=wRank(WS.ind,yi).map(function(x){return x[1]}).sort(function(a,b){return a-b}),md=v.length?v[Math.floor(v.length/2)]:null;
+    h=(d.st?'':WS.year+': ')+esc(d.ch||d[0])+' — стран с данными <b>'+v.length+'</b>'+(md!=null?' · медиана <b>'+wfmtP(WS.ind,md,1)+'</b>':'')+(d.note?' <span class="mut">('+esc(d.note)+')</span>':'')}
+  el.innerHTML=h;s.innerHTML=wSrcPol(d)}
+function wTopCat(d){
+  var tw=$('#w-tw'),yi=wyi(),cols=wCatCols(WS.ind),g=d.labs.map(function(){return []});
+  WM.feat.forEach(function(f){if(!f.iso)return;var v=wv(f.iso,WS.ind,yi);if(v!=null&&g[Math.round(v)])g[Math.round(v)].push(f)});
+  tw.hidden=false;$('#w-th').textContent='Страны по группам: '+(d.ch||d[0])+(d.st?'':', '+WS.year);$('#w-q').placeholder='Найти страну';
+  var op=d.bloc?2:-1;
+  $('#w-top').innerHTML=g.map(function(a,i){if(!d.labs[i]||!a.length)return '';a.sort(function(p,q){return p.nm.localeCompare(q.nm,'ru')});
+    return '<li class="wcg"><details'+(i===op?' open':'')+'><summary><i style="background:'+cols[i]+'"></i><span>'+esc(d.labs[i])+'</span><b>'+a.length+'</b></summary><div class="wcgl">'+a.map(function(f){return '<button type="button" class="chip sm'+(f.iso===WS.sel?' on':'')+'" data-wsel="'+f.iso+'" data-wzoom="1">'+esc(f.nm)+'</button>'}).join('')+'</div></details></li>'}).join('');
+  wSearch()}
+function wPolSpark(id){
+  var a=(WM.data.data[id]||{}).VPOLY;if(!a||!a.some(function(v){return v!=null}))return '';
+  var P=WM.pol,n=P.years.length,off=P.years[0]-WM.y0,w=300,l=6,rr=6,T=18,H=58,X=function(i){return l+i*(w-l-rr)/(n-1)},Y=function(v){return T+H-v*H},cur=WS.year-P.years[0],p='',m=0,i;
+  for(i=0;i<n;i++){var v=a[off+i];if(v==null){m=0;continue}p+=(m?'L':'M')+X(i).toFixed(1)+' '+Y(v).toFixed(1);m=1}
+  var cv=cur>=0&&cur<n?a[off+cur]:null,s='<svg class="wsp wpsp" viewBox="0 0 '+w+' '+(T+H+16)+'" role="img" aria-label="Индекс электоральной демократии по годам"><text x="'+l+'" y="11">Электоральная демократия, 0–1'+(cv!=null?': '+nf(cv,2):'')+'</text><path class="gl" d="M'+l+' '+(T+H)+'H'+(w-rr)+'"/><path class="ln" d="'+p+'"/>';
+  if(cv!=null)s+='<path class="cur" d="M'+X(cur).toFixed(1)+' '+(T-2)+'V'+(T+H+2)+'"/><circle class="pt" cx="'+X(cur).toFixed(1)+'" cy="'+Y(cv).toFixed(1)+'" r="3.2"/>';
+  s+='<text x="'+l+'" y="'+(T+H+13)+'">'+P.years[0]+'</text><text x="'+(w-rr)+'" y="'+(T+H+13)+'" text-anchor="end">'+P.years[n-1]+'</text></svg>';
+  return '<p class="wsm" style="margin:14px 0 6px"><b>Как менялась демократия</b></p>'+s}
+function wPolYears(since){var y=since?(Date.now()-Date.parse(since))/31557600000:null;return y!=null&&y>=1?' · '+plural(Math.floor(y),['год','года','лет']):''}
+function wPolLeaders(id){
+  var s=WM.pol.st[id];if(!s)return '<p class="wsm" style="margin-top:14px">В Factbook нет сведений о руководстве этой территории.</p>';
+  var r=[];function row(k,v){if(v)r.push('<tr><td>'+k+'</td><td class="v">'+v+'</td></tr>')}
+  function L(x){return x?esc((x.t?x.t+' · ':'')+x.n)+(x.sr?'<br><small>с '+esc(x.sr)+wPolYears(x.since)+'</small>':''):''}
+  row('Глава государства',L(s.cs));row('Глава правительства',L(s.hg));
+  row('Последние выборы главы государства',s.le?esc(s.le):'');
+  row('Следующие выборы',s.ne?esc(s.ne):'<small>дата не названа</small>');
+  return '<p class="wsm" style="margin:14px 0 6px"><b>Государство и руководство</b></p><table class="wkv wpol">'+
+    (WI.GOVF&&wv(id,'GOVF',0)!=null?'<tr><td>Форма правления</td><td class="v">'+esc(wfmtP('GOVF',wv(id,'GOVF',0)))+'<br><small>по Factbook: '+esc(s.gov||'')+'</small></td></tr>':'')+r.join('')+'</table>'+
+    '<p class="wsm">Имена и должности — по Factbook (на '+esc(WM.pol.factbook_asof?new Date(WM.pol.factbook_asof).toLocaleDateString('ru-RU'):'—')+'); имена оставлены латиницей, как в источнике.</p>'}
+function wPolBlocs(id){
+  var P=WM.pol,out=[],nts=[];
+  P.blocs.forEach(function(b){var m=b.full.indexOf(id)>=0?2:b.mid.indexOf(id)>=0?1:0,n=b.notes[id];
+    if(m)out.push('<span class="wbk'+(m===2?' on':'')+'">'+esc(b.name)+(m===1?' · '+esc(b.mid_label||'партнёр'):'')+'</span>');
+    if(n)nts.push(esc(b.name)+': '+esc(n))});
+  return '<p class="wsm" style="margin:14px 0 6px"><b>Союзы и блоки</b></p>'+(out.length?'<div class="wbk-l">'+out.join('')+'</div>':'<p class="wsm">Ни в одном из '+P.blocs.length+' блоков списка не состоит.</p>')+(nts.length?'<p class="wsm">'+nts.join('<br>')+'</p>':'')}
+function wPolCard(id){
+  var P=WM.pol,n=WM.names[id]||id,yi=wyi(),reg=wv(id,'VREG',yi),cols=wCatCols('VREG'),gv=wv(id,'GOVF',0);
+  var h='<div class="wck"><div><p class="wck-e">Политика · '+WS.year+'</p><h3>'+esc(n)+'</h3></div><button type="button" class="wx" data-wclose aria-label="Закрыть">×</button></div><div class="wcmpb">'+cmpBtn('c:'+id)+' '+favBtn('c:'+id)+'</div>';
+  if(reg!=null)h+='<div class="wbig wpr"><i style="background:'+cols[reg]+'"></i>'+esc(WI.VREG.labs[reg])+'</div><p class="wsm">Тип режима по V-Dem, '+WS.year+'</p>';
+  else if(gv!=null)h+='<div class="wbig wpr"><i style="background:'+wCatCols('GOVF')[gv]+'"></i>'+esc(wfmtP('GOVF',gv))+'</div><p class="wsm">Форма правления по Factbook; V-Dem эту территорию в '+WS.year+' году не оценивает.</p>';
+  else h+='<p class="wsm">Оценок V-Dem и Freedom House по этой территории нет.</p>';
+  var rows='';['VREG','VPOLY','VLIB','VCIV','VRULE','VCORR','FHST','FHSC'].forEach(function(k){var e=WI[k],v=wv(id,k,yi),p=e[1]==='cat'||v==null?null:wRank(k,yi);
+    rows+='<tr'+(k===WS.ind?' class="on"':'')+'><td>'+esc(e.ch)+(e.note&&e.note!=='0–1'&&e.note!=='0–100'?'<small> · '+esc(e.note)+'</small>':'')+'</td><td class="v">'+(v==null?'—':esc(wfmtP(k,v,1)))+'</td><td class="r">'+(p&&p.pos[id]?p.pos[id]+'/'+p.length:'')+'</td></tr>'});
+  h+='<table class="wkv wpol">'+rows+'</table>';
+  if(WS.year>P.fh_last)h+='<p class="wsm">Freedom House: оценки есть по '+P.fh_last+' год.</p>';
+  h+=wPolSpark(id)+wPolLeaders(id)+wPolBlocs(id);
+  h+='<p class="wsm" style="margin-top:14px"><button type="button" class="chip sm" data-wmode="eco">Экономика страны →</button></p>';
+  h+='<details class="wcalc wsrcd"><summary>ⓘ Источники</summary>'+esc(P.src.vdem)+'.<br>'+esc(P.src.fh)+'.<br>'+esc(P.src.fb)+'.<br>Союзы — сверено с сайтами организаций и Википедией (см. «Источник данных» на карте).</details>';
+  return h}
+function wPolMini(id){
+  var P=WM.pol;if(!P)return '<p class="wsm" style="margin:14px 0 4px"><button type="button" class="chip sm" data-wmode="pol">Политика страны →</button></p>';
+  var s=P.st[id],reg=wv(id,'VREG',wyi()),t=[];
+  if(reg!=null)t.push(WI.VREG.labs[reg].toLowerCase());
+  if(s&&s.cs)t.push(((s.cs.t?s.cs.t.toLowerCase()+' ':'')+s.cs.n));
+  return '<p class="wsm" style="margin:14px 0 6px"><b>Политика</b>'+(t.length?' · '+esc(t.join(' · ')):'')+'</p><p class="wsm"><button type="button" class="chip sm" data-wmode="pol">Политика страны →</button></p>'}
+function wPolWorldCard(){
+  var e=WI.VREG,cols=wCatCols('VREG'),c=wPolCount('VREG');
+  return '<p class="wck-e">Политика мира · '+WS.year+'</p><h3>Нажми на страну</h3><p class="wsm">Карточка покажет тип режима, индексы свободы, руководителей, выборы и союзы.</p><table class="wkv">'+
+    e.labs.map(function(l,i){return '<tr><td><i class="wdot" style="background:'+cols[i]+'"></i>'+esc(l)+'</td><td class="v">'+c.n[i]+'</td><td class="r"></td></tr>'}).join('')+'</table><p class="wsm">Стран с оценкой V-Dem: '+c.t+'. Список по группам — под картой.</p>'}
+function cmpPol(cs){
+  var P=WM.pol,y=Math.min(WS.year,P.vdem_last),yi=y-WM.y0;
+  var h='<p class="wsm" style="margin:14px 0 4px"><b>Политика · '+y+'</b></p><div class="cmp-sc"><table class="wkv wcmp"><thead><tr><td></td>'+cs.map(function(k){return '<td class="v">'+esc(cmpLabel(k))+'</td>'}).join('')+'</tr></thead>';
+  ['VREG','GOVF','VPOLY','VLIB','VCIV','VRULE','VCORR','FHST','FHSC','TENURE','NEXTEL'].forEach(function(c){var e=WI[c],vs=cs.map(function(k){return wv(k.slice(2),c,yi)}),mx=e[1]==='cat'||c==='TENURE'?0:Math.max.apply(null,vs.map(function(v){return v==null?0:Math.abs(v)}));
+    h+='<tr><td>'+esc(e.ch)+'</td>'+vs.map(function(v){return cmpCell(v==null?'—':esc(wfmtP(c,v,1)),v,mx)}).join('')+'</tr>'});
+  h+='<tr><td>Глава государства</td>'+cs.map(function(k){var s=P.st[k.slice(2)],x=s&&s.cs;return '<td class="v">'+(x?esc((x.t?x.t+' · ':'')+x.n):'—')+'</td>'}).join('')+'</tr>';
+  return h+'</table></div><p class="wsm">V-Dem — по '+P.vdem_last+' год, Freedom House — по '+P.fh_last+', форма правления, выборы и срок у власти — Factbook на '+(P.factbook_asof?new Date(P.factbook_asof).toLocaleDateString('ru-RU'):'—')+'.</p>'}
+
 function wDark(){var t=root.getAttribute('data-theme');return t==='dark'||(!t&&!!window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches)}
 var WSK={k:'',v:null};
 function wR(){
@@ -2270,7 +2434,7 @@ function wPrep(){
     WORD=WORD.filter(function(k){return d.ind[k]});if(!WI[WS.ind]||WORD.indexOf(WS.ind)<0)WS.ind=WORD[0]||'NGDPD'}
   if(WS.layer!=='countries'&&!WM.reg[WS.layer])WS.layer='countries';
 }
-function wv(id,code,yi){var r=WM.data&&WM.data.data[id];if(!r||!r[code])return null;var v=r[code][yi];if(v==null&&WSH[code]){for(var j=yi-1;j>=Math.max(0,yi-8)&&v==null;j--)v=r[code][j]}return v==null?null:v}
+function wv(id,code,yi){var r=WM.data&&WM.data.data[id];if(!r||!r[code])return null;if(WI[code]&&WI[code].st){var s0=r[code][0];return s0==null?null:s0}var v=r[code][yi];if(v==null&&WSH[code]){for(var j=yi-1;j>=Math.max(0,yi-8)&&v==null;j--)v=r[code][j]}return v==null?null:v}
 function wyi(){return WS.year-WM.y0}
 function wRank(code,yi){   // [[iso, значение], …] по убыванию — только страны, которые есть на карте
   var k=code+'|'+yi;if(WM.rk[k])return WM.rk[k];
@@ -2280,7 +2444,7 @@ function wRank(code,yi){   // [[iso, значение], …] по убывани
 function wAgg(code,yi){var a=WM.data&&WM.data.agg&&WM.data.agg.WORLD;if(a&&a[code]&&a[code][yi]!=null)return a[code][yi];
   if(code==='NGDPD'||code==='PPPGDP'||code==='LP'){var s=0,n=0;wRank(code,yi).forEach(function(x){s+=x[1];n++});return n?s:null}return null}
 function wfmt(code,v,sh){
-  if(v==null||isNaN(v))return '—';var a=Math.abs(v);
+  if(v==null||isNaN(v))return '—';if(WI[code]&&WI[code].pol)return wfmtP(code,v,sh);var a=Math.abs(v);
   if(code==='NGDPD'||code==='PPPGDP'){var u=code==='NGDPD'?' $':' межд. $';return a>=1000?nf(v/1000,a>=10000?1:2)+' трлн'+u:nf(v,a>=100?0:a>=10?1:2)+' млрд'+u}
   if(code==='NGDPDPC')return nf(v,0)+' $';
   if(code==='PPPPC')return nf(v,0)+' межд. $';
@@ -2292,6 +2456,7 @@ function wfmt(code,v,sh){
 function wthr(x){var a=Math.abs(x);return (x<0?'−':'')+(a>=1000?nf(a,0):String(a).replace('.',','))}
 function wColors(code){
   var d=WI[code],th=d[2],n=th.length+1,R=wR(),c=[],i;
+  if(d[1]==='cat')return wCatCols(code);
   if(d[1]==='div'){var z=th.indexOf(0),nn=z+1,np=n-nn,fn=d3.interpolateLab(R.neg[0],R.neg[1]),fp=d3.interpolateLab(R.pos[0],R.pos[1]);
     for(i=0;i<nn;i++)c.push(fn(nn>1?(nn-1-i)/(nn-1):1));for(i=0;i<np;i++)c.push(fp(np>1?i/(np-1):1));return c}
   var f=d3.interpolateRgbBasis(R[d[1]]),st=0;if(d[1]==='bad'&&th[0]===0){c.push(R.defl);st=1}
@@ -2325,7 +2490,7 @@ function wfmtB(x,k,L){
 function renderWorld(){
   view.innerHTML=wsub('map')+'<section class="wm" id="wm">'+
     '<div class="wh"><h1>Экономика мира</h1><p class="wlead" id="w-lead">Загружаю карту…</p></div>'+
-    '<div class="wcrumb" id="w-crumb" hidden></div><div class="wctl"><nav class="sub" id="w-lay" hidden></nav><nav class="sub" id="w-ind" hidden></nav></div>'+
+    '<div class="wcrumb" id="w-crumb" hidden></div><div class="wctl"><div class="seg wmode" id="w-mode" role="tablist" hidden></div><nav class="sub" id="w-lay" hidden></nav><div class="seg wgrp" id="w-grp" hidden></div><nav class="sub" id="w-ind" hidden></nav></div>'+
     '<div class="wgrid"><div class="wcol">'+
       '<div class="wmap" id="w-map"><svg id="w-svg" role="img" aria-label="Карта мира"></svg>'+
         '<div class="wzm" role="group" aria-label="Масштаб карты"><button type="button" data-wz="1" aria-label="Приблизить">+</button><button type="button" data-wz="-1" aria-label="Отдалить">−</button><button type="button" data-wz="0" aria-label="Весь мир">⌂</button><button type="button" data-wfs aria-label="Карта на весь экран" title="На весь экран">⛶</button></div>'+
@@ -2353,23 +2518,25 @@ function wLayChips(){
     if(WS.layer==='countries'||!cl){cr.hidden=true;cr.innerHTML=''}else{cr.hidden=false;cr.innerHTML='<button type="button" class="chip sm" data-wl="countries">← Весь мир</button><span>Мир › <b>'+esc(cl[1])+'</b></span>'+(WHOST[WS.layer]?'<button type="button" class="chip sm" data-wsel="c:'+WHOST[WS.layer]+'">О стране и секторах</button>':'')}}
 }
 function wGoLayer(l){   // переход между картой мира и картой страны (регионы), клик по стране на карте мира тоже идёт сюда
-  if(l===WS.layer)return;wStop();WS.layer=l;WS.sel=null;wSave();wTipHide();WM.tap=null;
+  if(l===WS.layer)return;wStop();if(WS.mode==='pol'&&l!=='countries'){WS.pind=WS.ind;WS.ind=WS.eind||WORD[0];WS.year=WS.eyear||WS.year;WS.mode='eco'}WS.layer=l;WS.sel=null;wSave();wTipHide();WM.tap=null;
   var q=$('#w-q');if(q)q.value='';wLayChips();
   wCtl();wPaint('fit');wCard();if(l==='countries'&&WM.zoom)WM.svg.transition().duration(500).call(WM.zoom.transform,d3.zoomIdentity);
 }
 function wCtl(){   // второй ряд переключателей + год
-  var ind=$('#w-ind'),bar=$('#w-bar'),cn=WS.layer==='countries';
-  if(cn){ind.hidden=!WM.data;ind.innerHTML=WORD.map(function(k){return '<button type="button" class="chip'+(WS.ind===k?' on':'')+'" data-wi="'+k+'">'+esc(WI[k][0])+'</button>'}).join('')}
+  var ind=$('#w-ind'),bar=$('#w-bar'),cn=WS.layer==='countries',pol=cn&&WS.mode==='pol'&&!!WM.pol,gp=$('#w-grp');
+  wMode();if(gp&&!pol)gp.hidden=true;
+  if(pol){wCtlPol()}
+  else if(cn){ind.hidden=!WM.data;ind.innerHTML=WORD.map(function(k){return '<button type="button" class="chip'+(WS.ind===k?' on':'')+'" data-wi="'+k+'">'+esc(WI[k][0])+'</button>'}).join('')}
   else{var L=WM.reg[WS.layer],hasG=L.items.some(function(x){return x.growth!=null}),hasP=L.items.some(function(x){return x.gdp_pc>0});
     if(WS.bm==='gr'&&!hasG||WS.bm==='pc'&&!hasP)WS.bm='gdp';
     var hb=function(k){return L.items.some(function(x){return x[k]!=null})};
     ['rev','exp','bal','debt'].forEach(function(k){if(WS.bm===k&&!hb(k))WS.bm='gdp'});
     var b=[['gdp',(L.metric||'ВВП')+': '+WBL.gdp]].concat(hasP?[['pc',WBL.pc]]:[]).concat(hasG?[['gr',WBL.gr]]:[]).concat(['rev','exp','bal','debt'].filter(hb).map(function(k){return [k,WBL[k]]}));
     ind.hidden=false;ind.innerHTML=b.map(function(x){return '<button type="button" class="chip'+(WS.bm===x[0]?' on':'')+'" data-wb="'+x[0]+'">'+esc(x[1])+'</button>'}).join('')}
-  bar.hidden=!(cn&&WM.data);
-  if(cn&&WM.data){var y=$('#w-year');y.min=WM.y0;y.max=WM.y1;y.step=1;y.value=WS.year;
-    var f=(WM.la-WM.y0+0.5)/(WM.y1-WM.y0)*100;bar.style.setProperty('--f',Math.min(100,f)+'%');
-    $('#w-tk').innerHTML='<span>'+WM.y0+'</span>'+(WM.la<WM.y1?'<span class="wfc">прогноз МВФ '+(WM.la+1)+'–'+WM.y1+'</span>':'<span>'+WM.y1+'</span>')}
+  bar.hidden=!(cn&&WM.data)||wStat();
+  if(cn&&WM.data){var y=$('#w-year'),ym=wYmax();y.min=WM.y0;y.max=ym;y.step=1;y.value=WS.year;
+    var f=pol?100:(WM.la-WM.y0+0.5)/(WM.y1-WM.y0)*100;bar.style.setProperty('--f',Math.min(100,f)+'%');
+    $('#w-tk').innerHTML='<span>'+WM.y0+'</span>'+(pol?'<span>'+ym+'</span>':WM.la<WM.y1?'<span class="wfc">прогноз МВФ '+(WM.la+1)+'–'+WM.y1+'</span>':'<span>'+WM.y1+'</span>')}
   wPlayBtn();
 }
 function wMap(){
@@ -2445,7 +2612,7 @@ function wZoomTo(id){if(id.indexOf('b:')===0){var b=WM.bub.filter(function(x){re
 function wSelMark(){if(!WM.g)return;WM.g.selectAll('.wc,.wb').classed('sel',function(d){return !!WS.sel&&(d.iso?d.iso===WS.sel:('b:'+d.i)===WS.sel)});wRaiseSel()}
 function wLegend(){
   var el=$('#w-leg');if(!el)return;var cn=WS.layer==='countries',th,cols,title;
-  if(cn){if(!WM.data){el.innerHTML='';return}th=WI[WS.ind][2];cols=wColors(WS.ind);title=WI[WS.ind][0]+', '+WUNIT[WS.ind]}
+  if(cn){if(!WM.data){el.innerHTML='';return}var d0=WI[WS.ind];if(d0[1]==='cat'){el.innerHTML=wCatLegend(d0);return}th=d0[2];cols=wColors(WS.ind);title=d0[0]+(WUNIT[WS.ind]?', '+WUNIT[WS.ind]:'')+(d0.pol&&!d0.st?' · '+WS.year:'')}
   else{var L=WM.reg[WS.layer];th=wBubTh();cols=wBubColors(th);var m=WS.bm,bu=(L.bunit||L.unit||'')+(L.byear?' ('+L.byear+')':'');
     title=m==='gdp'?(L.metric||'ВВП')+', '+(L.unit||''):m==='pc'?(L.metric||'ВВП')+' на душу, '+(L.unit_pc||''):m==='gr'?'Реальный рост, %':m==='bal'?'Баланс бюджета: дефицит / профицит':WBL[m]+', '+bu;if(WS.bm==='bal'){el.innerHTML='<span class="wlt">'+esc(title)+'</span><span class="wna" style="margin-right:14px"><i style="background:'+cols[0]+'"></i>дефицит</span><span class="wna"><i style="background:'+cols[1]+'"></i>профицит</span>';return}if(!th.length&&WS.bm!=='gr'){el.innerHTML='<span class="wlt">'+esc(title)+'</span>';return}}
   var w=(el.clientWidth||340)-90,thin=w/cols.length<40;
@@ -2462,6 +2629,7 @@ function wLead(){
   if(WS.layer!=='countries'){var L=WM.reg[WS.layer],tot=d3.sum(L.items,function(x){return x.gdp}),pop=d3.sum(L.items,function(x){return x.pop||0});
     el.innerHTML=esc(L.title||'')+(L.year?' · '+L.year+' год':'')+': '+(L.metric||'ВВП')+' всего <b>'+wfmtB({gdp:tot},'gdp',L)+'</b>'+(pop?' · население <b>'+wfmtB({pop:pop},'pop')+'</b>':'')+' · '+plural(L.items.length,WS.layer==='cities'?['город','города','городов']:['регион','региона','регионов']);
     s.innerHTML='<details class="wcalc wsrcd"><summary>ⓘ Источники</summary>'+(L.url?'<a href="'+eu(L.url)+'" target="_blank" rel="noopener">'+esc(L.source||L.url)+'</a>':esc(L.source||'—'))+(L.bsource?'<br>Бюджеты: '+esc(L.bsource):'')+(L.calc||L.note?'<br>'+esc(L.calc||L.note):'')+'<br>Контуры: Natural Earth, упрощены.'+'</details>';return}
+  if(WS.mode==='pol'&&WM.pol&&d){wLeadPol(el,s);return}
   if(!d){el.textContent='Данные появятся после первого обновления (раз в сутки). Пока можно смотреть карту и курсы валют.';s.textContent='Источник: МВФ, World Economic Outlook.';return}
   var yi=wyi(),f=WS.year>WM.la,g=wAgg('NGDPD',yi),gr=wAgg('NGDP_RPCH',yi),inf=wAgg('PCPIPCH',yi),lp=wAgg('LP',yi);
   el.innerHTML='Мир в '+WS.year+(f?' (прогноз)':'')+': ВВП <b>'+wfmt('NGDPD',g)+'</b>'+(gr!=null?' · рост <b>'+wfmt('NGDP_RPCH',gr)+'</b>':'')+(inf!=null?' · инфляция <b>'+wfmt('PCPIPCH',inf)+'</b>':'')+(lp!=null?' · население <b>'+wfmt('LP',lp)+'</b>':'');
@@ -2475,9 +2643,12 @@ function wTopRows(){
   b.sort(function(p,q){return WS.desc?q.v-p.v:p.v-q.v});return b;
 }
 function wTop(){
-  var tw=$('#w-tw');if(!tw)return;var rows=wTopRows();tw.hidden=!rows.length&&WS.layer==='countries'&&!WM.data;
+  var tw=$('#w-tw');if(!tw)return;
+  var d0=WS.layer==='countries'&&WM.data?WI[WS.ind]:null,cat=!!(d0&&d0.pol&&d0[1]==='cat'),so=$('#w-sort');if(so)so.hidden=cat;
+  if(cat){wTopCat(d0);return}
+  var rows=wTopRows();tw.hidden=!rows.length&&WS.layer==='countries'&&!WM.data;
   var cn=WS.layer==='countries',L=WM.reg[WS.layer];
-  $('#w-th').textContent='Топ-15: '+(cn?WI[WS.ind][0]+', '+WS.year:(L.title||'')+' · '+(WS.bm==='gdp'?(L.metric||'ВВП'):WBL[WS.bm].toLowerCase())+(L.byear&&/rev|exp|bal|debt/.test(WS.bm)?', '+L.byear:''));
+  $('#w-th').textContent='Топ-15: '+(cn?WI[WS.ind][0]+(WI[WS.ind].st?'':', '+WS.year):(L.title||'')+' · '+(WS.bm==='gdp'?(L.metric||'ВВП'):WBL[WS.bm].toLowerCase())+(L.byear&&/rev|exp|bal|debt/.test(WS.bm)?', '+L.byear:''));
   $('#w-sort').textContent=WS.desc?'сначала больше ↓':'сначала меньше ↑';
   $('#w-q').placeholder=cn?'Найти страну':WS.layer==='cities'?'Найти город':'Найти регион';
   var top=rows.slice(0,15),mx=d3.max(top,function(x){return Math.abs(x.v)})||1,R=wR();
@@ -2497,22 +2668,23 @@ function wSearch(){
 }
 function wYearUI(){
   var yl=$('#w-yl'),y=$('#w-year'),bar=$('#w-bar');if(!yl||!WM.data||WS.layer!=='countries')return;
-  var f=WS.year>WM.la;y.value=WS.year;bar.style.setProperty('--p',((WS.year-WM.y0)/(WM.y1-WM.y0)*100)+'%');
-  yl.innerHTML='<b>'+WS.year+'</b><span class="'+(f?'fc':'')+'">'+(f?'прогноз МВФ':'факт')+'</span>';
+  var pl=WS.mode==='pol'&&!!WM.pol,ym=wYmax(),f=!pl&&WS.year>WM.la;y.value=WS.year;bar.style.setProperty('--p',((WS.year-WM.y0)/(ym-WM.y0)*100)+'%');
+  var d1=WI[WS.ind],lab=f?'прогноз МВФ':pl?(d1.src==='fh'?(WS.year>WM.pol.fh_last?'нет оценок':'Freedom House'):'V-Dem'):'факт';
+  yl.innerHTML='<b>'+WS.year+'</b><span class="'+(f?'fc':'')+'">'+lab+'</span>';
 }
 function wPlayBtn(){var b=$('#w-play');if(b)b.innerHTML=WM.play?'<svg viewBox="0 0 16 16"><rect x="3" y="2.5" width="3.4" height="11" rx="1"/><rect x="9.6" y="2.5" width="3.4" height="11" rx="1"/></svg>':'<svg viewBox="0 0 16 16"><path d="M4 2.6v10.8a.8.8 0 0 0 1.2.7l8.6-5.4a.8.8 0 0 0 0-1.4L5.2 1.9A.8.8 0 0 0 4 2.6z"/></svg>'}
 function wStop(){if(WM.play){clearInterval(WM.play);WM.play=null;wPlayBtn()}}
-function wYear(y){WS.year=Math.max(WM.y0,Math.min(WM.y1,y));wSave();wPaint();if(WS.sel)wCard();if(WM.tipEl&&!$('#w-tip').hidden)wTipShow(WM.tipEl)}
-function wPlay(){if(WM.play){wStop();return}if(!WM.data)return;if(WS.year>=WM.y1)wYear(WM.y0);
-  WM.play=setInterval(function(){if(state!=='world'||!$('#w-map')){wStop();return}if(WS.year>=WM.y1){wStop();return}wYear(WS.year+1)},650);wPlayBtn()}
+function wYear(y){WS.year=Math.max(WM.y0,Math.min(wYmax(),y));wSave();wPaint();if(WS.sel)wCard();if(WM.tipEl&&!$('#w-tip').hidden)wTipShow(WM.tipEl)}
+function wPlay(){if(WM.play){wStop();return}if(!WM.data)return;if(WS.year>=wYmax())wYear(WM.y0);
+  WM.play=setInterval(function(){if(state!=='world'||!$('#w-map')){wStop();return}if(WS.year>=wYmax()){wStop();return}wYear(WS.year+1)},650);wPlayBtn()}
 
 /* подсказка над картой */
 function wTipHTML(id){
   if(id.indexOf('b:')===0){var L=WM.reg[WS.layer],x=L.items[+id.slice(2)];if(!x)return '';
     return '<b>'+esc(x.name)+'</b>'+(x.country&&WS.layer==='cities'?'<small>'+esc(x.country)+'</small>':'')+'<span>'+(L.metric||'ВВП')+': <strong>'+wfmtB(x,'gdp',L)+'</strong></span>'+(x.gdp_pc!=null?'<span>на душу: '+wfmtB(x,'gdp_pc',L)+'</span>':'')+(x.growth!=null?'<span>рост: '+wfmtB(x,'growth',L)+'</span>':'')}
   var n=WM.names[id]||id;if(!WM.data)return '<b>'+esc(n)+'</b><span class="mut">нет данных</span>';
-  var yi=wyi(),v=wv(id,WS.ind,yi),r=wRank(WS.ind,yi);
-  return '<b>'+esc(n)+'</b><span>'+esc(WI[WS.ind][0])+', '+WS.year+(WS.year>WM.la?' (прогноз)':'')+'</span><strong>'+(v==null?'нет данных':wfmt(WS.ind,v))+'</strong>'+(v!=null&&r.pos[id]?'<span class="mut">'+r.pos[id]+'-е место из '+r.length+'</span>':'');
+  var yi=wyi(),d0=WI[WS.ind],v=wv(id,WS.ind,yi),r=d0[1]==='cat'?null:wRank(WS.ind,yi),nt=d0.bloc&&d0.bloc.notes[id];
+  return '<b>'+esc(n)+'</b><span>'+esc(d0[0])+(d0.st?'':', '+WS.year)+(!d0.pol&&WS.year>WM.la?' (прогноз)':'')+'</span><strong>'+(v==null?'нет данных':esc(wfmt(WS.ind,v)))+'</strong>'+(nt?'<span class="mut">'+esc(nt)+'</span>':'')+(v!=null&&r&&r.pos[id]?'<span class="mut">'+r.pos[id]+'-е место из '+r.length+'</span>':'');
 }
 function wTipShow(t,e,touch){
   var tip=$('#w-tip'),box=$('#w-map');if(!tip||!box)return;var id=wTid(t);if(!id)return;WM.tipEl=t;
@@ -2543,6 +2715,7 @@ function wCard(open){
 }
 function wWorldCard(){
   var d=WM.data;
+  if(WS.mode==='pol'&&WM.pol&&WS.layer==='countries'&&d)return wPolWorldCard();
   if(WS.layer!=='countries'&&WHOST[WS.layer]&&WM.data&&WM.data.data[WHOST[WS.layer]]){var L0=WM.reg[WS.layer];return '<p class="wsm" style="margin:0 0 8px"><b>Выбери '+(WS.layer==='cities'?'город':'регион')+' на карте</b> — откроются сектора и главные компании. Ниже — вся страна.</p>'+wCountryCard(WHOST[WS.layer],true)}
   if(WS.layer!=='countries'){var L=WM.reg[WS.layer];return '<p class="wck-e">'+esc(L.title||'')+'</p><h3>Выбери '+(WS.layer==='cities'?'город':'регион')+' на карте</h3><p class="wsm">Цвет региона показывает выбранный показатель, шкала — под картой. Список ниже — нажми на строку.</p>'+(L.year?'<p class="wsm">Данные за '+L.year+' год.</p>':'')}
   if(!d)return '<p class="wck-e">Карта мира</p><h3>Нажми на страну</h3><p class="wsm">Данные МВФ появятся после первого обновления (раз в сутки). Курс валюты страны уже доступен в карточке.</p>';
@@ -2618,16 +2791,17 @@ function wWageHTML(id){   // средняя зарплата страны (го�
   if(w.local&&w.local.v>0)rows.push('<tr><td>В местной валюте</td><td class="v">'+nf(w.local.v,0)+' '+esc(w.local.cur)+' в год</td></tr>');
   return '<p class="wsm" style="margin:14px 0 6px"><b>Средняя зарплата</b>'+(rk?' · '+rk+'-е место из '+ks.length+' стран с данными':'')+'</p><table class="wkv">'+rows.join('')+'</table><details class="wcalc wsrcd"><summary>ⓘ Откуда цифра</summary>'+esc(W.countries&&W.countries.definition||'')+'<br>'+esc(w.note||'')+(w.src?' · <a href="'+eu(w.src)+'" target="_blank" rel="noopener">источник ↗</a>':'')+'</details>'}
 function wCountryCard(id,nc,withCo){
+  if(WS.mode==='pol'&&WM.pol&&WS.layer==='countries'&&!nc)return wPolCard(id);
   var n=WM.names[id]||id,d=WM.data,h='<div class="wck"><div><p class="wck-e">'+(d?WS.year+(WS.year>WM.la?' · прогноз МВФ':' · факт'):'Страна')+'</p><h3>'+esc(n)+'</h3></div>'+(nc?'':'<button type="button" class="wx" data-wclose aria-label="Закрыть">×</button>')+'</div><div class="wcmpb">'+cmpBtn('c:'+id)+' '+favBtn('c:'+id)+'</div>'+(!nc&&WHOSTREV[id]&&WS.layer==='countries'?'<button type="button" class="chip on" data-wl="'+WHOSTREV[id]+'" style="margin:2px 0 10px">Открыть регионы →</button>':'');
   var r=d&&d.data[id],yi=d?wyi():0;
-  if(!r)h+='<p class="wsm">'+(d?'МВФ не публикует данные по этой территории.':'Данные МВФ появятся после первого обновления.')+'</p>';
+  if(!r||!WORD.some(function(k){return r[k]}))h+='<p class="wsm">'+(d?'МВФ не публикует данные по этой территории.':'Данные МВФ появятся после первого обновления.')+'</p>';
   else{
     var g=wv(id,'NGDPD',yi),wg=wAgg('NGDPD',yi),pp=wv(id,'PPPGDP',yi),wp=wAgg('PPPGDP',yi),rk=wRank('NGDPD',yi).pos[id];
     h+='<div class="wbig">'+wfmt('NGDPD',g)+'</div><p class="wsm">ВВП'+(rk?' · '+rk+'-е место в мире':'')+(g!=null&&wg?' · '+nf(g/wg*100,g/wg<.01?2:1)+'% мирового ВВП':'')+(pp!=null&&wp?' · по ППС '+nf(pp/wp*100,pp/wp<.01?2:1)+'%':'')+'</p>';
     h+='<table class="wkv">'+WORD.map(function(k){var v=wv(id,k,yi),p=v!=null?wRank(k,yi):null;
       return '<tr'+(k===WS.ind?' class="on"':'')+'><td>'+esc(WI[k][0])+'</td><td class="v">'+wfmt(k,v,1)+'</td><td class="r">'+(p&&p.pos[id]?p.pos[id]+'/'+p.length:'')+'</td></tr>'}).join('')+'</table>';
     h+=wShareHTML(id);h+=wWageHTML(id);if((nc||withCo)&&WS.layer!=='countries')h+=wCoCountry(WM.reg[WS.layer]);else if(WS.layer==='countries'){var cl2=WM.reg[WHOSTCO[id]||WHOSTREV[id]];if(cl2&&cl2.co)h+=wCoCountry(cl2)}
-    h+=wSpark(id);
+    h+=wSpark(id);h+=wPolMini(id);
   }
   var cur=WCUR[id];
   if(cur)h+='<div class="wfx" data-wfx="'+cur+'"></div>';
@@ -2762,8 +2936,10 @@ view.addEventListener('click',function(e){
   if(b=t.closest('[data-scrsort]')){var sk=b.getAttribute('data-scrsort');if(SC.sort===sk)SC.desc=!SC.desc;else{SC.sort=sk;SC.desc=true}scrDraw();return}
   if(t.closest('[data-scrmore]')){SC.lim+=60;scrDraw();return}
   if(t.closest('[data-scrcsv]')){scrCSV();return}
+  if(b=t.closest('[data-wmode]')){wSetMode(b.getAttribute('data-wmode'));return}
+  if(b=t.closest('[data-wgrp]')){WS.pgrp=b.getAttribute('data-wgrp');var gi=WPI[WS.pgrp]||[];if(gi.indexOf(WS.ind)<0)WS.ind=gi[0];wSave();wCtl();wPaint();if(WS.sel)wCard();return}
   if(b=t.closest('[data-wl]')){wGoLayer(b.getAttribute('data-wl'));return}
-  if(b=t.closest('[data-wi]')){WS.ind=b.getAttribute('data-wi');wSave();document.querySelectorAll('#w-ind .chip').forEach(function(c){c.classList.toggle('on',c===b)});wPaint();if(WS.sel)wCard();return}
+  if(b=t.closest('[data-wi]')){WS.ind=b.getAttribute('data-wi');wSave();if(WS.mode==='pol')wCtl();else document.querySelectorAll('#w-ind .chip').forEach(function(c){c.classList.toggle('on',c===b)});wPaint();if(WS.sel)wCard();return}
   if(b=t.closest('[data-wb]')){WS.bm=b.getAttribute('data-wb');wSave();document.querySelectorAll('#w-ind .chip').forEach(function(c){c.classList.toggle('on',c===b)});wPaint();wCard();return}
   if(t.closest('[data-wfs]')){wFs(!WM.fs);return}
   if(b=t.closest('[data-wz]')){var z=+b.getAttribute('data-wz');if(!WM.zoom)return;if(z===0)WM.svg.transition().duration(500).call(WM.zoom.transform,d3.zoomIdentity);else WM.svg.transition().duration(300).call(WM.zoom.scaleBy,z>0?1.8:1/1.8);return}
@@ -2810,6 +2986,7 @@ function cmpDraw(){
   var cs=it.filter(function(k){return k.indexOf('c:')===0}),yi=WM.data?wyi():0;
   if(cs.length&&WM.data){h+='<p class="wsm" style="margin:14px 0 4px"><b>Страны · '+WS.year+(WS.year>WM.la?' (прогноз МВФ)':'')+'</b></p><div class="cmp-sc"><table class="wkv wcmp"><thead><tr><td></td>'+cs.map(function(k){return '<td class="v">'+esc(cmpLabel(k))+'</td>'}).join('')+'</tr></thead>'+
     WORD.map(function(c){var vs=cs.map(function(k){return wv(k.slice(2),c,yi)}),mx=Math.max.apply(null,vs.map(function(v){return v==null?0:Math.abs(v)}));return '<tr><td>'+esc(WI[c][0])+'</td>'+vs.map(function(v){var rb=(c==='NGDPD'||c==='NGDPDPC')&&v!=null&&WFXO&&WFXO.r&&WFXO.r.RUB?'<br><small>≈ '+(c==='NGDPD'?(function(m){return m>=1000?nf(m/1000,m>=10000?0:1)+' трлн':nf(m,m>=100?0:1)+' млрд'})(v*WFXO.r.RUB):nf(v*WFXO.r.RUB/1000,0)+' тыс.')+' ₽</small>':'';return cmpCell(wfmt(c,v,1)+rb,v,mx)}).join('')+'</tr>'}).join('')+'</table></div>'}
+  if(cs.length&&WM.data){if(WM.pol)h+=cmpPol(cs);else if(!WM.polTry){WM.polTry=1;wPolLoad().then(function(){if($('#cmp-body'))cmpDraw()}).catch(function(){})}}
   var rk=it.filter(function(k){return k.indexOf('r:')===0}),fx=WFXO&&WFXO.r?WFXO.r:null;
   if(rk.length){
     var ents=rk.map(function(k){var q=k.slice(2).split('|'),L=WM.reg[q[0]],x=L&&L.items.filter(function(y){return y.name===q[1]})[0],ll=WLAY.filter(function(z){return z[0]===q[0]})[0];return x?{x:x,L:L,ln:ll?ll[1]:q[0]}:null}).filter(Boolean);
@@ -3041,7 +3218,7 @@ function route(){
   document.querySelectorAll('#sw a,#bnav a').forEach(function(a){a.classList.toggle('on',a.getAttribute('data-s')===sec)});
   state=sec;
   var bk=document.getElementById('b-back'),inCh=sec==='learn'&&CH.some(function(x){return x.id===p[1]});
-  bk.setAttribute('href',sec==='home'?'artem.html':sec==='world'?(p[1]==='sectors'?(p[2]?'#world/sectors':'#world'):'#home'):sec==='markets'?(p[1]==='idx'?'#markets':p[1]&&p[1]!=='summary'?(p[2]?'#markets/'+p[1]:'#markets'):'#home'):sec==='calc'?'#home':(inCh?'#learn':'#home'));bk.setAttribute('aria-label',sec==='home'?'Назад':(sec==='learn'&&!inCh)?'На главную':'Назад');
+  bk.setAttribute('href',sec==='home'?'artem.html':sec==='world'?(p[1]==='sectors'&&p[2]?'#world/sectors':(p[1]&&p[1]!=='map'?'#world':'#home')):sec==='markets'?(p[1]==='idx'?'#markets':p[1]&&p[1]!=='summary'?(p[2]?'#markets/'+p[1]:'#markets'):'#home'):sec==='calc'?(p[1]?'#calc':'#home'):(inCh?'#learn':'#home'));bk.setAttribute('aria-label',sec==='home'?'Назад':(sec==='learn'&&!inCh)?'На главную':'Назад');
   if(sec==='markets'){
     cur=SUBS.some(function(s){return s[0]===p[1]})?p[1]:'summary';store('fin:sub',cur);
     CARD.tic=(cur==='ru'&&p[2])?p[2].toUpperCase():null;ASSET={kind:null,id:null};var ck=p[2]?p[1]+'/'+p[2]:'';if(ck&&ck!==LASTCARD&&!/^(ev-|[0-9a-f]{10}$)/.test(p[2]))CARD.range='1m';if(ck&&p[1]!=='news')LASTCARD=ck;if(p[2]&&(p[1]==='us'||p[1]==='crypto'||p[1]==='idx')){if(p[1]==='idx')cur='summary';openAsset(p[1]==='crypto'?'cr':p[1],p[2].toUpperCase())}NEWSID=(cur==='news'&&p[2])?p[2]:null;SVID=(cur==='daily'&&p[2])?p[2]:null;if(cur==='news'&&!TEXTS)setTimeout(function(){try{if(navigator.connection&&navigator.connection.saveData)return}catch(e){}if(state==='markets'&&cur==='news')loadTexts()},2500);if(CARD.tic){PC.d=null;NLIM=12;Promise.all([loadCoRU(),loadCandles(CARD.tic,CARD.range),loadDivs(CARD.tic),loadNews(),loadEN(enFile('ru',CARD.tic))]).then(function(){drawMarkets(true)})}

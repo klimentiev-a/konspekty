@@ -2,7 +2,7 @@
    Страницы и картинки — сразу из кэша (мгновенно), а в фоне проверяется новая версия; если она вышла — странице приходит сигнал «обновлено».
    Данные (*.json) — сначала сеть (свежие котировки и новости), если сеть не ответила за 4 с — из кэша.
    Шрифты Google и история цен с GitHub — из кэша с фоновым обновлением. */
-const V = 'hub-v194', STATIC = V + '-static', DATA = 'hub-data', EXT = 'hub-ext';
+const V = 'hub-v196', STATIC = V + '-static', DATA = 'hub-data', EXT = 'hub-ext';
 const CORE = ['./', 'index.html', 'artem.html', 'nastya.html', 'ucheba.html', 'finance.html', 'manifest.webmanifest', 'icon-192.png?v=31', 'apple-touch-icon.png?v=31'];
 
 // офлайн: страницы, библиотеки и данные карты/расписания/рынков кладём в кэш заранее
@@ -17,7 +17,7 @@ async function warm() {
     const ix = await (await fetch('world/regions/index.json')).json(), f = [];
     ix.layers.forEach(l => { f.push('world/regions/' + l.id + '.json', 'world/regions/geo/' + l.id + '.json'); if (l.companies) f.push('world/companies/' + l.companies + '.json', 'world/companies/' + l.companies + '-detail.json'); if (l.sectors) f.push('world/regions/' + l.sectors + '.json'); });
     (ix.cos || []).forEach(c => f.push('world/companies/' + c.id + '.json', 'world/companies/' + c.id + '-detail.json'));
-    f.push('world/wages.json', 'world/tax.json');
+    f.push('world/wages.json', 'world/tax.json', 'world/politics.json');
     await Promise.allSettled(f.map(put));
   } catch (e) {}
 }
