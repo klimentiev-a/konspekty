@@ -105,9 +105,10 @@ h1{margin:0;font:600 clamp(34px,7vw,56px)/1.05 'Literata',Georgia,serif;letter-s
 .foot{margin-top:28px;font-size:12.5px;color:var(--faint)}
 @keyframes up{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 h1,.lead{animation:up .45s cubic-bezier(.2,.8,.25,1) both}.lead{animation-delay:.05s}
-.card{animation:up .5s cubic-bezier(.2,.8,.25,1) both;transition:border-color .18s,transform .18s,box-shadow .18s}.card:nth-child(1){animation-delay:.1s}.card:nth-child(2){animation-delay:.17s}
+.card{animation:up .5s cubic-bezier(.2,.8,.25,1) both;transition:border-color .18s,transform .18s,box-shadow .18s}.card:nth-child(1){animation-delay:.1s}.card:nth-child(2){animation-delay:.17s}.card:nth-child(3){animation-delay:.24s}.card:nth-child(4){animation-delay:.31s}
 .card:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(0,0,0,.08)}.card:active{transform:scale(.99)}
 .links a{transition:border-color .15s,background-color .15s}.links a:hover{background:var(--bg)}
+@media (prefers-reduced-motion:no-preference){html.tt,html.tt *,html.tt *:before,html.tt *:after{transition:background-color .28s ease,color .28s ease,border-color .28s ease,fill .28s ease,stroke .28s ease!important}}
 @media (prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
 .inst{position:fixed;left:12px;right:12px;bottom:calc(env(safe-area-inset-bottom,0px) + 12px);z-index:50;max-width:520px;margin:0 auto;padding:16px 16px 14px;border:1px solid var(--line);border-radius:22px;background:var(--surface);
   box-shadow:0 18px 50px rgba(0,0,0,.18);transform:translateY(140%);transition:transform .45s cubic-bezier(.2,.9,.25,1)}
@@ -258,6 +259,7 @@ if('serviceWorker' in navigator&&location.protocol==='https:')navigator.serviceW
   function st(k,v){try{if(v===undefined)return localStorage.getItem(k);if(v===null)localStorage.removeItem(k);else localStorage.setItem(k,v)}catch(e){return null}}
   function cur(){var v=st('hub:skin');if(v)return v;return st('theme')==='dark'?'dark':'auto'}
   function apply(id){
+    d.classList.add('tt');setTimeout(function(){d.classList.remove('tt')},360);
     var x=SK.filter(function(a){return a[0]===id})[0];if(!x){id='auto';x=SK[0]}
     if(id==='auto'){d.removeAttribute('data-skin');d.removeAttribute('data-theme')}
     else if(id==='dark'){d.removeAttribute('data-skin');d.setAttribute('data-theme',id)}

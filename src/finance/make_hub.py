@@ -304,6 +304,7 @@ SEARCH_CSS = """<style>
 .sr b{display:block;font:600 16px/1.3 system-ui,sans-serif}.sr small{color:var(--faint);font:500 11px/1 system-ui,sans-serif;letter-spacing:.05em;text-transform:uppercase}.sr p{margin:4px 0 0;color:var(--muted);font:400 14px/1.4 system-ui,sans-serif}
 .sr mark{background:color-mix(in srgb,#E8B100 38%,transparent);color:inherit;border-radius:3px;padding:0 1px}
 .sm{color:var(--muted);font:400 14px/1.5 system-ui,sans-serif;padding:18px 0}
+.sr a{animation:up .22s ease both}
 </style>"""
 SEARCH_JS = r"""<script>
 /* Поиск по всему сайту: тот же алгоритм, что в разделе «Финансы» — основы слов (окончания), формулы, раскладка в обе стороны, транслит, совпадение по заголовку раздела выше, чем по тексту. Переход открывает нужный раздел с подсветкой. */

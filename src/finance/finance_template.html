@@ -663,6 +663,10 @@ html.wfs-lock,html.wfs-lock body{overflow:hidden}
 .pcs .pl.drawin{stroke-dasharray:1;stroke-dashoffset:1;animation:draw .7s cubic-bezier(.3,.7,.3,1) forwards}.pcs .area.drawin{animation:fin .7s ease both}
 .pctip{animation:fin .12s ease both}
 .reader .gist{animation:vin .3s .05s cubic-bezier(.2,.8,.25,1) both}
+@media (prefers-reduced-motion:no-preference){html.tt,html.tt *,html.tt *:before,html.tt *:after{transition:background-color .28s ease,color .28s ease,border-color .28s ease,fill .28s ease,stroke .28s ease!important}}
+@keyframes mkpulse{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--accent) 60%,transparent)}100%{box-shadow:0 0 0 12px transparent}}
+mark.pulse{animation:mkpulse 1.2s ease-out 2}
+.results .hit{animation:vin .26s ease both}
 @media (prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
 
 /* поиск акций */
@@ -796,6 +800,7 @@ function applyTheme(t){if(t)root.setAttribute('data-theme',t);else root.removeAt
 var SKINS=[['auto','Как в системе','#F4F1E8','#1F6B57',''],['ocean','Океан','#E9F0F6','#1A5FA8','light'],
   ['dark','Ночь','#171611','#5FC2A3','dark'],['graphite','Графит','#15171B','#7BA7F5','dark'],['news','Газета','#161512','#E0483B','dark']];
 function applySkin(id){
+  root.classList.add('tt');setTimeout(function(){root.classList.remove('tt')},360);
   var sk=SKINS.filter(function(x){return x[0]===id})[0];if(!sk){id='auto';sk=SKINS[0]}
   if(id==='auto'){root.removeAttribute('data-skin');applyTheme('')}
   else if(id==='light'||id==='dark'){root.removeAttribute('data-skin');applyTheme(id)}
@@ -1039,7 +1044,7 @@ function hl(el,q,hs){
   var ms=[].slice.call(el.querySelectorAll('mark')),m=ms[0];
   if(hs){var hd=[].filter.call(el.querySelectorAll('h2,h3'),function(h){return h.textContent.replace(/\s+/g,' ').trim()===hs.replace(/\s+/g,' ').trim()})[0];
     if(hd){m=ms.filter(function(x){return hd.compareDocumentPosition(x)&Node.DOCUMENT_POSITION_FOLLOWING})[0]||m;if(!m){setTimeout(function(){hd.scrollIntoView({block:'start'})},50);return}}}
-  if(m){var d=m.closest('details');if(d)d.open=true;setTimeout(function(){m.scrollIntoView({block:'center'})},50)}
+  if(m){var d=m.closest('details');if(d)d.open=true;m.classList.add('pulse');setTimeout(function(){m.scrollIntoView({block:'center'})},50)}
 }
 function termCards(q,trx){
   var qq=q.trim(),ql=lc(qq),out=[];if(qq.length<2)return out;
