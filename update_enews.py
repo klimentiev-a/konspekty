@@ -47,7 +47,7 @@ def series(src):
     """[(дата 'YYYY-MM-DD', цена)] за ~год по дням."""
     if src[0] == 'iss':
         url = ('https://iss.moex.com/iss/engines/stock/markets/%s/securities/%s/candles.json?iss.meta=off&interval=24&from=%s&candles.columns=begin,close'
-               % (src[1], src[2], iso(TODAY - datetime.timedelta(days=372))))
+               % (src[1], src[2], iso(TODAY - datetime.timedelta(days=1830))))
         rows, start = [], 0
         while True:
             j = json.loads(get(url + '&start=%d' % start))
@@ -101,8 +101,8 @@ def merge(db, found):
         k = norm(x['t'])
         if k in have: continue
         have.add(k); x['id'] = hashlib.md5(x['g'].encode()).hexdigest()[:10]; db['items'].append(x); n += 1
-    # не больше 5 лучших на день, храним 400 дней
-    cut = iso(TODAY - datetime.timedelta(days=400))
+    # не больше 5 лучших на день, храним ~5 лет
+    cut = iso(TODAY - datetime.timedelta(days=1840))
     byday = {}
     for x in db['items']:
         if x['d'][:10] >= cut: byday.setdefault(x['d'][:10], []).append(x)
@@ -129,7 +129,8 @@ for f, q, lang, thr, src in ENT:
     except Exception as e: print('series', f, e, file=sys.stderr); ser = []
     for i in range(1, len(ser)):
         r = ser[i][1] / ser[i - 1][1] - 1
-        if abs(r) >= thr and ser[i][0] not in db['qd'] and ser[i][0] < iso(TODAY - datetime.timedelta(days=1)):
+        old = ser[i][0] < iso(TODAY - datetime.timedelta(days=372))   # глубже года берём только сильные движения (3x порога), иначе запросов слишком много
+        if abs(r) >= (thr * 3 if old else thr) and ser[i][0] not in db['qd'] and ser[i][0] < iso(TODAY - datetime.timedelta(days=1)):
             moves.append((ser[i][0], abs(r), f, q, lang))
 
 used = 0
