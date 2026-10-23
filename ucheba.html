@@ -1903,7 +1903,7 @@ function tkNotes(){
   if(TKN)return TKN;TKN=[];
   TKS.forEach(function(s){var k=s[0];TK[k].forEach(function(x){
     var tx=plain(x[2]);
-    TKN.push({id:'tickets-'+k+'-'+x[0],title:'№ '+x[0]+'. '+x[1],text:tx,tl:tx.toLowerCase(),ti:x[1].toLowerCase(),date:'',subject:{name:'Билеты · '+s[1],hue:subjects[k]?subjects[k].hue:250}});
+    TKN.push({tk:1,id:'tickets-'+k+'-'+x[0],title:'№ '+x[0]+'. '+x[1],text:tx,tl:tx.toLowerCase(),ti:x[1].toLowerCase(),date:'',subject:{name:'Билеты · '+s[1],hue:subjects[k]?subjects[k].hue:250}});
   })});
   return TKN;
 }
@@ -2195,53 +2195,115 @@ function show(tok){
   artEach();
   hlRefresh();
   if(n&&state.hl){
-    var mk=$('mark',view);
-    if(mk)window.scrollTo(0,Math.max(0,mk.getBoundingClientRect().top+window.scrollY-140));
+    var mk=$('mark',view),hs=state.hs;state.hs='';
+    if(hs){var hd=[].filter.call($$('h2,h3,h4',view),function(h){return (h.getAttribute('data-t')||h.textContent).replace(/[☆★]/g,'').replace(/\s+/g,' ').trim()===hs.replace(/\s+/g,' ').trim()})[0];
+      if(hd){var ms=[].slice.call($$('mark',view)),m2=ms.filter(function(x){return hd.compareDocumentPosition(x)&Node.DOCUMENT_POSITION_FOLLOWING})[0];mk=m2||hd}}
+    if(mk){var d0=mk.closest&&mk.closest('details');if(d0)d0.open=true;window.scrollTo(0,Math.max(0,mk.getBoundingClientRect().top+window.scrollY-140))}
   }else if(firstShow||n){window.__restoreScroll()}
   firstShow=false;
   updateScroll();
 }
 
-/* ---------- поиск ---------- */
-function parseQuery(q){
-  var toks=q.toLowerCase().split(/\s+/).filter(Boolean).map(function(t){
-    return t.length>=7?t.slice(0,-2):(t.length>=4?t.slice(0,-1):t);   // грубая основа слова: «ответственность» ~ «ответственности»
-  });
-  if(!toks.length)return null;
-  return {toks:toks,re:new RegExp('('+toks.map(function(t){return escRe(t)+'[\\p{L}\\d]*'}).join('|')+')','giu')};
+/* ---------- поиск (алгоритм раздела «Финансы»: по разделам конспекта, окончания, формулы, раскладка, транслит) ---------- */
+function lc(x){return String(x).toLowerCase().replace(/ё/g,'е')}
+function nzf(x){return lc(x).replace(/\s+/g,'').replace(/\*/g,'×').replace(/[-–—]/g,'−').replace(/÷/g,'/').replace(/[`$]/g,'')}
+function isFormula(q){return /[=×*÷\/^+−\-()<>≈≥≤]/.test(q)&&q.replace(/\s+/g,'').length>=3}
+function toksOf(q){return lc(q).split(/[\s,;]+/).filter(Boolean).map(function(t){return t.length>5&&/[а-яе]/.test(t)?t.slice(0,t.length-2):t})}
+var RU='йцукенгшщзхъфывапролджэячсмитьбю',EN="qwertyuiop[]asdfghjkl;'zxcvbnm,.";
+function cyr(q){return /[а-яё]/i.test(q)&&!/[a-z]/i.test(q)}
+function layoutFix(q){return Array.from(q.toLowerCase()).map(function(c){var k=RU.indexOf(c);return k>=0?EN[k]:c}).join('').replace(/[\[\];',.]/g,'')}
+function layoutFixRev(q){return Array.from(q.toLowerCase()).map(function(c){var k=EN.indexOf(c);return k>=0?RU[k]:c}).join('')}
+var TR={а:'a',б:'b',в:'[wv]',г:'g',д:'d',е:'[ei]',ё:'e',ж:'(?:zh|j)',з:'z',и:'[ie]',й:'[yji]',к:'[kc]',л:'l',м:'m',н:'n',о:'o',п:'p',р:'r',с:'[sc]',т:'t',у:'[uy]',ф:'(?:f|ph)',х:'[hx]',ц:'c',ч:'(?:ch|c)',ш:'(?:sh|s)',щ:'(?:sh|s)',ы:'[yi]',э:'e',ю:'(?:yu|u)',я:'(?:ya|a)',ь:'',ъ:''};
+function translitSrc(q){var pv='';return '\\b'+Array.from(lc(q).replace(/\s+/g,'')).map(function(c){var r=TR[c]!=null?TR[c]:escRe(c);if(c===pv&&r)r=r+'?';pv=c;return r}).join('')}
+function qrx(q,g){
+  var f=isFormula(q);
+  var src=f?Array.from(q.replace(/\s+/g,'')).map(function(c){
+    if(c==='*'||c==='×')return '[*×]';if(c==='-'||c==='−'||c==='–')return '[-−–]';if(c==='/'||c==='÷')return '[/÷]';
+    if(c==='е'||c==='ё'||c==='Е'||c==='Ё')return '[еёЕЁ]';return escRe(c)}).join('\\s*')
+  :toksOf(q).map(function(t){return escRe(t).replace(/[её]/g,'[её]')}).join('|')+(cyr(q)&&q.replace(/\s+/g,'').length>=3?'|'+translitSrc(q):'');
+  return new RegExp(src,g?'gi':'i')
 }
-function marked_snip(str,re){
-  return str.split(re).map(function(p,i){return i%2?'<mark>'+esc(p)+'</mark>':esc(p)}).join('');
+function leadOf(l){return lc(l.replace(/^[\s|>*#\-–—\d.)(]+/,'').replace(/\*\*/g,'')).slice(0,60)}
+function secPrep(x){
+  x.lead=x.t.map(leadOf).filter(Boolean);
+  x.text=x.t.join(' ').replace(/<[^>]+>/g,' ').replace(/\[([^\]]*)\]\([^)]*\)/g,'$1').replace(/\*\*/g,'').replace(/[#>|`_]/g,' ').replace(/\s+/g,' ').trim();
+  x.low=lc(x.text);x.nz=nzf(x.text);x.hlow=lc(x.h);x.weak=/^(проверь себя|что почитать|литература|источники)/i.test(x.h);x.t=null}
+function secsOf(n){   // разделы конспекта по заголовкам (считаем один раз)
+  if(n.secs)return n.secs;
+  var secs=[],cur={h:n.title,t:[],intro:1},code=false;
+  if(!n.md){cur.t=[n.text||''];secPrep(cur);return n.secs=[cur]}
+  n.md.split('\n').forEach(function(l){
+    if(/^```/.test(l))code=!code;
+    var m=!code&&l.match(/^#{1,4}\s+(.*)/);
+    if(m){secs.push(cur);cur={h:m[1].replace(/[*`]/g,'').trim(),t:[]};return}
+    cur.t.push(l)});
+  secs.push(cur);secs.forEach(secPrep);
+  return n.secs=secs}
+function wsIn(h,t){var i=-1;while((i=h.indexOf(t,i+1))>=0){if(i===0||/[^а-яa-z0-9]/.test(h.charAt(i-1)))return true}return false}
+function allDocs(){return allNotes.concat(tkNotes())}
+function core(q,tr){
+  var f=isFormula(q),qn=nzf(q),tk=toksOf(q),phr=lc(q.trim()),res=[],notesHit=new Set(),trx=tr?new RegExp(translitSrc(q),'i'):null,trh=tr?new RegExp('^'+translitSrc(q).replace(/^\\\\b/,'')+'.{0,3}$','i'):null;
+  function scanT(){
+    allDocs().forEach(function(n){var ct=trx.test(lc(n.title));secsOf(n).forEach(function(x){
+      var h=trx.test(x.hlow),m=trx.test(x.low);if(!h&&!m)return;
+      var sc=(m?2:0)+(h?30:0)+(h&&x.hlow.length<=22?20:0)+(ct&&x.intro?40:0);if(trh.test(x.hlow.replace(/^[\d.\s]+/,'')))sc+=60;if(x.weak)sc*=.3;
+      res.push({n:n,x:x,sc:sc});notesHit.add(n.id)})})}
+  function scan(formula){
+    res=[];notesHit=new Set();
+    allDocs().forEach(function(n){
+      var ct=lc(n.title),ctHit=tk.length&&tk.every(function(t){return ct.indexOf(t)>=0});
+      secsOf(n).forEach(function(x){
+        var sc=0;
+        if(formula){var k=x.nz.indexOf(qn);if(k<0)return;sc=10;var o=0,j=k;while(j>=0&&o<5){o++;j=x.nz.indexOf(qn,j+1)}sc+=o;if(x.hlow.indexOf(lc(q))>=0)sc+=6}
+        else{
+          var first=-1,inWord=false;
+          for(var a=0;a<tk.length;a++){
+            var pl=x.low.indexOf(tk[a]),ph=x.hlow.indexOf(tk[a]);
+            if(pl<0&&ph<0&&!(x.intro&&ct.indexOf(tk[a])>=0))return;
+            var cnt=0,jj=pl;while(jj>=0&&cnt<5){cnt++;jj=x.low.indexOf(tk[a],jj+1)}sc+=cnt;
+            if(!wsIn(x.low,tk[a])&&!wsIn(x.hlow,tk[a])&&!wsIn(ct,tk[a]))inWord=true;   // «родов» только внутри «народовластие»
+            if(pl>=0&&(first<0||pl<first))first=pl}
+          var hAll=tk.every(function(t){return x.hlow.indexOf(t)>=0});
+          var hs0=x.hlow.replace(/^[\d.\s]+/,'');if(hs0===phr||(hs0.indexOf(phr)===0&&hs0.length<=phr.length+3))sc+=60;
+          if(hAll){sc+=30;if(tk.length&&x.hlow.indexOf(tk[0])<=1)sc+=10}
+          else if(tk.some(function(t){return x.hlow.indexOf(t)>=0}))sc+=5;
+          if(x.lead.some(function(l){return tk.length&&l.indexOf(tk[0])===0&&(tk.length<2||tk.every(function(t){return l.indexOf(t)>=0}))}))sc+=14;
+          if(first>=0&&first<160)sc+=4;
+          if(tk.length>1&&x.low.indexOf(phr)>=0)sc+=8;
+          if(ctHit)sc+=x.intro?45:8;
+          if(inWord)sc*=.2;if(x.weak)sc*=.3;if(n.tk)sc*=.7;
+          if(x.text.length<40)sc*=.5}
+        res.push({n:n,x:x,sc:sc});notesHit.add(n.id)})})}
+  if(trx)scanT();else{scan(f);if(f&&!res.length){scan(false)}}
+  res.sort(function(a,b){return b.sc-a.sc});
+  return {res:res,notes:notesHit,f:f}
 }
-function count(hay,t){var c=0,i=-1;while(c<999&&(i=hay.indexOf(t,i+1))>-1)c++;return c}
+function marked_snip(str,re){   // подсветка совпадений в готовом тексте
+  var rg=new RegExp(re.source,'gi');return esc(str).replace(rg,function(m){return '<mark>'+m+'</mark>'})}
 function renderResults(q){
-  var Q=parseQuery(q);
   markSubject(null);renderTabs(null);state.heads=null;state.searching=true;
-  var res=[];
-  allNotes.concat(tkNotes()).forEach(function(n){
-    var ok=Q.toks.every(function(t){return n.ti.indexOf(t)>-1||n.tl.indexOf(t)>-1});
-    if(!ok)return;
-    var score=0,hits=0;
-    Q.toks.forEach(function(t){hits+=count(n.tl,t);if(n.ti.indexOf(t)>-1)score+=60});
-    res.push({n:n,score:score+Math.min(hits,40),hits:hits});
-  });
-  res.sort(function(a,b){return b.score-a.score});
+  var R=core(q),note='',qe=q;
+  if(!cyr(q)&&/^[a-z\[\];',.\s]{2,}$/i.test(q)&&!R.res.length){var qr=layoutFixRev(q),Rr=core(qr);if(Rr.res.length){R=Rr;qe=qr;note='Раскладка: искали «'+qr+'»'}}
+  if(cyr(q)){
+    var q2=layoutFix(q);
+    if(/^[a-z0-9 ]{2,}$/.test(q2)){var R2=core(q2);if(R2.res.length>R.res.length){R=R2;qe=q2;note='Раскладка: искали «'+q2+'»'}}
+    if(q.replace(/\s+/g,'').length>=3&&R.res.length<4){var R3=core(q,true);if(R3.res.length>R.res.length){R=R3;note='Похоже на латинское написание, показаны совпадения по звучанию'}}
+  }
+  var res=R.res,per={},rr=[];
+  res.forEach(function(r){per[r.n.id]=(per[r.n.id]||0)+1;if(per[r.n.id]<=4&&rr.length<60)rr.push(r)});
+  state.hl={toks:toksOf(qe),re:qrx(qe,true)};
   var h='<section class="results"><h1>«'+esc(q)+'»</h1>';
+  if(note)h+='<p class="sub">'+esc(note)+'</p>';
   if(!res.length){
-    h+='<p class="empty">Ничего не нашлось. Попробуйте короче — например, корень слова.</p></section>';
+    h+='<p class="empty">Ничего не нашлось. Попробуйте короче — например, корень слова, или другое написание.</p></section>';
   }else{
-    var tot=res.reduce(function(a,r){return a+r.hits},0);
-    h+='<p class="sub">'+plural(res.length,['результат','результата','результатов'])+', '+plural(tot,['совпадение','совпадения','совпадений'])+'</p>';
-    h+=res.slice(0,40).map(function(r){
-      var n=r.n,p=-1;
-      Q.toks.forEach(function(t){var i=n.tl.indexOf(t);if(i>-1&&(p<0||i<p))p=i});
-      var snip='';
-      if(p<0)p=0;
-      var a=Math.max(0,p-70),b=Math.min(n.text.length,p+130);
-      if(a>0){var sa=n.text.indexOf(' ',a);if(sa>-1&&sa<p)a=sa+1}
-      if(b<n.text.length){var sb=n.text.lastIndexOf(' ',b);if(sb>p)b=sb}
-      snip=(a>0?'… ':'')+n.text.slice(a,b)+(b<n.text.length?' …':'');
-      return '<a class="hit" href="#'+n.id+'" data-go="'+n.id+'" data-hl="1" style="--h:'+n.subject.hue+'"><div class="meta"><span class="dot"></span><span>'+esc(n.subject.name)+(n.date?' · '+esc(n.date):'')+'</span></div><h3>'+marked_snip(n.title,Q.re)+'</h3><p>'+marked_snip(snip,Q.re)+'</p>'+(r.hits>1?'<span class="more">'+plural(r.hits,['совпадение','совпадения','совпадений'])+'</span>':'')+'</a>';
+    h+='<p class="sub">Найдено мест: '+res.length+' · конспектов: '+R.notes.size+(res.length>rr.length?' · показаны лучшие '+rr.length:'')+'</p>';
+    h+=rr.map(function(r,ix){
+      var n=r.n,x=r.x,m=qrx(qe,false).exec(x.text),i=m?m.index:0,a=Math.max(0,i-70),b=Math.min(x.text.length,i+170);
+      if(a>0){var sa=x.text.indexOf(' ',a);if(sa>-1&&sa<i)a=sa+1}
+      if(b<x.text.length){var sb=x.text.lastIndexOf(' ',b);if(sb>i)b=sb}
+      var snip=(a>0?'… ':'')+x.text.slice(a,b)+(b<x.text.length?' …':'');
+      return '<a class="hit" href="#'+n.id+'" data-go="'+n.id+'" data-hs="'+esc(x.intro?'':x.h)+'" data-hl="1" style="--h:'+n.subject.hue+'"><div class="meta"><span class="dot"></span><span>'+esc(n.subject.name)+(n.date?' · '+esc(n.date):'')+(x.intro?'':' · '+esc(n.title))+'</span></div><h3>'+marked_snip(x.intro?n.title:x.h,state.hl.re)+'</h3><p>'+marked_snip(snip,state.hl.re)+'</p></a>'
     }).join('')+'</section>';
   }
   view.innerHTML=h;
@@ -2255,7 +2317,7 @@ function onInput(){
   sbar.classList.toggle('has',input.value.length>0);
   clearTimeout(qTimer);
   qTimer=setTimeout(function(){
-    if(q.length>=2){state.hl=parseQuery(q);renderResults(q)}
+    if(q.length>=2){renderResults(q)}
     else{
       var was=state.searching||state.hl;
       state.hl=null;
@@ -2326,6 +2388,7 @@ document.addEventListener('click',function(e){
   var a=t.closest('[data-go]');
   if(!a||e.metaKey||e.ctrlKey||e.shiftKey||e.button===1)return;
   e.preventDefault();
+  state.hs=a.getAttribute('data-hs')||'';
   go(a.getAttribute('data-go'));
 });
 

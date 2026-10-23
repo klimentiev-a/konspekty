@@ -1800,7 +1800,7 @@ function tkNotes(){
   if(TKN)return TKN;TKN=[];
   TKS.forEach(function(s){var k=s[0];TK[k].forEach(function(x){
     var tx=plain(x[2]);
-    TKN.push({id:'tickets-'+k+'-'+x[0],title:'№ '+x[0]+'. '+x[1],text:tx,tl:tx.toLowerCase(),ti:x[1].toLowerCase(),date:'',subject:{name:'Билеты · '+s[1],hue:subjects[k]?subjects[k].hue:250}});
+    TKN.push({tk:1,id:'tickets-'+k+'-'+x[0],title:'№ '+x[0]+'. '+x[1],text:tx,tl:tx.toLowerCase(),ti:x[1].toLowerCase(),date:'',subject:{name:'Билеты · '+s[1],hue:subjects[k]?subjects[k].hue:250}});
   })});
   return TKN;
 }
@@ -2109,6 +2109,7 @@ function toksOf(q){return lc(q).split(/[\s,;]+/).filter(Boolean).map(function(t)
 var RU='йцукенгшщзхъфывапролджэячсмитьбю',EN="qwertyuiop[]asdfghjkl;'zxcvbnm,.";
 function cyr(q){return /[а-яё]/i.test(q)&&!/[a-z]/i.test(q)}
 function layoutFix(q){return Array.from(q.toLowerCase()).map(function(c){var k=RU.indexOf(c);return k>=0?EN[k]:c}).join('').replace(/[\[\];',.]/g,'')}
+function layoutFixRev(q){return Array.from(q.toLowerCase()).map(function(c){var k=EN.indexOf(c);return k>=0?RU[k]:c}).join('')}
 var TR={а:'a',б:'b',в:'[wv]',г:'g',д:'d',е:'[ei]',ё:'e',ж:'(?:zh|j)',з:'z',и:'[ie]',й:'[yji]',к:'[kc]',л:'l',м:'m',н:'n',о:'o',п:'p',р:'r',с:'[sc]',т:'t',у:'[uy]',ф:'(?:f|ph)',х:'[hx]',ц:'c',ч:'(?:ch|c)',ш:'(?:sh|s)',щ:'(?:sh|s)',ы:'[yi]',э:'e',ю:'(?:yu|u)',я:'(?:ya|a)',ь:'',ъ:''};
 function translitSrc(q){var pv='';return '\\b'+Array.from(lc(q).replace(/\s+/g,'')).map(function(c){var r=TR[c]!=null?TR[c]:escRe(c);if(c===pv&&r)r=r+'?';pv=c;return r}).join('')}
 function qrx(q,g){
@@ -2135,6 +2136,7 @@ function secsOf(n){   // разделы конспекта по заголовк
     cur.t.push(l)});
   secs.push(cur);secs.forEach(secPrep);
   return n.secs=secs}
+function wsIn(h,t){var i=-1;while((i=h.indexOf(t,i+1))>=0){if(i===0||/[^а-яa-z0-9]/.test(h.charAt(i-1)))return true}return false}
 function allDocs(){return allNotes.concat(tkNotes())}
 function core(q,tr){
   var f=isFormula(q),qn=nzf(q),tk=toksOf(q),phr=lc(q.trim()),res=[],notesHit=new Set(),trx=tr?new RegExp(translitSrc(q),'i'):null,trh=tr?new RegExp('^'+translitSrc(q).replace(/^\\\\b/,'')+'.{0,3}$','i'):null;
@@ -2151,11 +2153,12 @@ function core(q,tr){
         var sc=0;
         if(formula){var k=x.nz.indexOf(qn);if(k<0)return;sc=10;var o=0,j=k;while(j>=0&&o<5){o++;j=x.nz.indexOf(qn,j+1)}sc+=o;if(x.hlow.indexOf(lc(q))>=0)sc+=6}
         else{
-          var first=-1;
+          var first=-1,inWord=false;
           for(var a=0;a<tk.length;a++){
             var pl=x.low.indexOf(tk[a]),ph=x.hlow.indexOf(tk[a]);
             if(pl<0&&ph<0&&!(x.intro&&ct.indexOf(tk[a])>=0))return;
             var cnt=0,jj=pl;while(jj>=0&&cnt<5){cnt++;jj=x.low.indexOf(tk[a],jj+1)}sc+=cnt;
+            if(!wsIn(x.low,tk[a])&&!wsIn(x.hlow,tk[a])&&!wsIn(ct,tk[a]))inWord=true;   // «родов» только внутри «народовластие»
             if(pl>=0&&(first<0||pl<first))first=pl}
           var hAll=tk.every(function(t){return x.hlow.indexOf(t)>=0});
           var hs0=x.hlow.replace(/^[\d.\s]+/,'');if(hs0===phr||(hs0.indexOf(phr)===0&&hs0.length<=phr.length+3))sc+=60;
@@ -2165,7 +2168,7 @@ function core(q,tr){
           if(first>=0&&first<160)sc+=4;
           if(tk.length>1&&x.low.indexOf(phr)>=0)sc+=8;
           if(ctHit)sc+=x.intro?45:8;
-          if(x.weak)sc*=.3;
+          if(inWord)sc*=.2;if(x.weak)sc*=.3;if(n.tk)sc*=.7;
           if(x.text.length<40)sc*=.5}
         res.push({n:n,x:x,sc:sc});notesHit.add(n.id)})})}
   if(trx)scanT();else{scan(f);if(f&&!res.length){scan(false)}}
@@ -2174,10 +2177,10 @@ function core(q,tr){
 }
 function marked_snip(str,re){   // подсветка совпадений в готовом тексте
   var rg=new RegExp(re.source,'gi');return esc(str).replace(rg,function(m){return '<mark>'+m+'</mark>'})}
-function plural1(n,w){return plural(n,w)}
 function renderResults(q){
   markSubject(null);renderTabs(null);state.heads=null;state.searching=true;
   var R=core(q),note='',qe=q;
+  if(!cyr(q)&&/^[a-z\[\];',.\s]{2,}$/i.test(q)&&!R.res.length){var qr=layoutFixRev(q),Rr=core(qr);if(Rr.res.length){R=Rr;qe=qr;note='Раскладка: искали «'+qr+'»'}}
   if(cyr(q)){
     var q2=layoutFix(q);
     if(/^[a-z0-9 ]{2,}$/.test(q2)){var R2=core(q2);if(R2.res.length>R.res.length){R=R2;qe=q2;note='Раскладка: искали «'+q2+'»'}}
