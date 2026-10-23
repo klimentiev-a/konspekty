@@ -145,6 +145,14 @@ main{max-width:1180px;margin:0 auto;padding:0 var(--gut) 96px;min-width:0}
 /* глава */
 .doc{display:grid;grid-template-columns:minmax(0,1fr);gap:0 56px;padding-top:28px}
 .art{min-width:0;max-width:760px;width:100%;margin:0 auto}
+.art.wide{max-width:1080px}
+.art.wide .prose table{table-layout:fixed}
+.art.wide .prose th:nth-child(1){width:17%}.art.wide .prose th:nth-child(2){width:17%}.art.wide .prose th:nth-child(3){width:34%}
+.art.wide .prose td code{display:block;white-space:normal;font:600 .95em var(--mono);padding:7px 10px;border-radius:8px;background:var(--rail);border:1px solid var(--line2);line-height:1.5;overflow-wrap:anywhere}
+.art.wide .prose td .fx{display:block;margin-top:6px;font-size:12.5px;line-height:1.45;color:var(--muted)}
+.art.wide .prose tr.flash td{background:rgba(255,200,0,.22);transition:background .6s}
+@media (max-width:760px){.art.wide .prose table{table-layout:auto}}
+.doc:has(.art.wide){grid-template-columns:minmax(0,1080px);justify-content:center}.doc:has(.art.wide) .side{display:none}
 .eyebrow{margin:0 0 10px;font:500 12px/1.2 var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
 .eyebrow a{color:var(--accent);text-decoration:none}
 .art h1{margin:0 0 22px;font:600 clamp(28px,5vw,40px)/1.15 var(--serif);letter-spacing:-.015em;text-wrap:balance}
@@ -676,7 +684,7 @@ details.more{position:relative;flex:none}details.more>summary{list-style:none;cu
   <div class="bar">
     <a class="home" id="b-back" href="artem.html" aria-label="Назад"><svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></a>
     <a class="brand" href="#home"><b>₽</b> Финансы</a>
-    <div class="zm" role="group" aria-label="Масштаб страницы"><button type="button" data-sz="-1" aria-label="Уменьшить">A−</button><button type="button" class="szv" data-sz="0" title="Сбросить масштаб">100%</button><button type="button" data-sz="1" aria-label="Увеличить">A+</button></div><a class="ibtn" id="b-slovar" href="slovar.html" aria-label="Словарь терминов" title="Словарь терминов" style="text-decoration:none;font:700 15px/1 var(--sans);display:inline-flex;align-items:center;justify-content:center">Aa</a><button class="ibtn" id="b-search" type="button" aria-label="Поиск"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg></button>
+    <div class="zm" role="group" aria-label="Масштаб страницы"><button type="button" data-sz="-1" aria-label="Уменьшить">A−</button><button type="button" class="szv" data-sz="0" title="Сбросить масштаб">100%</button><button type="button" data-sz="1" aria-label="Увеличить">A+</button></div><a class="ibtn" id="b-slovar" href="slovar.html" aria-label="Словарь терминов" title="Словарь терминов" style="text-decoration:none;display:inline-flex;align-items:center;justify-content:center"><svg viewBox="0 0 24 24"><path d="M5 4.5h10.5A3.5 3.5 0 0 1 19 8v11.5H8.5A3.5 3.5 0 0 1 5 16z"/><path d="M5 16a3.5 3.5 0 0 1 3.5-3.5H19"/><path d="M9 7.5h6"/></svg></a><button class="ibtn" id="b-search" type="button" aria-label="Поиск"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg></button>
     <button class="ibtn" id="b-theme" type="button" aria-label="Сменить тему"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 1 0 16z" fill="currentColor" stroke="none"/></svg></button>
   </div>
   <div class="search" id="search"><input id="q" type="search" placeholder="Поиск: слово или формула (WACC, FV=PV*(1+r))" autocomplete="off" enterkeyhint="search" aria-label="Поиск по справочнику"></div>
@@ -870,7 +878,7 @@ function renderChapter(c){
   var pv=L[c.i-1],nx=L[c.i+1];
   var crumb=c.sec?'<a href="#world">Мир</a> · <a href="#world/sectors">Сектора</a> · ':'<a href="#learn">Обучение</a> · ';
   var lp=!c.sec?lessonPos(c):null;
-  view.innerHTML='<div class="doc"><article class="art"><p class="eyebrow">'+crumb+(lp?esc(lp.name.replace(/^Шаг (\d)\. /,'шаг $1: '))+' · урок '+lp.k+' из '+lp.n:(c.i+1)+' из '+L.length)+'</p><h1>'+esc(c.title)+'</h1><p class="meta">'+c.min+' мин чтения'+(!gl?' · термины с пунктиром — наведи или нажми':'')+'</p>'+
+  view.innerHTML='<div class="doc"><article class="art'+(gl?' wide':'')+'"><p class="eyebrow">'+crumb+(lp?esc(lp.name.replace(/^Шаг (\d)\. /,'шаг $1: '))+' · урок '+lp.k+' из '+lp.n:(c.i+1)+' из '+L.length)+'</p><h1>'+esc(c.title)+'</h1><p class="meta">'+c.min+' мин чтения'+(!gl?' · термины с пунктиром — наведи или нажми':'')+'</p>'+
     (heads.length>2?'<details class="toc"><summary>Содержание</summary><nav>'+toc+'</nav></details>':'')+
     (gl?'<input class="gfilter" type="search" placeholder="Найти термин: EBITDA, спред, оферта…" aria-label="Фильтр глоссария">':'')+'<div class="prose">'+body+'</div>'+(!c.sec&&c.id!=='glossariy'&&c.id!=='istochniki'?'<div class="quiz" id="quiz" hidden></div>':'')+(cl?'<a class="try" href="#calc/'+cl[0]+'">'+esc(cl[1])+' в калькуляторе →</a>':'')+(!c.sec&&c.id!=='glossariy'&&c.id!=='istochniki'?'<div class="donebar"><button type="button" class="chip'+(doneIs(c.id)?' on':'')+'" data-ckc="'+c.id+'" aria-pressed="'+(doneIs(c.id)?'true':'false')+'">'+(doneIs(c.id)?'✓ Урок пройден':'Отметить пройденным')+'</button><span class="note" style="margin:0" data-syncnote="Отметка">'+syncNote('Отметка')+'</span></div>':'')+'<nav class="pager">'+
     (pv?'<a href="'+base+pv.id+'"><small>← Назад</small><b>'+esc(pv.title)+'</b></a>':'')+
@@ -890,7 +898,9 @@ function qaStore(){try{return JSON.parse(store('fin:qa')||'{}')||{}}catch(e){ret
 function qaMark(cid,qs){var st=qaStore();[].forEach.call(qs,function(d,i){var k=cid+':'+i,dv=d.querySelector(':scope>div');if(!dv)return;d.setAttribute('data-qk',k);var b=document.createElement('div');b.className='qk';b.innerHTML='<span>Ты знал ответ?</span><button type="button" data-qkv="1">✓ Знал</button><button type="button" data-qkv="0">✕ Повторить</button>';dv.appendChild(b);qaPaint(d,st[k])})}
 function qaPaint(d,v){d.classList.toggle('qk-ok',v===1);d.classList.toggle('qk-no',v===0)}
 view.addEventListener('click',function(e){var b=e.target.closest('[data-qkv]');if(!b)return;var d=b.closest('details.qa'),k=d.getAttribute('data-qk'),v=+b.getAttribute('data-qkv'),st=qaStore();st[k]=st[k]===v?undefined:v;if(st[k]===undefined)delete st[k];try{localStorage.setItem('fin:qa',JSON.stringify(st))}catch(x){}qaPaint(d,st[k])});
-view.addEventListener('input',function(e){if(!e.target.classList.contains('gfilter'))return;var q=e.target.value.trim().toLowerCase();view.querySelectorAll('.prose tbody tr').forEach(function(tr){tr.hidden=q&&tr.textContent.toLowerCase().indexOf(q)<0})});
+var RU2L={а:'a',б:'b',в:'w',г:'g',д:'d',е:'e',ё:'e',ж:'j',з:'z',и:'i',й:'i',к:'c',л:'l',м:'m',н:'n',о:'o',п:'p',р:'r',с:'c',т:'t',у:'u',ф:'f',х:'h',ц:'c',ч:'c',ш:'s',щ:'s',ы:'i',э:'e',ю:'u',я:'a',ь:'',ъ:''};
+function pnorm(s){return s.toLowerCase().replace(/[а-яё]/g,function(c){return RU2L[c]}).replace(/[kq]/g,'c').replace(/v/g,'w').replace(/y/g,'i').replace(/(.)\1+/g,'$1').replace(/[^a-z0-9]/g,'')}
+view.addEventListener('input',function(e){if(!e.target.classList.contains('gfilter'))return;var q=e.target.value.trim().toLowerCase(),pq=pnorm(q),tb=view.querySelector('.prose tbody');if(!tb)return;var rows=[].slice.call(tb.rows);rows.forEach(function(tr,i){if(tr._i==null)tr._i=i;var h=tr.cells[0].textContent.toLowerCase(),f=(tr.cells[1]?tr.cells[1].textContent:'').toLowerCase(),sc=0;if(q){if(h===q)sc=100;else if(h.indexOf(q)===0)sc=80;else if(new RegExp('(^|[^a-zа-я0-9])'+q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).test(h))sc=60;else if(h.indexOf(q)>=0)sc=50;else if(pq.length>1&&pnorm(h).indexOf(pq)===0)sc=55;else if(f.indexOf(q)>=0)sc=30;else if(tr.textContent.toLowerCase().indexOf(q)>=0)sc=10}tr._s=sc?sc-Math.min(h.length,60)/100:0;tr.hidden=!!q&&!sc});rows.sort(function(a,b){return q?(b._s-a._s||a._i-b._i):(a._i-b._i)}).forEach(function(tr){tb.appendChild(tr)})});
 view.addEventListener('click',function(e){
   var tk=e.target.closest('[data-trk]');if(tk){e.preventDefault();var d=document.getElementById(tk.getAttribute('data-trk'));if(d){d.open=true;OPENF[d.id]=true;d.scrollIntoView({behavior:'smooth',block:'start'})}return}
   if(e.target.closest('[data-rq]')){var qs=[].slice.call(view.querySelectorAll('details.qa'));qs.forEach(function(d){d.open=false;d.classList.remove('rqon')});var q=qs[Math.floor(Math.random()*qs.length)];q.classList.add('rqon');q.scrollIntoView({behavior:'smooth',block:'center'});return}
@@ -2908,6 +2918,7 @@ function renderLife(){
 
 /* ---------------- роутинг ---------------- */
 var state='',LASTCARD='';
+function glFocus(t){setTimeout(function(){var q=t.trim().toLowerCase(),hit=null;view.querySelectorAll('.prose tbody tr').forEach(function(tr){if(!hit&&tr.cells[0].textContent.trim().toLowerCase()===q)hit=tr});if(!hit)return;hit.scrollIntoView({block:'center'});hit.classList.add('flash');setTimeout(function(){hit.classList.remove('flash')},2500)},60)}
 function route(){
   var h=decodeURIComponent(location.hash.slice(1)),p=h.split('/');
   var sec=p[0]==='markets'?'markets':p[0]==='calc'?'calc':p[0]==='world'?'world':p[0]==='learn'?'learn':'home';
@@ -2937,7 +2948,7 @@ function route(){
   }else{
     clearInterval(timer);
     var c=CH.filter(function(x){return x.id===p[1]})[0];
-    if(c){renderChapter(c);document.title=c.title+' · Финансы';store('fin:last',c.id)}else{renderLearn();document.title='Финансы'}
+    if(c){renderChapter(c);document.title=c.title+' · Финансы';store('fin:last',c.id);if(c.id==='glossariy'&&p[2])glFocus(p.slice(2).join('/'))}else{renderLearn();document.title='Финансы'}
   }
 }
 function enter(){view.classList.remove('enter');void view.offsetWidth;view.classList.add('enter')}

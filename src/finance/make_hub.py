@@ -347,6 +347,7 @@ search_html = page('Hub · Поиск', search_body, 'artem').replace('</head>',
 # ---------------- slovar.html: «Словарь» — термин на русском или английском → расшифровка, перевод, суть, формула ----------------
 import json as _json
 sys.path.insert(0, os.path.join(ROOT, 'src', 'finance'))
+import urllib.parse
 import terms as _T
 def _slovar_data():
     out = []; seen = set()
@@ -354,7 +355,7 @@ def _slovar_data():
         m = re.match(r'^\| \*\*(.+?)\*\* \|(.*?)\|(.*?)\|(.*)\|\s*$', l)
         if not m: continue
         t, full, d, f = [x.strip() for x in m.groups()]
-        out.append({'t': t, 'f': full, 'd': d, 'x': f, 'u': 'finance.html#learn/glossariy'}); seen.add(t.lower())
+        out.append({'t': t, 'f': full, 'd': d, 'x': f, 'u': 'finance.html#learn/glossariy/' + urllib.parse.quote(re.sub(r'\s+', ' ', t), safe='')}); seen.add(t.lower())
     for pats, title, d in list(_T.RICH) + list(_T.EXTRA):
         head = re.split(r'\s[—-]\s', title)[0].strip()
         if head.lower() in seen: continue

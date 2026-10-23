@@ -2,7 +2,7 @@
    Страницы и картинки — сразу из кэша (мгновенно), а в фоне проверяется новая версия; если она вышла — странице приходит сигнал «обновлено».
    Данные (*.json) — сначала сеть (свежие котировки и новости), если сеть не ответила за 4 с — из кэша.
    Шрифты Google и история цен с GitHub — из кэша с фоновым обновлением. */
-const V = 'hub-v173', STATIC = V + '-static', DATA = 'hub-data', EXT = 'hub-ext';
+const V = 'hub-v175', STATIC = V + '-static', DATA = 'hub-data', EXT = 'hub-ext';
 const CORE = ['./', 'index.html', 'artem.html', 'nastya.html', 'ucheba.html', 'finance.html', 'manifest.webmanifest', 'icon-192.png?v=31', 'apple-touch-icon.png?v=31'];
 
 // офлайн: страницы, библиотеки и данные карты/расписания/рынков кладём в кэш заранее
