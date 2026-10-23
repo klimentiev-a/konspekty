@@ -113,6 +113,11 @@ def topbar(back_href, back_text, logout=None):
             'stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg>%s</a><div class="tr">%s%s</div></div>') % (back_href, back_text, lo, THEME_BTN)
 
 
+# «Назад» на страницах Словарь и Поиск возвращает туда, откуда пришёл (Финансы, Учёба), а не всегда на Артема
+BACK_JS = ("<script>document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('.top a');"
+           "if(!a||a!==document.querySelector('.top a'))return;try{var r=document.referrer;"
+           "if(r&&new URL(r).origin===location.origin&&history.length>1&&!/(slovar|search)\\.html/.test(r)){e.preventDefault();history.back()}}catch(x){}});</script>")
+
 LOGOUT_JS = ("<script>document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('[data-logout]');if(!b)return;"
              "var p=b.getAttribute('data-logout');try{localStorage.removeItem('hub:auth:'+p)}catch(x){}"
              "document.cookie='hub_'+p+'=; max-age=0; path=/';location.href='index.html'});</script>")
@@ -336,7 +341,7 @@ search_body = ('<div class="w">\n  ' + topbar('artem.html', 'Артем') + '\n 
                '  <div class="sq"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>'
                '<input id="q" type="search" placeholder="Что найти?" autocomplete="off" enterkeyhint="search" aria-label="Поиск по сайту"></div>\n'
                '  <div class="sf" id="sf" role="group" aria-label="Фильтр"></div>\n  <div class="sr" id="sr" aria-live="polite"></div>\n</div>\n')
-search_html = page('Hub · Поиск', search_body, 'artem').replace('</head>', SEARCH_CSS + '</head>', 1).replace('</body>', SEARCH_JS + '</body>', 1)
+search_html = page('Hub · Поиск', search_body, 'artem').replace('</head>', SEARCH_CSS + '</head>', 1).replace('</body>', SEARCH_JS + BACK_JS + '</body>', 1)
 
 
 # ---------------- slovar.html: «Словарь» — термин на русском или английском → расшифровка, перевод, суть, формула ----------------
@@ -434,7 +439,7 @@ var q0=new URLSearchParams(location.search).get('q');if(q0)inp.value=q0;run();in
 slovar_body = ('<div class="w">\n  ' + topbar('artem.html', 'Артем') + '\n  <h1>Словарь</h1>\n'
                '  <div class="sq"><input id="q" type="search" placeholder="Любой финансовый термин: WACC, вакк, чистый долг…" autocomplete="off" enterkeyhint="search" aria-label="Термин"></div>\n'
                '  <div id="sr"></div><div id="web"></div>\n</div>\n')
-slovar_html = page('Hub · Словарь', slovar_body, 'artem').replace('</head>', SLOVAR_CSS + '</head>', 1).replace('</body>', SLOVAR_JS.replace('__DATA__', SLOVAR_DATA) + '</body>', 1)
+slovar_html = page('Hub · Словарь', slovar_body, 'artem').replace('</head>', SLOVAR_CSS + '</head>', 1).replace('</body>', SLOVAR_JS.replace('__DATA__', SLOVAR_DATA) + BACK_JS + '</body>', 1)
 open(os.path.join(ROOT, 'slovar.html'), 'w', encoding='utf-8').write(slovar_html)
 print('ok slovar.html', len(slovar_html))
 

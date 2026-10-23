@@ -334,4 +334,4 @@ function run(){
 inp.addEventListener('input',run);
 var q0=new URLSearchParams(location.search).get('q');if(q0)inp.value=q0;run();inp.focus();
 })();
-</script></body></html>
+</script><script>document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('.top a');if(!a||a!==document.querySelector('.top a'))return;try{var r=document.referrer;if(r&&new URL(r).origin===location.origin&&history.length>1&&!/(slovar|search)\.html/.test(r)){e.preventDefault();history.back()}}catch(x){}});</script></body></html>
