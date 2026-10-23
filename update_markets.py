@@ -55,24 +55,33 @@ except Exception as e:
     print('moex idx', e, file=sys.stderr); out['idx'] = old.get('idx')
 
 out['bonds'] = {}
-for kind, board in (('ofz', 'TQOB'), ('corp', 'TQCB')):
-    try:
-        j = get('https://iss.moex.com/iss/engines/stock/markets/bonds/boards/' + board + '/securities.json?iss.meta=off&iss.only=securities,marketdata'
-                '&securities.columns=SECID,SHORTNAME,MATDATE,OFFERDATE,COUPONPERCENT,COUPONPERIOD,PREVPRICE,FACEUNIT,FACEVALUE,YIELDATPREVWAPRICE,LISTLEVEL'
-                '&marketdata.columns=SECID,LAST,YIELD,DURATION,VALTODAY,UPDATETIME', 40)
-        s, m = iss(j['securities']), iss(j['marketdata'])
-        a_ = []
-        for k, x in s.items():
-            if kind == 'ofz' and not k.startswith(('SU24', 'SU25', 'SU26')): continue
-            y = m.get(k, {})
-            a_.append({'id': k, 'n': x.get('SHORTNAME'), 'mat': x.get('MATDATE'), 'off': x.get('OFFERDATE'), 'c': x.get('COUPONPERCENT'), 'per': x.get('COUPONPERIOD'),
-                       'p': y.get('LAST') or x.get('PREVPRICE'), 'y': y.get('YIELD') or x.get('YIELDATPREVWAPRICE'), 'd': (y.get('DURATION') or 0) / 365 or None,
-                       'vol': y.get('VALTODAY') or 0, 'cur': x.get('FACEUNIT'), 'fv': x.get('FACEVALUE'), 'lvl': x.get('LISTLEVEL')})
-        if kind == 'corp': a_ = sorted(a_, key=lambda z: z['vol'] or 0, reverse=True)[:600]
-        out['bonds'][kind] = a_
-    except Exception as e:
-        print('bonds', kind, e, file=sys.stderr)
-        out['bonds'][kind] = (old.get('bonds') or {}).get(kind)
+def _board(board):
+    j = get('https://iss.moex.com/iss/engines/stock/markets/bonds/boards/' + board + '/securities.json?iss.meta=off&iss.only=securities,marketdata'
+            '&securities.columns=SECID,SHORTNAME,MATDATE,OFFERDATE,COUPONPERCENT,COUPONPERIOD,PREVPRICE,FACEUNIT,FACEVALUE,YIELDATPREVWAPRICE,LISTLEVEL'
+            '&marketdata.columns=SECID,LAST,YIELD,DURATION,VALTODAY,UPDATETIME', 40)
+    s, m = iss(j['securities']), iss(j['marketdata'])
+    a_ = []
+    for k, x in s.items():
+        y = m.get(k, {})
+        a_.append({'id': k, 'n': x.get('SHORTNAME'), 'mat': x.get('MATDATE'), 'off': x.get('OFFERDATE'), 'c': x.get('COUPONPERCENT'), 'per': x.get('COUPONPERIOD'),
+                   'p': y.get('LAST') or x.get('PREVPRICE'), 'y': y.get('YIELD') or x.get('YIELDATPREVWAPRICE'), 'd': (y.get('DURATION') or 0) / 365 or None,
+                   'vol': y.get('VALTODAY') or 0, 'cur': x.get('FACEUNIT'), 'fv': x.get('FACEVALUE'), 'lvl': x.get('LISTLEVEL'), 'bd': board})
+    return a_
+try:
+    gov = _board('TQOB')
+    out['bonds']['ofz'] = [z for z in gov if z['id'].startswith('SU2')]
+    out['bonds']['muni'] = [z for z in gov if not z['id'].startswith('SU2')]
+except Exception as e:
+    print('bonds gov', e, file=sys.stderr)
+    for kk in ('ofz', 'muni'): out['bonds'][kk] = (old.get('bonds') or {}).get(kk)
+try:
+    corp = _board('TQCB')
+    try: corp += _board('TQIR')
+    except Exception as e: print('bonds TQIR', e, file=sys.stderr)
+    out['bonds']['corp'] = sorted(corp, key=lambda z: z['vol'] or 0, reverse=True)[:1500]
+except Exception as e:
+    print('bonds corp', e, file=sys.stderr)
+    out['bonds']['corp'] = (old.get('bonds') or {}).get('corp')
 try:
     j = get('https://iss.moex.com/iss/engines/stock/zcyc.json?iss.meta=off&iss.only=yearyields&yearyields.columns=tradedate,tradetime,period,value')
     last = {}

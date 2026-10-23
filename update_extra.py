@@ -197,7 +197,7 @@ def digest():
         for r in S.RU: names[r[0]] = r[1]
         for r in S.US: names[r[0]] = r[1]
     for x in (m.get('crypto') or []): names[x['s']] = x.get('n', x['s'])
-    names.update({'IMOEX': 'Индекс Мосбиржи', 'RTSI': 'Индекс РТС', 'RGBI': 'Индекс гособлигаций RGBI', 'MOEXOG': 'Нефть и газ', 'MOEXFN': 'Финансы', 'MOEXMM': 'Металлы и добыча', 'MOEXIT': 'IT'})
+    names.update({'IMOEX': 'Индекс Мосбиржи', 'RTSI': 'Индекс РТС', 'RGBI': 'Индекс гособлигаций RGBI', 'MOEXOG': 'Нефть и газ', 'MOEXFN': 'Финансы', 'MOEXMM': 'Металлы и добыча', 'MOEXIT': 'IT', 'MOEXBC': 'Голубые фишки Мосбиржи', 'MCFTR': 'Индекс Мосбиржи полной доходности', 'RUCBICP': 'Корпоративные облигации', 'MOEXBMI': 'Широкий рынок акций'})
     res = {'updated': NOW.strftime('%Y-%m-%dT%H:%MZ'), 'base': base_d, 'days': days, 'names': names}
     for g in ('ru', 'us', 'idx', 'cr', 'fx'):
         a = sorted(chg(g), key=lambda x: -x['c']); res[g] = a
