@@ -25,7 +25,7 @@ TOK = {p: hashlib.sha256(('hub:%s:%s' % (p, v[1])).encode()).hexdigest()[:24] fo
 
 head = TPL[:TPL.index('<body>')]
 tail_js = TPL[TPL.index('<script>\ntry{var t=localStorage.getItem'):TPL.index('</body>')]
-foot = re.search(r'<div class="zmr">.*?</p>', TPL, re.S).group(0)
+foot = re.search(r'<p class="foot".*?</p>', TPL, re.S).group(0)
 
 
 def gate(p):

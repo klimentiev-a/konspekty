@@ -544,6 +544,15 @@ html.wfs-lock,html.wfs-lock body{overflow:hidden}
 .wmap svg:active{cursor:grabbing}
 .wc{stroke-width:.5;vector-effect:non-scaling-stroke;stroke-linejoin:round;transition:fill .35s ease,opacity .2s;cursor:pointer}
 .wc.hv{stroke:var(--fg)!important;stroke-width:1.1}
+/* политическая карта: другое оформление — сетка атласа, индиго вместо зелёного */
+.wm.pol{--pa:#3F46B8;--pat:#fff;--accent:var(--pa)}
+:root[data-theme="dark"] .wm.pol,:root[data-skin="graphite"] .wm.pol{--pa:#8C93F2;--pat:#14152B;--accent:var(--pa)}
+.wm.pol .wkick{margin:0 0 6px;font:600 11.5px/1 'Inter',system-ui,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--pa)}
+.wm.pol .wmap{background-color:color-mix(in srgb,var(--pa) 7%,var(--surface));background-image:linear-gradient(color-mix(in srgb,var(--pa) 13%,transparent) 1px,transparent 1px),linear-gradient(90deg,color-mix(in srgb,var(--pa) 13%,transparent) 1px,transparent 1px);background-size:44px 44px;border-color:color-mix(in srgb,var(--pa) 30%,var(--line))}
+.wm.pol .wc{stroke-width:.8}
+.wm.pol .chip.on,.wm.pol .seg .sg.on{background:var(--pa);border-color:var(--pa);color:var(--pat)}
+.wm.pol .wcard{border-top:3px solid var(--pa)}
+
 .wc.sel{stroke:var(--fg)!important;stroke-width:1.9}
 .wpt{stroke-width:.8}
 .wbm .wc{cursor:default;pointer-events:none}
@@ -2376,7 +2385,7 @@ function wYmax(){return WS.mode==='pol'&&WM.pol?WM.pol.vdem_last:WM.y1}
 function wStat(){var d=WI[WS.ind];return !!(WS.mode==='pol'&&d&&d.st)}
 function wPolLoad(){
   if(WM.pol)return Promise.resolve(WM.pol);if(WM.polP)return WM.polP;
-  WM.polP=wLoad().then(function(){return wGet('world/politics.json')}).then(function(j){wPolMerge(j);return j}).catch(function(e){WM.polP=null;throw e});
+  WM.polP=wLoad().then(function(){return wGet('world/politics.json').catch(function(){return wGet('world/politics.json?v='+Date.now(),{cache:'reload'})})}).then(function(j){wPolMerge(j);return j}).catch(function(e){WM.polP=null;throw e});
   return WM.polP}
 function wPolMerge(j){
   var D=WM.data;if(!D||!j||!j.years||!j.data)throw new Error('нет данных');
@@ -2596,8 +2605,8 @@ function wfmtB(x,k,L){
 }
 
 function renderWorld(){
-  view.innerHTML=(WPAGE==='pol'?'':wsub('map'))+'<section class="wm" id="wm">'+
-    '<div class="wh"><h1>'+(WPAGE==='pol'?'Политика мира':'Экономика мира')+'</h1><p class="wlead" id="w-lead">Загружаю карту…</p></div>'+
+  view.innerHTML=(WPAGE==='pol'?'':wsub('map'))+'<section class="wm'+(WPAGE==='pol'?' pol':'')+'" id="wm">'+
+    '<div class="wh">'+(WPAGE==='pol'?'<p class="wkick">Политика · карта мира</p>':'')+'<h1>'+(WPAGE==='pol'?'Политика мира':'Экономика мира')+'</h1><p class="wlead" id="w-lead">Загружаю карту…</p></div>'+
     '<div class="wcrumb" id="w-crumb" hidden></div><div class="wctl"><div class="seg wmode" id="w-mode" role="tablist" hidden></div><nav class="sub" id="w-lay" hidden></nav><div class="seg wgrp" id="w-grp" hidden></div><nav class="sub" id="w-ind" hidden></nav></div>'+
     '<div class="wgrid"><div class="wcol">'+
       '<div class="wmap" id="w-map"><svg id="w-svg" role="img" aria-label="Карта мира"></svg>'+
@@ -2618,9 +2627,17 @@ function wBuild(){
   var l=$('#w-load');if(l)l.remove();
   if(WDEEP){var dp=WDEEP;WDEEP=null;if(dp.country){WS.layer='countries';WS.sel=WM.names[dp.country]?dp.country:null}else if(WM.reg[dp.layer]&&!WM.reg[dp.layer].coonly){var DL=WM.reg[dp.layer],di=DL.items.findIndex(function(x){return x.name===dp.name});WS.layer=dp.layer;WS.sel=di>=0?'b:'+di:null;if(di>=0)setTimeout(function(){if(state==='world'&&WS.sel==='b:'+di)wZoomTo(WS.sel)},900)}}
   if(WPAGE==='pol'){WS.layer='countries';WS.sel=null}else if(WS.mode==='pol'){WS.ind=WS.eind||WORD[0];WS.year=WS.eyear||WS.year;WS.mode='eco'}
-  wLayChips();wMap();wCtl();wPaint(true);wCard();
-  if(WPAGE==='pol'&&WS.mode!=='pol')wSetMode('pol');
+  wLayChips();wMap();
+  if(WPAGE==='pol'&&WS.mode!=='pol'){wPolPage();return}
+  wCtl();wPaint(true);wCard();
 }
+function wPolPage(){   // страница «Политика»: пока данные не пришли, экономику не показываем; 3 попытки, потом кнопка «Повторить»
+  var lead=$('#w-lead'),tries=0;if(lead)lead.textContent='Загружаю политические данные…';
+  if(WM.g){var R0=wR();WM.g.selectAll('.wc').style('fill',R0.land).style('stroke',R0.border)}
+  (function go(){wPolLoad().then(function(){if(state==='world'&&$('#wm')&&WPAGE==='pol')wSetMode('pol')}).catch(function(){
+    WM.polP=null;if(state!=='world'||!$('#wm'))return;
+    if(++tries<3){setTimeout(go,700*tries);return}
+    var l=$('#w-lead');if(l)l.innerHTML='Не удалось загрузить политические данные. <button type="button" class="chip sm" data-wpolretry>Повторить</button>'})})()}
 function wLayChips(){
   var lay=$('#w-lay'),av=WLAY.filter(function(x){return x[0]==='countries'||(WM.reg[x[0]]&&!WHOST[x[0]])});
   lay.hidden=av.length<2||WPAGE==='pol';lay.innerHTML=av.map(function(x){return '<button type="button" class="chip'+(WS.layer===x[0]?' on':'')+'" data-wl="'+x[0]+'">'+esc(x[1])+'</button>'}).join('');
@@ -3046,6 +3063,7 @@ view.addEventListener('click',function(e){
   if(b=t.closest('[data-scrsort]')){var sk=b.getAttribute('data-scrsort');if(SC.sort===sk)SC.desc=!SC.desc;else{SC.sort=sk;SC.desc=true}scrDraw();return}
   if(t.closest('[data-scrmore]')){SC.lim+=60;scrDraw();return}
   if(t.closest('[data-scrcsv]')){scrCSV();return}
+  if(b=t.closest('[data-wpolretry]')){wPolPage();return}
   if(b=t.closest('[data-wmode]')){wSetMode(b.getAttribute('data-wmode'));return}
   if(b=t.closest('[data-wgrp]')){WS.pgrp=b.getAttribute('data-wgrp');var gi=WPI[WS.pgrp]||[];if(gi.indexOf(WS.ind)<0)WS.ind=gi[0];wSave();wCtl();wPaint();if(WS.sel)wCard();return}
   if(b=t.closest('[data-wl]')){wGoLayer(b.getAttribute('data-wl'));return}
