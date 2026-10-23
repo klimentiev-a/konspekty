@@ -29,7 +29,6 @@ zjs=open(os.path.join(os.path.dirname(os.path.abspath(__file__)),'zoom.js'),enco
 t=t.replace('<title>Учёба</title>','<title>Учёба</title><script>'+zjs+'</script>',1)
 old='<div class="fzrow"><span>Размер текста</span><button type="button" data-fz="-1" aria-label="Меньше">А−</button><b>\'+Math.round(getFz()*100)+\'%</b><button type="button" data-fz="1" aria-label="Больше">А+</button></div>'
 assert t.count(old)==1, 'fzrow'
-t=t.replace(old,old+'<div class="fzrow"><span>Масштаб страницы</span><button type="button" data-sz="-1" aria-label="Уменьшить страницу">А−</button><b class="szv">\'+Math.round((window.siteZoomGet?siteZoomGet():1)*100)+\'%</b><button type="button" data-sz="1" aria-label="Увеличить страницу">А+</button></div>',1)
 # шрифты Google не блокируют первую отрисовку (в РФ они иногда грузятся долго)
 import re
 t,nf=re.subn(r'<link rel="stylesheet" href="(https://fonts\.googleapis\.com/[^"]+)">',lambda m:'<link rel="stylesheet" href="%s" media="print" onload="this.media=\'all\'"><noscript><link rel="stylesheet" href="%s"></noscript>'%(m.group(1),m.group(1)),t)

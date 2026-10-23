@@ -839,7 +839,6 @@ marked.use({gfm:true,breaks:false,renderer:{
   link:function(href,title,text){return '<a href="'+eu(href)+'" target="_blank" rel="noopener noreferrer">'+text+'</a>'}
 }});
 /* текст для поиска считаем лениво (2 МБ глав на телефоне разбирать при старте — заметная задержка); минуты чтения — по длине markdown (~6,3 знака на слово) */
-function ensurePlain(c){if(c.plain==null){c.plain=c.md.replace(/<[^>]+>/g,' ').replace(/[#*|`>_-]{1,}/g,' ').replace(/\s+/g,' ');c.low=c.plain.toLowerCase()}return c}
 function prepDoc(c,i){c.i=i;c.min=Math.max(2,Math.round(c.md.length/6.3/170))}
 CH.forEach(prepDoc);
 var SEC=D.sectors||[];   // сектора мировой экономики (#world/sectors)
@@ -1186,9 +1185,7 @@ function usdRub(){try{return M.fx.Valute.USD.Value}catch(e){return 83.9153}}
 
 /* ---------------- рынки: виды ---------------- */
 var SUBS=[['summary','Сводка'],['daily','Утро и вечер'],['week','Итоги недели'],['ru','Россия'],['us','Мир'],['news','Новости'],['crypto','Крипта'],['bonds','Облигации'],['fx','Валюты'],['macro','Макро России'],['divs','Дивиденды'],['events','События'],['cal','Календарь']],cur='summary';
-var SGRP=[['Обзор','Что происходит',['summary','daily','week','news']],['Рынки','Россия, мир, крипта, облигации',['ru','us','crypto','bonds','fx']],['Экономика','Макро, дивиденды, календарь',['macro','divs','events','cal']]];
 var SLBL={};SUBS.forEach(function(s){SLBL[s[0]]=s[1]});
-function sgrp(k){for(var i=0;i<SGRP.length;i++)if(SGRP[i][2].indexOf(k)>=0)return i;return 0}
 /* одна строка: 5 главных разделов + «Ещё» со всем остальным; открытый раздел из «Ещё» показывается отдельным чипом */
 var MAIN_SUBS=['summary','daily','ru','us','news'],MORE_SUBS=SUBS.map(function(x){return x[0]}).filter(function(k){return MAIN_SUBS.indexOf(k)<0});
 function subnav(){var extra=MORE_SUBS.indexOf(cur)>=0?cur:null;
@@ -1510,7 +1507,6 @@ function loadDig(){return loadX('dig','digest.json')}
 function loadSvod(){return loadX('svod','svodka.json')}
 function loadCoRU(){return Promise.all([loadX('coru','world/companies/ru.json'),loadX('cord','world/companies/ru-detail.json')])}
 function rname(t){if(STATIC_RU[t]||UNI.ru[t]||(M.ru&&M.ru[t]))return ruName(t);var w=WMAP[t];return w?w[1]:t}
-function nfs(v,d){return v==null||isNaN(v)?'—':nf(v,d==null?1:d)}
 function finBlockUS(t){
   var F=XD.fin,d=F&&F.us&&F.us[t],lk='<p class="note">Подробнее: <a href="https://stockanalysis.com/stocks/'+t.toLowerCase()+'/financials/" target="_blank" rel="noopener">stockanalysis.com</a> · <a href="https://finance.yahoo.com/quote/'+t+'/financials/" target="_blank" rel="noopener">Yahoo Finance</a></p>';
   if(!d)return '<div class="sect"><h2>Отчётность</h2><p class="empty">'+(F===false?'Данные об отчётности пока недоступны — появятся после ближайшего автообновления.':F===undefined?'Загружаю…':'Для этой компании отчётности в базе нет.')+'</p>'+lk+'</div>';

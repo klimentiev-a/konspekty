@@ -1343,7 +1343,6 @@ function calcRun(box){
   var ei=-1;m.p.forEach(function(p,i){if(p[2])ei=i});
   var w=m.p[ei][1],name=m.p[ei][0],h='';
   var base=0,miss=0,wMiss=0,filled=0;m.p.forEach(function(p,i){if(vals[i]==null){miss++;wMiss+=p[1]}else{base+=p[1]*vals[i];filled++}});
-  function thrOf(T){return (m.round==='floor'||T===4?T:T-.5)-1e-9}
   var rnd=m.round==='floor'?'Округление вниз.':'Округление от 0,5 вверх.';
   if(!filled){h='Впиши оценки — итог посчитается сразу, даже если заполнено не всё.'}
   else if(m.block&&vals[ei]!=null&&vals[ei]<4){h='<span class="big bad">Неудовлетворительно</span>Экзамен блокирующий: ниже 4 — итог неудовлетворительный независимо от остального.'}
@@ -1475,7 +1474,6 @@ view.addEventListener('toggle',function(e){
 
 /* ---------- билеты ---------- */
 var TKS=[['const','Конституционное'],['crim','Уголовное'],['civil','Гражданское']];
-function tkGet(k,n){for(var i=0;i<TK[k].length;i++)if(TK[k][i][0]===n)return TK[k][i]}
 function tkHtml(md){
   var d=document.createElement('div');d.innerHTML=marked.parse(md);
   $$('p',d).forEach(function(p){var s=p.firstElementChild;if(s&&s.tagName==='STRONG'&&/^(Нормы|Практика)/.test(s.textContent)&&p.textContent.indexOf(s.textContent)===0)p.className='tkn'});
