@@ -2954,7 +2954,11 @@ function renderCompare(){
 
 /* ---------------- скринер компаний ---------------- */
 var SC={q:'',country:'',sec:'',reg:'',min:0,sign:'',sort:'rev',desc:true,usd:true,lim:60,rates:null,open:{},rows:null};
-function scrRates(){if(SC.rates!==null)return Promise.resolve();return fetch('https://open.er-api.com/v6/latest/USD').then(function(r){return r.json()}).then(function(j){SC.rates=j&&j.rates?j.rates:{}}).catch(function(){return getJSON('https://www.cbr-xml-daily.ru/daily_json.js').then(function(j){var rub=j.Valute.USD.Value,cn=j.Valute.CNY;SC.rates={RUB:rub,CNY:rub/(cn.Value/cn.Nominal)}}).catch(function(){SC.rates={}})})}
+function scrTO(u,ms){return new Promise(function(ok,no){var done=false,t=setTimeout(function(){if(!done){done=true;no(new Error('timeout'))}},ms||5000);
+  fetch(u).then(function(r){if(!r.ok)throw new Error(r.status);return r.json()}).then(function(j){if(!done){done=true;clearTimeout(t);ok(j)}},function(e){if(!done){done=true;clearTimeout(t);no(e)}})})}
+function scrRates(){if(SC.rates!==null)return Promise.resolve();   // курсы к доллару: открытые данные, а если не отвечают за 5 секунд — курсы Банка России (все валюты)
+  return scrTO('https://open.er-api.com/v6/latest/USD',5000).then(function(j){if(!j||!j.rates)throw new Error('empty');SC.rates=j.rates}).catch(function(){
+    return scrTO('https://www.cbr-xml-daily.ru/daily_json.js',6000).then(function(j){var V=j.Valute,rub=V.USD.Value/V.USD.Nominal,r={RUB:rub};Object.keys(V).forEach(function(k){if(V[k].Value>0)r[k]=rub/(V[k].Value/V[k].Nominal)});SC.rates=r}).catch(function(){SC.rates={}})})}
 function scrBuild(){
   var R=[];Object.keys(WM.reg).forEach(function(l){var L=WM.reg[l];if(!L.co)return;var ll=WLAY.filter(function(x){return x[0]===l})[0],cur=/₽/.test(L.co.unit||'')?'RUB':/¥/.test(L.co.unit||'')?'CNY':/\$/.test(L.co.unit||'')?'USD':/€/.test(L.co.unit||'')?'EUR':'';
     L.co.items.forEach(function(c){R.push({c:c,layer:l,country:ll?ll[1]:(L.label||l),cur:cur,u:L.co.unit||'',det:(L.cd||{})[c.name]||null,rev:c.rev,profit:c.profit,m:(c.rev>0&&c.profit!=null)?c.profit/c.rev*100:null})})});
@@ -2972,7 +2976,7 @@ function scrList(){
 function scrFmt(r,v,usd){if(v==null)return '—';if(usd){var x=scrUsd(r,v);return x==null?'—':wfmtC(x,'млрд $')}return (r.c.est&&v===r.c.rev?'≈ ':'')+wfmtC(v,r.u)}
 function scrDraw(){
   var el=$('#scr-list');if(!el||!SC.rows)return;var o=scrList(),a=o.a,sh=a.slice(0,SC.lim),th=function(k,t){return '<button type="button" data-scrsort="'+k+'" class="'+(SC.sort===k?'on':'')+'">'+t+(SC.sort===k?(SC.desc?' ↓':' ↑'):'')+'</button>'};
-  var h='<p class="wsm" style="margin:10px 0">Найдено: <b>'+a.length+'</b>'+(o.usd?' · суммы в долларах по курсу открытых данных (open.er-api.com)':SC.country?'':' · курсы валют не загрузились, суммы в валюте компании')+'</p>'+
+  var h='<p class="wsm" style="margin:10px 0">Найдено: <b>'+a.length+'</b>'+(o.usd?' · суммы в долларах по текущему курсу':SC.country?'':' · курсы валют не загрузились, суммы в валюте компании')+'</p>'+
     '<div class="scr-h">'+th('name','Компания')+th('rev','Выручка')+th('profit','Прибыль')+th('m','Маржа')+'</div>';
   if(!sh.length)h+='<p class="wsm">Под такие фильтры компаний нет — ослабь условия.</p>';
   sh.forEach(function(r,i){var idx=SC.rows.indexOf(r),c=r.c,op=SC.open[idx];
@@ -3078,20 +3082,24 @@ function renderRanking(){
   Promise.all([wLoad(),scrRates()]).then(function(){if(state!=='world'||!$('#rk-body'))return;scrBuild();rkDraw()}).catch(function(){var e=$('#rk-body');if(e)e.innerHTML='<p class="empty">Не удалось загрузить данные. <button type="button" class="chip sm" data-wretry>Повторить</button></p>'});
 }
 /* ---------------- зарплаты и налоги по странам ---------------- */
-var LF={k:'net',desc:true,all:false,basis:'usd',tax:null};
+var LF={k:'g',desc:true,all:true,basis:'ppp',tax:null};
+function lfPppK(id,y){   // во сколько раз ВВП на душу по ППС больше, чем по курсу (МВФ): цены в стране ниже/выше мировых
+  if(!WM.data)return null;var yi=Math.max(0,Math.min(WM.la,y||WM.la)-WM.y0),a=wv(id,'PPPPC',yi),b=wv(id,'NGDPDPC',yi);return a>0&&b>0?a/b:null}
 function lfRows(){
   var W=WM.wages&&WM.wages.items||{},T=LF.tax&&LF.tax.items||{},o=[];
-  Object.keys(W).forEach(function(id){var w=W[id],g=LF.basis==='ppp'?w.ppp:w.usd,t=T[id]?T[id].tax:null;if(!(g>0))return;if(!LF.all&&t==null)return;
-    o.push({id:id,n:WM.names[id]||id,g:g,t:t,net:t!=null?g*(1-t/100):null,y:LF.basis==='ppp'?(w.y_ppp||w.y):w.y,est:w.est})});
+  Object.keys(W).forEach(function(id){var w=W[id],g=LF.basis==='ppp'?w.ppp:w.usd,t=T[id]?T[id].tax:null,es=false;
+    if(LF.basis==='ppp'&&!(g>0)&&w.usd>0){var f=lfPppK(id,w.y);if(f){g=w.usd*f;es=true}}   // нет собственного ряда по ППС — оцениваем по соотношению ППС и курса из данных МВФ
+    if(!(g>0))return;if(!LF.all&&t==null)return;
+    o.push({id:id,n:WM.names[id]||id,g:g,t:t,net:t!=null?g*(1-t/100):null,y:LF.basis==='ppp'&&!es?(w.y_ppp||w.y):w.y,est:w.est,pe:es})});
   var k=LF.k;o.sort(function(a,b){if(k==='n')return LF.desc?b.n.localeCompare(a.n,'ru'):a.n.localeCompare(b.n,'ru');var p=a[k==='g'?'g':k==='t'?'t':'net'],q=b[k==='g'?'g':k==='t'?'t':'net'];if(p==null&&q==null)return 0;if(p==null)return 1;if(q==null)return -1;return LF.desc?q-p:p-q});
   return o}
 function lfDraw(){
   var el=$('#lf-body');if(!el)return;var a=lfRows(),mx=Math.max.apply(null,a.map(function(x){return x.g}).concat([1])),th=function(k,t){return '<button type="button" data-lfs="'+k+'" class="'+(LF.k===k?'on':'')+'">'+t+(LF.k===k?(LF.desc?' ↓':' ↑'):'')+'</button>'};
-  var h='<div class="rk-ctl"><button type="button" class="chip'+(LF.basis==='usd'?' on':'')+'" data-lfb="usd">В долларах по курсу</button><button type="button" class="chip'+(LF.basis==='ppp'?' on':'')+'" data-lfb="ppp">По ППС</button>'+
+  var h='<div class="rk-ctl"><button type="button" class="chip'+(LF.basis==='ppp'?' on':'')+'" data-lfb="ppp">По ППС (паритет покупательной способности)</button><button type="button" class="chip'+(LF.basis==='usd'?' on':'')+'" data-lfb="usd">В долларах по курсу (номинал)</button>'+
     '<label class="wsm" style="display:flex;gap:6px;align-items:center"><input type="checkbox" data-lfall'+(LF.all?' checked':'')+'> показать страны без данных о налогах</label></div>'+
-    '<p class="wsm">'+(LF.basis==='ppp'?'ППС — доллары с поправкой на цены в стране: показывают, сколько реально можно купить. Данные ОЭСР, только её страны.':'Доллары по рыночному курсу — удобно сравнивать зарплаты, но не цены.')+' Налоги — подоходный налог плюс взносы работника, одинокий без детей.</p>'+
+    '<p class="wsm">'+(LF.basis==='ppp'?'ППС — доллары с поправкой на цены в стране: показывают, сколько реально можно купить. Где собственного ряда по ППС нет, считаю оценку (помечена ≈): зарплата в долларах × отношение ВВП на душу по ППС к ВВП на душу по курсу (МВФ).':'Доллары по рыночному курсу — удобно сравнивать зарплаты, но не цены.')+' Налоги — подоходный налог плюс взносы работника, одинокий без детей; для стран без налоговых данных показана только зарплата. В списке '+plural(a.length,['страна','страны','стран'])+' — это все, по которым нашлась официальная средняя зарплата; единого открытого ряда на все страны мира нет'+'.</p>'+
     '<div class="lf-h">'+th('n','Страна')+th('g','Зарплата, $')+th('t','Налог')+th('net','На руках, $')+'</div>';
-  h+=a.map(function(x){return '<div class="lf-r"><div class="lf-t"><span>'+esc(x.n)+'<small class="wsm"> '+(x.y||'')+'</small></span><span>'+nf(x.g,0)+'</span><span>'+(x.t!=null?nf(x.t,1)+'%':'—')+'</span><span class="nt">'+(x.net!=null?nf(x.net,0):'—')+'</span></div><div class="lf-bar"><i style="width:'+(x.g/mx*100).toFixed(1)+'%"></i>'+(x.net!=null?'<b style="width:'+(x.net/mx*100).toFixed(1)+'%"></b>':'')+'</div></div>'}).join('');
+  h+=a.map(function(x){return '<div class="lf-r"><div class="lf-t"><span>'+esc(x.n)+'<small class="wsm"> '+(x.y||'')+'</small></span><span>'+(x.pe?'≈ ':'')+nf(x.g,0)+'</span><span>'+(x.t!=null?nf(x.t,1)+'%':'—')+'</span><span class="nt">'+(x.net!=null?nf(x.net,0):'—')+'</span></div><div class="lf-bar"><i style="width:'+(x.g/mx*100).toFixed(1)+'%"></i>'+(x.net!=null?'<b style="width:'+(x.net/mx*100).toFixed(1)+'%"></b>':'')+'</div></div>'}).join('');
   if(!a.length)h+='<p class="wsm">Для такого набора данных нет.</p>';
   var W=WM.wages;h+='<details class="wcalc wsrcd"><summary>ⓘ Откуда цифры и что учесть</summary>'+esc((W&&W.countries&&W.countries.definition)||'')+'<br><br>Налоги: '+esc((LF.tax&&LF.tax.source)||'')+'. '+esc((LF.tax&&LF.tax.def)||'')+' '+esc((LF.tax&&LF.tax.note)||'')+'<br><br>Зарплата и налоги — за разные годы и по разным определениям, а курс и ППС — отдельные ряды, поэтому небольшие расхождения нормальны. «На руках» — это зарплата минус налоги и взносы работника, без цен на жильё и услуги и без налогов работодателя. Считается для средней зарплаты, а не для любой суммы: налоги растут вместе с доходом.</details>';
   el.innerHTML=h}
