@@ -84,4 +84,9 @@ _g = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'gate_artem.html')
 if os.path.exists(_g):   # замок профиля «Артем»
     html = html.replace('<meta charset="utf-8">', '<meta charset="utf-8">' + open(_g, encoding='utf-8').read(), 1)
 open(out, 'w', encoding='utf-8').write(html)
+# politika.html — та же сборка, только политическая карта (JS смотрит на data-app="pol")
+pol = html.replace('<html lang="ru">', '<html lang="ru" data-app="pol">', 1).replace('<title>Финансы</title>', '<title>Политика</title>', 1)
+_pd = json.loads(data); _pd['chapters'] = []; _pd['sectors'] = []; _pd['terms'] = []   # главы и сектора «Политике» не нужны — файл в десятки раз легче
+pol = pol.replace('<script type="application/json" id="fdata">' + data + '</script>', '<script type="application/json" id="fdata">' + json.dumps(_pd, ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/') + '</script>')
+open(os.path.join(os.path.dirname(out) or '.', 'politika.html'), 'w', encoding='utf-8').write(pol)
 print('ok', len(chs), 'chapters', len(secs), 'sectors', len(TERMS), 'terms', len(html.encode()), 'bytes')

@@ -455,7 +455,7 @@ html.wfs-lock,html.wfs-lock body{overflow:hidden}
 .wm.pol .wkick{margin:0 0 6px;font:600 11.5px/1 'Inter',system-ui,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--pa)}
 .wm.pol .wmap{background-color:color-mix(in srgb,var(--pa) 7%,var(--surface));background-image:linear-gradient(color-mix(in srgb,var(--pa) 13%,transparent) 1px,transparent 1px),linear-gradient(90deg,color-mix(in srgb,var(--pa) 13%,transparent) 1px,transparent 1px);background-size:44px 44px;border-color:color-mix(in srgb,var(--pa) 30%,var(--line))}
 .wm.pol .wc{stroke-width:.8}
-.polpage #sw,.polpage #bnav,.polpage .bar .ibtn:not(#b-theme),.polpage #search{display:none!important}
+.polpage nav.wsub,.polpage #sw,.polpage #bnav,.polpage .bar .ibtn:not(#b-theme),.polpage #search{display:none!important}
 .wm.pol .chip.on,.wm.pol .seg .sg.on{background:var(--pa);border-color:var(--pa);color:var(--pat)}
 .wm.pol .wcard{border-top:3px solid var(--pa)}
 
@@ -794,7 +794,7 @@ view.addEventListener('focusout',function(e){var i=e.target;if(i.classList&&i.cl
 view.addEventListener('focusin',function(e){var i=e.target;if(i.classList&&i.classList.contains('sq')&&i.value.trim())i.nextElementSibling.hidden=false});
 
 /* тема */
-var root=document.documentElement;
+var root=document.documentElement,POLAPP=root.getAttribute('data-app')==='pol';   // politika.html: та же сборка, но только политическая карта
 function applyTheme(t){if(t)root.setAttribute('data-theme',t);else root.removeAttribute('data-theme')}
 /* оформление раздела: store('fin:skin') = '' (системное) | 'light' | 'dark' | id из SKINS */
 var SKINS=[['auto','Как в системе','#F4F1E8','#1F6B57',''],['ocean','Океан','#E9F0F6','#1A5FA8','light'],
@@ -2200,7 +2200,7 @@ view.addEventListener('input',function(e){var k=e.target.getAttribute('data-cv')
 view.addEventListener('click',function(e){if(!e.target.closest('[data-creset]'))return;var c=CALCS.filter(function(x){return x.id===calcCur})[0];CV[c.id]=null;try{localStorage.removeItem('calc:'+c.id)}catch(err){}renderCalc(c.id)});
 
 /* ---------------- мир: сектора ---------------- */
-function wsub(on){return '<nav class="sub"><a class="chip'+(on==='map'?' on':'')+'" href="#world/map">Карта</a><a class="chip'+(on==='sectors'?' on':'')+'" href="#world/sectors">Сектора</a><a class="chip'+(on==='companies'?' on':'')+'" href="#world/companies">Компании</a><a class="chip'+(on==='ranking'?' on':'')+'" href="#world/ranking">Рейтинг</a><a class="chip'+(on==='life'?' on':'')+'" href="#world/life">Зарплаты</a><a class="chip'+(on==='compare'?' on':'')+'" href="#world/compare">Сравнение'+(cmpGet().length?' · '+cmpGet().length:'')+'</a><a class="chip'+(on==='fav'?' on':'')+'" href="#world/fav" aria-label="Избранное">★'+(favGet().length?' '+favGet().length:'')+'</a></nav>'}
+function wsub(on){return '<nav class="sub wsub"><a class="chip'+(on==='map'?' on':'')+'" href="#world/map">Карта</a><a class="chip'+(on==='sectors'?' on':'')+'" href="#world/sectors">Сектора</a><a class="chip'+(on==='companies'?' on':'')+'" href="#world/companies">Компании</a><a class="chip'+(on==='ranking'?' on':'')+'" href="#world/ranking">Рейтинг</a><a class="chip'+(on==='life'?' on':'')+'" href="#world/life">Зарплаты</a><a class="chip'+(on==='compare'?' on':'')+'" href="#world/compare">Сравнение'+(cmpGet().length?' · '+cmpGet().length:'')+'</a><a class="chip'+(on==='fav'?' on':'')+'" href="#world/fav" aria-label="Избранное">★'+(favGet().length?' '+favGet().length:'')+'</a></nav>'}
 function renderSectors(){
   view.innerHTML=wsub('sectors')+'<section class="hero whero"><h1>Сектора мировой экономики</h1><p>Как устроены 12 крупнейших секторов мировой экономики: размер, драйверы, KPI, оценка, игроки мира и России.</p></section>'+
     (SEC.length?'<div class="chs">'+SEC.map(function(c){return '<a class="ch" href="#world/sectors/'+c.id+'"><span class="n">'+(c.i+1)+'</span><span><b>'+esc(c.title)+'</b><i>'+esc(c.short)+'</i><em>'+c.min+' мин чтения</em></span></a>'}).join('')+'</div>'
@@ -2995,7 +2995,7 @@ try{matchMedia('(prefers-color-scheme: dark)').addEventListener('change',wRecolo
 /* ---------------- сравнение стран и регионов ---------------- */
 function cmpGet(){try{var a=JSON.parse(store('world:cmp')||'[]');return Array.isArray(a)?a:[]}catch(e){return []}}
 function cmpSet(a){store('world:cmp',JSON.stringify(a.slice(0,5)))}
-function cmpBtn(k){var h=cmpGet().indexOf(k)>=0;return '<button type="button" class="chip sm'+(h?' on':'')+'" data-wcmp="'+esc(k)+'">'+(h?'✓ В сравнении':'⇄ Сравнить')+'</button>'+(h?' <a class="chip sm" href="#world/compare">Открыть →</a>':'')}
+function cmpBtn(k){if(POLAPP)return '';var h=cmpGet().indexOf(k)>=0;return '<button type="button" class="chip sm'+(h?' on':'')+'" data-wcmp="'+esc(k)+'">'+(h?'✓ В сравнении':'⇄ Сравнить')+'</button>'+(h?' <a class="chip sm" href="#world/compare">Открыть →</a>':'')}
 function cmpToggle(k){var a=cmpGet(),i=a.indexOf(k);if(i>=0)a.splice(i,1);else if(a.length<5)a.push(k);else{alert('В сравнении может быть до 5 позиций');return}cmpSet(a);
   if($('#cmp-body'))cmpDraw();else{if(WS.sel)wCard();var nv=document.querySelector('nav.sub a[href="#world/compare"]');if(nv)nv.textContent='Сравнение'+(a.length?' · '+a.length:'')}}
 function cmpLabel(k){if(k.indexOf('c:')===0)return WM.names[k.slice(2)]||k.slice(2);var q=k.slice(2).split('|'),l=WLAY.filter(function(x){return x[0]===q[0]})[0];return q[1]+(l?' · '+l[1]:'')}
@@ -3006,7 +3006,7 @@ function cmpDraw(){
   if(!it.length){el.innerHTML='<p class="wsm">Пока пусто. Найди страну или регион в строке выше или нажми «⇄ Сравнить» в карточке на карте (до 5 позиций).</p>'+'<div class="cmp-sug" id="cmp-sug"></div>';return}
   h+='<div class="cmp-chips">'+it.map(function(k){return '<span class="chip on">'+esc(cmpLabel(k))+' <button type="button" data-wcmpx="'+esc(k)+'" aria-label="Убрать">×</button></span>'}).join('')+'</div>';
   var cs=it.filter(function(k){return k.indexOf('c:')===0}),yi=WM.data?wyi():0;
-  if(cs.length&&WM.data){h+='<p class="wsm" style="margin:14px 0 4px"><b>Страны · '+WS.year+(WS.year>WM.la?' (прогноз МВФ)':'')+'</b></p><div class="cmp-sc"><table class="wkv wcmp"><thead><tr><td></td>'+cs.map(function(k){return '<td class="v">'+esc(cmpLabel(k))+'</td>'}).join('')+'</tr></thead>'+
+  if(cs.length&&WM.data&&!POLAPP){h+='<p class="wsm" style="margin:14px 0 4px"><b>Страны · '+WS.year+(WS.year>WM.la?' (прогноз МВФ)':'')+'</b></p><div class="cmp-sc"><table class="wkv wcmp"><thead><tr><td></td>'+cs.map(function(k){return '<td class="v">'+esc(cmpLabel(k))+'</td>'}).join('')+'</tr></thead>'+
     WORD.map(function(c){var vs=cs.map(function(k){return wv(k.slice(2),c,yi)}),mx=Math.max.apply(null,vs.map(function(v){return v==null?0:Math.abs(v)}));return '<tr><td>'+esc(WI[c][0])+'</td>'+vs.map(function(v){var rb=(c==='NGDPD'||c==='NGDPDPC')&&v!=null&&WFXO&&WFXO.r&&WFXO.r.RUB?'<br><small>≈ '+(c==='NGDPD'?(function(m){return m>=1000?nf(m/1000,m>=10000?0:1)+' трлн':nf(m,m>=100?0:1)+' млрд'})(v*WFXO.r.RUB):nf(v*WFXO.r.RUB/1000,0)+' тыс.')+' ₽</small>':'';return cmpCell(wfmt(c,v,1)+rb,v,mx)}).join('')+'</tr>'}).join('')+'</table></div>'}
   if(cs.length&&WM.data){if(WM.pol)h+=cmpPol(cs);else if(!WM.polTry){WM.polTry=1;wPolLoad().then(function(){if($('#cmp-body'))cmpDraw()}).catch(function(){})}}
   var rk=it.filter(function(k){return k.indexOf('r:')===0}),fx=WFXO&&WFXO.r?WFXO.r:null;
@@ -3099,7 +3099,7 @@ function renderScreener(){
 /* ---------------- избранное ---------------- */
 function favGet(){try{var a=JSON.parse(store('fin:fav')||'[]');return Array.isArray(a)?a:[]}catch(e){return []}}
 function favIs(k){return favGet().indexOf(k)>=0}
-function favBtn(k){var on=favIs(k);return '<button type="button" class="chip sm fav'+(on?' on':'')+'" data-fav="'+esc(k)+'" aria-pressed="'+on+'">'+(on?'★ В избранном':'☆ В избранное')+'</button>'}
+function favBtn(k){if(POLAPP)return '';var on=favIs(k);return '<button type="button" class="chip sm fav'+(on?' on':'')+'" data-fav="'+esc(k)+'" aria-pressed="'+on+'">'+(on?'★ В избранном':'☆ В избранное')+'</button>'}
 function favToggle(k){var a=favGet(),i=a.indexOf(k);if(i>=0)a.splice(i,1);else a.unshift(k);store('fin:fav',JSON.stringify(a.slice(0,200)));
   document.querySelectorAll('[data-fav]').forEach(function(b){if(b.getAttribute('data-fav')!==k)return;var on=favIs(k);b.classList.toggle('on',on);b.setAttribute('aria-pressed',on);if(b.classList.contains('chip'))b.textContent=on?'★ В избранном':'☆ В избранное';else b.textContent=on?'★':'☆'});
   var nv=document.querySelector('nav.sub a[href="#world/fav"]');if(nv)nv.textContent='★'+(a.length?' '+a.length:'');
@@ -3234,15 +3234,19 @@ function renderLife(){
 var state='',LASTCARD='';
 function glFocus(t){setTimeout(function(){var q=t.trim().toLowerCase(),hit=null;view.querySelectorAll('.prose tbody tr').forEach(function(tr){if(!hit&&tr.cells[0].textContent.trim().toLowerCase()===q)hit=tr});if(!hit)return;hit.scrollIntoView({block:'center'});hit.classList.add('flash');setTimeout(function(){hit.classList.remove('flash')},2500)},60)}
 function route(){
-  var h=decodeURIComponent(location.hash.slice(1)),p=h.split('/');
+  var h=decodeURIComponent(location.hash.slice(1));
+  if(POLAPP){   // в «Политике» нет экономики: любой чужой адрес ведёт на политическую карту
+    var okp=/^world\/politics(\/|$)/.test(h);
+    if(!okp){var g=h.match(/^(reg|fre|led|blk)$/);h='world/politics'+(g?'/'+g[1]:'');try{history.replaceState(null,'','#'+h)}catch(e){}}}
+  var p=h.split('/');
   var sec=p[0]==='markets'?'markets':p[0]==='calc'?'calc':p[0]==='world'?'world':p[0]==='learn'?'learn':'home';
   wStop();wTipHide();WM.fs=false;document.documentElement.classList.remove('wfs-lock');
   document.querySelectorAll('#sw a,#bnav a').forEach(function(a){a.classList.toggle('on',a.getAttribute('data-s')===sec)});
   state=sec;
-  var isPol=sec==='world'&&p[1]==='politics';document.documentElement.classList.toggle('polpage',isPol);
-  var brd=document.querySelector('.bar .brand');if(brd){if(isPol){brd.setAttribute('href','#world/politics');brd.innerHTML='<b>🗳</b> Политика'}else{brd.setAttribute('href','#home');brd.innerHTML='<b>₽</b> Финансы'}}
+  var isPol=POLAPP||(sec==='world'&&p[1]==='politics');document.documentElement.classList.toggle('polpage',isPol);
+  var brd=document.querySelector('.bar .brand');if(brd){if(isPol){brd.setAttribute('href',POLAPP?'#world/politics':'#world/politics');brd.innerHTML='<b>🗳</b> Политика'}else{brd.setAttribute('href','#home');brd.innerHTML='<b>₽</b> Финансы'}}
   var bk=document.getElementById('b-back'),inCh=sec==='learn'&&CH.some(function(x){return x.id===p[1]});
-  bk.setAttribute('href',sec==='home'?'artem.html':sec==='world'?(p[1]==='politics'?'artem.html':p[1]==='sectors'&&p[2]?'#world/sectors':(p[1]&&p[1]!=='map'?'#world':'#home')):sec==='markets'?(p[1]==='idx'?'#markets':p[1]&&p[1]!=='summary'?(p[2]?'#markets/'+p[1]:'#markets'):'#home'):sec==='calc'?(p[1]?'#calc':'#home'):(inCh?'#learn':'#home'));bk.setAttribute('aria-label',sec==='home'?'Назад':(sec==='learn'&&!inCh)?'На главную':'Назад');
+  bk.setAttribute('href',POLAPP?'artem.html':sec==='home'?'artem.html':sec==='world'?(p[1]==='politics'?'artem.html':POLAPP?'#world/politics':p[1]==='sectors'&&p[2]?'#world/sectors':(p[1]&&p[1]!=='map'?'#world':'#home')):sec==='markets'?(p[1]==='idx'?'#markets':p[1]&&p[1]!=='summary'?(p[2]?'#markets/'+p[1]:'#markets'):'#home'):sec==='calc'?(p[1]?'#calc':'#home'):(inCh?'#learn':'#home'));bk.setAttribute('aria-label',sec==='home'?'Назад':(sec==='learn'&&!inCh)?'На главную':'Назад');
   if(sec==='markets'){
     cur=SUBS.some(function(s){return s[0]===p[1]})?p[1]:'summary';store('fin:sub',cur);
     CARD.tic=(cur==='ru'&&p[2])?p[2].toUpperCase():null;ASSET={kind:null,id:null};var ck=p[2]?p[1]+'/'+p[2]:'';if(ck&&ck!==LASTCARD&&!/^(ev-|[0-9a-f]{10}$)/.test(p[2]))CARD.range='1m';if(ck&&p[1]!=='news')LASTCARD=ck;if(p[2]&&(p[1]==='us'||p[1]==='crypto'||p[1]==='idx')){if(p[1]==='idx')cur='summary';openAsset(p[1]==='crypto'?'cr':p[1],p[2].toUpperCase())}NEWSID=(cur==='news'&&p[2])?p[2]:null;SVID=(cur==='daily'&&p[2])?p[2]:null;if(cur==='news'&&!TEXTS)setTimeout(function(){try{if(navigator.connection&&navigator.connection.saveData)return}catch(e){}if(state==='markets'&&cur==='news')loadTexts()},2500);if(CARD.tic){PC.d=null;NLIM=12;Promise.all([loadCoRU(),loadCandles(CARD.tic,CARD.range),loadDivs(CARD.tic),loadNews(),loadEN(enFile('ru',CARD.tic))]).then(function(){drawMarkets(true)})}
@@ -3260,7 +3264,7 @@ function route(){
     else if(p[1]==='life'){renderLife();document.title='Зарплаты и налоги · Мир · Финансы'}
     else if(p[1]==='sectors'){var sc=SEC.filter(function(x){return x.id===p[2]})[0];
       if(sc){renderChapter(sc);document.title=sc.title+' · Сектора · Финансы'}else{renderSectors();document.title='Сектора мировой экономики · Финансы'}}
-    else if(p[1]==='politics'){WPAGE='pol';var pg=p[2]&&WPI[p[2]]?p[2]:'reg';WS.pgrp=pg;WS.pind=WPI[pg][0];if(WS.mode==='pol'){WS.pgrp=pg;WS.ind=WPI[pg][0]}WS.sel=null;renderWorld();document.title='Политика мира'}
+    else if(p[1]==='politics'){WPAGE='pol';var pg=p[2]&&WPI[p[2]]?p[2]:'reg';WS.pgrp=pg;WS.pind=WPI[pg][0];if(WS.mode==='pol'){WS.pgrp=pg;WS.ind=WPI[pg][0]}WS.sel=null;renderWorld();document.title=POLAPP?'Политика':'Политика мира'}
     else{WPAGE='eco';WDEEP=(p[1]==='country'&&p[2])?{country:p[2]}:(p[1]&&p[1]!=='map'&&p[2])?{layer:p[1],name:p.slice(2).join('/')}:null;if(!WDEEP){WS.layer='countries';WS.sel=null}renderWorld();document.title='Карта мира · Финансы'}
   }else{
     clearInterval(timer);

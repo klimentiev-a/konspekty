@@ -15,7 +15,7 @@ python3 src/finance/make_search.py
 # Синхронизация прогресса между устройствами: подключаем sync.js первым скриптом (идемпотентно)
 python3 - <<'PY'
 import re
-for f in ['index.html','artem.html','nastya.html','nastya-ucheba.html','ucheba.html','finance.html','english.html','energy.html']:
+for f in ['index.html','artem.html','nastya.html','nastya-ucheba.html','ucheba.html','finance.html','politika.html','english.html','energy.html']:
     if f=='energy.html' and not __import__('os').path.exists(f): continue
     s = open(f, encoding='utf-8').read()
     if 'src="tables.js"' not in s:
