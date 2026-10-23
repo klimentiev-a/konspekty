@@ -272,7 +272,7 @@ if('serviceWorker' in navigator&&location.protocol==='https:')navigator.serviceW
 <script>
 /* выбор оформления начальной страницы: 9 вариантов, запоминается только здесь */
 (function(){
-  var SK=[['auto','Как в системе','#F4F1E8','#1F6B57',''],['sepia','Сепия','#EFE3C8','#8A4B14','light'],['ocean','Океан','#E9F0F6','#1A5FA8','light'],['dark','Ночь','#171611','#5FC2A3','dark'],['graphite','Графит','#15171B','#7BA7F5','dark'],['terminal','Терминал','#0A0A08','#FFB000','dark'],['violet','Ультрафиолет','#130F22','#B794FF','dark'],['amber','Янтарь','#17110D','#F0A35C','dark']];
+  var SK=[['auto','Как в системе','#F4F1E8','#1F6B57',''],['ocean','Океан','#E9F0F6','#1A5FA8','light'],['dark','Ночь','#171611','#5FC2A3','dark'],['graphite','Графит','#15171B','#7BA7F5','dark'],['terminal','Терминал','#0A0A08','#FFB000','dark']];
   var d=document.documentElement;
   function st(k,v){try{if(v===undefined)return localStorage.getItem(k);if(v===null)localStorage.removeItem(k);else localStorage.setItem(k,v)}catch(e){return null}}
   function cur(){var v=st('hub:skin');if(v)return v;return st('theme')==='dark'?'dark':'auto'}
