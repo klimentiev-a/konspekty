@@ -416,17 +416,30 @@ function card(e){
   h+='<a href="'+esc(e.u)+'">Разобрано в курсе →</a></div>';return h}
 var box=document.getElementById('sr'),web=document.getElementById('web'),inp=document.getElementById('q'),tmr=null,seq=0;
 var FIN=/финанс|эконом|бухгалтер|учёт|учет|аудит|инвест|банк|акци[июя]|облигац|кредит|займ|налог|рынок|рынк|бирж|капитал|прибыл|выруч|доход|стоимост|валют|страхов|торгов|бизнес|компани|предприят|производств|логистик|цепочк|автомобил|сборк|таможн|пошлин|товар|актив|долг|процент|ставк|менеджмент|маркетинг|контракт|финтех|криптовалют|\b(financ|econom|account|audit|invest|bank|stock|share|bond|credit|loan|debt|tax|market|exchange|capital|profit|revenue|income|valuation|currency|insurance|trading|trade|business|company|corporat|manufactur|supply chain|logistic|asset|equity|interest rate|management|marketing|customs|tariff|assembl|automotive|vehicle)/i;
+function nrm(x){return String(x||'').toLowerCase().replace(/[^a-zа-яё0-9]+/g,'')}
+function wapi(lang,qs){return fetch('https://'+lang+'.wikipedia.org/w/api.php?action=query&format=json&origin=*&'+qs).then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(j){var p=j.query&&j.query.pages?j.query.pages:{};return Object.keys(p).map(function(k){return p[k]})})}
 function wiki(q){
-  var my=++seq,cy=isCyr(q),lang=cy?'ru':'en',other=cy?'en':'ru';
-  web.innerHTML='<div class="sh">Из интернета (Википедия)</div><p class="sm">Ищу…</p>';
-  var u='https://'+lang+'.wikipedia.org/w/api.php?action=query&format=json&origin=*&generator=search&gsrlimit=12&gsrsearch='+encodeURIComponent(q+(cy?' финансы':' finance'))+'&prop=extracts|langlinks|info&exintro=1&explaintext=1&exchars=900&lllang='+other+'&lllimit=1&inprop=url';
-  fetch(u).then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(j){
-    if(my!==seq)return;var pg=j.query&&j.query.pages?Object.keys(j.query.pages).map(function(k){return j.query.pages[k]}).sort(function(a,b){return a.index-b.index}).filter(function(p){return FIN.test(p.title+' '+(p.extract||''))}).slice(0,3):[];
-    if(!pg.length){web.innerHTML='<div class="sh">Из интернета (Википедия)</div><p class="sm">Ничего по финансам и смежным темам не нашлось. Попробуй написать по-английски или иначе.</p>';return}
-    web.innerHTML='<div class="sh">Из интернета (Википедия)</div>'+pg.map(function(p){
-      var ll=p.langlinks&&p.langlinks[0]?p.langlinks[0]['*']:'';
-      return '<div class="tk web"><h2>'+esc(p.title)+'</h2>'+(ll?'<div class="en">'+(cy?'По-английски':'По-русски')+': '+esc(ll)+'</div>':'')+'<div class="lb">Суть</div><p>'+esc(p.extract||'')+'</p><div class="src">Википедия, не проверено по курсу. Формул здесь нет — их смотри в карточках выше.</div><a href="'+esc(p.fullurl)+'" target="_blank" rel="noopener">Открыть статью →</a></div>'}).join('')})
-  .catch(function(){if(my!==seq)return;web.innerHTML='<div class="sh">Из интернета (Википедия)</div><p class="sm">Не получилось достучаться до Википедии. Проверь интернет.</p>'});
+  var my=++seq,cy=isCyr(q),lang=cy?'ru':'en',other=cy?'en':'ru',nq=nrm(q),H='<div class="sh">Из интернета (Википедия)</div>';
+  web.innerHTML=H+'<p class="sm">Ищу…</p>';
+  var X='&prop=extracts|langlinks|info&exintro=1&explaintext=1&exchars=700&lllang='+other+'&lllimit=1&inprop=url';
+  Promise.all([wapi(lang,'titles='+encodeURIComponent(q)+'&redirects=1'+X).catch(function(){return[]}),wapi(lang,'generator=search&gsrlimit=15&gsrsearch='+encodeURIComponent('intitle:'+q)+X).catch(function(){return null})]).then(function(rs){
+    if(my!==seq)return;
+    if(rs[1]===null&&!rs[0].length)throw 0;
+    var ex=rs[0].filter(function(p){return p.missing===undefined&&p.extract});
+    var se=(rs[1]||[]).sort(function(a,b){return a.index-b.index}).filter(function(p){return nrm(p.title).indexOf(nq)>=0}).sort(function(a,b){return nrm(a.title).length-nrm(b.title).length});
+    var seen={},pg=ex.concat(se).filter(function(p){var k=nrm(p.title);if(seen[k])return false;seen[k]=1;return FIN.test(p.title+' '+(p.extract||''))&&!/значения\)|disambiguation/i.test(p.title)}).slice(0,3);
+    if(!pg.length){web.innerHTML=H+'<p class="sm">Подходящей статьи Википедии про финансы не нашлось (искал по названию «'+esc(q)+'»). Попробуй полное название или другой язык.</p>';return}
+    var need=!cy?pg.filter(function(p){return p.langlinks&&p.langlinks[0]}):[];
+    var ru={};
+    var step=need.length?wapi('ru','titles='+encodeURIComponent(need.map(function(p){return p.langlinks[0]['*']}).join('|'))+'&prop=extracts&exintro=1&explaintext=1&exchars=700&redirects=1').then(function(rp){rp.forEach(function(r){ru[nrm(r.title)]=r.extract||''})}).catch(function(){}):Promise.resolve();
+    return step.then(function(){
+      if(my!==seq)return;
+      web.innerHTML=H+pg.map(function(p){
+        var ll=p.langlinks&&p.langlinks[0]?p.langlinks[0]['*']:'';
+        var ex=(!cy&&ll&&ru[nrm(ll)])||p.extract||'';var inRu=cy||(ll&&ru[nrm(ll)]);
+        var ttl=inRu&&!cy&&ll?ll:p.title;
+        return '<div class="tk web"><h2>'+esc(ttl)+'</h2>'+(ll?'<div class="en">'+(cy?'По-английски':'English')+': '+esc(cy?ll:p.title)+'</div>':'')+'<div class="lb">Суть</div><p>'+esc(ex)+'</p><div class="src">Википедия'+(inRu||cy?'':' (по-английски: русской статьи нет)')+', не проверено по курсу. Формул здесь нет — их смотри в карточках выше.</div><a href="'+esc(p.fullurl)+'" target="_blank" rel="noopener">Открыть статью →</a></div>'}).join('')});
+  }).catch(function(){if(my!==seq)return;web.innerHTML=H+'<p class="sm">Не получилось достучаться до Википедии. Проверь интернет.</p>'});
 }
 function run(){
   var q=inp.value.trim();
