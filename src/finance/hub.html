@@ -123,18 +123,13 @@ h1,.lead{animation:up .45s cubic-bezier(.2,.8,.25,1) both}.lead{animation-delay:
 .inst .go{display:flex;align-items:center;justify-content:center;margin-top:12px;height:46px;border-radius:999px;background:var(--a2);color:var(--surface);font:600 15px inherit;text-decoration:none}
 .inst .arr{position:absolute;left:50%;bottom:-16px;width:0;height:0;margin-left:-9px;border:9px solid transparent;border-top-color:var(--surface)}
 @media (min-width:700px){.inst .arr{display:none}}
-:root[data-skin="sepia"]{--bg:#EFE3C8;--surface:#F7EDD7;--fg:#3B2F1E;--muted:#6F5E45;--faint:#8E7C60;--line:#D2C09A;--a1:#8A4B14;--a2:#A33B2A;color-scheme:light}
 :root[data-skin="ocean"]{--bg:#E9F0F6;--surface:#F7FAFD;--fg:#14283A;--muted:#4B6277;--faint:#7289A0;--line:#C5D4E1;--a1:#1A5FA8;--a2:#C2561F;color-scheme:light}
 :root[data-skin="graphite"]{--bg:#15171B;--surface:#1F2227;--fg:#E6E8EC;--muted:#9AA1AD;--faint:#6F7683;--line:#2E3239;--a1:#7BA7F5;--a2:#F2A65A;color-scheme:dark}
-:root[data-skin="terminal"]{--bg:#0A0A08;--surface:#15140F;--fg:#F0D9A0;--muted:#B79A55;--faint:#7E6A3A;--line:#3A3115;--a1:#FFB000;--a2:#FF6A3D;color-scheme:dark}
 :root[data-skin="news"]{--bg:#161512;--surface:#201F1A;--fg:#EAE3D2;--muted:#B3AA96;--faint:#847C6A;--line:#3A372E;--a1:#E0483B;--a2:#D8B25A;color-scheme:dark}
 :root[data-skin="news"] body,:root[data-skin="news"] h1,:root[data-skin="news"] .lead,:root[data-skin="news"] .card b{font-family:'Literata',Georgia,'Times New Roman',serif}
 :root[data-skin="news"] body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:900;opacity:.05;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .9 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
 :root[data-skin="news"] h1{font-weight:800;letter-spacing:-.015em;border-bottom:3px double var(--line);padding-bottom:10px}
 :root[data-skin="news"] .card,:root[data-skin="news"] .links a{border-radius:3px}
-:root[data-skin="violet"]{--bg:#130F22;--surface:#1B1530;--fg:#E6E0F5;--muted:#AFA5CC;--faint:#8174A6;--line:#342A55;--a1:#B794FF;--a2:#FF7AC6;color-scheme:dark}
-:root[data-skin="amber"]{--bg:#17110D;--surface:#211812;--fg:#EFE3D3;--muted:#B9A58E;--faint:#8C7A65;--line:#3D2E22;--a1:#F0A35C;--a2:#E8D27A;color-scheme:dark}
-:root[data-skin="terminal"] body,:root[data-skin="terminal"] h1,:root[data-skin="terminal"] .lead,:root[data-skin="terminal"] .card b,:root[data-skin="terminal"] .card .ic{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
 :root[data-skin] .card.e .ic{color:var(--a2)}
 .skm{position:fixed;z-index:80;top:calc(58px + env(safe-area-inset-top,0px));right:10px;width:min(280px,calc(100vw - 20px));padding:8px;border:1px solid var(--line);border-radius:16px;background:var(--surface);box-shadow:0 14px 40px rgba(0,0,0,.28)}
 .skm p{margin:6px 8px 8px;font:600 13px/1.2 inherit;color:var(--muted)}
@@ -150,7 +145,7 @@ h1,.lead{animation:up .45s cubic-bezier(.2,.8,.25,1) both}.lead{animation-delay:
 /* оформление начальной страницы: своё, отдельное от разделов (ключ hub:skin) */
 (function(){try{
   var d=document.documentElement,id=localStorage.getItem('hub:skin');if(!id)return;
-  var T={sepia:'light',ocean:'light',graphite:'dark',terminal:'dark',violet:'dark',amber:'dark',news:'dark',dark:'dark'};
+  var T={ocean:'light',graphite:'dark',news:'dark',dark:'dark'};
   if(!T[id])return;
   if(id==='dark')d.removeAttribute('data-skin');else d.setAttribute('data-skin',id);
   d.setAttribute('data-theme',T[id]);
@@ -206,7 +201,7 @@ if('serviceWorker' in navigator&&location.protocol==='https:')navigator.serviceW
 <script>
 /* выбор оформления начальной страницы: 9 вариантов, запоминается только здесь */
 (function(){
-  var SK=[['auto','Как в системе','#F4F1E8','#1F6B57',''],['ocean','Океан','#E9F0F6','#1A5FA8','light'],['dark','Ночь','#171611','#5FC2A3','dark'],['graphite','Графит','#15171B','#7BA7F5','dark'],['terminal','Терминал','#0A0A08','#FFB000','dark'],['news','Газета','#161512','#E0483B','dark']];
+  var SK=[['auto','Как в системе','#F4F1E8','#1F6B57',''],['ocean','Океан','#E9F0F6','#1A5FA8','light'],['dark','Ночь','#171611','#5FC2A3','dark'],['graphite','Графит','#15171B','#7BA7F5','dark'],['news','Газета','#161512','#E0483B','dark']];
   var d=document.documentElement;
   function st(k,v){try{if(v===undefined)return localStorage.getItem(k);if(v===null)localStorage.removeItem(k);else localStorage.setItem(k,v)}catch(e){return null}}
   function cur(){var v=st('hub:skin');if(v)return v;return st('theme')==='dark'?'dark':'auto'}
