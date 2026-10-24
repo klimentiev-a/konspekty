@@ -1,0 +1,7 @@
+.brand.product-picker,.logo.product-picker{position:relative;overflow:visible}
+.brand.product-picker::before{display:none!important}
+.product-picker .product-square{display:block;position:relative;width:22px;height:22px;flex:0 0 22px;align-self:center;border-radius:6px;background:linear-gradient(135deg,#8c651f,#b28d43)}
+.product-picker .product-square::after{content:"";position:absolute;inset:-9px}
+.product-picker .product-square:focus-visible{outline:2px solid #8c651f;outline-offset:4px}
+.product-picker b{color:#8c651f}
+@media(max-width:760px){.product-picker .product-square{width:20px;height:20px;flex-basis:20px;border-radius:5px}}

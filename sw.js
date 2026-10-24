@@ -2,7 +2,7 @@
    Страницы и картинки — сразу из кэша (мгновенно), а в фоне проверяется новая версия; если она вышла — странице приходит сигнал «обновлено».
    Данные (*.json) — сначала сеть (свежие котировки и новости), если сеть не ответила за 4 с — из кэша.
    Шрифты Google и история цен с GitHub — из кэша с фоновым обновлением. */
-const V = 'hub-v216', STATIC = V + '-static', DATA = 'hub-data', EXT = 'hub-ext';
+const V = 'hub-v217', STATIC = V + '-static', DATA = 'hub-data', EXT = 'hub-ext';
 const CORE = ['./', 'index.html', 'artem.html', 'nastya.html', 'ucheba.html', 'finance.html', 'politika.html', 'fin-english.html', 'manifest.webmanifest', 'icon-192.png?v=31', 'apple-touch-icon.png?v=31'];
 
 // офлайн: страницы, библиотеки и данные карты/расписания/рынков кладём в кэш заранее
@@ -99,6 +99,7 @@ self.addEventListener('fetch', e => {
     return;
   }
   if (u.hostname === 'raw.githubusercontent.com' && /news-live\.json$/.test(u.pathname)) return;   // живая лента — всегда из сети, без кэша
+  if (u.hostname === 'raw.githubusercontent.com' && /\/fin2-data\//.test(u.pathname)) { e.respondWith(nf(e, r, DATA, 4000)); return; }   // «Финансы 2»: снимок рынка — сначала сеть
   if (u.hostname === 'fonts.googleapis.com' || u.hostname === 'fonts.gstatic.com' || u.hostname === 'raw.githubusercontent.com') {
     e.respondWith(swr(e, r, EXT, false));
   }

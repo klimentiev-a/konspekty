@@ -36,5 +36,9 @@ if [ "$(cat hist/.changed 2>/dev/null || echo 0)" != "0" ]; then
   (cd hist && rm -rf .git .changed && git init -q && git checkout -q -b data && git add -A && git commit -qm "Данные истории цен" && git push -q -f "$REPO_URL" data) \
     || echo "::warning::ветка data не отправилась"
 fi
+# «Финансы 2»: снимок облигаций и акций — отдельный workflow (ветка fin2-data), запускаем раз в час отсюда
+if command -v gh >/dev/null 2>&1 && [ -n "${GITHUB_REPOSITORY:-}" ]; then
+  gh workflow run fin2.yml --ref main -R "$GITHUB_REPOSITORY" >/dev/null 2>&1 || echo "::warning::не удалось запустить fin2.yml"
+fi
 rm -rf hist
 echo "обновление заняло $(( $(date +%s) - t0 )) с"

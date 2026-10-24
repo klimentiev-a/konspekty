@@ -4,6 +4,7 @@
 #   src/index.src.html + make_ucheba.py     → ucheba.html
 #   src/finance/content/*.md + шаблон       → finance.html
 #   src/english/lessons|ref/*.md + шаблон   → english.html (курс английского)
+#   src/fin2/*.html (шаблоны)              → fin2/index.html, fin2/akcii.html (Финансы 2: облигации и акции)
 set -e
 cd "$(git rev-parse --show-toplevel)"
 python3 src/finance/make_hub.py
@@ -12,6 +13,7 @@ python3 src/finance/build_finance.py src/finance/content src/marked.min.js finan
 python3 src/english/build_english.py
 python3 src/finenglish/build.py
 python3 src/energy/build_energy.py
+python3 src/fin2/build.py
 python3 src/finance/make_search.py
 # Синхронизация прогресса между устройствами: подключаем sync.js первым скриптом (идемпотентно)
 python3 - <<'PY'

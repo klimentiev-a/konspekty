@@ -1,0 +1,66 @@
+'use strict';
+window.StockResearchIncome=(()=>{
+ const finite=Number.isFinite,esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ const names={revenue:'Выручка',cogs:'Себестоимость',gross:'Валовая прибыль',sga:'SG&A · коммерческие и административные',payroll:'Зарплаты',rent:'Аренда',da:'Амортизация',utilities:'Коммунальные расходы',other_operating_net:'Прочие операционные, нетто',ebit:'Операционная прибыль · EBIT',finance_net:'Финансовый результат, нетто',other_below_operating:'Прочие статьи до налога',pre_tax:'Прибыль до налога',tax:'Налог на прибыль',profit_reconciliation:'Прекращённая деятельность / сверка до ЧП',np:'Чистая прибыль группы'};
+ names.interest_net='Нетто-процентные расходы';names.other_finance_net='Прочие финансовые статьи, нетто';
+ const required=['revenue','cogs','gross','sga','ebit','finance_net','pre_tax','tax','np'];
+ const num=(v,d=1)=>finite(v)?v.toLocaleString('ru-RU',{maximumFractionDigits:d}):'—';
+ const label=p=>p.is_ltm?'LTM · '+p.period_end.split('-').reverse().join('.'):p.year+(p.period==='FY'?'':' '+p.period);
+ const share=(v,revenue)=>finite(v)&&revenue>0?num(v/revenue*100,1)+'%':'—';
+ // Exact interest-note observations, RUB million. Other financial costs are excluded.
+ // X5: FY 2025 note 27; H1 2026 note 21 (comparatives included).
+ const x5Interest={'2024 FY':[34138,27348,78489],'2025 FY':[61176,27817,103218],'2025 H1':[31416,22938,48460],'2026 H1':[31076,3186,57600]};
+ function enrich(p){const values={...p.values},sources={...p.sources},fact=p.entity==='X5 RU'&&x5Interest[p.year+' '+p.period];
+  if(fact){values.interest_net=fact[1]-fact[0]-(p.basis==='IFRS16'?fact[2]:0);sources.interest_net={url:p.period==='FY'?'https://www.x5.ru/ru/investors/financial-statements/':'https://www.x5.ru/wp-content/uploads/2026/08/finansovaya-otchetnost_pao-kcz-iks5_6m2026.pdf',note:'Процентные доходы минус проценты по кредитам и займам'+(p.basis==='IFRS16'?' и аренде.':'; без процентов по аренде.'),inputs:fact,value:values.interest_net};}
+  // Only these databook lines explicitly identify both sides as interest.
+  if(!fact&&['Лента','Fix Price RU','Fix Price Group'].includes(p.entity)&&finite(values.finance_cost)&&finite(values.finance_income)){values.interest_net=values.finance_cost+values.finance_income;sources.interest_net={formula:'finance_cost + finance_income',inputs:[sources.finance_cost,sources.finance_income]};}
+  if(finite(values.interest_net)&&finite(values.finance_net))values.other_finance_net=values.finance_net-values.interest_net;
+  return {...p,values,sources};
+ }
+ function model(s){
+  if(s.sector!=='retail'||s.view!=='finance')return null;
+  const raw=window.StockResearch.select(window.StockResearch.records(s),s.period,'Группа');
+  const profiles=raw.flatMap(r=>Object.values(r.income_statements||{}).map(p=>enrich({...p,series_break:r.series_break}))).filter(p=>finite(p.values.revenue)&&finite(p.values.sga));
+  if(!profiles.length)return null;
+  profiles.sort((a,b)=>a.year-b.year||a.period.localeCompare(b.period));
+  const latestYear=profiles.at(-1).year,latest=profiles.filter(p=>p.year===latestYear),wanted=s.meta.basis||'IAS17';
+  const basis=latest.some(p=>p.basis===wanted)?wanted:latest.at(-1).basis;
+  const rows=profiles.filter(p=>p.basis===basis),complete=rows.filter(p=>!p.validation_errors?.length&&required.every(k=>finite(p.values[k])));
+  const anchor=window.StockResearchLTM?.row(s);
+  if(anchor){const all=window.StockResearch.records(s).filter(r=>r.segment==='Группа').flatMap(r=>Object.values(r.income_statements||{})).filter(p=>p.entity===anchor.entity&&p.basis===basis&&!p.validation_errors?.length).map(enrich),q=Number(anchor.period_end.slice(5,7))/3,values={},sources={};
+   if(anchor.entity==='X5 RU')for(const key of Object.keys(x5Interest)){const [year,period]=key.split(' ');if(!all.some(p=>p.year===Number(year)&&p.period===period))all.push(enrich({entity:anchor.entity,year:Number(year),period,basis,values:{},sources:{}}));}
+   for(const k of Object.keys(names)){values[k]=window.StockResearchLTM.trailing(all,anchor.year,q,k);sources[k]={formula:'FY−1 + YTD − YTD−1; иначе четыре квартала',entity:anchor.entity,basis,period_end:anchor.period_end,inputs:all.filter(p=>p.year>=anchor.year-1).map(p=>p.sources[k]).filter(Boolean)};}
+   if(finite(values.finance_net)&&finite(values.interest_net))values.other_finance_net=values.finance_net-values.interest_net;
+   if(finite(values.revenue)&&finite(values.sga))rows.push({entity:anchor.entity,year:anchor.year,period:'LTM',basis,unit:'RUB_million',period_end:anchor.period_end,is_ltm:true,values,sources});
+  }
+  const selected=rows.find(p=>s.incomePeriod===label(p))||complete.at(-1)||rows.at(-1);
+  return {basis,rows,selected:selected.validation_errors?.length?{...selected,values:{}}:selected,complete:!selected.validation_errors?.length&&required.every(k=>finite(selected.values[k]))};
+ }
+ function steps(p){const v=p.values,out=[];
+  const total=(k)=>{if(finite(v[k]))out.push({key:k,name:names[k],from:0,to:v[k],value:v[k],total:true})};
+  const change=(k,from)=>{if(finite(v[k])&&finite(from))out.push({key:k,name:names[k],from,to:from+v[k],value:v[k],total:false})};
+  total('revenue');change('cogs',v.revenue);total('gross');change('sga',v.gross);
+  if(Math.abs(v.other_operating_net||0)>.001)change('other_operating_net',v.gross+v.sga);
+  total('ebit');
+  if(finite(v.interest_net)){change('interest_net',v.ebit);change('other_finance_net',v.ebit+v.interest_net);}else change('finance_net',v.ebit);
+  if(Math.abs(v.other_below_operating||0)>.001)change('other_below_operating',v.ebit+v.finance_net);
+  total('pre_tax');change('tax',v.pre_tax);
+  if(Math.abs(v.profit_reconciliation||0)>.001)change('profit_reconciliation',v.pre_tax+v.tax);
+  total('np');return out;
+ }
+ function markup(s){const m=model(s);if(!m)return s.sector==='retail'&&s.view==='finance'?'<p class="sr-series-basis">Расшифровка расходов за этот период пока не подключена. Пропуски не заменены нулями.</p>':'';
+  const p=m.selected,v=p.values,sub=['payroll','rent','da','utilities'].filter(k=>finite(v[k]));
+  const tableKeys=Object.keys(names).filter(k=>m.rows.some(r=>finite(r.values[k])));
+  const sameBasis=m.basis===s.meta.basis;
+  return `<section class="sr-income"><div class="sr-history-head"><strong>Как выручка превращается в прибыль</strong><span>${esc(m.basis)} · ${esc(p.entity)} · ${esc(label(p))}</span></div><p class="sr-series-basis">${sameBasis?'Расходы со знаком минус · млрд ₽.':'Отдельный разбор '+esc(m.basis)+': не смешивается с IAS17 в графиках выше.'} Себестоимость → SG&A → финансы → налог → ЧП.</p><details class="sr-income-picker"><summary>Период разбора: ${esc(label(p))}</summary><div class="sr-segments">${m.rows.map(r=>`<button type="button" data-r-income-period="${esc(label(r))}" aria-pressed="${label(r)===label(p)}">${esc(label(r))}</button>`).join('')}</div></details><div class="sr-income-grid"><section class="sr-dashboard-panel"><div class="sr-panel-head"><h3>От выручки к чистой прибыли</h3><div class="sr-last"><strong>${num(v.np/1000)}</strong><small>ЧП · млрд ₽</small></div></div>${m.complete?'<div class="sr-income-waterfall" data-r-income-chart="bridge" role="img" aria-label="Структура прибыли от выручки до чистой прибыли"></div>':`<p class="sr-series-basis">${p.validation_errors?.length?esc(p.validation_errors.join(' ')):'Полный переход пока недоступен: часть строк не раскрыта в подключённом источнике. Доступные значения — ниже.'}</p>`}<details class="sr-income-values"><summary>Все строки за ${esc(label(p))}</summary><dl>${steps(p).map(x=>`<div><dt>${esc(x.name)}</dt><dd>${num(x.value/1000,2)} <small>· ${share(x.value,v.revenue)}</small></dd></div>`).join('')}</dl></details></section><section class="sr-dashboard-panel"><div class="sr-panel-head"><div><h3>Структура расходов</h3><p>Себестоимость, SG&A и нетто-проценты · % выручки</p></div></div><div class="sr-echart" data-r-income-chart="costs" role="img" aria-label="Доля себестоимости, SG&A и нетто-процентов в выручке по годам и LTM"></div><div class="ui-cost-facts" aria-label="Доли расходов за выбранный период">${['cogs','sga','interest_net'].map((k,i)=>`<div><span>${['Себестоимость','SG&A','Нетто-проценты'][i]}</span><strong>${share(-v[k],v.revenue)}</strong></div>`).join('')}<small>${esc(label(p))}</small></div>${sub.length?`<div class="sr-sga-detail"><h4>Внутри SG&A · ${esc(label(p))}</h4>${sub.map(k=>`<div><span>${names[k]}</span><strong>${num(-v[k]/1000)} <small>млрд ₽ · ${share(-v[k],v.revenue)} выручки</small></strong></div>`).join('')}<p>Это части SG&A, не дополнительные расходы.${sub.length<4?' Раскрыты не все подстатьи.':''}</p></div>`:'<p class="sr-series-basis">Подстатьи SG&A за этот период не подключены.</p>'}</section></div><details class="sr-all-data"><summary>История расходов и прибыли · ${esc(m.basis)}</summary><div class="sr-scroll"><table class="sr-table"><thead><tr><th>млрд ₽ · % выручки</th>${m.rows.map(r=>`<th class="${r.is_ltm?'sr-ltm-cell':''}">${esc(label(r))}</th>`).join('')}</tr></thead><tbody>${tableKeys.map(k=>`<tr><th>${names[k]}</th>${m.rows.map(r=>`<td class="${r.is_ltm?'sr-ltm-cell':''}">${r.validation_errors?.length?'—':num(r.values[k]/1000,2)}${!r.validation_errors?.length&&finite(r.values[k])?`<small style="display:block">${share(r.values[k],r.values.revenue)}</small>`:''}</td>`).join('')}</tr>`).join('')}</tbody></table></div></details><p class="sr-series-basis">Периоды с несходящимися строками источника исключены из графиков и отмечены прочерками. Прочие статьи рассчитаны как разница опубликованных итогов. SG&A включает коммерческие и административные расходы. ЧП — вся группа, включая неконтролирующую долю. Пробел означает отсутствие данных, а не нулевой расход.</p></section>`;
+ }
+ function options(s,key){const m=model(s);if(!m)return null;const phone=(s.root?.clientWidth||900)<600;
+  const base={animation:false,textStyle:{fontFamily:'IBM Plex Sans, Arial, sans-serif'},tooltip:{confine:true},grid:{left:50,right:24,top:32,bottom:50}};
+  if(key==='costs')return {...base,grid:{left:50,right:24,top:56,bottom:64},legend:{data:['Себестоимость','SG&A','Нетто-проценты'],left:0,textStyle:{fontSize:11}},tooltip:{trigger:'axis',confine:true,formatter:items=>esc(items[0]?.axisValue||'')+['cogs','sga','interest_net'].map((k,i)=>{const p=m.rows[items[0]?.dataIndex],value=p?.values[k];return '<br>'+['Себестоимость','SG&A','Нетто-проценты'][i]+': '+(finite(value)?num(-value/1000,2)+' млрд ₽ · '+share(-value,p.values.revenue):'нет данных');}).join('')},xAxis:{type:'category',data:m.rows.map(p=>p.is_ltm?'LTM\n'+p.period_end.split('-').reverse().join('.'):label(p)),axisLabel:{fontSize:10,hideOverlap:true,formatter:v=>v.startsWith('LTM')?'{ltm|'+v+'}':v,rich:{ltm:{color:'#89601c',fontWeight:700,fontSize:10,lineHeight:15}}}},yAxis:{type:'value',axisLabel:{fontSize:10,formatter:'{value}%'},splitLine:{lineStyle:{color:'#e7e5df'}}},series:['cogs','sga','interest_net'].map((k,i)=>({name:['Себестоимость','SG&A','Нетто-проценты'][i],type:'bar',stack:'costs',barMaxWidth:30,itemStyle:{color:['#8baed8','#c68b2e','#bc7569'][i]},label:{show:false},labelLayout:{hideOverlap:true},data:m.rows.map(p=>!p.validation_errors?.length&&p.values.revenue>0&&finite(p.values[k])?-p.values[k]/p.values.revenue*100:null)}))};
+  if(key!=='bridge'||!m.complete)return null;
+  const ss=steps(m.selected),short={interest_net:'Нетто-проценты',other_finance_net:'Прочие финансы',sga:'SG&A',ebit:'Опер. прибыль',other_operating_net:'Прочие операц.',finance_net:'Финансы, нетто',other_below_operating:'Прочие до налога',pre_tax:'До налога',profit_reconciliation:'Сверка до ЧП',np:'Чистая прибыль'};
+  return {...base,grid:{left:phone?111:145,right:phone?63:140,top:8,bottom:45},xAxis:{type:'value',axisLabel:{fontSize:10,formatter:v=>num(v,1)},splitLine:{lineStyle:{color:'#e7e5df'}},name:'млрд ₽',nameLocation:'middle',nameGap:23},yAxis:{type:'category',inverse:true,data:ss.map(x=>short[x.key]||x.name),axisLabel:{fontSize:phone?10:11,color:'#535958'},axisTick:{show:false},axisLine:{show:false}},tooltip:{confine:true,formatter:p=>esc(ss[p.dataIndex].name)+': <b>'+num(ss[p.dataIndex].value/1000,2)+' млрд ₽ · '+share(ss[p.dataIndex].value,m.selected.values.revenue)+'</b>'},series:[{type:'custom',renderItem:(params,api)=>{const i=api.value(2),x=ss[i],a=api.coord([api.value(0),i]),b=api.coord([api.value(1),i]),h=Math.min(20,api.size([0,1])[1]*.55);return{type:'group',children:[{type:'rect',shape:{x:Math.min(a[0],b[0]),y:a[1]-h/2,width:Math.max(.7,Math.abs(b[0]-a[0])),height:h,r:2},style:{fill:x.total?(x.key==='np'?'#238d7e':'#5b93de'):x.value<0?'#bc7569':'#4fae9d'}},{type:'text',style:{text:num(x.value/1000,1)+(phone?'':' · '+share(x.value,m.selected.values.revenue)),x:Math.max(a[0],b[0])+6,y:a[1],align:'left',verticalAlign:'middle',fontSize:phone?10:11,fill:'#303737'}}]};},data:ss.map((x,i)=>[x.from/1000,x.to/1000,i]),encode:{x:[0,1],y:2}}]};
+ }
+ function draw(s){if(!window.echarts)return;for(const n of s.root.querySelectorAll('[data-r-income-chart]')){const o=options(s,n.dataset.rIncomeChart);if(!o)continue;const ch=window.echarts.init(n,'bondsai-paper',{renderer:'svg'});ch.setOption(o);s.researchCharts.push(ch)}}
+ return {model,steps,markup,options,draw};
+})();

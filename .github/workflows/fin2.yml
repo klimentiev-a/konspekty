@@ -1,0 +1,60 @@
+name: Финансы 2 — данные
+# Снимок рынка облигаций и акций для раздела «Финансы 2» (fin2/): бэкенд BondsAI запускается
+# в процессе (fin2-export/export.py), обновляет базу из Мосбиржи и пишет JSON в ветку fin2-data.
+# Ветка fin2-data пересоздаётся одним коммитом (как ветка data), чтобы история репозитория не росла.
+# Запуск: каждый час в торговое время (cron — страховка, основной запуск делает цикл «Автообновление данных»),
+# полное обновление (рейтинги, макро, секторы, графики выплат) — раз в сутки (--auto: если прошлое старше 20 ч).
+on:
+  schedule:
+    - cron: '23 4-20/3 * * *'
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'auto | market | full'
+        default: 'auto'
+concurrency:
+  group: fin2-data
+  cancel-in-progress: false
+permissions:
+  contents: write
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    env:
+      TZ: Europe/Moscow
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: fin2-export/requirements.txt
+      - run: pip install -q -r fin2-export/requirements.txt
+      - name: Состояние прошлого запуска (ветка fin2-data)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          REPO_URL="https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          rm -rf f2 && (git clone -q --depth 1 -b fin2-data "$REPO_URL" f2 2>/dev/null || mkdir -p f2)
+          mkdir -p f2/data f2/state
+          du -sh f2/state f2/data 2>/dev/null || true
+      - name: Экспорт
+        run: |
+          MODE="${{ github.event.inputs.mode }}"; [ -n "$MODE" ] || MODE=auto
+          python3 fin2-export/export.py --out f2/data --state f2/state --$MODE 2>&1 | grep -v "WARNING agencies\|MOEX retry" | tail -400
+      - name: Отправить ветку fin2-data
+        if: always()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          REPO_URL="https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          cd f2
+          [ -f data/universe.json ] || { echo "::error::нет universe.json — ветку не трогаем"; exit 0; }
+          rm -rf .git state/work state/data state/frontend
+          find . -name "__pycache__" -type d -prune -exec rm -rf {} +
+          git init -q && git checkout -q -b fin2-data
+          git -c user.name=hub-bot -c user.email=hub-bot@users.noreply.github.com add -A
+          git -c user.name=hub-bot -c user.email=hub-bot@users.noreply.github.com commit -qm "Финансы 2: снимок данных $(date '+%d.%m.%Y %H:%M')"
+          git push -q -f "$REPO_URL" fin2-data
+          echo "размер: $(du -sh . | cut -f1)"

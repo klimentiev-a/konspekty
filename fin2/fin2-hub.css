@@ -1,0 +1,9 @@
+/* Финансы 2 · мелкие правки под Hub: кнопка назад, скрытые элементы оригинала */
+.f2-back { display:inline-flex; align-items:center; justify-content:center; width:34px; height:34px; border-radius:10px; border:1px solid var(--line, #d9d6cf);
+  color: var(--muted, #6b6b6b); text-decoration:none; font-size:18px; line-height:1; flex:none; background: var(--panel, transparent); }
+.f2-back:hover { color: var(--text, #111); border-color: var(--text, #111); }
+.platform-header .brand, .stock-platform-header .logo { width:auto !important; flex:0 0 auto !important; }
+.platform-header .brand > span, .stock-platform-header .logo > span { white-space:nowrap; }
+#visit-counter[hidden] { display:none !important; }
+@media (max-width:760px) { .f2-back { width:40px; height:40px; } }
+.settings-pop .sp-link[href*="Guide"] { display:none !important; }

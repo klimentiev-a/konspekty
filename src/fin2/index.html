@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Финансы 2 · Облигации — Hub</title>
+  <meta name="theme-color" content="#F1F0EC" />
+  <meta name="robots" content="noindex" />
+  <link rel="icon" type="image/png" href="favicon-32.png" />
+  <!--GATE-->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://iss.moex.com" crossorigin />
+  <link rel="preconnect" href="https://raw.githubusercontent.com" crossorigin />
+  <!-- шрифты не блокируют первую отрисовку: до загрузки — системные, потом подменяются -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Serif:wght@500;600;700&display=swap" media="print" onload="this.media='all'" />
+  <link rel="stylesheet" href="styles.css?v=__V__" />
+  <link rel="stylesheet" href="mobile.css?v=__V__" />
+  <link rel="stylesheet" href="platform-nav.css?v=__V__" />
+  <link rel="stylesheet" href="platform-switcher.css?v=__V__" />
+  <link rel="stylesheet" href="fin2-hub.css?v=__V__" />
+  <script defer src="research-echarts.js?v=__V__"></script>
+  <script defer src="fin2-core.js?v=__V__"></script>
+  <script defer src="fin2-moex.js?v=__V__"></script>
+  <script defer src="fin2-api.js?v=__V__"></script>
+  <script defer src="fin2-hub.js?v=__V__"></script>
+  <script defer src="platform-switcher.js?v=__V__"></script>
+</head>
+<body>
+  <script>
+    // тема: своя (bonds_theme) или как в Hub (тёмная → ночная)
+    try { var t = localStorage.getItem('bonds_theme'); if (!t) { var h = localStorage.getItem('theme'); t = h === 'dark' ? 'dark' : 'paper'; } if (t !== 'dark') document.body.classList.add(t); } catch (e) { document.body.classList.add('paper'); }
+  </script>
+  <div id="splash">
+    <div class="splash-bg"></div>
+    <div class="splash-inner">
+      <div class="splash-logo"><span class="splash-ring"></span></div>
+      <div class="splash-title">Финансы<b> 2</b></div>
+      <div class="splash-sub">Облигации · аналитика рынка РФ</div>
+      <svg class="splash-spark" viewBox="0 0 240 46" preserveAspectRatio="none" aria-hidden="true"><polyline points="0,36 24,31 48,34 72,21 96,26 120,13 144,18 168,8 192,15 216,5 240,10"/></svg>
+      <div class="splash-bar"></div>
+    </div>
+  </div>
+  <script>
+    (function(){var done=false,key='bonds_splash_seen',skip=new URLSearchParams(location.search).get('from')==='stocks';
+      try{skip=skip||sessionStorage.getItem(key)==='1';}catch(e){}
+      window.hideSplash=function(){if(done)return;done=true;
+        try{sessionStorage.setItem(key,'1');}catch(e){}
+        var s=document.getElementById('splash');if(!s)return;
+        if(skip){s.remove();return;}
+        s.classList.add('gone');setTimeout(function(){s.remove();},160);
+      };
+      if(skip)window.hideSplash();else setTimeout(window.hideSplash,1200);
+    })();
+  </script>
+  <header class="platform-header">
+    <div class="hd-main">
+      <a class="f2-back" href="../artem.html" title="На главную Hub" aria-label="Назад в Hub">←</a>
+      <div class="brand product-picker" data-product-picker="bonds"><a class="product-square" href="akcii.html#screener" aria-label="Переключить на акции" title="Переключить на акции"></a><span><span data-product-name>Облигации</span></span></div>
+      <nav id="secnav"></nav>
+      <div class="actions">
+        <span id="visit-counter" class="muted" hidden></span>
+        <span id="updated" class="muted"></span>
+        <button id="btn-refresh" aria-label="Обновить снимок рынка" title="Подтянуть свежий снимок (данные обновляются раз в час в торговое время)"><span class="refresh-glyph" aria-hidden="true">⟳</span><span class="refresh-label"> Обновить</span></button>
+        <div style="position:relative">
+          <button id="btn-settings" class="btn ghost" title="Настройки: стиль и тема" style="padding:6px 10px" aria-label="Настройки"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:block"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></button>
+          <div id="settings-pop" class="settings-pop" hidden></div>
+        </div>
+      </div>
+    </div>
+    <nav id="tabs"></nav>
+  </header>
+
+  <main id="view"><div class="loading">Загрузка…</div></main>
+
+  <footer class="muted">
+    <div style="margin-top:4px;font-size:11px">Информация носит аналитический характер и не является индивидуальной инвестиционной рекомендацией.
+    Расчёты доналоговые; прошлая доходность не гарантирует будущую. Данные Мосбиржи (MOEX ISS), ЦБ РФ, Минфина и рейтинговых агентств могут содержать задержки и неточности источников.
+    Снимок рынка обновляется автоматически раз в час в торговое время; история и графики выпусков — напрямую с Мосбиржи.</div>
+  </footer>
+
+  <script defer src="mobile.js?v=__V__"></script>
+  <script defer src="app.js?v=__V__"></script>
+</body>
+</html>
