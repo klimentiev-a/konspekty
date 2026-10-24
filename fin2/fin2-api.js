@@ -139,6 +139,7 @@
   window.fetch = function (input, init) {
     let url = typeof input === "string" ? input : (input && input.url) || String(input);
     const method = ((init && init.method) || (input && input.method) || "GET").toUpperCase();
+    if (url.startsWith(location.origin + "/api/")) url = url.slice(location.origin.length);   // абсолютный адрес своего API → путь
     if (/^https?:\/\//i.test(url) || url.startsWith("//") || url.startsWith("data:") || url.startsWith("blob:")) return realFetch(input, init);
     if (url.startsWith("/api/")) {
       const u = new URL(url, "http://x/");
