@@ -3246,11 +3246,11 @@ function qzPick(i,j){var qs=(QZ.data&&QZ.data[QZ.id])||[];if(!qs[i]||QZ.solved[i
   qzDraw()}
 
 /* ---------------- рейтинг компаний мира ---------------- */
-var RK={m:'rev',nb:true,sec:'',n:25,open:{}},MC=null;
+var RK={m:'cap',nb:true,sec:'',n:25,open:{}},MC=null;
 function rkCap(r){return MC&&MC.c?MC.c[r.layer.split('-')[0]+'|'+r.c.name]:null}
 function rkRows(){
   var useBank=!RK.nb;
-  var a=SC.rows.filter(function(r){var c=r.c;if(RK.nb&&c.sector==='banki')return false;if(RK.sec&&c.sector!==RK.sec)return false;
+  var a=SC.rows.filter(function(r){var c=r.c;if(RK.nb&&RK.m!=='cap'&&c.sector==='banki')return false;if(RK.sec&&c.sector!==RK.sec)return false;
     if(RK.m==='m'){return r.m!=null&&scrUsd(r,c.rev)>=5}if(RK.m==='cap')return rkCap(r)!=null;return true}).map(function(r){
     var v=RK.m==='rev'?scrUsd(r,r.c.rev):RK.m==='profit'?scrUsd(r,r.c.profit):RK.m==='cap'?rkCap(r):r.m;return {r:r,v:v}}).filter(function(x){return x.v!=null&&isFinite(x.v)});
   a.sort(function(p,q){return q.v-p.v});return a}
@@ -3258,11 +3258,11 @@ function rkDraw(){
   var el=$('#rk-body');if(!el||!SC.rows)return;
   var all=rkRows(),top=all.slice(0,RK.n),mx=top.length?Math.max(top[0].v,1e-9):1,usdOk=SC.rows.some(function(r){return r.cur!=='USD'&&scrUsd(r,1)==null});
   var fm=function(x){return RK.m==='m'?nf(x.v,1)+'%':wfmtC(x.v,'млрд $')};
-  var h='<div class="rk-ctl"><button type="button" class="chip'+(RK.m==='rev'?' on':'')+'" data-rkm="rev">Выручка</button><button type="button" class="chip'+(RK.m==='profit'?' on':'')+'" data-rkm="profit">Прибыль</button><button type="button" class="chip'+(RK.m==='m'?' on':'')+'" data-rkm="m">Маржа</button><button type="button" class="chip'+(RK.m==='cap'?' on':'')+'" data-rkm="cap">Капитализация</button>'+
+  var h='<div class="rk-ctl"><button type="button" class="chip'+(RK.m==='cap'?' on':'')+'" data-rkm="cap">Капитализация</button><button type="button" class="chip'+(RK.m==='rev'?' on':'')+'" data-rkm="rev">Выручка</button><button type="button" class="chip'+(RK.m==='profit'?' on':'')+'" data-rkm="profit">Прибыль</button><button type="button" class="chip'+(RK.m==='m'?' on':'')+'" data-rkm="m">Маржа</button>'+
     '<select data-rkf="sec" aria-label="Сектор"><option value="">Все сектора</option>'+Object.keys(WSN).map(function(k){return '<option value="'+k+'"'+(RK.sec===k?' selected':'')+'>'+esc(WSN[k])+'</option>'}).join('')+'</select>'+
-    '<label class="wsm" style="display:flex;gap:6px;align-items:center"><input type="checkbox" data-rkf="nb"'+(RK.nb?' checked':'')+'> без банков и страховщиков</label></div>';
-  if(RK.m==='cap')h+='<p class="wsm">'+(MC?'Рыночная капитализация (стоимость всех акций на бирже), млрд $. Есть у '+all.length+' из '+SC.rows.length+' компаний: крупнейшие компании мира по данным '+esc(MC.src)+'. Нет в списке — компания не вошла в топ-500 или не торгуется на бирже (государственные группы).':'Данные о капитализации не загрузились.')+'</p>';
-  if(usdOk)h+='<p class="wsm">Курсы валют не загрузились: компании России и Китая в рейтинг не попали.</p>';
+    (RK.m==='cap'?'':'<label class="wsm" style="display:flex;gap:6px;align-items:center"><input type="checkbox" data-rkf="nb"'+(RK.nb?' checked':'')+'> без банков и страховщиков</label>')+'</div>';
+  if(RK.m==='cap')h+='<p class="wsm">'+(MC?'Рыночная капитализация (стоимость всех акций на бирже), млрд $. Есть у '+all.length+' из '+SC.rows.length+' компаний: крупнейшие компании мира по данным '+esc(MC.src)+'; снимок от '+esc((MC.asof||'').split('-').reverse().join('.'))+', обновляется раз в 3 дня, а при жёстких новостях сразу. Нет в списке — компания не вошла в топ-500 или не торгуется на бирже (государственные группы).':'Данные о капитализации не загрузились.')+'</p>';
+  if(usdOk&&RK.m!=='cap')h+='<p class="wsm">Курсы валют не загрузились: компании России и Китая в рейтинг не попали.</p>';
   h+='<div>'+top.map(function(x,i){var r=x.r,c=r.c,idx=SC.rows.indexOf(r),op=RK.open[idx];
     return '<div class="rk-r"><button type="button" class="rk-t" data-rkx="'+idx+'"><span class="no">'+(i+1)+'</span><span class="nm"><b>'+esc(c.name)+'</b><small>'+esc(r.country+(c.region?' · '+c.region:'')+' · '+(WSN[c.sector]||''))+'</small></span><span class="v">'+fm(x)+'</span><span class="rk-bar"><i style="width:'+Math.max(1,x.v/mx*100).toFixed(1)+'%"></i></span></button>'+
       (op?'<div class="wcb">'+(r.det?wCoBody(r.det):'<p class="wcw">Подробной справки пока нет — только выручка и прибыль: '+wfmtC(scrUsd(r,c.rev),'млрд $')+(c.profit!=null?' и '+wfmtC(scrUsd(r,c.profit),'млрд $'):'')+'.</p>')+(c.note?'<p class="wcs">'+esc(c.note)+'</p>':'')+'<p style="margin:10px 0 0">'+favBtn('k:'+r.layer+'|'+c.name)+'</p></div>':'')+'</div>'}).join('')+'</div>';
