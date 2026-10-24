@@ -327,6 +327,14 @@ def main():
         "took_s": round(time.time() - t0),
     })
     status_path.write_text(json.dumps(status, ensure_ascii=False, indent=1))
+    # закрыть базу аккуратно: WAL-журнал свернуть в основной файл, чтобы в ветку попал один .db
+    try:
+        from app.db import engine
+        with engine.connect() as con:
+            con.exec_driver_sql("PRAGMA wal_checkpoint(TRUNCATE)")
+        engine.dispose()
+    except Exception as e:  # noqa: BLE001
+        log("✗ checkpoint:", e)
     log(f"готово за {time.time() - t0:.0f} с")
 
 

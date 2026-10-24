@@ -51,7 +51,7 @@ jobs:
           REPO_URL="https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
           cd f2
           [ -f data/universe.json ] || { echo "::error::нет universe.json — ветку не трогаем"; exit 0; }
-          rm -rf .git state/work state/data state/frontend
+          rm -rf .git state/work state/data state/frontend state/*.db-wal state/*.db-shm
           find . -name "__pycache__" -type d -prune -exec rm -rf {} +
           git init -q && git checkout -q -b fin2-data
           git -c user.name=hub-bot -c user.email=hub-bot@users.noreply.github.com add -A
