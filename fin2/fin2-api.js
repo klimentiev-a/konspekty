@@ -19,7 +19,7 @@
       const base = await F2.load("stock-terminal-data.json", { base: F2.OWN_BASE });
       const q = await F2.tryLoad("stock_quotes.json");
       if (!q || !q.q) return base;
-      const out = { ...base, market_fetched_at: q.fetched_at, live_quotes: true };
+      const out = { ...base, asof: q.asof || base.asof, market_fetched_at: q.fetched_at, live_quotes: true };
       out.items = (base.items || []).map(it => {
         const l = q.q[it.ticker];
         if (!l || l.price == null) return it;

@@ -378,12 +378,16 @@
     if (!issuer) return { issuer: null, news: [] };
     const feed = await F2.tryLoad("../news.json", { base: "./" });
     const items = feed ? (feed.items || feed.news || feed) : [];
-    const words = issuer.toLowerCase().replace(/[«»"]/g, "").split(/\s+/).filter(w => w.length > 2);
-    const key = words[0] || issuer.toLowerCase();
+    // ключевое слово — бренд без правовой формы и кавычек: «ПАО "ГК "Самолет"» → «самолет»
+    const LEGAL = /^(пао|ао|ооо|зао|оао|нко|мкпао|мфк|мкк|гк|ук|ик|кб|банк|компания|группа|холдинг|нпф|спб|рф|россии|российская|федерация)$/i;
+    const words = issuer.toLowerCase().replace(/[«»"'()]/g, " ").replace(/,.*$/, "").split(/[\s\-–—]+/).filter(w => w.length >= 4 && !LEGAL.test(w));
+    const key = words.sort((a, b) => b.length - a.length)[0];
+    if (!key) return { issuer, news: [] };
+    const stem = key.length > 6 ? key.slice(0, -1) : key;      // «самолет» ловит и «самолета», «самолету»
     const out = [];
     for (const n of Array.isArray(items) ? items : []) {
       const text = `${n.t || n.title || ""} ${n.x || n.summary || ""}`.toLowerCase();
-      if (text.includes(key)) out.push({ title: n.t || n.title, link: n.u || n.url || n.link, date: n.d || n.date, source: n.s || n.source });
+      if (text.includes(stem)) out.push({ title: n.t || n.title, link: n.u || n.url || n.link, date: n.d || n.date, source: n.s || n.source });
       if (out.length >= 12) break;
     }
     return { issuer, news: out };
