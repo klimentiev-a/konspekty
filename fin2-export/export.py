@@ -147,39 +147,6 @@ def main():
             log(f"✗ {name}: {str(e)[:200]}")
             return None
 
-    # ---------- обновление данных ----------
-    if not args.offline:
-        def market():
-            db = SessionLocal()
-            try:
-                moex.clear_reference_cache()
-                universe.refresh(db)
-                if mode == "full":
-                    universe.compute_spread_percentiles(db)
-            finally:
-                db.close()
-            universe.invalidate_rows_cache()
-        step("market", market)
-        if mode == "full":
-            from app.services import macro as mc, auctions as auc
-            step("schedules", lambda: zspread.refresh_schedules())
-            step("calls", lambda: moex_ref.refresh_calls())
-
-            def ref():
-                db = SessionLocal()
-                try:
-                    return moex_ref.rebuild(db)
-                finally:
-                    db.close()
-            step("reference", ref)
-            step("ratings", lambda: M._refresh_stale_ratings(0))
-            universe.invalidate_rows_cache()
-            step("macro", lambda: mc.get_macro(force=True))
-            step("auctions", lambda: auc.get_auctions(years=10, force=True))
-            step("bank_profits", lambda: mc.get_bank_profits(force=True))
-            step("bank_normatives", lambda: mc.get_bank_normatives(force=True))
-            step("ofz_histories", lambda: instrument.prewarm_ofz_histories())
-
     # ---------- выгрузка ----------
     from fastapi.testclient import TestClient
     c = TestClient(M.app)
@@ -200,84 +167,126 @@ def main():
         log(f"  {name} {sizes[name] / 1024:.0f} КБ {time.time() - t:.1f}с")
         return data
 
-    db = SessionLocal()
-    try:
-        cnt, upd = db.query(func.count(BondSnapshot.isin), func.max(BondSnapshot.updated_at)).first()
-        snapshot_at = (upd.isoformat() + "Z") if upd else None
-        # --- скринер: все строки рынка + «живые» без YTM (страница эмитента, поиск) ---
-        rows = universe._all_rows(db)
-        rmap = universe._ratings_map(db)
-        amap = agencies.ratings_map(db)
-        have = {r["isin"] for r in rows}
-        extra = []
-        for s in db.query(BondSnapshot).filter(universe._live_filter(db)).all():
-            if s.isin in have:
-                continue
-            r = universe._row(s, rmap.get(s.isin), amap)
-            universe._fix_sector(r)
-            r["_x"] = 1
-            extra.append(r)
-        snaps = {s.isin: s for s in db.query(BondSnapshot).all()}
-        for r in rows + extra:
-            s = snaps.get(r["isin"])
-            r["emkey"] = universe._emkey(s, rmap.get(r["isin"])) if s else None
-            r["issue_date"] = rmap[r["isin"]].issue_date if rmap.get(r["isin"]) else None
-            # для графика погашения / объёмов — поля снимка, которых нет в строке
-            if s:
-                r["issuesize_placed"] = s.issuesize_placed
-                r["facevalue"] = s.facevalue
-                r["faceunit"] = s.faceunit
-                r["buyback_date"] = s.buyback_date
-                r["accint"] = s.accint
-                r["avg_volume"] = s.avg_volume
-        # поля, которые фронт не читает, и пустые значения в рейтингах агентств — не выгружаем (файл вдвое меньше)
-        DROP = {"yield_source", "yield_contract_source", "yield_status", "base_rate", "gspread_pctl", "sm_pctl",
-                "pctl_at", "pctl_stale", "sector_raw", "rating_match", "agency_prev_rating", "agency_action", "agency_action_date"}
-        AG_KEEP = ("agency", "rating", "bucket", "forecast", "action", "action_date", "level", "trend", "prev_rating",
-                   "prev_date", "issuer_rating", "issuer_forecast", "expected", "sf")
-        slim = []
-        for r in rows + extra:
-            r = {k: v for k, v in r.items() if k not in DROP}
-            if r.get("agency_all"):
-                r["agency_all"] = [{k: a.get(k) for k in AG_KEEP if a.get(k) not in (None, False, "")} for a in r["agency_all"]]
-            slim.append(r)
-        uni = columnar(slim)
-        uni["updated_at"] = snapshot_at
-        uni["count"] = len(rows)
-        sizes["universe.json"] = dump(out, "universe.json", uni)
-        log(f"  universe.json {sizes['universe.json'] / 1024:.0f} КБ ({len(rows)} + {len(extra)} строк)")
-    finally:
-        db.close()
+    snapshot_at = None
 
-    get("/api/universe/facets", "facets.json", required=True)
-    get("/api/ideas?limit=1000&min_turnover=0", "ideas.json")
-    get("/api/rating_curves", "rating_curves.json")
-    get("/api/ofz_redemption", "ofz_redemption.json")
-    get("/api/placements?mode=current&days=120", "placements_current.json")
-    get("/api/placements?mode=history&days=400", "placements_history.json")
-    get("/api/auctions", "auctions.json")
-    get("/api/ofz_curve", "ofz_curve.json")
-    get("/api/instrument/gcurve", "gcurve.json")
-    get("/api/cbr_meetings", "cbr_meetings.json")
-    get("/api/stock_market_map", "stock_market_map.json")
-    get("/api/update_status", "update_status.json")
-    # бенчмарки ОФЗ-ПД для спреда к ОФЗ (карточка выпуска считает в браузере)
-    try:
-        sizes["ofz_benchmarks.json"] = dump(out, "ofz_benchmarks.json", instrument.ofz_benchmarks())
-    except Exception as e:  # noqa: BLE001
-        log("✗ ofz_benchmarks:", e)
-    try:
-        kr = instrument.cbr_key_rate()
-        if kr is not None:
-            dump(out, "key_rate.json", {"rate": kr, "at": datetime.now(timezone.utc).isoformat()})
-    except Exception as e:  # noqa: BLE001
-        log("✗ key_rate:", e)
-    try:
-        dump(out, "fx_rates.json", moex.get_fx_rates())
-    except Exception as e:  # noqa: BLE001
-        log("✗ fx_rates:", e)
-    # пересечение с акциями: котировки StockAI (цена, изменение, капитализация, оборот)
-    step("stock_quotes", lambda: export_stock_quotes(out))
+    def dump_market():
+        """Рыночные файлы (каждый час): строки скринера, фасеты, идеи, кривые, ОФЗ, первичка, акции."""
+        nonlocal snapshot_at
+        db = SessionLocal()
+        try:
+            cnt, upd = db.query(func.count(BondSnapshot.isin), func.max(BondSnapshot.updated_at)).first()
+            snapshot_at = (upd.isoformat() + "Z") if upd else None
+            # --- скринер: все строки рынка + «живые» без YTM (страница эмитента, поиск) ---
+            rows = universe._all_rows(db)
+            rmap = universe._ratings_map(db)
+            amap = agencies.ratings_map(db)
+            have = {r["isin"] for r in rows}
+            extra = []
+            for s in db.query(BondSnapshot).filter(universe._live_filter(db)).all():
+                if s.isin in have:
+                    continue
+                r = universe._row(s, rmap.get(s.isin), amap)
+                universe._fix_sector(r)
+                r["_x"] = 1
+                extra.append(r)
+            snaps = {s.isin: s for s in db.query(BondSnapshot).all()}
+            for r in rows + extra:
+                s = snaps.get(r["isin"])
+                r["emkey"] = universe._emkey(s, rmap.get(r["isin"])) if s else None
+                r["issue_date"] = rmap[r["isin"]].issue_date if rmap.get(r["isin"]) else None
+                # для графика погашения / объёмов — поля снимка, которых нет в строке
+                if s:
+                    r["issuesize_placed"] = s.issuesize_placed
+                    r["facevalue"] = s.facevalue
+                    r["faceunit"] = s.faceunit
+                    r["buyback_date"] = s.buyback_date
+                    r["accint"] = s.accint
+                    r["avg_volume"] = s.avg_volume
+            # поля, которые фронт не читает, и пустые значения в рейтингах агентств — не выгружаем (файл вдвое меньше)
+            DROP = {"yield_source", "yield_contract_source", "yield_status", "base_rate", "gspread_pctl", "sm_pctl",
+                    "pctl_at", "pctl_stale", "sector_raw", "rating_match", "agency_prev_rating", "agency_action", "agency_action_date"}
+            AG_KEEP = ("agency", "rating", "bucket", "forecast", "action", "action_date", "level", "trend", "prev_rating",
+                       "prev_date", "issuer_rating", "issuer_forecast", "expected", "sf")
+            slim = []
+            for r in rows + extra:
+                r = {k: v for k, v in r.items() if k not in DROP}
+                if r.get("agency_all"):
+                    r["agency_all"] = [{k: a.get(k) for k in AG_KEEP if a.get(k) not in (None, False, "")} for a in r["agency_all"]]
+                slim.append(r)
+            uni = columnar(slim)
+            uni["updated_at"] = snapshot_at
+            uni["count"] = len(rows)
+            sizes["universe.json"] = dump(out, "universe.json", uni)
+            log(f"  universe.json {sizes['universe.json'] / 1024:.0f} КБ ({len(rows)} + {len(extra)} строк)")
+        finally:
+            db.close()
+
+        get("/api/universe/facets", "facets.json", required=True)
+        get("/api/ideas?limit=1000&min_turnover=0", "ideas.json")
+        get("/api/rating_curves", "rating_curves.json")
+        get("/api/ofz_redemption", "ofz_redemption.json")
+        get("/api/placements?mode=current&days=120", "placements_current.json")
+        get("/api/placements?mode=history&days=400", "placements_history.json")
+        get("/api/auctions", "auctions.json")
+        get("/api/ofz_curve", "ofz_curve.json")
+        get("/api/instrument/gcurve", "gcurve.json")
+        get("/api/cbr_meetings", "cbr_meetings.json")
+        get("/api/stock_market_map", "stock_market_map.json")
+        get("/api/update_status", "update_status.json")
+        # бенчмарки ОФЗ-ПД для спреда к ОФЗ (карточка выпуска считает в браузере)
+        try:
+            sizes["ofz_benchmarks.json"] = dump(out, "ofz_benchmarks.json", instrument.ofz_benchmarks())
+        except Exception as e:  # noqa: BLE001
+            log("✗ ofz_benchmarks:", e)
+        try:
+            kr = instrument.cbr_key_rate()
+            if kr is not None:
+                dump(out, "key_rate.json", {"rate": kr, "at": datetime.now(timezone.utc).isoformat()})
+        except Exception as e:  # noqa: BLE001
+            log("✗ key_rate:", e)
+        try:
+            dump(out, "fx_rates.json", moex.get_fx_rates())
+        except Exception as e:  # noqa: BLE001
+            log("✗ fx_rates:", e)
+        # пересечение с акциями: котировки StockAI (цена, изменение, капитализация, оборот)
+        step("stock_quotes", lambda: export_stock_quotes(out))
+
+    # ---------- обновление данных ----------
+    if not args.offline:
+        def market():
+            db = SessionLocal()
+            try:
+                moex.clear_reference_cache()
+                universe.refresh(db)
+                if mode == "full":
+                    universe.compute_spread_percentiles(db)
+            finally:
+                db.close()
+            universe.invalidate_rows_cache()
+        step("market", market)
+        if mode == "full":
+            # сначала сохраняем рыночный снимок: если тяжёлые шаги упадут или не уложатся во время, он уже на месте
+            dump_market()
+            from app.services import macro as mc, auctions as auc
+            step("schedules", lambda: zspread.refresh_schedules())
+            step("calls", lambda: moex_ref.refresh_calls())
+
+            def ref():
+                db = SessionLocal()
+                try:
+                    return moex_ref.rebuild(db)
+                finally:
+                    db.close()
+            step("reference", ref)
+            step("ratings", lambda: M._refresh_stale_ratings(0))
+            universe.invalidate_rows_cache()
+            step("macro", lambda: mc.get_macro(force=True))
+            step("auctions", lambda: auc.get_auctions(years=10, force=True))
+            step("bank_profits", lambda: mc.get_bank_profits(force=True))
+            step("bank_normatives", lambda: mc.get_bank_normatives(force=True))
+            step("ofz_histories", lambda: instrument.prewarm_ofz_histories())
+
+    dump_market()
 
     if mode == "full":
         get("/api/rating_curves/history", "rating_curves_history.json")

@@ -15,6 +15,10 @@ ver = m.group(1) if m else "0"
 for name in ("index.html", "akcii.html"):
     s = open(os.path.join(SRC, name), encoding="utf-8").read()
     assert "<!--GATE-->" in s, name
-    s = s.replace("<!--GATE-->", gate).replace("__V__", ver)
+    # страница лежит в подпапке fin2/: вход — ../index.html, обратно — fin2/<страница>
+    g = gate.replace("location.replace('index.html?login='+P+'&next='+encodeURIComponent(f+location.search+location.hash))",
+                     "location.replace('../index.html?login='+P+'&next='+encodeURIComponent('fin2/'+f+location.search+location.hash))")
+    assert g != gate, "замок изменился — поправь build.py"
+    s = s.replace("<!--GATE-->", g).replace("__V__", ver)
     open(os.path.join(OUT, name), "w", encoding="utf-8").write(s)
 print(f"ok fin2 (v{ver})")

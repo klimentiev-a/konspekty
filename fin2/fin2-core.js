@@ -230,7 +230,7 @@
   // ---------- /api/movers ----------
   F2.movers = async function (limit, minTurnover) {
     const U = await F2.universe();
-    const traded = U.rows.filter(r => (r.numtrades || 0) > 0 && !(minTurnover && (r.volume_today || 0) < minTurnover));
+    const traded = U.rows.concat(U.extra).filter(r => (r.numtrades || 0) > 0 && !(minTurnover && (r.volume_today || 0) < minTurnover));
     const withChg = traded.filter(r => r.change_day_pct != null);
     return {
       gainers: [...withChg].sort((a, b) => b.change_day_pct - a.change_day_pct).slice(0, limit),
