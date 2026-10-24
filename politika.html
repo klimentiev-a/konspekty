@@ -1094,7 +1094,9 @@ function showTip(el){
 }
 function hideTip(){tip.hidden=true;if(tipEl)tipEl.classList.remove('on');tipEl=null}
 var canHover=window.matchMedia&&matchMedia('(hover:hover) and (pointer:fine)').matches;
-view.addEventListener('mouseover',function(e){if(!canHover)return;var el=e.target.closest('.tt');if(el){clearTimeout(tipT);showTip(el)}});
+var lastMove=0;document.addEventListener('mousemove',function(){lastMove=Date.now()},{passive:true});   /* mouseover без движения мыши — это перерисовка страницы под курсором, подсказку не показываем */
+setInterval(function(){if(!tip.hidden&&(!tipEl||!document.body.contains(tipEl)))hideTip()},400);   /* элемент пропал при перерисовке — убрать «зависшую» подсказку */
+view.addEventListener('mouseover',function(e){if(!canHover||Date.now()-lastMove>400)return;var el=e.target.closest('.tt');if(el){clearTimeout(tipT);showTip(el)}});
 view.addEventListener('mouseout',function(e){if(!canHover)return;if(e.target.closest('.tt')){tipT=setTimeout(hideTip,250)}});
 tip.addEventListener('mouseover',function(){clearTimeout(tipT)});
 tip.addEventListener('mouseout',function(){if(canHover)tipT=setTimeout(hideTip,250)});
