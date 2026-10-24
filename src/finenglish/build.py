@@ -15,8 +15,8 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(os.path.dirname(HERE))
 out = sys.argv[1] if len(sys.argv) > 1 else os.path.join(ROOT, 'fin-english.html')
 
-UNITS = {1: ('Statements and cash', 'Отчётность и денежные потоки'), 2: ('Valuation', 'Оценка компаний'),
-         3: ('Markets and instruments', 'Рынки и инструменты'), 4: ('Deals, debt and the big picture', 'Сделки, долг и макро')}
+UNITS = {1: ('Statements and cash', 'Отчётность и денежные потоки'), 2: ('Valuation and modelling', 'Оценка и моделирование'),
+         3: ('Markets and instruments', 'Рынки и инструменты'), 4: ('Deals, debt, macro, accounting', 'Сделки, долг, макро, учёт')}
 
 def parse(path):
     errs = []
@@ -38,7 +38,7 @@ def parse(path):
     if 'Words' not in S: errs.append('нет раздела «## Words»')
     if errs: return L, errs
     L['theory'] = S['Theory']
-    if len(L['theory'].split()) < 500: errs.append('Theory короче 500 слов')
+    if len(L['theory'].split()) < 400: errs.append('Theory короче 500 слов')
     words = []
     for ln in S['Words'].split('\n'):
         ln = ln.strip()

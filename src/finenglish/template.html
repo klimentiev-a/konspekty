@@ -49,6 +49,12 @@ h1.pg{margin:6px 0 4px;font:600 clamp(27px,5.5vw,38px)/1.15 var(--serif);letter-
 .prose h3{margin:1.7em 0 .5em}
 .prose blockquote{margin:1.2em 0;padding:12px 16px;border-left:3px solid var(--accent);background:var(--surface);border-radius:0 12px 12px 0}
 .prose blockquote p{margin:0}
+.f{margin:1.1em 0 1.3em;padding:14px 16px;border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:10px;background:var(--surface);font:500 14.5px/1.75 var(--mono);white-space:pre-wrap;overflow-wrap:anywhere}
+.gl{width:100%;border-collapse:collapse;font:400 15px/1.45 var(--sans)}
+.gl th{text-align:left;padding:8px 10px;font:600 11.5px/1.3 var(--sans);letter-spacing:.05em;text-transform:uppercase;color:var(--muted);background:var(--rail);border-bottom:1px solid var(--line);position:sticky;top:var(--hh,60px)}
+.gl td{padding:8px 10px;vertical-align:top;border-bottom:1px solid var(--line2)}
+.gl td:first-child{font-weight:650}.gl td:last-child a{color:var(--muted);font-size:13px;text-decoration:none}.gl td:last-child a:hover{color:var(--fg)}
+.gl tr.flash td{background:color-mix(in srgb,var(--accent) 18%,transparent)}
 .wt{width:100%;border-collapse:collapse;font:400 15px/1.45 var(--sans)}
 .wt th{position:static;text-align:left;padding:8px 10px;font:600 11.5px/1.3 var(--sans);letter-spacing:.05em;text-transform:uppercase;color:var(--muted);background:var(--rail);border-bottom:1px solid var(--line)}
 .wt td{padding:9px 10px;vertical-align:top;border-bottom:1px solid var(--line2)}
@@ -75,6 +81,7 @@ mark.hl{background:var(--mark);color:inherit;border-radius:3px;padding:0 2px}
     <a class="brand" href="#home"><b>Aa</b> Finance English</a>
     <button class="ibtn" id="b-theme" type="button" aria-label="Сменить оформление"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 1 0 16z" fill="currentColor" stroke="none"/></svg></button>
   </div>
+  <nav class="sw" id="sw"><a href="#home" data-s="home">Topics</a><a href="#glossary" data-s="glossary">Glossary</a></nav>
 </header>
 <main id="view"></main>
 <!--DATA-->
@@ -130,6 +137,7 @@ function pSave(){store('feng:'+PROF,JSON.stringify(P))}
 /* markdown */
 marked.use({gfm:true,breaks:false,renderer:{
   table:function(h,b){return '<div class="tablewrap"><table><thead>'+h+'</thead><tbody>'+b+'</tbody></table></div>\n'},
+  code:function(code,lang){if(lang==='f')return '<div class="f">'+esc(code)+'</div>\n';return '<pre><code>'+esc(code)+'</code></pre>\n'},
   link:function(href,title,text){return '<a href="'+esc(href)+'" target="_blank" rel="noopener noreferrer">'+text+'</a>'}
 }});
 function md(s){return marked.parse(s||'')}
@@ -143,7 +151,7 @@ function lessonRow(l){
 function renderHome(){
   document.title='Английский · Финансы';
   var done=Object.keys(P.done).filter(function(k){return BYID[k]}).length,tot=LS.length,nx=nextLesson(),words=LS.reduce(function(s,l){return s+l.words.length},0);
-  var h='<h1 class="pg">Finance English</h1><p class="lead">'+tot+' тем по 7–10 минут: теория финансов по-английски, как её объясняют в учебниках и на собеседованиях. Русский перевод у каждого термина в скобках, список слов с примерами в конце темы. Без заданий: читай и отмечай прочитанное.</p>';
+  var h='<h1 class="pg">Finance English</h1><p class="lead">'+tot+' тем по 7–9 минут на уровне курса «Финансы»: формулы, мосты, проверки и ловушки по-английски, как на собеседовании в IB. Русский перевод терминов в скобках, слова с примерами в конце темы, общий глоссарий во вкладке. Без заданий.</p>';
   h+='<div class="hero"><div class="box"><h3>Прогресс</h3><div class="big">'+done+' <small>из '+tot+' тем</small></div><div class="bar2"><i style="width:'+Math.round(done/tot*100)+'%"></i></div>'
     +'<div class="stats"><span>Слов в курсе: <b>'+words+'</b></span><span>Уровень: <b>B1 → C1</b></span></div></div>';
   h+= nx?'<a class="box cont" href="#t/'+nx.id+'"><h3>'+(done?'Продолжить':'Начать')+'</h3><b>'+nx.n+'. '+esc(nx.title)+'</b><small>'+esc(nx.short)+'</small><span class="btn sm" style="align-self:flex-start">Открыть тему</span></a>'
@@ -185,12 +193,28 @@ function renderLesson(id,sub){
   if(sub){var el=document.getElementById(sub);if(el)setTimeout(function(){el.scrollIntoView({block:'start'});el.classList.add('pulse')},30)}
 }
 
+function setNav(s){$$('#sw a').forEach(function(a){a.classList.toggle('on',a.getAttribute('data-s')===s)})}
+var GQ='';
+function renderGlossary(q0){
+  setNav('glossary');document.title='Glossary · Finance English';
+  var all=[];LS.forEach(function(l){l.words.forEach(function(w){all.push({w:w.w,t:w.t,x:w.x,l:l})})});
+  all.sort(function(a,b){return a.w.toLowerCase()<b.w.toLowerCase()?-1:1});
+  var h='<h1 class="pg">Glossary</h1><p class="lead">'+all.length+' терминов из всех тем: английский термин, русский перевод, пример и ссылка на тему. Ищи по-английски или по-русски.</p>'
+   +'<div class="tools"><input type="search" id="gq" placeholder="WACC, дюрация, covenant…" aria-label="Поиск по глоссарию" value="'+esc(GQ)+'"></div>'
+   +'<div class="tablewrap"><table class="gl"><thead><tr><th>Term</th><th>Перевод</th><th>Example</th><th>Topic</th></tr></thead><tbody>'
+   +all.map(function(e){return '<tr data-q="'+esc((e.w+' '+e.t+' '+e.x).toLowerCase())+'"><td>'+esc(e.w)+'</td><td>'+esc(e.t)+'</td><td class="ex">'+esc(e.x)+'</td><td><a href="#t/'+e.l.id+'/s-words">'+e.l.n+'. '+esc(e.l.title)+'</a></td></tr>'}).join('')
+   +'</tbody></table></div><div class="empty" id="gnone" hidden>Ничего не найдено.</div>';
+  view.innerHTML=h;var hh=$('#top').offsetHeight;root.style.setProperty('--hh',hh+'px');filterGl();
+  if(q0){var el=$('#gq');el.value=q0;GQ=q0;filterGl()}
+}
+function filterGl(){var q=($('#gq')||{}).value||'';GQ=q;q=q.toLowerCase().trim();var any=false;$$('.gl tbody tr').forEach(function(tr){var ok=!q||tr.getAttribute('data-q').indexOf(q)>=0;tr.hidden=!ok;if(ok)any=true});var n=$('#gnone');if(n)n.hidden=any}
 var lastRoute='';
 function route(){
   var h=decodeURIComponent(location.hash.slice(1)||'home'),p=h.split('/');lastRoute=h;
   skinMenu(false);
-  if(p[0]==='t'){renderLesson(p[1],p[2])}
-  else renderHome();
+  if(p[0]==='t'){setNav('home');renderLesson(p[1],p[2])}
+  else if(p[0]==='glossary'){renderGlossary(p[1])}
+  else{setNav('home');renderHome()}
   if(!(p[0]==='t'&&p[2]))window.scrollTo(0,0);
 }
 window.addEventListener('hashchange',route);
@@ -206,7 +230,7 @@ document.addEventListener('click',function(e){
   if(b=t.closest('.hidet .tr')){b.classList.toggle('show');return}
   if(b=t.closest('[data-done]')){var l2=BYID[b.getAttribute('data-done')];if(P.done[l2.id]){delete P.done[l2.id]}else{P.done[l2.id]=Date.now()}pSave();var bar=$('#donebar'),dn=!!P.done[l2.id];bar.classList.toggle('ok',dn);b.textContent=dn?'✓ Прочитано (снять отметку)':'Отметить прочитанным';return}
 });
-document.addEventListener('input',function(e){if(e.target.id==='lq')filterHome()});
+document.addEventListener('input',function(e){if(e.target.id==='lq')filterHome();if(e.target.id==='gq')filterGl()});
 route();
 })();
 </script>
