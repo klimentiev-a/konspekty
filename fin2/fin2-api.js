@@ -101,7 +101,7 @@
         if (what === "ytm") {
           const price = qn("price"), r = await F2.row(i);
           if (r && r.kind === "floater") return J({ price, ytm: null, ytp: null, offer: null, note: "Флоатер: YTM не считается (кроме сценария в песочнице)." });
-          return J({ price, ...(await F2.ytmAtPrice(i, price, r ? r.accint : null)) });
+          return J({ price, ...(await F2.ytmAtPrice(i, price, r ? r.accint : null, r)) });
         }
       } catch (e) { console.warn("fin2", path, e); return E(502, "Мосбиржа временно недоступна"); }
     }

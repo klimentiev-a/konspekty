@@ -9,7 +9,8 @@
   const marketFor = b => { b = (b || "").toUpperCase(); return SHARE_BOARDS.has(b) || b.startsWith("TQT") || b.startsWith("TQB") ? "shares" : "bonds"; };
   const num = v => { if (v == null || v === "" || v === "-") return null; const x = Number(v); return isFinite(x) ? x : null; };
   const today = () => F2.today();
-  const d2 = x => Math.round(x * 100) / 100;
+  const d2 = x => F2.r2(x);
+  const pyRound = x => F2.pyRound(x);
   const parseD = s => { const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(s || ""); return m ? Date.UTC(+m[1], +m[2] - 1, +m[3]) : NaN; };
   const iso = t => new Date(t).toISOString().slice(0, 10);
   const daysBetween = (a, b) => Math.round((parseD(b) - parseD(a)) / 864e5);
@@ -180,7 +181,7 @@
     if (wy.length) return wy.reduce((m, b) => Math.abs(b.years - years) < Math.abs(m.years - years) ? b : m);
     return bench.reduce((m, b) => Math.abs(b.duration_years - years) < Math.abs(m.duration_years - years) ? b : m);
   };
-  const simpleMarginBp = (price, years, qm) => { if (price == null || qm == null || price <= 0) return null; const pull = years && years > 0 ? (100 - price) / years : 0; return Math.round((qm + pull) * (100 / price) * 100); };
+  const simpleMarginBp = (price, years, qm) => { if (price == null || qm == null || price <= 0) return null; const pull = years && years > 0 ? (100 - price) / years : 0; return pyRound((qm + pull) * (100 / price) * 100); };
   F2.simpleMarginBp = simpleMarginBp;
 
   // ---------- bond_math ----------
@@ -290,12 +291,18 @@
     if (!["SUR", "RUB", "RUR", "", null, undefined].includes(ref.faceunit)) data.accint = accruedFromSchedule(data, settleDate(data));
     return data;
   }
-  F2.ytmAtPrice = async function (isin, price, accint) {
+  F2.ytmAtPrice = async function (isin, price, accint, row) {
     let cf = await bondCashflows(isin);
     if (accint != null && cf.accint == null) cf = { ...cf, accint };
     const ytm = ytmFromPrice(price, cf);
     let offer = nextOffer(cf), ytp = null;
     if (offer && offer.price != null) ytp = ytmFromPrice(price, cf, offer.date, offer.price);
+    // карточка может выбрать проверенный CALL, которого нет в блоке оферт биржи: считаем к нему (как ytm_at_price на сервере)
+    if (row && row.offer_type === "CALL" && row.offer_date && row.offer_date > today()) {
+      const callPrice = row.offer_price != null ? row.offer_price : null;
+      offer = { date: row.offer_date, price: callPrice, type: "CALL", conditional_on_issuer_exercise: true };
+      ytp = callPrice != null ? ytmFromPrice(price, cf, row.offer_date, callPrice) : null;
+    }
     return { ytm, ytp, offer };
   };
 
@@ -375,8 +382,8 @@
       assumptions: "CBR_RATE scenario, simple daily accrual ACT/365; no fixing lag or cap/floor modelled" };
     if (y != null && res.duration) {
       try {
-        const g = gcurveYield(res.duration, await F2.gcurve()); if (g != null) res.gspread = Math.round((y - g) * 100);
-        const ro = nearestOfz(res.duration, await F2.ofzBenchmarks()); if (ro) res.ofz = Math.round((y - ro.ytm) * 100);
+        const g = gcurveYield(res.duration, await F2.gcurve()); if (g != null) res.gspread = pyRound((y - g) * 100);
+        const ro = nearestOfz(res.duration, await F2.ofzBenchmarks()); if (ro) res.ofz = pyRound((y - ro.ytm) * 100);
       } catch (e) { /* спреды необязательны */ }
     }
     return res;
@@ -429,10 +436,10 @@
     for (const r of yh) {
       const y = r.yield_close, dur = r.duration;
       if (y == null || !(y > 3 && y < 60)) continue;
-      if (hasMoex) { const g = r.gspread; if (g != null && g > -800 && g < 20000) gk.push([r.date, Math.round(g)]); continue; }
+      if (hasMoex) { const g = r.gspread; if (g != null && g > -800 && g < 20000) gk.push([r.date, pyRound(g)]); continue; }
       if (dur == null) continue;
       const kb = kbdOn(snaps, r.date, dur / 365);
-      if (kb != null) gk.push([r.date, Math.round((y - kb) * 100)]);
+      if (kb != null) gk.push([r.date, pyRound((y - kb) * 100)]);
     }
     let curDur = null; for (let i = yh.length - 1; i >= 0; i--) if (yh[i].duration) { curDur = yh[i].duration; break; }
     const bench = await F2.ofzBenchmarks();
@@ -440,7 +447,7 @@
     const go = []; let ofzMeta = null;
     if (refOfz) {
       ofzMeta = { secid: refOfz.secid, name: refOfz.name, ytm: d2(refOfz.ytm) };
-      try { const omap = new Map((await ofzYieldHist(refOfz.secid, frm)).filter(r => r.yield_close != null).map(r => [r.date, r.yield_close])); for (const [d, y] of ytmPts) if (omap.has(d)) go.push([d, Math.round((y - omap.get(d)) * 100)]); } catch (e) { /* бенчмарк необязателен */ }
+      try { const omap = new Map((await ofzYieldHist(refOfz.secid, frm)).filter(r => r.yield_close != null).map(r => [r.date, r.yield_close])); for (const [d, y] of ytmPts) if (omap.has(d)) go.push([d, pyRound((y - omap.get(d)) * 100)]); } catch (e) { /* бенчмарк необязателен */ }
     }
     return { isin, name: ref.shortname, kind: "fixed", ytm: ytmPts, price: pricePts, gspread_kbd: gk, spread_ofz: go, benchmark_ofz: ofzMeta };
   };
@@ -465,9 +472,9 @@
       for (const r of await F2.yieldHistory(histId, ref.board, frm, T)) {
         const y = r.yield_close, dur = r.duration; if (y == null || !(y > 3 && y < 60)) continue;
         const g = r.gspread;
-        if (g != null) { if (g > -800 && g < 20000) out.push([r.date, Math.round(g)]); continue; }
+        if (g != null) { if (g > -800 && g < 20000) out.push([r.date, pyRound(g)]); continue; }
         if (dur == null || !kbd) continue;
-        const kb = kbdOn(kbd, r.date, dur / 365); if (kb != null) out.push([r.date, Math.round((y - kb) * 100)]);
+        const kb = kbdOn(kbd, r.date, dur / 365); if (kb != null) out.push([r.date, pyRound((y - kb) * 100)]);
       }
       return out;
     })();
@@ -489,7 +496,7 @@
     await Promise.all(issuerBonds.map(async r => { const qm = r.float_add != null ? r.float_add : r.float_qm; series[r.isin] = await spreadSeries(r.isin, isFloat, qm, kbd || [], frm0); }));
     const need = Math.min(2, issuerBonds.length), acc = new Map();
     for (const r of issuerBonds) for (const [d, v] of series[r.isin] || []) { if (!acc.has(d)) acc.set(d, []); acc.get(d).push(v); }
-    const issuerAvg = [...acc].filter(([, vs]) => vs.length >= need).sort((a, b) => a[0] < b[0] ? -1 : 1).map(([d, vs]) => [d, Math.round(F2.median(vs))]);
+    const issuerAvg = [...acc].filter(([, vs]) => vs.length >= need).sort((a, b) => a[0] < b[0] ? -1 : 1).map(([d, vs]) => [d, pyRound(F2.median(vs))]);
     const issuerUsed = issuerBonds.filter(r => (series[r.isin] || []).length).map(r => r.name || r.isin);
     const pk = peers && peers[`${r0.kind}|${bucket}|${ccy}`];
     const ratingAvg = pk ? pk.series.filter(p => p[0] >= frm0) : [];

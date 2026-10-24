@@ -180,21 +180,40 @@ def main():
             rows = universe._all_rows(db)
             rmap = universe._ratings_map(db)
             amap = agencies.ratings_map(db)
-            have = {r["isin"] for r in rows}
-            extra = []
+            rowmap = {r["isin"]: r for r in rows}
+            # порядок — как в базе (так строки идут у сервера в _all_rows и issuer_page): иначе при равной
+            # дюрации/обороте сортировки на странице эмитента и в подсказках расходились бы с оригиналом
+            ordered, extra = [], []
             for s in db.query(BondSnapshot).filter(universe._live_filter(db)).all():
-                if s.isin in have:
-                    continue
-                r = universe._row(s, rmap.get(s.isin), amap)
-                universe._fix_sector(r)
-                r["_x"] = 1
-                extra.append(r)
+                r = rowmap.get(s.isin)
+                if r is None:
+                    r = universe._row(s, rmap.get(s.isin), amap)
+                    universe._fix_sector(r)
+                    r["_x"] = 1
+                    extra.append(r)
+                ordered.append(r)
+            rows = ordered
+            extra = []
             snaps = {s.isin: s for s in db.query(BondSnapshot).all()}
             for r in rows + extra:
                 s = snaps.get(r["isin"])
                 r["emkey"] = universe._emkey(s, rmap.get(r["isin"])) if s else None
                 r["issue_date"] = rmap[r["isin"]].issue_date if rmap.get(r["isin"]) else None
+                r["issuer_rt"] = rmap[r["isin"]].issuer if rmap.get(r["isin"]) else None   # сырое имя из справочника (подсказки поиска)
+                if s and not (s.ytm is not None or s.simple_margin_bp is not None):
+                    r["_nocand"] = 1          # в подсказках поиска сервер показывает только бумаги с YTM или simple margin в снимке
                 # для графика погашения / объёмов — поля снимка, которых нет в строке
+                # цена выкупа по оферте/коллу (для доходности к оферте в калькуляторе карточки): график биржи,
+                # иначе проверенные условия выпуска — как в instrument.ytm_at_price
+                if r.get("offer_date"):
+                    try:
+                        op = ((zspread.schedules().get(r["isin"]) or {}).get("op") or {}).get(r["offer_date"])
+                        if op is None:
+                            from app.services import contract_terms
+                            op = contract_terms.redemption_price(r["isin"], r["offer_date"])
+                        r["offer_price"] = op
+                    except Exception:  # noqa: BLE001
+                        r["offer_price"] = None
                 if s:
                     r["issuesize_placed"] = s.issuesize_placed
                     r["facevalue"] = s.facevalue
@@ -204,7 +223,7 @@ def main():
                     r["avg_volume"] = s.avg_volume
             # поля, которые фронт не читает, и пустые значения в рейтингах агентств — не выгружаем (файл вдвое меньше)
             DROP = {"yield_source", "yield_contract_source", "yield_status", "base_rate", "gspread_pctl", "sm_pctl",
-                    "pctl_at", "pctl_stale", "sector_raw", "rating_match", "agency_prev_rating", "agency_action", "agency_action_date"}
+                    "pctl_at", "sector_raw", "rating_match", "agency_prev_rating", "agency_action", "agency_action_date"}
             AG_KEEP = ("agency", "rating", "bucket", "forecast", "action", "action_date", "level", "trend", "prev_rating",
                        "prev_date", "issuer_rating", "issuer_forecast", "expected", "sf")
             slim = []
@@ -215,9 +234,9 @@ def main():
                 slim.append(r)
             uni = columnar(slim)
             uni["updated_at"] = snapshot_at
-            uni["count"] = len(rows)
+            uni["count"] = len(rowmap)
             sizes["universe.json"] = dump(out, "universe.json", uni)
-            log(f"  universe.json {sizes['universe.json'] / 1024:.0f} КБ ({len(rows)} + {len(extra)} строк)")
+            log(f"  universe.json {sizes['universe.json'] / 1024:.0f} КБ ({len(rowmap)} + {len(rows) - len(rowmap)} строк)")
         finally:
             db.close()
 
@@ -226,7 +245,14 @@ def main():
         get("/api/rating_curves", "rating_curves.json")
         get("/api/ofz_redemption", "ofz_redemption.json")
         get("/api/placements?mode=current&days=120", "placements_current.json")
-        get("/api/placements?mode=history&days=400", "placements_history.json")
+        try:
+            db = SessionLocal()
+            try:
+                dump(out, "placements_history.json", universe.placements(db, mode="history", days=400, limit=5000))
+            finally:
+                db.close()
+        except Exception as e:  # noqa: BLE001
+            log("✗ placements_history:", e)
         get("/api/auctions", "auctions.json")
         get("/api/ofz_curve", "ofz_curve.json")
         get("/api/instrument/gcurve", "gcurve.json")
@@ -250,6 +276,8 @@ def main():
             log("✗ fx_rates:", e)
         # пересечение с акциями: котировки StockAI (цена, изменение, капитализация, оборот)
         step("stock_quotes", lambda: export_stock_quotes(out))
+        # индексы Мосбиржи: короткие периоды — каждый час (как на сервере брата: кэш на час)
+        export_indices(get, ("1m", "3m", "6m", "ytd", "1y"))
 
     # ---------- обновление данных ----------
     if not args.offline:
@@ -300,12 +328,7 @@ def main():
         get("/api/sector_index", "sector_index.json")
         get("/api/sector/developers/methodology", "sector_developers_methodology.json")
         get("/api/sector/leasing/methodology", "sector_leasing_methodology.json")
-        for grp in bond_indices.CATALOG:
-            for per in ("1m", "3m", "6m", "ytd", "1y", "3y", "5y", "all"):
-                get(f"/api/bond_indices?group={grp}&period={per}", f"indices/bond_{grp}_{per}.json")
-        for grp in equity_indices.CATALOG:
-            for per in ("1m", "3m", "6m", "ytd", "1y", "3y", "5y", "all"):
-                get(f"/api/equity_indices?group={grp}&period={per}", f"indices/equity_{grp}_{per}.json")
+        export_indices(get, ("3y", "5y", "all"))
         codes = {("bonds", it["code"]) for g in bond_indices.CATALOG.values() for it in g}
         codes |= {("stocks", it["code"]) for g in equity_indices.CATALOG.values() for it in g}
         for asset, code in sorted(codes):
@@ -336,6 +359,16 @@ def main():
     except Exception as e:  # noqa: BLE001
         log("✗ checkpoint:", e)
     log(f"готово за {time.time() - t0:.0f} с")
+
+
+def export_indices(get, periods):
+    from app.services import bond_indices, equity_indices
+    for grp in bond_indices.CATALOG:
+        for per in periods:
+            get(f"/api/bond_indices?group={grp}&period={per}", f"indices/bond_{grp}_{per}.json")
+    for grp in equity_indices.CATALOG:
+        for per in periods:
+            get(f"/api/equity_indices?group={grp}&period={per}", f"indices/equity_{grp}_{per}.json")
 
 
 def export_stock_quotes(out: Path):

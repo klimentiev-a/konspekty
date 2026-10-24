@@ -53,6 +53,9 @@
       return ["минфин росс", "минфин рф", "министерство финансов росс", "российская федерац", "говоз", "овоз", "рф зо", "рф-зо"].some(m => nm.includes(m)) || nm.trimStart().startsWith("россия"); })();
   const ikey = r => r.emkey || (isSov(r) ? "минфин рф офз" : r.emitent_id ? `eid:${r.emitent_id}` : (r.issuer || r.issuer_full || r.name || "").toLowerCase());
   F2.ikey = ikey;
+  // round() Python: при ровно .5 — к чётному (JS Math.round — вверх); иначе б.п. отличались бы на 1
+  const pyRound = x => { const f = Math.floor(x), d = x - f; return d < 0.5 ? f : d > 0.5 ? f + 1 : (f % 2 === 0 ? f : f + 1); };
+  F2.pyRound = pyRound;
   const median = a => { if (!a.length) return null; const s = [...a].sort((x, y) => x - y), m = s.length >> 1; return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2; };
   F2.median = median;
 
@@ -108,8 +111,9 @@
     }
     const skey = ["rating", "rating_bucket", "agency_rating"].includes(sort) ? "rating_score" : sort;
     const v = x => { let val = x[skey]; if (skey === "ytm" && x.kind === "floater") val = null; if (skey === "duration_years" && x.kind === "floater") val = x.years_to_maturity; return val == null ? null : val; };
-    const numR = rows.filter(r => num(v(r))), txt = rows.filter(r => typeof v(r) === "string"), nul = rows.filter(r => { const x = v(r); return !(num(x) || typeof x === "string"); });
-    numR.sort((a, b) => desc ? v(b) - v(a) : v(a) - v(b));
+    const isNum = x => num(x) || typeof x === "boolean";
+    const numR = rows.filter(r => isNum(v(r))), txt = rows.filter(r => typeof v(r) === "string"), nul = rows.filter(r => { const x = v(r); return !(isNum(x) || typeof x === "string"); });
+    numR.sort((a, b) => desc ? Number(v(b)) - Number(v(a)) : Number(v(a)) - Number(v(b)));
     txt.sort((a, b) => { const x = v(a).toLowerCase(), y = v(b).toLowerCase(); return (x < y ? -1 : x > y ? 1 : 0) * (desc ? -1 : 1); });
     const all = numR.concat(txt, nul);
     const fx = all.filter(r => r.kind === "fixed" || r.kind === "discount");
@@ -146,18 +150,18 @@
     const all = U.rows.concat(U.extra);
     const issuers = new Map();
     for (const r of all) {
-      const nm = r.issuer || r.issuer_full || r.name;
+      const nm = r.issuer_rt || r.issuer_full || r.name;
       if (!nm || !nm.toLowerCase().includes(needle)) continue;
       const k = ikey(r);
       if (!k) continue;
       let e = issuers.get(k);
       if (!e) issuers.set(k, e = { type: "issuer", key: k, issuer: nm, count: 0, vol: 0, _names: [] });
-      e.count++; e.vol += r.volume || 0; e._names.push(nm);
+      e.count++; e.vol += r.volume_today || 0; e._names.push(nm);
     }
     const issuerList = [...issuers.values()].map(e => { e.issuer = cleanestName(e._names) || e.issuer; delete e._names; return e; })
       .sort((a, b) => b.vol - a.vol).slice(0, 5);
-    const hits = all.filter(r => (r.ytm != null || r.simple_margin_bp != null) && `${r.name || ""} ${r.isin}`.toLowerCase().includes(needle))
-      .sort((a, b) => (b.volume || 0) - (a.volume || 0)).slice(0, 20)
+    const hits = all.filter(r => !r._nocand && `${r.name || ""} ${r.isin}`.toLowerCase().includes(needle))
+      .sort((a, b) => (b.volume_today || 0) - (a.volume_today || 0)).slice(0, 20)
       .map(r => ({ type: "bond", isin: r.isin, secid: r.secid, name: r.name, ytm: r.ytm ?? null, duration_years: r.duration_years ?? null, board: r.board }));
     return issuerList.concat(hits);
   };
@@ -189,7 +193,8 @@
     if (!near.length) near = [...group].sort((a, b) => Math.abs((a.duration_years || 0) - dur) - Math.abs((b.duration_years || 0) - dur)).slice(0, 5).map(g => g.ytm);
     return near.length ? median(near) : null;
   };
-  const r2 = x => x == null ? null : Math.round(x * 100) / 100;
+  const r2 = x => { if (x == null) return null; if (Number.isInteger(x * 8) && !Number.isInteger(x * 4)) { const f = Math.floor(x * 100); return (f % 2 === 0 ? f : f + 1) / 100; } return Number(x.toFixed(2)); };   // точная «половинка» (k/8) — к чётному, как round(x, 2) в Python
+  F2.r2 = r2;
   F2.ratingCurve = async function (isin) {
     const base = await F2.row(isin);
     if (!base) return { base: null };
@@ -204,7 +209,7 @@
       for (let d = lo; d <= hi + 1e-9; d += step) { const fy = fairYield(group, d); if (fy != null) curve.push({ duration: r2(d), ytm: r2(fy) }); }
     }
     const fair = group.length && base.duration_years ? fairYield(group, base.duration_years) : null;
-    const rc = fair != null && base.ytm != null ? Math.round((base.ytm - fair) * 100) : null;
+    const rc = fair != null && base.ytm != null ? pyRound((base.ytm - fair) * 100) : null;
     return { base, bucket, group, curve, fair_yield: r2(fair), rich_cheap_bp: rc, comment: autoComment(base, fair, rc) };
   };
   const autoComment = (base, fair, rc) => {
@@ -240,14 +245,59 @@
     };
   };
 
-  // ---------- /api/ideas (снимок сервера с min_turnover=0, фильтр оборота здесь) ----------
+  // ---------- /api/ideas (universe.ideas: аномалии относительной стоимости) ----------
+  const LIQ_PEN = { "Высокая": 0, "Средняя": 25, "Низкая": 60 };
+  const liqPenalty = c => c in LIQ_PEN ? LIQ_PEN[c] : 60;
+  const percentile = (sv, q) => { if (!sv.length) return null; if (sv.length === 1) return sv[0]; const idx = q * (sv.length - 1), lo = Math.floor(idx), hi = Math.min(lo + 1, sv.length - 1); return sv[lo] + (sv[hi] - sv[lo]) * (idx - lo); };
+  const rankPct = (vals, x) => vals.length ? pyRound(100 * vals.filter(v => v < x).length / vals.length) : null;
   F2.ideas = async function (limit, minTurnover) {
-    const d = await F2.load("ideas.json");
-    const ok = r => !minTurnover || ((r.avg_volume != null ? r.avg_volume : r.volume) || 0) >= minTurnover;
-    const out = { currencies: d.currencies || [] };
-    for (const k of ["intra_cheap", "intra_rich", "vs_cheap", "vs_rich"]) out[k] = (d[k] || []).filter(ok).slice(0, limit);
-    for (const k of ["high_pctl", "low_pctl"]) out[k] = (d[k] || []).filter(ok).slice(0, Math.max(limit, 40));
-    return out;
+    const U = await F2.universe();
+    const rows = [];
+    for (const r0 of U.rows.concat(U.extra)) {
+      if (!(r0.ytm != null || (r0.kind === "floater" && r0.current_yield != null))) continue;
+      if ((r0.numtrades || 0) <= 0) continue;
+      if (minTurnover && ((r0.avg_volume != null ? r0.avg_volume : r0.volume_today) || 0) < minTurnover) continue;
+      const r = { ...r0 };
+      const isRub = (r.currency || "RUB") === "RUB";
+      if (r.kind === "floater") { r.metric_bp = r.simple_margin_bp ?? null; r.metric_kind = "SM"; }
+      else if (isRub && r.g_spread_bp != null) { r.metric_bp = r.g_spread_bp; r.metric_kind = "G"; }
+      else if (!isRub && r.ytm != null && r.ytm > 0 && r.ytm < 40) { r.metric_bp = pyRound(r.ytm * 100); r.metric_kind = "Y"; }
+      else r.metric_bp = null;
+      if (r.metric_bp != null && r.metric_bp >= -500 && r.metric_bp <= 4000) rows.push(r);
+    }
+    const WINDOW = 0.3;
+    const x = r => r.kind !== "floater" ? r.duration_years : r.years_to_maturity;
+    const analyse = kindRows => {
+      const byBucket = new Map(), byIssuer = new Map();
+      for (const r of kindRows) {
+        if (r.rating_bucket) { if (!byBucket.has(r.rating_bucket)) byBucket.set(r.rating_bucket, []); byBucket.get(r.rating_bucket).push(r); }
+        const ik = ikey(r); if (ik) { if (!byIssuer.has(ik)) byIssuer.set(ik, []); byIssuer.get(ik).push(r); }
+      }
+      const intra = [], vs = [];
+      for (const r of kindRows) {
+        const xr = x(r); if (xr == null) continue;
+        const pen = liqPenalty(r.liq_class);
+        const enrich = (rec, peerVals, med, dev) => { const sv = [...peerVals].sort((a, b) => a - b); const adj = dev > 0 ? pyRound(dev - pen) : pyRound(dev);
+          return { ...rec, deviation_bp: pyRound(dev), peer_median_bp: pyRound(med), peer_p25_bp: pyRound(percentile(sv, .25)), peer_p75_bp: pyRound(percentile(sv, .75)),
+            peer_pct: rankPct(peerVals, rec.metric_bp), peer_n: peerVals.length, liq_penalty_bp: pen, liq_adjusted_bp: adj, liq_warn: !!(dev > 0 && pen) }; };
+        const peers = (byIssuer.get(ikey(r)) || []).filter(p => p.isin !== r.isin && x(p) != null && Math.abs(x(p) - xr) <= WINDOW).map(p => p.metric_bp);
+        if (peers.length >= 3) { const med = median(peers), dev = r.metric_bp - med; if (Math.abs(dev) >= 80) { const d = enrich(r, peers, med, dev); d.issuer_median_bp = d.peer_median_bp; intra.push(d); } }
+        const bkt = (byBucket.get(r.rating_bucket) || []).filter(p => p.isin !== r.isin && x(p) != null && Math.abs(x(p) - xr) <= WINDOW).map(p => p.metric_bp);
+        if (bkt.length >= 5) { const med = median(bkt), dev = r.metric_bp - med; if (Math.abs(dev) >= 150) { const d = enrich(r, bkt, med, dev); d.bucket_median_bp = d.peer_median_bp; vs.push(d); } }
+      }
+      return [intra, vs];
+    };
+    const groups = new Map();
+    for (const r of rows) { const k = (r.kind === "floater" ? "floater" : "fix") + "|" + (r.currency || "RUB"); if (!groups.has(k)) groups.set(k, []); groups.get(k).push(r); }
+    let intraAll = [], vsAll = [];
+    for (const g of groups.values()) { const [i, v] = analyse(g); intraAll = intraAll.concat(i); vsAll = vsAll.concat(v); }
+    const cheap = lst => lst.filter(e => e.deviation_bp > 0).sort((a, b) => b.liq_adjusted_bp - a.liq_adjusted_bp).slice(0, limit);
+    const rich = lst => lst.filter(e => e.deviation_bp < 0).sort((a, b) => a.deviation_bp - b.deviation_bp).slice(0, limit);
+    const fresh = rows.filter(r => !r.pctl_stale);
+    const high = fresh.filter(r => r.spread_pctl != null && r.spread_pctl >= 80).sort((a, b) => b.spread_pctl - a.spread_pctl).slice(0, Math.max(limit, 40));
+    const low = fresh.filter(r => r.spread_pctl != null && r.spread_pctl <= 20).sort((a, b) => a.spread_pctl - b.spread_pctl).slice(0, Math.max(limit, 40));
+    return { intra_cheap: cheap(intraAll), intra_rich: rich(intraAll), vs_cheap: cheap(vsAll), vs_rich: rich(vsAll), high_pctl: high, low_pctl: low,
+      currencies: [...new Set(rows.map(r => r.currency || "RUB"))].sort() };
   };
 
   // ---------- /api/issuer?q= (universe.issuer_page) ----------
@@ -260,14 +310,14 @@
     else if (q.startsWith("eid:") || q === "минфин рф офз") key = q;
     else {
       const nk = q.trim().toLowerCase();
-      const hit = all.find(r => (r.issuer || r.issuer_full || r.name || "").trim().toLowerCase() === nk)
-        || all.find(r => (r.issuer || r.issuer_full || r.name || "").toLowerCase().includes(nk));
+      const nmOf = r => (r.issuer_rt || r.issuer_full || r.name || "");
+      const hit = all.find(r => nmOf(r).trim().toLowerCase() === nk) || all.find(r => nmOf(r).toLowerCase().includes(nk));
       if (hit) key = ikey(hit);
     }
     if (!key) return null;
     const rows = all.filter(r => ikey(r) === key);
     if (!rows.length) return null;
-    const names = rows.map(r => r.issuer || r.issuer_full || r.name).filter(Boolean);
+    const names = rows.map(r => r.issuer_rt || r.issuer_full || r.name).filter(Boolean);
     const sectors = rows.map(r => r.sector).filter(Boolean);
     const most = arr => { const c = new Map(); for (const x of arr) c.set(x, (c.get(x) || 0) + 1); let b = null, n = 0; for (const [k, v] of c) if (v > n) { b = k; n = v; } return b; };
     const eid = most(rows.map(r => r.emitent_id).filter(Boolean));
