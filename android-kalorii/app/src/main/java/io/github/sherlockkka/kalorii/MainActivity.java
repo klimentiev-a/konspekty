@@ -18,6 +18,10 @@ import androidx.webkit.WebViewAssetLoader;
 /** Калории: страница из assets во весь экран; выбор фото из галереи/камеры; ссылки наружу открываются в браузере. */
 public class MainActivity extends Activity {
     static final int PICK = 7;
+    // страница живёт на сайте, поэтому обновляется без переустановки; встроенная копия нужна без сети
+    static final String WEB = "https://klimentiev-a.github.io/konspekty/kalorii/";
+    static final String LOCAL = "https://appassets.androidplatform.net/assets/index.html";
+    boolean fallback = false;
     WebView web;
     ValueCallback<Uri[]> pending;
 
@@ -39,9 +43,15 @@ public class MainActivity extends Activity {
                 return loader.shouldInterceptRequest(r.getUrl());
             }
             @Override
+            public void onReceivedError(WebView v, WebResourceRequest r, android.webkit.WebResourceError e) {
+                // нет сети — открываем встроенную копию страницы
+                if (r.isForMainFrame() && !fallback) { fallback = true; v.loadUrl(LOCAL); }
+            }
+            @Override
             public boolean shouldOverrideUrlLoading(WebView v, WebResourceRequest r) {
                 Uri u = r.getUrl();
                 if ("appassets.androidplatform.net".equals(u.getHost())) return false;
+                if ("klimentiev-a.github.io".equals(u.getHost()) && u.getPath() != null && u.getPath().startsWith("/konspekty/kalorii")) return false;
                 try { startActivity(new Intent(Intent.ACTION_VIEW, u)); } catch (Exception e) { }
                 return true;
             }
@@ -61,7 +71,7 @@ public class MainActivity extends Activity {
             }
         });
         setContentView(web);
-        if (b != null) web.restoreState(b); else web.loadUrl("https://appassets.androidplatform.net/assets/index.html");
+        if (b != null) web.restoreState(b); else web.loadUrl(WEB);
     }
 
     @Override
