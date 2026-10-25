@@ -23,6 +23,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.webkit.JavascriptInterface;
+import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
@@ -48,6 +49,20 @@ import java.net.URL;
  *  Содержимое всегда свежее (грузится с сайта), после первого запуска работает и без сети (кэш сайта).
  *  Само приложение проверяет новые версии на GitHub Releases и обновляется изнутри. */
 public class MainActivity extends Activity {
+    ValueCallback<Uri[]> filePending;
+
+    @Override
+    protected void onActivityResult(int req, int res, Intent data) {
+        if (req == 77) {
+            if (filePending != null) {
+                filePending.onReceiveValue(res == RESULT_OK ? WebChromeClient.FileChooserParams.parseResult(res, data) : null);
+                filePending = null;
+            }
+            return;
+        }
+        super.onActivityResult(req, res, data);
+    }
+
     static final String HOST = "klimentiev-a.github.io";
     static final String HOME = "https://klimentiev-a.github.io/konspekty/";
     static final String API = "https://api.github.com/repos/klimentiev-a/konspekty/releases/latest";
@@ -110,7 +125,16 @@ public class MainActivity extends Activity {
         if (Build.VERSION.SDK_INT >= 23) s.setOffscreenPreRaster(true);   // фоновые экраны уже отрисованы — переключение без белой вспышки
         s.setUserAgentString(s.getUserAgentString() + " HubApp/" + versionCode());
         w.addJavascriptInterface(new Bridge(w), "HubApp");
-        w.setWebChromeClient(new WebChromeClient());
+        w.setWebChromeClient(new WebChromeClient() {
+            @Override
+            public boolean onShowFileChooser(WebView v, ValueCallback<Uri[]> cb, FileChooserParams p) {   // выбор фото (Калории и др.)
+                if (filePending != null) filePending.onReceiveValue(null);
+                filePending = cb;
+                try { startActivityForResult(p.createIntent(), 77); }
+                catch (Exception e) { filePending = null; return false; }
+                return true;
+            }
+        });
         w.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView v, WebResourceRequest r) {
