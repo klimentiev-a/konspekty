@@ -102,8 +102,10 @@
 - Фонды (`fin2/funds/*.json`) ужаты: история и потоки в массивах `h`/`f` (развёртка в `stock-funds.js`), 117 МБ → 20 МБ.
 - Проверка: Playwright на `http://127.0.0.1:8765/fin2/index.html#<вкладка>` и `akcii.html#<раздел>` (1280 и 390 px), без ошибок в консоли; Мосбиржа из песочницы недоступна — карточка выпуска проверяется на живом сайте.
 
-## 5в. «Калории» (`kalorii.html`)
-- Карточка «Калории» на главной Артёма. Шаблон `src/kalorii/template.html` → `python3 src/kalorii/build.py` (в `build_all.sh`). Фото или текст уходят прямо из браузера в Claude API (`api.anthropic.com`, заголовок `anthropic-dangerous-direct-browser-access`); ключ вводит Артём в настройках страницы, хранится только в `localStorage` (`kcal:key`), в репозиторий не класть. Дневник тоже в `localStorage` (`kcal:meals`). Приложение (APK) показывает сайт, отдельная сборка не нужна.
+## 5в. «Калории» — отдельное приложение (не часть Hub)
+- Артём велел сделать отдельное приложение и убрать из Hub (карточки на главной нет, `kalorii.html` в корне нет). Шаблон страницы `src/kalorii/template.html` → `python3 src/kalorii/build.py` кладёт её в `android-kalorii/app/src/main/assets/index.html`; WebView-оболочка `android-kalorii/` (пакет `io.github.sherlockkka.kalorii`, выбор фото через `onShowFileChooser`), сборка `.github/workflows/android-kalorii.yml` → выпуск `kalorii-v1.N` с `--latest=false` (по «последнему выпуску» обновляется Hub, его не перебивать).
+- Фото или текст уходят из страницы прямо в Claude API (`api.anthropic.com`, заголовок `anthropic-dangerous-direct-browser-access`); ключ Артём вводит в приложении, хранится только в `localStorage` (`kcal:key`), в репозиторий не класть. Дневник тоже в `localStorage` (`kcal:meals`).
+- В Hub-приложении (`android/`) нет `onShowFileChooser`: выбор файла в сайте Hub внутри APK не работает.
 
 ## 6. Что уже не нравилось Артёму (не повторять)
 - Дублирование определений.
