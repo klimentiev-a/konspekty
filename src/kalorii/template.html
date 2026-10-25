@@ -281,17 +281,26 @@ async function calc(){
 }
 
 function addFiles(list){
-  Array.prototype.forEach.call(list,function(f){if(S.files.length<5&&/^image\//.test(f.type))S.files.push({file:f,url:URL.createObjectURL(f)})});
+  var bad=[],n=0;
+  Array.prototype.forEach.call(list,function(f){
+    var ok=/^image\//.test(f.type)||(!f.type&&/\.(jpe?g|png|webp|gif|heic|heif|bmp)$/i.test(f.name||"")||!f.type&&!f.name);
+    if(!ok){bad.push(f.type||f.name||"?");return}
+    if(S.files.length<5){S.files.push({file:f,url:URL.createObjectURL(f)});n++}
+  });
   renderThumbs();
+  if(!n&&bad.length){status("Файл не похож на фото ("+esc(bad[0])+"). Выбери картинку.",true);return}
+  if(n)status('<span class="spin"></span>Фото выбрано, отправляю на расчёт…');
   if(S.files.length&&!S.busy)calc();   // фото выбрано — сразу считаем
 }
+window.addEventListener("error",function(e){status("Ошибка страницы: "+esc(e.message||"неизвестно"),true)});
+window.addEventListener("unhandledrejection",function(e){status("Ошибка: "+esc((e.reason&&(e.reason.message||e.reason.msg))||"неизвестно"),true)});
 
 function bind(){
   $("prev").onclick=function(){S.day=addDays(S.day,-1);render()};
   $("next").onclick=function(){S.day=addDays(S.day,1);render()};
   $("today").onclick=function(){S.day=ymd(new Date());render()};
   $("pick").onclick=function(){$("file").click()};
-  $("file").onchange=function(){addFiles(this.files);this.value=""};
+  $("file").onchange=function(){if(!this.files||!this.files.length){status("Файл не выбран.",true);return}addFiles(this.files);this.value=""};
   $("go").onclick=calc;
   $("thumbs").onclick=function(e){var b=e.target.closest("[data-rm]");if(!b)return;S.files.splice(+b.dataset.rm,1);renderThumbs()};
   $("week").onclick=function(e){var b=e.target.closest("[data-d]");if(!b)return;S.day=b.dataset.d;render()};
