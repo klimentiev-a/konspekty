@@ -75,7 +75,7 @@ tpl = open(os.path.join(HERE, 'template.html'), encoding='utf-8').read()
 data = json.dumps({'lessons': lessons, 'units': UNITS}, ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/')
 zoom = open(os.path.join(ROOT, 'src', 'finance', 'zoom.js'), encoding='utf-8').read()
 marked = open(os.path.join(ROOT, 'src', 'marked.min.js'), encoding='utf-8').read()
-html = (tpl.replace('/*FINCSS*/', css).replace('<!--ZOOM-->', '<script>' + zoom + '</script>')
+html = (tpl.replace('/*FINCSS*/', css).replace('<!--ZOOM-->', '<script>' + zoom + '</script><script>' + open(os.path.join(ROOT, 'src', 'finance', 'seltr.js'), encoding='utf-8').read() + '</script>')
            .replace('<!--DATA-->', '<script type="application/json" id="edata">' + data + '</script>')
            .replace('<!--MARKED-->', '<script>' + marked + '</script>'))
 

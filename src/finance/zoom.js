@@ -2,7 +2,7 @@
 var Z=[0.8,0.9,1,1.1,1.2,1.3,1.45,1.6];
 function g(){try{if(!localStorage.getItem('siteZoomLocal')){localStorage.removeItem('siteZoom');localStorage.setItem('siteZoomLocal','1')}var v=parseFloat(localStorage.getItem('siteZoom'));return v>0?v:1}catch(e){return 1}}
 function ap(v){var d=document.documentElement;d.style.zoom=(v===1?'':String(v));d.style.setProperty('--iz',String(+(1/v).toFixed(4)));
-  if(!document.getElementById('iz-css')){var s=document.createElement('style');s.id='iz-css';s.textContent='.zm,.zmr,.skinmenu,.zq{zoom:var(--iz,1)}html,body{overflow-x:clip}';(document.head||d).appendChild(s)}}
+  if(!document.getElementById('iz-css')){var s=document.createElement('style');s.id='iz-css';s.textContent='.zm,.zmr,.skinmenu,.zq,.ztop{zoom:var(--iz,1)}html,body{overflow-x:clip}';(document.head||d).appendChild(s)}}
 ap(g());
 window.siteZoomGet=g;
 window.siteZoom=function(d){var v=g(),i=Z.indexOf(v);if(i<0)i=2;i=d===0?2:Math.max(0,Math.min(Z.length-1,i+d));v=Z[i];try{localStorage.setItem('siteZoom',String(v))}catch(e){}ap(v);
@@ -84,6 +84,11 @@ document.addEventListener('DOMContentLoaded',function(){var v=g();document.query
     var d=document.createElement('div');d.className='zq';d.setAttribute('role','group');d.setAttribute('aria-label','Масштаб страницы');
     d.innerHTML='<button type="button" data-sz="-1" aria-label="Уменьшить" title="Уменьшить масштаб">A−</button><i></i><button type="button" data-sz="1" aria-label="Увеличить" title="Увеличить масштаб">A+</button>';
     document.body.appendChild(d);
+    var tb=document.createElement('button');tb.type='button';tb.className='ztop';tb.setAttribute('aria-label','Наверх');tb.title='Наверх';
+    tb.innerHTML='<svg viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg>';document.body.appendChild(tb);
+    function tvis(){var y=window.pageYOffset||document.documentElement.scrollTop||0;tb.classList.toggle('on',y>500)}
+    window.addEventListener('scroll',tvis,{passive:true});tvis();
+    tb.addEventListener('click',function(){var rm=false;try{rm=matchMedia('(prefers-reduced-motion:reduce)').matches}catch(e){}window.scrollTo({top:0,behavior:rm?'auto':'smooth'})});
     function vis(e){var r=e.getBoundingClientRect(),cs=getComputedStyle(e);return r.width>=8&&r.height>=8&&cs.visibility!=='hidden'&&cs.display!=='none'&&cs.opacity!=='0'}
     function place(){return;
       var W=window.innerWidth,els=[].slice.call(document.querySelectorAll('a,button,input,select')).filter(function(e){return !d.contains(e)&&vis(e)}),
