@@ -2,7 +2,7 @@ IMF countries: HTTP Error 403: Forbidden
 IMF NGDPD HTTP Error 403: Forbidden
 IMF PPPGDP HTTP Error 403: Forbidden
 МВФ не отвечает — дальше только Всемирный банк
-DBnomics WEO:2026-10 The read operation timed out
+DBnomics WEO:2026-10 HTTP Error 404: NOT FOUND
 DBnomics WEO:2026-04 HTTP Error 404: NOT FOUND
 DBnomics WEO:2025-10 HTTP Error 404: NOT FOUND
 DBnomics WEO:2025-04 измерения ['weo-country', 'weo-subject', 'unit']
