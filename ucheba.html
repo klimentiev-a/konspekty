@@ -31,7 +31,11 @@ document.addEventListener('DOMContentLoaded',function(){var v=g();document.query
     d.setAttribute('role','status');
     d.style.cssText='position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 16px);transform:translate(-50%,140%);z-index:9999;display:flex;align-items:center;gap:12px;padding:8px 8px 8px 16px;border-radius:999px;border:1px solid var(--line,#D9D3C2);background:var(--surface,#FBF9F3);color:var(--fg,#25221C);box-shadow:0 10px 30px rgba(0,0,0,.18);font:500 14px/1.2 system-ui,sans-serif;white-space:nowrap;transition:transform .4s cubic-bezier(.2,.9,.25,1)';
     d.innerHTML='<span>Hub обновился</span><button type="button" style="border:0;border-radius:999px;padding:9px 14px;background:var(--a2,var(--accent,#1F6B57));color:#fff;font:600 14px/1 system-ui,sans-serif;cursor:pointer">Обновить</button>';
-    d.querySelector('button').onclick=function(){try{sessionStorage.setItem(rk,String(Date.now()))}catch(er){}location.reload()};
+    d.querySelector('button').onclick=function(){var b=this,done=false;b.textContent='…';b.disabled=true;try{sessionStorage.setItem(rk,String(Date.now()))}catch(er){}
+      function go(){if(done)return;done=true;try{location.reload()}catch(er){location.href=location.href.replace(/#.*$/,'')}}
+      setTimeout(go,3500);   // не зависнуть, если сеть медленная
+      try{var u=location.href.replace(/#.*$/,'');caches.keys().then(function(ks){var k=ks.filter(function(x){return /-static$/.test(x)})[0];if(!k)return go();
+        return fetch(u,{cache:'reload'}).then(function(r){return r.ok?caches.open(k).then(function(c){return c.put(u,r)}):0}).then(go,go)}).catch(go)}catch(er){go()}};
     document.body.appendChild(d);requestAnimationFrame(function(){requestAnimationFrame(function(){d.style.transform='translate(-50%,0)'})});
   });
   function ask(){var c=navigator.serviceWorker.controller;if(c)c.postMessage({t:'hub-check',url:location.href})}
