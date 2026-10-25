@@ -9,9 +9,11 @@
     bar.querySelector('button').onclick=hide;document.body.appendChild(bar);return bar}
   function hide(){if(bar)bar.classList.remove('on')}
   function show(src,txt){var b=el();b.querySelector('small').textContent=src;b.querySelector('b').textContent=txt;b.classList.add('on')}
-  function glossary(w){ // слова из таблиц Words (Term | Перевод) на странице
-    w=w.toLowerCase();var rows=document.querySelectorAll('table tr'),i,c;
-    for(i=0;i<rows.length;i++){c=rows[i].children;if(c.length>=2&&c[0].textContent.trim().toLowerCase()===w)return c[1].textContent.trim()}return ''}
+  function glossary(w){ // только таблицы Words / Glossary: колонки Term | Перевод
+    w=w.toLowerCase().replace(/[.,;:!?]+$/,'');var tabs=document.querySelectorAll('table'),i,j,h,rows,c;
+    for(i=0;i<tabs.length;i++){h=tabs[i].querySelector('tr');if(!h||!/^(term|слово|термин)/i.test(h.children[0].textContent.trim())||!/перевод|translation|расшифровка/i.test((h.children[1]||{}).textContent||''))continue;
+      rows=tabs[i].querySelectorAll('tr');for(j=1;j<rows.length;j++){c=rows[j].children;if(c.length>=2&&c[0].textContent.trim().toLowerCase()===w)return c[1].textContent.trim()}}
+    return ''}
   function tr(t){
     var id=++seq;if(cache[t]){show(t,cache[t]);return}
     var g=glossary(t);if(g){cache[t]=g;show(t,g);return}

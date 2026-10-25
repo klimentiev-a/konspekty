@@ -283,7 +283,10 @@ if('serviceWorker' in navigator&&location.protocol==='https:')navigator.serviceW
   '@supports not selector(::-webkit-scrollbar){*{scrollbar-width:thin;scrollbar-color:var(--faint,#857E6E) transparent}}'+
   '.zq{position:fixed;bottom:14px;right:14px;top:auto;z-index:60;display:flex;align-items:center;height:24px;border:1px solid var(--line,#D9D3C2);border-radius:999px;background:color-mix(in srgb,var(--surface,var(--bg,#FBF9F3)) 88%,transparent);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);overflow:hidden;opacity:.62;transition:opacity .15s;zoom:var(--iz,1)}'+
   '.zq:hover,.zq:focus-within{opacity:1}.zq button{height:24px;min-width:26px;padding:0 7px;border:0;background:none;color:var(--muted,#665F52);font:600 11px/1 system-ui,sans-serif;cursor:pointer}'+
-  '.zq button:hover{color:var(--fg,#25221C);background:color-mix(in srgb,var(--fg,#25221C) 8%,transparent)}.zq i{width:1px;height:12px;background:var(--line,#D9D3C2)}';
+  '.zq button:hover{color:var(--fg,#25221C);background:color-mix(in srgb,var(--fg,#25221C) 8%,transparent)}.zq i{width:1px;height:12px;background:var(--line,#D9D3C2)}'+
+  '.ztop{position:fixed;right:14px;bottom:48px;z-index:60;width:40px;height:40px;border-radius:50%;border:1px solid var(--line,#D9D3C2);background:color-mix(in srgb,var(--surface,var(--bg,#FBF9F3)) 92%,transparent);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);color:var(--accent,var(--a2,var(--fg,#25221C)));display:flex;align-items:center;justify-content:center;padding:0;cursor:pointer;box-shadow:0 6px 20px rgba(0,0,0,.22);opacity:0;visibility:hidden;transform:translateY(10px) scale(.9);transition:opacity .2s,transform .2s,visibility .2s,background .15s;zoom:var(--iz,1)}'+
+  '.ztop.on{opacity:.92;visibility:visible;transform:none}.ztop.on:hover{opacity:1;background:var(--accent,var(--a2,var(--fg,#25221C)));color:var(--bg,#fff)}.ztop svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}'+
+  '@media (prefers-reduced-motion:reduce){.ztop{transition:none}}';
   function go(){
     if(!document.head||document.getElementById('zq-css'))return;
     var st=document.createElement('style');st.id='zq-css';st.textContent=css;document.head.appendChild(st);
