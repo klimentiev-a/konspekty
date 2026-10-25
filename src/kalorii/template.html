@@ -124,7 +124,7 @@ body{min-height:100vh}
     <input type="file" id="file" accept="image/*" multiple hidden>
     <textarea id="note" placeholder="Если нужно, подскажи: «съел половину», «без соуса», «Воппер и большая картошка»"></textarea>
     <div id="status"></div>
-    <p class="hint">Можно только текст без фото. Расчёт примерный, ошибка бывает ±20%.</p>
+    <p class="hint">Фото считается сразу после выбора. Если нужна подсказка («съел половину»), напиши её до выбора фото. Можно и только текст. Расчёт примерный, ошибка ±20%.</p>
   </section>
 
   <section class="box" aria-label="Неделя">
@@ -263,7 +263,7 @@ async function calc(){
   if(!S.files.length&&!note){status("Выбери фото или напиши, что ты съел.",true);return}
   S.busy=true;$("go").disabled=true;
   var files=S.files.slice(),blobs=files.map(function(f){return f.file});
-  S.pending=note||(files.length+" фото");render();status("");
+  S.pending=note||(files.length+" фото");render();status('<span class="spin"></span>Считаю, это займёт несколько секунд…');
   try{
     var thumb=blobs.length?await makeThumb(blobs[0]):"";
     var input=PROMPT+"\n\nЗаметка пользователя: "+(note||"(нет)")+"\nФото: "+(blobs.length?blobs.length+" шт. (все относятся к одному приёму пищи)":"нет, только текст");
@@ -283,6 +283,7 @@ async function calc(){
 function addFiles(list){
   Array.prototype.forEach.call(list,function(f){if(S.files.length<5&&/^image\//.test(f.type))S.files.push({file:f,url:URL.createObjectURL(f)})});
   renderThumbs();
+  if(S.files.length&&!S.busy)calc();   // фото выбрано — сразу считаем
 }
 
 function bind(){
