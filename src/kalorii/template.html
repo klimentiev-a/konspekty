@@ -121,7 +121,7 @@ body{min-height:100vh}
       <button class="btn" id="pick" type="button">Выбрать фото или скрин</button>
       <button class="btn alt" id="go" type="button" disabled>Посчитать</button>
     </div>
-    <input type="file" id="file" accept="image/*" multiple hidden>
+    <input type="file" id="file" accept="image/*" multiple style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0">
     <textarea id="note" placeholder="Если нужно, подскажи: «съел половину», «без соуса», «Воппер и большая картошка»"></textarea>
     <div id="status"></div>
     <p class="hint">Фото считается сразу после выбора. Если нужна подсказка («съел половину»), напиши её до выбора фото. Можно и только текст. Расчёт примерный, ошибка ±20%.</p>
@@ -303,7 +303,12 @@ function bind(){
   $("prev").onclick=function(){S.day=addDays(S.day,-1);render()};
   $("next").onclick=function(){S.day=addDays(S.day,1);render()};
   $("today").onclick=function(){S.day=ymd(new Date());render()};
-  $("pick").onclick=function(){$("file").click()};
+  $("pick").onclick=function(){
+    if(window.KcalApp&&KcalApp.pick){status('<span class="spin"></span>Открываю галерею…');KcalApp.pick()}else $("file").click()};
+  window.__kcalErr=function(m){status(esc(m),true)};
+  window.__kcalPhotos=function(arr){var fs=[];
+    arr.forEach(function(d,i){try{var b=atob(d.split(",")[1]),u=new Uint8Array(b.length);for(var k=0;k<b.length;k++)u[k]=b.charCodeAt(k);fs.push(new File([u],"photo"+i+".jpg",{type:"image/jpeg"}))}catch(e){}});
+    if(fs.length)addFiles(fs);else status("Фото не открылось.",true)};
   $("file").onchange=function(){if(!this.files||!this.files.length){status("Файл не выбран.",true);return}addFiles(this.files);this.value=""};
   $("go").onclick=calc;
   $("thumbs").onclick=function(e){var b=e.target.closest("[data-rm]");if(!b)return;S.files.splice(+b.dataset.rm,1);renderThumbs()};
