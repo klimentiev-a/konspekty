@@ -150,6 +150,10 @@ body{min-height:100vh}
 <script>
 (function(){
 "use strict";
+var BUILD="1792925834";
+(function(){try{if(location.protocol==="file:"||!/^[0-9]+$/.test(BUILD))return;
+  fetch(location.pathname+"?_="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=/var BUILD="([0-9]+)"/.exec(t);
+    if(m&&m[1]!==BUILD&&!sessionStorage.getItem("kcal:rl:"+m[1])){sessionStorage.setItem("kcal:rl:"+m[1],"1");location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})();
 var $=function(id){return document.getElementById(id)};
 function ls(k,d){try{var v=localStorage.getItem(k);return v==null?d:v}catch(e){return d}}
 function lw(k,v){try{localStorage.setItem(k,v)}catch(e){}}
@@ -283,7 +287,7 @@ async function calc(){
 function addFiles(list){
   var bad=[],n=0;
   Array.prototype.forEach.call(list,function(f){
-    var ok=/^image\//.test(f.type)||(!f.type&&/\.(jpe?g|png|webp|gif|heic|heif|bmp)$/i.test(f.name||"")||!f.type&&!f.name);
+    var ok=/^image\//.test(f.type)||!f.type||f.type==="application/octet-stream";   // у некоторых телефонов тип файла пустой: пробуем открыть как картинку
     if(!ok){bad.push(f.type||f.name||"?");return}
     if(S.files.length<5){S.files.push({file:f,url:URL.createObjectURL(f)});n++}
   });
