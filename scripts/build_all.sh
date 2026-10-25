@@ -14,7 +14,6 @@ python3 src/english/build_english.py
 python3 src/finenglish/build.py
 python3 src/energy/build_energy.py
 python3 src/fin2/build.py
-python3 src/kalorii/build.py
 python3 src/finance/make_search.py
 # Синхронизация прогресса между устройствами: подключаем sync.js первым скриптом (идемпотентно)
 python3 - <<'PY'
