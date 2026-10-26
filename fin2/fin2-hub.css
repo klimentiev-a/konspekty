@@ -7,3 +7,5 @@
 #visit-counter[hidden] { display:none !important; }
 @media (max-width:760px) { .f2-back { width:40px; height:40px; } }
 .settings-pop .sp-link[href*="Guide"] { display:none !important; }
+/* таблицы StockAI: скрытые подписи для экранного диктора (.ai-sr-only, position:absolute) вылезали за прокручиваемую обёртку и давали горизонтальную прокрутку всей страницы на телефоне */
+.ai-table-wrap{position:relative}

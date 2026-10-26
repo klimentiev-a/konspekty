@@ -344,6 +344,8 @@ def main():
         step("emitent_ratings", lambda: export_emitent_ratings(out, c))
         status["full_at"] = datetime.now(timezone.utc).isoformat()
 
+    if not args.offline:
+        status.pop("note", None)          # пометка «стартовый снимок без сети» с прошлых запусков больше не верна
     status.update({
         "mode": mode, "at": datetime.now(timezone.utc).isoformat(), "snapshot_at": snapshot_at,
         "offline": args.offline, "steps": steps, "sizes_kb": {k: round(v / 1024) for k, v in sizes.items()},
