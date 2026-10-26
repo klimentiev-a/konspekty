@@ -58,7 +58,7 @@
     if (path === "/api/rating_actions") { const d = await F2.load("rating_actions.json"); const lim = qn("limit", 120); return J({ actions: (d.actions || []).slice(0, lim), total: d.total }); }
     if (path === "/api/issuers/credit") return J((await F2.tryLoad("issuers_credit.json")) || { issuers: [], rows: [] });
     if ((m = /^\/api\/issuers\/credit\/(.+)$/.exec(path))) return E(404, "нет данных");
-    if (path === "/api/issuer") { const r = await F2.issuerPage(decodeURIComponent(q("q") || "")); return r ? J(r) : E(404, `эмитент не найден: ${q("q")}`); }
+    if (path === "/api/issuer") { const r = await F2.issuerPage(q("q") || ""); return r ? J(r) : E(404, `эмитент не найден: ${q("q")}`); }
     if (path === "/api/issuer_redemptions") {
       const list = method === "POST" ? ((body && body.isins) || []) : (q("isins") || "").split(",");
       return J({ events: await F2.redemptionEvents(list.map(String).filter(Boolean).slice(0, 1500)) });
@@ -131,11 +131,14 @@
   }
 
   F2.reloadUniverse = async function () {
+    F2.freshUntil = Date.now() + 30000;          // 30 с грузим мимо кэша браузера и service worker
     F2.clearCache && F2.clearCache();
     return F2.universe();
   };
 
   // ---- перехват fetch ----
+  const MEMO = new Map(), MEMO_RE = /^\/api\/instrument\/[^/]+\/(history|peers_history|schedule|total_return|liquidity|news)$/;
+  let lowChain = Promise.resolve();
   window.fetch = function (input, init) {
     let url = typeof input === "string" ? input : (input && input.url) || String(input);
     const method = ((init && init.method) || (input && input.method) || "GET").toUpperCase();
@@ -146,8 +149,28 @@
       return (async () => {
         let body = null;
         if (init && init.body && typeof init.body === "string") { try { body = JSON.parse(init.body); } catch (e) { body = null; } }
-        try { return await route(method, u.pathname, u.searchParams, body); }
-        catch (e) { console.warn("fin2 api", u.pathname, e); return E(e && e.status || 500, (e && e.message) || "error"); }
+        const run = async () => {
+          try { return await route(method, u.pathname, u.searchParams, body); }
+          catch (e) { console.warn("fin2 api", u.pathname, e); return E(e && e.status || 500, (e && e.message) || "error"); }
+        };
+        // Карточка выпуска ходит на Мосбиржу: ответы помним 30 минут (клик после наведения не качает заново),
+        // а фоновую подгрузку при наведении (priority: low) ставим в одну очередь и пускаем только когда биржа свободна.
+        if (method === "GET" && MEMO_RE.test(u.pathname)) {
+          const key = u.pathname + u.search, low = init && init.priority === "low", now = Date.now();
+          let hit = MEMO.get(key);
+          if (hit && now - hit.t > 30 * 60 * 1000) { MEMO.delete(key); hit = null; }
+          if (!hit) {
+            const start = async () => { const r = await run(); const text = await r.text(); if (r.status !== 200) MEMO.delete(key); return { status: r.status, text }; };
+            let p;
+            if (low) { p = lowChain.then(async () => { for (let i = 0; i < 30 && F2.moexIdle && !F2.moexIdle(); i++) await new Promise(r => setTimeout(r, 100)); return start(); }); lowChain = p.catch(() => { }); }
+            else p = start();
+            hit = { t: now, p }; MEMO.set(key, hit);
+            p.catch(() => MEMO.delete(key));
+          }
+          const r = await hit.p;
+          return new Response(r.text, { status: r.status, headers: { "Content-Type": "application/json" } });
+        }
+        return run();
       })();
     }
     if (url.startsWith("/")) {                       // абсолютные пути StockAI → относительно страницы

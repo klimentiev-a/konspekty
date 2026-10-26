@@ -29,12 +29,18 @@
       let last;
       for (let a = 0; a < 3; a++) {
         await slot();
+        let retry = true;
         try {
-          const r = await fetch(url, { signal: AbortSignal.timeout ? AbortSignal.timeout(20000) : undefined });
-          if (!r.ok) throw new Error("MOEX HTTP " + r.status);
-          return await r.json();
-        } catch (e) { last = e; await new Promise(res => setTimeout(res, 600 * (a + 1))); }
+          const ctl = new AbortController(), tm = setTimeout(() => ctl.abort(), 20000);
+          try {
+            const r = await fetch(url, { signal: ctl.signal });
+            if (!r.ok) { if (r.status === 404) retry = false; throw new Error("MOEX HTTP " + r.status); }
+            return await r.json();
+          } finally { clearTimeout(tm); }
+        } catch (e) { last = e; }
         finally { free(); }
+        if (!retry) break;
+        await new Promise(res => setTimeout(res, 600 * (a + 1)));   // пауза уже после освобождения слота
       }
       throw new Error("MOEX недоступна: " + (last && last.message));
     })();
@@ -43,6 +49,7 @@
   }
   const block = (payload, name) => { const b = payload && payload[name]; if (!b || !b.columns) return []; return (b.data || []).map(row => Object.fromEntries(b.columns.map((c, i) => [c, row[i]]))); };
   F2.iss = iss; F2.issBlock = block;
+  F2.moexIdle = () => inflight === 0 && queue.length === 0;   // для фоновой подгрузки: не мешать настоящим запросам
 
   // ---------- справочник ----------
   F2.resolveSecurity = async function (isin) {
@@ -333,7 +340,7 @@
   F2.floaterScenario = async function (isin, cleanPx, ratePath, row) {
     cleanPx = Number(cleanPx);
     if (!isFinite(cleanPx) || cleanPx <= 0) throw Object.assign(new Error("price must be a finite positive clean price"), { status: 400 });
-    const fi = row && (row.float_index || ((row.secid || "").startsWith("SU29") || (row.secid || "").startsWith("SU24") ? "RUONIA" : "CBR_RATE"));
+    const fi = (row && row.float_index) || "";   // как на сервере: нет индекса в данных — сценарий не считаем
     if (fi !== "CBR_RATE") return { ytm: null, reason: "scenario_requires_confirmed_CBR_RATE_index" };
     const ref = await F2.resolveSecurity(isin);
     let qm = row && (row.float_add != null ? row.float_add : row.float_qm);
@@ -346,9 +353,9 @@
     const checked = BM.principal(face0, bz.amortizations.map(a => [a.date, a.value]), t0, ref.matdate, !bz.amortizations.length);
     if (!checked) return { ytm: null };
     const [amorts, face] = checked;
-    let accint = quote.accint; if (accint == null) accint = row && row.accint != null ? row.accint : null; if (accint == null) return { ytm: null };
-    const path = (ratePath || []).map(p => [parseD(p.date), Number(p.rate)]).filter(p => !isNaN(p[0]) && isFinite(p[1]) && p[1] >= 0).sort((a, b) => a[0] - b[0]);
-    if (!path.length || path[0][0] > t0) return { ytm: null };
+    const accint = quote.accint; if (accint == null) return { ytm: null };   // как на сервере: без НКД с биржи не считаем
+    const path = (ratePath || []).map(p => [parseD(p.date), Number(p.rate)]).sort((a, b) => a[0] - b[0]);
+    if (!path.length || path[0][0] > t0 || path.some(p => isNaN(p[0]) || !isFinite(p[1]) || p[1] < 0)) return { ytm: null };   // неверная точка — отказ целиком, как на сервере
     const keyAt = d => { let r = null; for (const [pd, pr] of path) { if (pd <= d) r = pr; else break; } return r; };
     const amortT = amorts.map(([d, v]) => [parseD(d), v]);
     const projected = (start, end) => {
@@ -542,7 +549,7 @@
       }
       return out;
     })();
-    mmCache.set(k, p); return p;
+    mmCache.set(k, p); p.then(o => { if (!o.length) mmCache.delete(k); }, () => mmCache.delete(k)); return p;
   }
   F2.totalReturn = async function (isin, frm, till) {
     const ref = await F2.resolveSecurity(isin);
@@ -627,7 +634,7 @@
   // ---------- выплаты номинала и купонов по выпускам эмитента ----------
   F2.redemptionEvents = async function (isins) {
     const T = today(), U = await F2.universe();
-    const rows = isins.map(i => U.byIsin.get(i.trim().toUpperCase())).filter(Boolean).sort((a, b) => (b.volume || 0) - (a.volume || 0)).slice(0, 80);
+    const rows = isins.map(i => U.byIsin.get(i.trim().toUpperCase())).filter(Boolean).sort((a, b) => (b.volume || 0) - (a.volume || 0)).slice(0, 1500);
     const fxFor = async ccy => { if (!ccy || ccy === "RUB") return 1; const fx = await F2.tryLoad("fx_rates.json"); return (fx && fx[ccy]) || 1; };
     const one = async sn => {
       if (!sn.issuesize) return [];

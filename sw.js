@@ -2,7 +2,7 @@
    Страницы и картинки — сразу из кэша (мгновенно), а в фоне проверяется новая версия; если она вышла — странице приходит сигнал «обновлено».
    Данные (*.json) — сначала сеть (свежие котировки и новости), если сеть не ответила за 4 с — из кэша.
    Шрифты Google и история цен с GitHub — из кэша с фоновым обновлением. */
-const V = 'hub-v228', STATIC = V + '-static', DATA = 'hub-data', EXT = 'hub-ext';
+const V = 'hub-v229', STATIC = V + '-static', DATA = 'hub-data', EXT = 'hub-ext';
 const CORE = ['./', 'index.html', 'artem.html', 'nastya.html', 'ucheba.html', 'finance.html', 'politika.html', 'fin-english.html', 'manifest.webmanifest', 'icon-192.png?v=31', 'apple-touch-icon.png?v=31'];
 
 // офлайн: страницы, библиотеки и данные карты/расписания/рынков кладём в кэш заранее
@@ -81,7 +81,7 @@ async function nf(ev, req, cacheName, ms) {
   const hit = await cache.match(key);
   const net = fetch(req, { cache: 'no-cache' }).then(async res => { if (res && res.ok) await cache.put(key, await stamp(res)); return res; });
   net.catch(() => {});
-  if (hit && Date.now() - (+hit.headers.get('x-sw-time') || 0) < 10 * 60 * 1000) { ev.waitUntil(net.catch(() => {})); return hit; }
+  if (hit && req.cache !== 'no-store' && Date.now() - (+hit.headers.get('x-sw-time') || 0) < 10 * 60 * 1000) { ev.waitUntil(net.catch(() => {})); return hit; }
   const timeout = new Promise(r => setTimeout(() => r(null), ms));
   const first = await Promise.race([net.catch(() => null), timeout]);
   if (first) return first;

@@ -18,7 +18,7 @@
     opt = opt || {};
     const url = (opt.base || F2.DATA_BASE) + name;
     if (!opt.fresh && cache.has(url)) return cache.get(url);
-    const p = fetch(url, { cache: opt.noStore ? "no-store" : "default" }).then(r => {
+    const p = fetch(url, { cache: (opt.noStore || Date.now() < (F2.freshUntil || 0)) ? "no-store" : "default" }).then(r => {
       if (!r.ok) throw new Error("HTTP " + r.status + " " + name);
       return r.json();
     });
@@ -251,6 +251,14 @@
   const percentile = (sv, q) => { if (!sv.length) return null; if (sv.length === 1) return sv[0]; const idx = q * (sv.length - 1), lo = Math.floor(idx), hi = Math.min(lo + 1, sv.length - 1); return sv[lo] + (sv[hi] - sv[lo]) * (idx - lo); };
   const rankPct = (vals, x) => vals.length ? pyRound(100 * vals.filter(v => v < x).length / vals.length) : null;
   F2.ideas = async function (limit, minTurnover) {
+    if (!minTurnover) {                      // без порога по обороту — точный серверный расчёт из снимка (limit=1000)
+      const d = await F2.tryLoad("ideas.json");
+      if (d && Array.isArray(d.intra_cheap)) {
+        const cut = (a, n) => (a || []).slice(0, n);
+        return { intra_cheap: cut(d.intra_cheap, limit), intra_rich: cut(d.intra_rich, limit), vs_cheap: cut(d.vs_cheap, limit), vs_rich: cut(d.vs_rich, limit),
+          high_pctl: cut(d.high_pctl, Math.max(limit, 40)), low_pctl: cut(d.low_pctl, Math.max(limit, 40)), currencies: d.currencies || [] };
+      }
+    }
     const U = await F2.universe();
     const rows = [];
     for (const r0 of U.rows.concat(U.extra)) {

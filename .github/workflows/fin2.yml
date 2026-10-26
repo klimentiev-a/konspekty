@@ -36,15 +36,28 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           REPO_URL="https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
-          rm -rf f2 && (git clone -q --depth 1 -b fin2-data "$REPO_URL" f2 2>/dev/null || mkdir -p f2)
+          rm -rf f2
+          # «ветки нет» и «клонировать не удалось» — разные случаи: при сбое сети не начинаем с пустой базы,
+          # иначе push -f затрёт накопленное состояние
+          if git ls-remote --exit-code --heads "$REPO_URL" fin2-data >/dev/null 2>&1; then
+            for i in 1 2 3; do git clone -q --depth 1 -b fin2-data "$REPO_URL" f2 2>/dev/null && break; rm -rf f2; sleep 10; done
+            [ -d f2 ] || { echo "::error::ветка fin2-data есть, но клонировать не удалось — выходим, ничего не затирая"; exit 1; }
+          else
+            echo "ветки fin2-data ещё нет — первый запуск"; mkdir -p f2
+          fi
           mkdir -p f2/data f2/state
           du -sh f2/state f2/data 2>/dev/null || true
       - name: Экспорт
         run: |
           MODE="${{ github.event.inputs.mode }}"; [ -n "$MODE" ] || MODE=auto
-          python3 fin2-export/export.py --out f2/data --state f2/state --$MODE 2>&1 | grep -v "WARNING agencies\|MOEX retry" | tail -400
+          set +e
+          timeout 140m python3 fin2-export/export.py --out f2/data --state f2/state --$MODE > export.log 2>&1
+          rc=$?
+          grep -v "WARNING agencies\|MOEX retry" export.log | tail -400
+          echo "код выхода: $rc"
+          exit $rc
       - name: Отправить ветку fin2-data
-        if: always()
+        if: success()   # после сбоя или отмены ветку не трогаем: прошлый снимок и база остаются целыми
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |

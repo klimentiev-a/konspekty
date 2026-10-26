@@ -149,20 +149,24 @@ def main():
 
     # ---------- выгрузка ----------
     from fastapi.testclient import TestClient
-    c = TestClient(M.app)
+    c = TestClient(M.app, raise_server_exceptions=False)
     sizes: dict = {}
 
     def get(path, name=None, required=False):
         name = name or path.strip("/").replace("/api/", "").replace("?", "_").replace("&", "_").replace("=", "-") + ".json"
         t = time.time()
-        r = c.get(path)
-        if r.status_code != 200:
-            steps[f"get {path}"] = {"ok": False, "error": f"HTTP {r.status_code}", "sec": round(time.time() - t, 1)}
-            log(f"✗ {path}: HTTP {r.status_code}")
+        try:
+            r = c.get(path)
+            code = r.status_code
+            data = r.json() if code == 200 else None
+        except Exception as e:  # noqa: BLE001  — один сбойный адрес не должен ронять всю выгрузку
+            code, data = f"{type(e).__name__}: {str(e)[:120]}", None
+        if code != 200:
+            steps[f"get {path}"] = {"ok": False, "error": f"HTTP {code}", "sec": round(time.time() - t, 1)}
+            log(f"✗ {path}: HTTP {code}")
             if required:
-                raise RuntimeError(f"{path}: HTTP {r.status_code}")
+                raise RuntimeError(f"{path}: HTTP {code}")
             return None
-        data = r.json()
         sizes[name] = dump(out, name, data)
         log(f"  {name} {sizes[name] / 1024:.0f} КБ {time.time() - t:.1f}с")
         return data
@@ -294,7 +298,7 @@ def main():
         step("market", market)
         if mode == "full":
             # сначала сохраняем рыночный снимок: если тяжёлые шаги упадут или не уложатся во время, он уже на месте
-            dump_market()
+            step("dump_market", dump_market)
             from app.services import macro as mc, auctions as auc
             step("schedules", lambda: zspread.refresh_schedules())
             step("calls", lambda: moex_ref.refresh_calls())
@@ -314,7 +318,7 @@ def main():
             step("bank_normatives", lambda: mc.get_bank_normatives(force=True))
             step("ofz_histories", lambda: instrument.prewarm_ofz_histories())
 
-    dump_market()
+    step("dump_market", dump_market)
 
     if mode == "full":
         get("/api/rating_curves/history", "rating_curves_history.json")
@@ -342,7 +346,8 @@ def main():
         if not args.skip_ratings:
             step("bond_ratings", lambda: export_bond_ratings(out, c))
         step("emitent_ratings", lambda: export_emitent_ratings(out, c))
-        status["full_at"] = datetime.now(timezone.utc).isoformat()
+        if args.offline or steps.get("market", {}).get("ok", True):   # не отмечаем «полное обновление», если не обновился сам рынок
+            status["full_at"] = datetime.now(timezone.utc).isoformat()
 
     if not args.offline:
         status.pop("note", None)          # пометка «стартовый снимок без сети» с прошлых запусков больше не верна
@@ -361,6 +366,9 @@ def main():
     except Exception as e:  # noqa: BLE001
         log("✗ checkpoint:", e)
     log(f"готово за {time.time() - t0:.0f} с")
+    if not args.offline and not steps.get("market", {}).get("ok", False):
+        log("✗ рынок не обновился — выходим с ошибкой, ветку не обновляем")
+        sys.exit(1)
 
 
 def export_indices(get, periods):
