@@ -62,7 +62,7 @@ minutes: 60
 ### 4. Неправильные глаголы по группам
 Учить сорок отдельных слов утомительно, но многие глаголы меняются по похожим схемам. Группы помогают запоминать быстрее.
 
-**Группа 1. Уход в -ought / -aught.** Эти формы звучат почти одинаково: [ɔːt].
+**Группа 1. Окончание -ought / -aught.** Эти формы звучат почти одинаково: [ɔːt].
 
 | V1 | V2 | Перевод |
 |---|---|---|
@@ -141,7 +141,7 @@ minutes: 60
 ### 5. Произношение, которое легко перепутать
 Некоторые прошедшие формы пишутся странно, и произносить их надо не так, как читается:
 - **bought** [bɔːt], **brought** [brɔːt], **thought** [θɔːt] — «бот», «брот», «сот» (с межзубным звуком), буквы *gh* не читаются.
-- **saw** [sɔː] — «со-о». **said** [sed] — «сэд» (не «сайд»). **ate** [et] (в британском чаще так; иногда [eɪt]).
+- **saw** [sɔː] — «со-о». **said** [sed] — «сэд» (не «сайд»). **ate** — [et] или [eɪt], оба варианта правильные (в американском — [eɪt]).
 - **knew** [njuː] — «нью», буква k не читается. **wrote** [rəʊt] — «роут», буква w не читается.
 - **met** [met], **left** [left], **felt** [felt], **slept** [slept] — короткие гласные.
 - **stood** [stʊd] — «студ».
@@ -192,7 +192,7 @@ minutes: 60
 | come – came | приходить, приезжать | Anna came home at nine. | Анна пришла домой в девять. |
 | get – got | получать, становиться | I got a message from Tom. | Я получила сообщение от Тома. |
 | give – gave | давать | She gave me a lovely present. | Она подарила мне чудесный подарок. |
-| say – said | сказать | He said hello and smiled. | Он сказал привет и улыбнулся. |
+| say – said | сказать | He said hello and smiled. | Он поздоровался и улыбнулся. |
 | tell – told | сказать, рассказать (кому-то) | She told us a funny story. | Она рассказала нам смешную историю. |
 | know – knew | знать | I knew the answer. | Я знала ответ. |
 | think – thought | думать | I thought about you yesterday. | Я думала о тебе вчера. |
@@ -243,7 +243,7 @@ minutes: 60
 6. I ___ a good film on Friday. :: seen | saw* | see
 7. My brother ___ a letter to me last month. :: wrote* | writed | write
 8. We ___ Tom at the station yesterday. :: meeted | meet | met*
-9. The film ___ at eight o'clock. :: began* | begins | beginned
+9. The film ___ at eight o'clock yesterday. :: began* | begins | beginned
 
 ### Упражнение 2. Вставь глагол в Past Simple
 Поставь глагол в скобках в прошедшую форму.

@@ -44,7 +44,7 @@ minutes: 60
 **Ещё три ловушки.**
 - **Enough** стоит **после** прилагательного и наречия, но **до** существительного: *old **enough**, fast **enough**, **enough** money*. ❌ *enough old*.
 - **Only** ставят прямо перед тем словом, к которому он относится, иначе меняется смысл: *Only Tom saw her* (больше никто); *Tom only saw her* (но не заговорил); *Tom saw only her* (никого другого).
-- **Still** и **yet**: *She **still** hasn't called* (отрицание, середина) и *She hasn't called **yet*** (конец). Смысл близкий, но *still* показывает недовольство или удивление.
+- **Still** и **yet**: *She **still** hasn't called* (отрицание, середина) и *She hasn't called **yet**.* (конец). Смысл близкий, но *still* показывает недовольство или удивление.
 
 ### 2. Вводные слова (sentence adverbs)
 Некоторые наречия относятся не к глаголу, а ко всему предложению. Они выражают отношение говорящего. Обычно стоят в начале и **отделяются запятой**: *Fortunately, nobody was hurt. Frankly, I don't like it.*
@@ -85,9 +85,9 @@ minutes: 60
 | I met her in Rome. | **It was in Rome that** I met her. |
 | She called at midnight. | **It was at midnight that** she called. |
 
-Для людей употребляют **who** или **that**, для вещей, места и времени — **that**. Время be (*is / was*) выбирают по смыслу, а глагол в «остатке» сохраняет своё время. Если выделен подлежащий во множественном числе, глагол согласуется с ним: *It's the neighbours who **make** the noise.*
+Для людей употребляют **who** или **that**, для вещей, места и времени — **that**. Время be (*is / was*) выбирают по смыслу, а глагол в «остатке» сохраняет своё время. Если выделено подлежащее во множественном числе, глагол согласуется с ним: *It's the neighbours who **make** the noise.*
 
-Для отрицательного времени есть красивая модель **It wasn't until … that …**: *It wasn't until midnight that she called* («только в полночь она позвонила»).
+Чтобы подчеркнуть, что что-то случилось только в определённый момент (не раньше), есть модель **It wasn't until … that …**: *It wasn't until midnight that she called* («только в полночь она позвонила»).
 
 **Pseudo-cleft: What … is …** Начинаем с придаточного, которое задаёт тему:
 - *What I need is a holiday.* (Мне нужен отпуск.)
@@ -127,7 +127,7 @@ minutes: 60
 - ❌ *He always is late.* ✅ *He is always late.*
 - ❌ *Never I have been there.* ✅ *Never have I been there.*
 - ❌ *Not only he forgot, but…* ✅ *Not only did he forget, but…*
-- ❌ *I like, however it is expensive.* ✅ *I like it. However, it is expensive.*
+- ❌ *I like it, however it is expensive.* ✅ *I like it. However, it is expensive.*
 - ❌ *It was my sister which called.* ✅ *It was my sister who / that called.*
 - ❌ *Hardly she had arrived when…* ✅ *Hardly had she arrived when…*
 
@@ -175,9 +175,9 @@ minutes: 60
 - Kate: And did you make it? | И ты успел?
 - Dan: No sooner had I reached the platform than the doors closed. | Не успел я добежать до платформы, как двери закрылись.
 - Kate: Unfortunately, that's life. Anyway, what did you do? | К сожалению, такова жизнь. Ну и что ты сделал?
-- Dan: I waited for the next one. It was my boss who called me, actually. | Я ждал следующего. Мне, кстати, позвонил начальник.
+- Dan: I waited for the next one. It was my boss who called me, actually. | Я ждал следующего. И, кстати, позвонил мне как раз начальник.
 - Kate: Seriously? What did he say? | Серьёзно? Что он сказал?
-- Dan: He said he did understand, but the meeting couldn't wait. | Он сказал, что понимает, но встреча ждать не может.
+- Dan: He said he did understand, but the meeting couldn't wait. | Он сказал, что, конечно, понимает, но встреча ждать не может.
 - Kate: Frankly, that's not very kind. | Откровенно говоря, это не очень любезно.
 - Dan: Not only did I miss the train, but I also forgot my laptop at home. | Я не только опоздал на поезд, но ещё и забыл дома ноутбук.
 - Kate: What you need is a strong coffee and a day off. | Тебе нужны крепкий кофе и выходной.
@@ -326,7 +326,7 @@ minutes: 60
 
 ## Мини-тест
 1. Какое предложение верное? :: She always is happy. | She is always happy.* | She is happy always.
-2. Do you think he can really speak four languages? Yes, he ___ speak four languages! :: do | does* | is
+2. I don't think he speaks four languages. — But he ___ speak four languages! :: do | does* | is
 3. It was Tom ___ broke the window. :: who* | whom | which
 4. Rarely ___ she complain about work. :: does* | do | is
 5. No sooner had I sat down ___ the phone rang. :: than* | as | so

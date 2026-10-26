@@ -25,7 +25,7 @@ minutes: 60
 | Смысл | С исчисляемыми (во мн. числе) | С неисчисляемыми |
 |---|---|---|
 | много | many, a lot of, lots of, plenty of | much, a lot of, lots of, plenty of |
-| немного, но достаточно | a few, several, a couple of | a little, a bit of |
+| немного, но есть | a few, several, a couple of | a little, a bit of |
 | мало, почти нет | few, not many | little, not much |
 | почти никакой | hardly any | hardly any |
 | достаточно | enough | enough |
@@ -219,7 +219,7 @@ minutes: 60
 - Anna: Perfect. Every guest should get a drink when they arrive. | Отлично. Каждый гость должен получить напиток по приходе.
 - Tom: Of course. I'll buy a couple of extra bottles of water. | Конечно. Я куплю пару дополнительных бутылок воды.
 - Anna: Please don't buy too many! Last time we had far too much food. | Только не покупай слишком много! В прошлый раз у нас было слишком много еды.
-- Tom: True. None of it was eaten the next day. All of it went into the bin. | Верно. На следующий день ничего не съели. Всё отправилось в мусорку.
+- Tom: True. None of the leftovers were eaten, so they all went into the bin. | Верно. Из остатков ничего не съели, и всё отправилось в мусорку.
 
 ## Упражнения
 
@@ -250,7 +250,7 @@ minutes: 60
 Выбери подходящее слово.
 1. ___ student in the class has a laptop. :: Every* | Both | Neither
 2. She wore a ring on ___ hand. :: each* | every | neither
-3. I don't like ___ of these films. :: either* | neither | both
+3. I don't like ___ of these films. :: either* | neither | none
 4. ___ of my parents speaks French. Only my aunt does. :: Neither* | Both | Either
 5. We have two sons. They love sport. ___ of them play football. :: Both* | Either | Every
 6. ___ day I walk to work. :: Every* | Both | Neither
@@ -294,7 +294,7 @@ minutes: 60
 9. Он недостаточно высокий. (tall, enough) => He isn't tall enough. / He is not tall enough. / He's not tall enough.
 
 ### Упражнение 7. Повторение: фразовые глаголы, деньги, условные
-Выбери правильный вариант (уроки 31, 32, 34, 38, 39).
+Выбери правильный вариант (уроки 23, 31, 32, 34, 38, 39).
 1. We've run ___ of milk. :: out* | off | up
 2. Can I ___ your pen for a minute? :: borrow* | lend | spend
 3. I've lived here ___ five years. :: for* | since | ago

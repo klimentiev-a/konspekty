@@ -42,7 +42,7 @@ minutes: 60
 
 Что нужно помнить:
 - **Continuous-пассив** (*is being done, was being done*) нужен для действия в процессе. Русские студенты часто пропускают *being*: ❌ *The room is cleaning now.* ✅ *The room is being cleaned now.*
-- **Perfect Continuous в пассиве** (*has been being done*) звучит тяжело и почти не употребляется. Вместо него используют активный залог или Present Perfect: *They have been repairing the road* → *The road has been repaired.*
+- **Perfect Continuous в пассиве** (*has been being done*) звучит тяжело и почти не употребляется. Вместо него оставляют активный залог (*They have been repairing the road for weeks*) или говорят иначе (*The road has been under repair for weeks*). Замена на *The road has been repaired* меняет смысл: так говорят о законченном ремонте.
 - **Вопросы:** вспомогательный глагол идёт перед подлежащим: *Was the window broken? When was it found? Is the car being repaired? Has the letter been sent?*
 - **Вопрос к исполнителю:** *Who was the letter written by?* (в формальной речи *By whom was the letter written?*). Если спрашиваем о подлежащем, пассив не нужен: ✅ *Who wrote the letter?* ❌ *Who was wrote the letter?*
 - **Отрицание:** *The report hasn't been finished. The shop wasn't being cleaned.*
@@ -78,7 +78,7 @@ minutes: 60
 - *They gave **me** a book.* → ✅ ***I was given** a book.* (чаще) или *A book was given to me.*
 - *Nobody told **me** the truth.* → *I wasn't told the truth.*
 
-По-русски мы тоже говорим «мне сказали», поэтому английское *I was told* выглядит привычно. Но ❌ *I was said* — нельзя: say не имеет формы с лицом. Говорим: *I was told that …* или *It was said that …*
+По-русски мы тоже говорим «мне сказали», поэтому английское *I was told* выглядит привычно. Но ❌ *I was said that …* — нельзя: у say нет дополнения-лица (говорят *say something **to** somebody*), поэтому человек не может стать подлежащим, как с tell. Говорим: *I was told that …* или *It was said that …* (Конструкция *He is said to be rich* — другое, она в разделе 6.)
 
 **Предложные и фразовые глаголы** сохраняют предлог или частицу:
 - *Her grandmother looked after her.* → *She **was looked after** by her grandmother.*
@@ -89,7 +89,7 @@ minutes: 60
 - глаголы без дополнения: happen, arrive, appear, die, sleep, fall, rise, seem, occur. ❌ *The accident was happened.* ✅ *The accident happened.*
 - глаголы состояния: have (в значении «иметь»), fit, suit, resemble, lack, cost, weigh. ❌ *A car is had by him.* ✅ *He has a car.*
 
-Ещё одна русская ловушка — **be born**. Всегда пассив в Past Simple: ✅ *I was born in 1995.* ❌ *I born in 1995.* ❌ *I am born in 1995.*
+Ещё одна русская ловушка — **be born**. Это всегда пассив, а о рождении конкретного человека говорят в Past Simple: ✅ *I was born in 1995.* ❌ *I born in 1995.* ❌ *I am born in 1995.* (В общих фактах бывает и настоящее: *Thousands of babies are born every day.*)
 
 **By или with?** *By* называет исполнителя: *painted by Monet*. *With* называет инструмент или материал: *The window was broken with a stone. The room was filled with smoke.*
 
@@ -161,7 +161,7 @@ minutes: 60
 | *I cut my hair yesterday* (в салоне) | *I had my hair cut yesterday.* | услуга |
 | *She is said that she is ill.* | *She is said to be ill.* | to + V |
 | *The window broke by the boy.* | *The window was broken by the boy.* | нужен пассив |
-| *I am born in 2000.* | *I was born in 2000.* | born — только Past Simple |
+| *I am born in 2000.* | *I was born in 2000.* | о своём рождении — was / were born |
 
 ## Слова
 | English | Перевод | Пример | Перевод примера |
@@ -345,7 +345,7 @@ minutes: 60
 - Have / get something done — услуга или неприятность: *I had my hair cut.* Без have получается, что ты сделала это сама.
 - Новостной стиль: *It is said that he is rich. = He is said to be rich.* Для более раннего события: *He is said to have left.*
 - Русское безличное «мне сказали, меня попросили, здесь говорят» передаётся пассивом: *I was told, I was asked, English is spoken here.*
-- Born только в пассиве Past Simple: *I was born in 1995.*
+- Born — всегда пассив; о рождении человека — Past Simple: *I was born in 1995.*
 
 ## Мини-тест
 1. The new library ___ by the mayor next month. :: opens | will be opened* | will open | is opening
@@ -357,4 +357,4 @@ minutes: 60
 7. The road ___ at the moment, so we can't drive there. :: repairs | is repairing | is being repaired* | has repaired
 8. «Мне сказали ждать здесь.» :: I was told to wait here.* | I said to wait here. | I was said to wait here. | They told to me wait here.
 9. He ___ to be a millionaire. :: says | is said* | is saying | said to
-10. Which is correct? :: I am born in 1990. | I born in 1990. | I was born in 1990.* | I have been born in 1990.
+10. Что верно? :: I am born in 1990. | I born in 1990. | I was born in 1990.* | I have been born in 1990.

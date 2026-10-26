@@ -170,7 +170,7 @@ Would — «так бы и было», could — «была бы возможн�
 | dream | мечта, мечтать | My dream is to visit Japan. | Моя мечта — побывать в Японии. |
 | perfect | идеальный | It's a perfect day for a picnic. | Идеальный день для пикника. |
 | brave | смелый | He is a brave man. | Он смелый человек. |
-| lazy | ленивый | I feel lazy today. | Я сегодня чувствую себя ленивой. |
+| lazy | ленивый | I feel lazy today. | Мне сегодня лень. |
 | honest | честный | Please be honest with me. | Пожалуйста, будь со мной честным. |
 | patient | терпеливый | A good teacher is patient. | Хороший учитель терпелив. |
 | strict | строгий | Our teacher is very strict. | Наш учитель очень строгий. |

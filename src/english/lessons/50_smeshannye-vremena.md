@@ -38,13 +38,13 @@ minutes: 60
 - *My sister lives in Madrid.* — она там живёт постоянно.
 - *My sister is living in Madrid at the moment.* — сейчас она живёт там (временно).
 
-**Изменения и тенденции** всегда Continuous: *Prices are rising. The climate is getting warmer. More people are working from home.*
+**Изменения и тенденции** обычно передаются Continuous: *Prices are rising. The climate is getting warmer. More people are working from home.*
 
 **Раздражающая привычка** — Continuous с always: *He is always leaving his dirty plates in the sink!* — Он вечно оставляет грязные тарелки в раковине! Простая привычка без эмоций — *He always leaves early.*
 
 **Будущее.** Present Continuous передаёт **договорённость**: *I'm meeting Jack at six.* Present Simple — **расписание** и ничего больше: *The film starts at eight.* ❌ *I meet Jack at six* (без расписания звучит странно).
 
-**Present Simple в пересказе и заголовках**: *The author says that …* / *In the film, a young man loses his job and …* Пересказывая сюжет книги или фильма, англичане используют настоящее время.
+**Present Simple в пересказе и заголовках**: *The author says that …* / *In the film, a young man loses his job and …* Пересказывая сюжет книги или фильма, англичане используют настоящее время. В газетных заголовках тоже: *President visits China* — Президент посетил Китай.
 
 ### 3. Глаголы состояния (stative verbs)
 Глаголы, которые описывают **состояние, а не действие**, как правило, не ставят в Continuous даже тогда, когда говорят «сейчас».
@@ -141,7 +141,7 @@ minutes: 60
 | *I live here for five years.* | *I have lived here for five years.* | период до сих пор |
 | *How long do you learn English?* | *How long have you been learning English?* | how long — Perfect |
 | *I am understanding you.* | *I understand you.* | глагол состояния |
-| *He has a long hair.* / *She is having long hair.* | *She has long hair.* | have = «иметь», без Continuous |
+| *She has a long hair.* / *She is having long hair.* | *She has long hair.* | hair — неисчисляемое (без a); have = «иметь», без Continuous |
 | *I have seen him yesterday.* | *I saw him yesterday.* | yesterday — Past Simple |
 | *When you will come, call me.* | *When you come, call me.* | настоящее вместо будущего |
 | *I didn't see him for ages.* (до сих пор) | *I haven't seen him for ages.* | период ещё идёт |

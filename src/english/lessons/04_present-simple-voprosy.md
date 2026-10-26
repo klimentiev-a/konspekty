@@ -36,7 +36,7 @@ minutes: 60
 Интонация общего вопроса — **восходящая**: голос идёт вверх к концу (*Do you like it? ↗*).
 
 #### Вопросы с to be и вопросы с do
-Глагол to be (урок 1) поменяться местами с подлежащим может сам: *Are you a student? Is she at home?* Для других глаголов нужен do/does. Не смешивай:
+Глагол to be (урок 1) сам меняется местами с подлежащим: *Are you a student? Is she at home?* Для других глаголов нужен do/does. Не смешивай:
 - ✅ *Are you tired?* — ❌ *Do you tired?*
 - ✅ *Do you work here?* — ❌ *Are you work here?*
 
@@ -52,7 +52,7 @@ minutes: 60
 
 Правила:
 1. В кратком ответе **основной глагол не повторяется**: ✅ *Yes, I do.* — ❌ *Yes, I like.*
-2. В положительном ответе **нет сокращения** и глагол стоит в конце: *Yes, she **does**.* (не ❌ *Yes, she's*).
+2. В положительном ответе **нет сокращения**, do / does стоит последним: *Yes, she **does**.*
 3. Ответ даём с тем же подлежащим, но с местоимением: *Does your brother live in London? — Yes, **he** does.*
 4. В отрицательном ответе обычно есть сокращение (**don't**, **doesn't**), а полные *do not / does not* звучат подчёркнуто строго.
 5. Просто *Yes.* или *No.* тоже допустимо, но звучит сухо — добавляй короткий ответ.
@@ -75,7 +75,7 @@ minutes: 60
 
 Особенно важен вопрос **What do you do?** — он значит «Кем вы работаете?» (а не «Что ты делаешь прямо сейчас?»). Ответ: *I'm a nurse.* или *I work in a bank.* Об одном человеке: *What does she do? — She is an engineer.*
 
-Если в ответе нужен сам вопрос про действие, помни: 1) вопросительное слово; 2) do или does; 3) подлежащее; 4) глагол в базовой форме.
+Порядок слов в таком вопросе: 1) вопросительное слово; 2) do или does; 3) подлежащее; 4) глагол в базовой форме.
 
 #### Вопрос к подлежащему: Who + глагол
 Когда вопрос задаётся **к подлежащему** (кто выполняет действие), вспомогательный глагол **не нужен**. *Who* ведёт себя как **he / she**, поэтому глагол получает **-s**:
@@ -115,9 +115,8 @@ minutes: 60
 
 Дополнительно:
 - **Sometimes, usually, often** могут стоять в начале или в конце предложения: *Sometimes I walk to work. I walk to work sometimes. Usually I get up at seven.*
-- **Always** и **never** в начале или в конце не стоят (в начале допустим только повелительный *Always check…*). Нельзя ❌ *I get up early always.* → ✅ *I always get up early.*
+- **Always** и **never** в начале или в конце не стоят (исключение — повелительное наклонение: *Always check… / Never give up!*). Нельзя ❌ *I get up early always.* → ✅ *I always get up early.*
 - **Never** уже содержит отрицание: ✅ *I never drink coffee.* — ❌ *I don't never drink coffee.*
-- Слово *often* в отрицательных предложениях стоит после don't: *He doesn't often call.*
 
 #### Выражения частоты
 Они обычно стоят **в конце** предложения и точнее называют частоту:
@@ -182,8 +181,8 @@ minutes: 60
 | come back | возвращаться | He comes back at six. | Он возвращается в шесть. |
 | lunch | обед | We have lunch at one. | Мы обедаем в час. |
 | dinner | ужин, обед (главный) | They have dinner together. | Они ужинают вместе. |
-| clean | убирать, чистить | I clean my room on Saturday. | Я убираюсь в комнате по субботам. |
-| do the shopping | ходить за покупками | She does the shopping on Friday. | Она ходит за покупками по пятницам. |
+| clean | убирать, чистить | I clean my room on Saturdays. | Я убираюсь в комнате по субботам. |
+| do the shopping | ходить за покупками | She does the shopping on Fridays. | Она ходит за покупками по пятницам. |
 | relax | отдыхать | I relax at the weekend. | Я отдыхаю на выходных. |
 | ask | спрашивать | They ask a lot of questions. | Они задают много вопросов. |
 | morning | утро | I drink tea in the morning. | Я пью чай по утрам. |

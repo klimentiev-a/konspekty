@@ -43,7 +43,7 @@ Get — самый универсальный глагол: получать, с
 | Фразовый глагол | Перевод | Тип | Пример | Перевод примера |
 |---|---|---|---|---|
 | get up | вставать (с постели) | без доп. | I get up at seven every day. | Я встаю в семь каждый день. |
-| get on | садиться в транспорт; ладить | нераздельный | We got on the bus at the station. | Мы сели на автобус на станции. |
+| get on | садиться в транспорт; ладить | нераздельный | We got on the bus at the station. | Мы сели в автобус на станции. |
 | get off | выходить из транспорта | нераздельный | She gets off at the next stop. | Она выходит на следующей остановке. |
 | get back | вернуться | без доп. | When did you get back from Spain? | Когда ты вернулся из Испании? |
 | get along (with) | ладить (с кем-то) | нераздельный | I get along with my neighbours. | Я лажу с соседями. |
@@ -122,7 +122,7 @@ Get — самый универсальный глагол: получать, с
 | come out | выйти (о книге, фильме); появиться | без доп. | His new film comes out in May. | Его новый фильм выходит в мае. |
 | come down with | заболеть (чем-то) | нераздельный | I think I'm coming down with a cold. | Кажется, я заболеваю простудой. |
 | come along | пойти с кем-то; продвигаться | без доп. | Do you want to come along? | Хочешь пойти с нами? |
-| come up | возникнуть; подойти | без доп. | Something has come up at work. | На работе кое-что возникло. |
+| come up | возникнуть; подойти | без доп. | Something has come up at work. | На работе кое-что случилось. |
 
 ---
 
@@ -136,7 +136,7 @@ Get — самый универсальный глагол: получать, с
 | look out | быть осторожным | без доп. | Look out! There's a car! | Осторожно! Машина! |
 | look forward to | с нетерпением ждать | нераздельный | I'm looking forward to the holiday. | Я с нетерпением жду отпуска. |
 | look into | изучить, расследовать | нераздельный | The police are looking into the case. | Полиция изучает это дело. |
-| look around | осмотреться | без доп. | We looked around the old town. | Мы осмотрели старый город. |
+| look around | осмотреться; осмотреть | без доп. / нераздельный | We looked around the old town. | Мы осмотрели старый город. |
 | look up to | уважать, равняться | нераздельный | I look up to my grandmother. | Я равняюсь на бабушку. |
 | look down on | смотреть свысока | нераздельный | Don't look down on people. | Не смотри на людей свысока. |
 | look through | просмотреть, пролистать | нераздельный | She looked through the photos. | Она просмотрела фотографии. |
@@ -317,7 +317,7 @@ Get — самый универсальный глагол: получать, с
 |---|---|---|
 | ❌ Turn off it. | ✅ Turn it off. | Местоимение между глаголом и частицей |
 | ❌ Look the baby after. | ✅ Look after the baby. | Look after нераздельный |
-| ❌ I'm looking the keys. | ✅ I'm looking for the keys. | Без for смысл другой |
+| ❌ I'm looking the keys. | ✅ I'm looking for the keys. | «Искать» — только look for |
 | ❌ Get in the bus. | ✅ Get on the bus. | Автобус, поезд: on |
 | ❌ I can't put up it with. | ✅ I can't put up with it. | Три слова не разделяются |
 | ❌ She run out the milk. | ✅ She ran out of milk. | Пропущено of |

@@ -67,7 +67,7 @@ minutes: 60
 Что **не меняется**:
 - **Past Perfect** остаётся Past Perfect: *"I had left." → He said he had left.*
 - Модальные **would, could, should, might, ought to** остаются: *"You should rest." → He said I should rest.*
-- Если Past Simple рассказывает о прошлом, в разговоре его часто оставляют без изменений: *"I saw him." → She said she saw him.* Но в учебнике и на экзамене правильный вариант — **Past Perfect**, а мы будем придерживаться его.
+- Past Simple в разговоре часто оставляют без изменений, если и так ясно, что одно действие было раньше другого: *"I saw him." → She said she saw him.* Но в учебнике и на экзамене правильный вариант — **Past Perfect**, а мы будем придерживаться его.
 
 > **Запомни.** Глагол после said / told / asked уходит в прошлое на один шаг: am → was, like → liked, will → would, have done → had done.
 
@@ -77,7 +77,7 @@ minutes: 60
 - Tom to me: "**I** will call **you**." → Tom told me **he** would call **me**.
 - They: "**We** are happy with **our** flat." → They said **they** were happy with **their** flat.
 
-Здесь нет особых правил, как в русском: нужно просто спросить себя «кто это теперь для меня: он, она, они, я?». Слово *you* меняется в зависимости от того, кому говорили: *you → me, him, her, us, them*.
+Особых правил нет, всё как в русском: нужно просто спросить себя «кто это теперь для меня: он, она, они, я?». Слово *you* меняется в зависимости от того, кому говорили: *you → me, him, her, us, them*.
 
 ### 5. Слова времени и места
 Когда мы пересказываем позже и в другом месте, слова «сегодня», «завтра», «здесь» тоже меняются:
@@ -208,7 +208,7 @@ minutes: 60
 - Max: Typical. Did he say anything else? | Типично. Он ещё что-нибудь сказал?
 - Lena: He announced that we would get a new colleague next month. | Он объявил, что в следующем месяце у нас будет новый коллега.
 - Max: Really? Did he mention who it was? | Правда? Он упомянул, кто это?
-- Lena: No, but Kate told me she was a lawyer. | Нет, но Кейт сказала мне, что она юрист.
+- Lena: No, but Kate told me the new colleague was a lawyer. | Нет, но Кейт сказала мне, что новый коллега — юрист.
 - Max: Interesting. Did anybody ask if the office would move? | Интересно. Кто-нибудь спросил, переедет ли офис?
 - Lena: Yes, I asked whether we had to leave this building. | Да, я спросила, придётся ли нам покинуть это здание.
 - Max: And what did he answer? | И что он ответил?
@@ -293,8 +293,8 @@ minutes: 60
 6. Она сказала, что не может прийти. (can't) => She said she couldn't come. / She said that she couldn't come. / She said she could not come. / She said that she could not come.
 7. Он спросил меня, что я делаю. (doing) => He asked me what I was doing. / He asked what I was doing.
 
-### Упражнение 8. Повторение: относительные придаточные и пассив
-Материал уроков 32 и 34. Впиши слово или выбери ответ.
+### Упражнение 8. Повторение: относительные придаточные, пассив, условные
+Материал уроков 30, 32 и 34. Впиши слово или выбери ответ.
 1. The girl ___ is talking to Tom is my sister. :: who* | whose | which
 2. This is the man ___ car was stolen. :: whose* | who | which
 3. The book ___ I borrowed was great. => that / which

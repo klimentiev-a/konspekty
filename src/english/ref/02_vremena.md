@@ -158,7 +158,7 @@ short: сводная таблица времён A1–B1: формулы, ко�
 | Пример | I'll have the soup. | I'm going to study medicine. | I'm seeing the dentist at 5. |
 | Перевод | Я возьму суп. | Я собираюсь изучать медицину. | Я иду к стоматологу в 5. |
 
-> **Запомни.** Если сказала фразу «**прямо сейчас решила**» — используй **will**. Если решение уже было принято — **going to**. Если есть билет, договорённость, расписание — **Present Continuous**.
+> **Запомни.** Если решение принято **прямо в момент речи** — используй **will**. Если решение уже было принято — **going to**. Если есть билет, договорённость, расписание — **Present Continuous**.
 
 ## 9. Present Perfect — настоящее совершённое
 
@@ -295,7 +295,7 @@ short: сводная таблица времён A1–B1: формулы, ко�
 | Согласная + y → **-ies** | study → studies, try → tries |
 | Гласная + y → просто **-s** | play → plays, say → says |
 | **-ing**: убираем немую e | make → making, write → writing |
-| **-ing**: короткая гласная + одна согласная — удваиваем согласную | run → running, sit → sitting, stop → stopping |
+| **-ing**: ударная короткая гласная + одна согласная — удваиваем согласную | run → running, sit → sitting, stop → stopping (но visit → visiting: ударение не на последнем слоге) |
 | **-ing**: -ie → -ying | lie → lying, die → dying |
 | **-ed**: если глагол оканчивается на e, добавляем только **-d** | like → liked, live → lived |
 | **-ed**: согласная + y → **-ied** | study → studied, cry → cried |
@@ -305,12 +305,12 @@ short: сводная таблица времён A1–B1: формулы, ко�
 
 | Полная форма | Сокращение | Перевод |
 |---|---|---|
-| I am / you are / he is | I'm / you're / he's | я есть / ты есть / он есть |
+| I am / you are / he is | I'm / you're / he's | глагол be: я / ты / он (есть, является) |
 | I have / she has | I've / she's | у меня есть / у неё есть (или она [сделала]) |
 | I had / I would | I'd | у меня было / я бы (по смыслу) |
 | I will | I'll | я буду |
 | do not / does not / did not | don't / doesn't / didn't | не (делаю / делает / делал) |
-| is not / are not | isn't / aren't | не есть |
+| is not / are not | isn't / aren't | отрицание с be: не является, нет |
 | have not / has not / had not | haven't / hasn't / hadn't | не (сделал) — отрицание в Perfect |
 | will not | won't | не буду |
 | cannot | can't | не могу |

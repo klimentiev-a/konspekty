@@ -115,7 +115,7 @@ minutes: 60
 **Ложные друзья.** Эти слова выглядят знакомо, но значат другое:
 - **sympathetic** — сочувствующий, а не «симпатичный». Симпатичный человек — **nice** или **pleasant** (о внешности — **good-looking**, **attractive**).
 - **sensible** — разумный, здравомыслящий, а не «чувствительный». Чувствительный — **sensitive**.
-- **nervous** — волнующийся, взволнованный (перед экзаменом), а не «нервный по характеру».
+- **nervous** — волнующийся, тревожный (перед экзаменом), а не «нервный» в смысле «раздражительный» (это **irritable** или **bad-tempered**).
 
 ### 5. Отношения: глаголы и выражения
 Отношения между людьми лучше учить цепочкой «жизненных событий»:
@@ -144,7 +144,7 @@ minutes: 60
 - *I was wondering if you'd like to see a film with me.* — Я хотел спросить, не хочешь ли ты сходить со мной в кино.
 - *Are you free on Saturday?* — Ты свободна в субботу?
 
-**Согласиться:**
+**Согласиться и поблагодарить после встречи:**
 - *I'd love to!* — С удовольствием!
 - *That sounds great.* — Звучит здорово.
 - *I had a really nice time.* — Я отлично провела время.
@@ -173,7 +173,7 @@ minutes: 60
 |---|---|---|---|
 | bored / boring | скучающий / скучный | I'm bored. The film is boring. | Мне скучно. Фильм скучный. |
 | interested / interesting | заинтересованный / интересный | She is interested in art. | Она интересуется искусством. |
-| excited / exciting | взволнованный / захватывающий | We are excited about the trip. | Мы взволнованы поездкой. |
+| excited / exciting | взволнованный / захватывающий | We are excited about the trip. | Мы с нетерпением ждём поездки. |
 | annoyed / annoying | раздражённый / раздражающий | His jokes are annoying. | Его шутки раздражают. |
 | embarrassed | смущённый | I felt embarrassed. | Мне было неловко. |
 | disappointed | разочарованный | We were disappointed with the food. | Мы были разочарованы едой. |
@@ -197,7 +197,7 @@ minutes: 60
 | get on with | ладить с | I get on well with her. | Я хорошо лажу с ней. |
 | fall out with | поссориться с | He fell out with his friend. | Он поссорился с другом. |
 | make up | помириться | Let's make up. | Давай помиримся. |
-| keep in touch | поддерживать связь | We keep in touch by email. | Мы общаемся по электронной почте. |
+| keep in touch | поддерживать связь | We keep in touch by email. | Мы поддерживаем связь по электронной почте. |
 | have in common | иметь общее | We have a lot in common. | У нас много общего. |
 | ask out | пригласить на свидание | He asked her out. | Он пригласил её на свидание. |
 | break up with | расстаться с | She broke up with her boyfriend. | Она рассталась с парнем. |
@@ -219,7 +219,7 @@ minutes: 60
 - Kate: That's good. She's the kind of person who forgets quickly. | Хорошо. Она из тех, кто быстро забывает.
 - Anna: True. She's really easy-going. And you? Are you still bored at your job? | Правда. Она очень лёгкая в общении. А ты? Тебе всё ещё скучно на работе?
 - Kate: Not really. My new project is quite exciting. | Не совсем. Мой новый проект довольно захватывающий.
-- Anna: I'm proud of you. Let's keep in touch this weekend! | Я горжусь тобой. Давай на выходных будем на связи!
+- Anna: I'm proud of you. Let's meet up at the weekend! | Я горжусь тобой. Давай увидимся на выходных!
 
 ## Упражнения
 

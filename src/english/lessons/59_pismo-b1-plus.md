@@ -6,7 +6,7 @@ theme: no
 minutes: 60
 
 ## Цели
-- Построить эссе «за и против» и эссе «своё мнение» в четыре абзаца со вступлением, аргументами и заключением.
+- Построить эссе «за и против» и эссе «своё мнение» в четыре-пять абзацев со вступлением, аргументами и заключением.
 - Написать отзыв (review) и формальное письмо с правильными приветствием, просьбой и подписью.
 - Использовать связки с нужными нюансами: although, despite, whereas, however, nevertheless, therefore.
 - Различать формальный и неформальный стиль и не смешивать их в одном тексте.
@@ -67,7 +67,7 @@ To sum up, studying abroad has clear advantages, but it is not suitable for ever
 |---|---|---|
 | Уступка (хотя) | **although, though, even though** + предложение | Нельзя ставить рядом *although* и *but*: ❌ *Although it was cold, but we went out.* ✅ *Although it was cold, we went out.* |
 | Несмотря на | **despite, in spite of** + существительное или -ing | После despite нет of: ❌ *Despite of the rain.* ✅ *Despite the rain.* / *In spite of the rain.* / *Despite being tired.* С целым предложением: *despite the fact that it was cold* |
-| Противопоставление двух фактов | **whereas, while** | *Some people prefer cities, whereas others like villages.* Запятая перед whereas обязательна |
+| Противопоставление двух фактов | **whereas, while** | *Some people prefer cities, whereas others like villages.* Перед whereas обычно ставят запятую |
 | Но, однако | **however, nevertheless** | Стоят в начале нового предложения или после точки с запятой, выделяются запятой: *The room was small. However, it was clean.* Nevertheless — более формально |
 | Добавление | **in addition, moreover, besides** | Формально — in addition и moreover. *Besides* («кроме того») не путай с *beside* («рядом») |
 | Причина | **because + предложение, because of + существительное, due to** | ❌ *because of it was late* ✅ *because it was late* / *because of the delay* |
@@ -108,9 +108,11 @@ All in all, I would recommend the café for a quiet chat or a dessert, but not i
 - Без сокращений (*I am*, *I have not*), без *gonna*, *kids*, *a lot of* (лучше *many*, *much*), без восклицательных знаков.
 
 ### Образец 3. Жалоба
+(компания и заказ придуманы для примера)
+
 Dear Sir or Madam,
 
-I am writing to complain about a laptop bag which I ordered from your website on 5 October (order number 48213). The company and the order are invented for this example.
+I am writing to complain about a laptop bag which I ordered from your website on 5 October (order number 48213).
 
 The bag arrived four days later than promised. When I opened the package, I found that one zip was broken and the colour was grey, not black as shown on the website. I contacted your customer service twice by email, but I have not received a reply.
 
@@ -143,7 +145,7 @@ Anna Petrova
 
 > **Запомни.** Самые дорогие ошибки — те, которые видны сразу: приветствие и подпись в письме, предлоги после despite, согласование подлежащего и сказуемого. Проверь их перед отправкой в первую очередь.
 
-### 9. Чек-лист самопроверки черновика
+### 9. Чек-лист проверки черновика
 1. Есть ли **заголовок** или приветствие и подпись?
 2. **Один абзац — одна мысль**? Есть ли topic sentence?
 3. Связки **разные**, а не пять раз подряд *and* и *but*?
@@ -171,7 +173,7 @@ Anna Petrova
 | whereas | тогда как | He likes tea, whereas she prefers coffee. | Он любит чай, тогда как она предпочитает кофе. |
 | despite | несмотря на | Despite the rain, we had a picnic. | Несмотря на дождь, мы устроили пикник. |
 | nevertheless | тем не менее | It was cheap. Nevertheless, I didn't buy it. | Это было дёшево. Тем не менее я не купила. |
-| therefore | поэтому, следовательно | It rained, therefore the match was cancelled. | Шёл дождь, поэтому матч отменили. |
+| therefore | поэтому, следовательно | It rained heavily. Therefore, the match was cancelled. | Шёл сильный дождь. Поэтому матч отменили. |
 | as a result | в результате | As a result, we missed the train. | В результате мы опоздали на поезд. |
 | to sum up | подводя итог | To sum up, the plan has one problem. | Подводя итог, у плана есть одна проблема. |
 | on the other hand | с другой стороны | On the other hand, it is quite expensive. | С другой стороны, это довольно дорого. |

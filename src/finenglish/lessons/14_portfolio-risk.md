@@ -6,7 +6,7 @@ minutes: 7
 
 ## Theory
 
-> **In one minute.** Risk is the standard deviation (стандартное отклонение) of returns; diversification (диверсификация) removes idiosyncratic risk (специфический риск), not systematic risk (систематический). CAPM prices only beta. Judge managers on risk-adjusted return (доходность с учётом риска): Sharpe, Sortino, information ratio. Banks and funds measure tail risk (хвостовой риск) with VaR and expected shortfall and stress tests.
+> **In one minute.** Risk is the standard deviation (стандартное отклонение) of returns; diversification (диверсификация) removes idiosyncratic risk (специфический риск), not systematic risk (систематический). CAPM, the capital asset pricing model (модель оценки капитальных активов), prices only beta. Judge managers on risk-adjusted return (доходность с учётом риска): Sharpe, Sortino, information ratio. Banks and funds measure tail risk (хвостовой риск) with VaR, value at risk (стоимостная мера риска), expected shortfall (средние потери за порогом VaR) and stress tests.
 
 ## Portfolio math
 
@@ -23,7 +23,7 @@ Correlation (корреляция) below 1 lowers portfolio variance; the benefi
 
 ## Efficient frontier and CAPM
 
-Markowitz: for each risk level there is a maximum-return portfolio; the set is the efficient frontier (граница эффективности). With a risk-free asset the best combination is the tangency portfolio (касательный портфель) on the capital market line (линия рынка капитала); in equilibrium it is the market portfolio. The security market line (линия рынка ценных бумаг) plots expected return against beta; assets above it have positive alpha. Multi-factor models (многофакторные модели: Fama-French size, value, momentum; APT) explain returns that CAPM cannot.
+Markowitz: for each risk level there is a maximum-return portfolio; the set is the efficient frontier (граница эффективности). With a risk-free asset the best combination is the tangency portfolio (касательный портфель) on the capital market line (линия рынка капитала); in equilibrium it is the market portfolio. The security market line (линия рынка ценных бумаг) plots expected return against beta; assets above it have positive alpha. Multi-factor models (многофакторные модели: Fama-French size, value, momentum; APT — arbitrage pricing theory, арбитражная теория ценообразования) explain returns that CAPM cannot.
 
 ## Risk-adjusted measures
 
@@ -43,14 +43,14 @@ Sharpe above 1 is good for a diversified fund; hedge funds quote Sortino because
 ```f
 VaR_α,h: loss not exceeded with probability α over horizon h
 Parametric VaR (normal): VaR = z_α × σ × √h × Position     (z_99% = 2.33, z_95% = 1.65)
-Expected shortfall (ES, CVaR) = average loss beyond VaR
+Expected shortfall (ES, CVaR — conditional VaR) = average loss beyond VaR
 ```
 
-Methods: parametric (параметрический), historical simulation (историческое моделирование), Monte Carlo. VaR ignores the tail beyond α; ES fixes that and is the Basel III standard (FRTB). Backtesting (бэктестинг) counts exceptions (превышения): more than expected means the model is wrong. Stress tests (стресс-тесты) and scenario analysis (сценарный анализ) use named shocks: oil −40%, rouble +30%, key rate +500 bp, 2008, 2014, 2022.
+Methods: parametric (параметрический), historical simulation (историческое моделирование), Monte Carlo. VaR ignores the tail beyond α; ES fixes that and is the Basel III (Базель III) standard under FRTB, the Fundamental Review of the Trading Book (пересмотр требований к торговой книге). Backtesting (бэктестинг) counts exceptions (превышения): more than expected means the model is wrong. Stress tests (стресс-тесты) and scenario analysis (сценарный анализ) use named shocks: oil −40%, rouble +30%, key rate +500 bp, 2008, 2014, 2022.
 
 ## Asset allocation
 
-Strategic asset allocation (стратегическое распределение активов) sets long-run weights by asset class (класс активов): equities, bonds, cash, real estate, commodities, alternatives (private equity, hedge funds, infrastructure). Tactical (тактическое) tilts around them. Rebalancing (ребалансировка) to target weights is a disciplined "sell high, buy low". Risk parity (паритет риска) weights by risk contribution, not by capital. Liability-driven investing, LDI (инвестирование под обязательства) matches pension liabilities with duration.
+Strategic asset allocation (стратегическое распределение активов) sets long-run weights by asset class (класс активов): equities, bonds, cash, real estate, commodities, alternatives (private equity, hedge funds, infrastructure). Tactical (тактическое) tilts around them. Rebalancing (ребалансировка) to target weights is a disciplined "sell high, buy low". Risk parity (паритет риска) weights by risk contribution, not by capital. Liability-driven investing (LDI, инвестирование под обязательства) matches pension liabilities with duration.
 
 ## Behavioural finance in one table
 

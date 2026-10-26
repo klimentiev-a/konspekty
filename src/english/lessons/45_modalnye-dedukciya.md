@@ -181,14 +181,14 @@ Must в значении «наверняка» относится к насто
 - Tom: They look too big for Jack. It could be a friend of his. | Они слишком большие для Джека. Это может быть его друг.
 - Jack: Hello! Sorry, I didn't hear the bell. I was cutting the grass. | Привет! Простите, я не слышал звонок. Я косил траву.
 - Anna: You must have been listening to music very loudly! | Ты, должно быть, слушал музыку очень громко!
-- Jack: I was! And the footprints? They must be mine. | Так и было! А следы? Они, наверное, мои.
+- Jack: I was! And the footprints? They're mine. I'm wearing my dad's old boots. | Так и было! А следы? Это мои: я в старых папиных ботинках.
 
 ## Упражнения
 
 ### Упражнение 1. must, can't или might
 Выбери наиболее логичный вывод.
 1. The lights are on and I can hear music. They ___ at home. :: must be* | can't be | might not be | mustn't be
-2. Tom was at my house five minutes ago. He ___ at the office now. :: must be | can't be* | mustn't be | does be
+2. Tom was at my house five minutes ago, and the office is an hour away. He ___ at the office now. :: must be | can't be* | mustn't be | does be
 3. I'm not sure, but perhaps she is Italian. She ___ Italian. :: must be | can't be | might be* | does be
 4. He works twelve hours a day. He ___ very tired. :: can't be | must be* | mustn't be | doesn't be
 5. She is only five years old. She ___ a driver. :: must be | can't be* | might be | mustn't be
@@ -214,7 +214,7 @@ Must в значении «наверняка» относится к насто
 3. She didn't answer her phone yesterday. She ___ in a meeting. :: could have been* | can't be | must have be | may been
 4. Their car isn't here. They ___ already. :: must leave | must have left* | can't leave | might leaving
 5. Kate is very pale. She ___ something bad. :: must eat | must have eaten* | can't be eating | may eating
-6. They ___ the bus. That's why they are late. :: must miss | might have missed* | might missed | can't miss
+6. They ___ the bus. Perhaps that's why they are late. :: must miss | might have missed* | might missed | can't miss
 7. He ___ the answer. He got 100 percent. :: must have known* | can't have known | must knew | might knows
 
 ### Упражнение 4. Перепиши предложение

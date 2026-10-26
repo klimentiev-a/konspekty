@@ -96,7 +96,7 @@ minutes: 60
 - It's not my cup of tea. — Это не моё (idiom).
 - I wouldn't bother. — Не стал бы тратить время.
 
-Чтобы не повторять вопрос и ответ из шаблона, помни о времени: **Have you seen it?** (Present Perfect — опыт) → **Yes, I saw it last week.** (Past Simple — когда именно).
+Следи за временем в вопросе и в ответе: **Have you seen it?** (Present Perfect — опыт) → **Yes, I saw it last week.** (Past Simple — когда именно).
 
 ### 6. Косвенная речь (2): приказы и просьбы
 В уроке 35 ты передавал утверждения и вопросы. Теперь — **приказы, просьбы и советы**. Здесь нет сдвига времён. Вместо этого используется структура:
@@ -138,7 +138,7 @@ minutes: 60
 
 Разберём самые коварные:
 
-**suggest** («предложить», «посоветовать» вместе делать).
+**suggest** («предложить» что-то сделать, часто вместе).
 - *“Let's watch a comedy,” said Kate.* → *Kate **suggested watching** a comedy.* / *Kate **suggested that we watch** a comedy.* / *Kate suggested that we should watch…*
 - ❌ *Kate suggested me to watch a comedy.* ❌ *Kate suggested to watch…* — после *suggest* **нельзя** *to + глагол* и нельзя *suggest + человек + to*.
 
@@ -179,7 +179,7 @@ minutes: 60
 ### 9. Мини-рецензия: образец
 Вот короткий образец, который можно использовать как шаблон для рассказа:
 
-*I watched a thriller last week. It's called “The Night Train”. It's about a detective who tries to find a missing girl. It's set in a small town in Scotland and it's based on a bestselling novel. The plot is gripping, but the ending is a bit predictable. Overall, I'd recommend it. If you like detective stories, you'll love it.*
+*I watched a thriller last week. It's called “The Night Train”. It's about a detective who tries to find a missing girl. It's set in a small town in Scotland and it's based on a bestselling novel. The plot was gripping, but the ending was a bit predictable. Overall, I'd recommend it. If you like detective stories, you'll love it.*
 
 Заметь: пересказ сюжета — Present Simple (*is, tries*), впечатления — Past Simple (*watched, was*), рекомендация — условное и модальные формы (*I'd recommend, you'll love*).
 
@@ -302,7 +302,7 @@ minutes: 60
 2. This song ___ (sing) by millions of people every year. => is sung
 3. Many books ___ (sell) every day. => are sold
 4. The concert ___ (cancel) last week. => was cancelled / was canceled
-5. The new album ___ (release) next month. Use will. => will be released
+5. The new album ___ (release) next month. (будущее, will) => will be released
 6. The film ___ (watch) by millions of people every year. => is watched
 
 ### Упражнение 7. Повторение: условные предложения и относительные придаточные
@@ -335,7 +335,7 @@ minutes: 60
 
 ## Запомни
 - Сюжет фильма или книги пересказывают в **Present Simple**, свои впечатления — в **Past Simple**: *It's about a detective… I loved it.*
-- **-ing описывает предмет, -ed — человека:** *The film is boring. I am bored.* **I listen to music**, **I play the guitar**, **It's worth seeing**, **a book by…**
+- **-ing — то, что вызывает чувство, -ed — то, что чувствует человек:** *The film is boring. I am bored.* **I listen to music**, **I play the guitar**, **It's worth seeing**, **a book by…**
 - Приказ и просьба в косвенной речи: **told / asked + человек + (not) to + глагол**: *He told me to wait. She asked us not to talk.* Нельзя: *said me to*.
 - **suggest** + **-ing** или **that-clause**: *suggested going*. После *suggest* нельзя *to + глагол* и *человек + to*.
 - **advise / remind / warn / invite + человек + to**; **promise / offer / refuse / agree + to**; **admit + -ing**; **apologise for + -ing**.

@@ -73,7 +73,7 @@ minutes: 60
 | much / many | **more** | **the most** |
 | old | older | the oldest (в семье также: **elder / the eldest**) |
 
-*Further / furthest* — самая частая пара в британском английском, *farther / farthest* говорят про расстояние. *Elder / eldest* используют в семье: *my elder sister, my eldest brother*, но после них не используют than.
+Про расстояние подходят обе пары: *further / furthest* чаще в британском английском, *farther / farthest* — в американском. Только *further* значит ещё и «дальнейший, дополнительный»: *further information*. *Elder / eldest* используют в семье: *my elder sister, my eldest brother*, но после elder не ставят than: ❌ *She is elder than me.* → ✅ *She is older than me.*
 
 ### 5. Как сравнивать: than
 Для сравнения двух предметов после сравнительной степени ставим **than** («чем»):
@@ -89,7 +89,7 @@ minutes: 60
 
 ❌ *very bigger* → ✅ **much bigger**. Слово *very* со сравнительной степенью не используют.
 
-Для «всё больше и больше» используют повтор: *It's getting colder and colder. The film is more and more interesting.* А конструкция **the … the …** означает «чем… тем…»: *The more you practise, the better you speak.* (Чем больше практикуешься, тем лучше говоришь.)
+Для «всё больше и больше» используют повтор: *It's getting colder and colder. The film is getting more and more interesting.* А конструкция **the … the …** означает «чем… тем…»: *The more you practise, the better you speak.* (Чем больше практикуешься, тем лучше говоришь.)
 
 ### 6. Превосходная степень
 Перед превосходной степенью **обычно стоит the**: *the tallest, the most popular, the best.* После неё обычно называют группу:
@@ -117,7 +117,7 @@ minutes: 60
 Наречия сравниваются так же: к коротким добавляем -er, к длинным — more.
 - He runs **faster than** me. (Он бегает быстрее меня.)
 - She speaks **more slowly than** her brother. (Она говорит медленнее брата.)
-- Please, drive **more carefully**.
+- Please drive **more carefully**. (Пожалуйста, води осторожнее.)
 - Исключения: well → **better** → the best; badly → **worse** → the worst. *You speak English better than me.*
 
 ### 9. Вопросы со сравнением и полезные модели
@@ -128,7 +128,7 @@ minutes: 60
 - **Who is the oldest** in your family? — Кто самый старший в вашей семье?
 
 Если нужно узнать, насколько отличаются предметы, говорят **How much…?** или **How…?**:
-- How much cheaper is this hotel? — **About ten pounds a night.** (Насколько дешевле этот отель? — На десять фунтов в сутки.)
+- How much cheaper is this hotel? — **About ten pounds a night.** (Насколько дешевле этот отель? — Примерно на десять фунтов в сутки.)
 - How tall are you? — **I'm 170 centimetres.** (Какой у тебя рост? — 170 сантиметров.)
 
 Полезные короткие модели для магазина и повседневной речи:
@@ -139,7 +139,7 @@ minutes: 60
 - **That's the best idea!** — Это лучшая идея!
 - **It's the worst day ever.** — Это худший день в жизни.
 
-Сравнивать можно и действия: *My English is getting better. The days are getting longer. Prices are getting higher.* Конструкция **get + сравнительная степень** показывает постепенное изменение: «становится лучше, длиннее, выше».
+Сравнительная степень описывает и изменения: *My English is getting better. The days are getting longer. Prices are getting higher.* Конструкция **get + сравнительная степень** показывает постепенное изменение: «становится лучше, длиннее, выше».
 
 Несколько слов о том, как избегать повторов. Если предмет понятен из контекста, можно говорить **one / ones** или использовать притяжательную форму: *My phone is newer than yours* (= than your phone). *This coat is warmer than that one.* Так звучит естественнее, чем повторять существительное.
 
@@ -218,7 +218,7 @@ minutes: 60
 3. Today is ___ than yesterday. :: hoter | hotter* | more hot
 4. She is ___ than her sister. :: happier* | happyer | most happier
 5. This is the ___ day of my life. :: goodest | best* | most good
-6. That was the ___ film I know. :: baddest | most bad | worst*
+6. This is the ___ film I know. :: baddest | most bad | worst*
 7. London is ___ than Oxford. :: bigger* | biger | more big
 8. It's the ___ expensive hotel in the city. :: most* | more | much
 
@@ -244,7 +244,7 @@ minutes: 60
 7. It was ___ night of my life. (bad) => the worst
 8. This sofa is ___ in the shop. (comfortable) => the most comfortable
 
-### Упражнение 4. As, than или the same
+### Упражнение 4. As или than
 Впиши одно слово: as или than.
 1. My phone is as expensive ___ yours. => as
 2. She is not as tall ___ her brother. => as
@@ -320,4 +320,4 @@ minutes: 60
 7. This phone is ___ better than that one. :: very | much* | more
 8. Bad, worse, ___ . :: the worst* | the baddest | the most bad
 9. Выбери правильное. :: It is the more beautiful city. | It is the most beautiful city.* | It is most beautiful city of.
-10. Что значит «She is not as tall as him»? :: Она выше него. | Она ниже его.* | Они одного роста.
+10. Что значит «She is not as tall as him»? :: Она выше него. | Она ниже него.* | Они одного роста.

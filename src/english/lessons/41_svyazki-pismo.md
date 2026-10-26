@@ -60,7 +60,7 @@ minutes: 60
 - **in order to + инфинитив** (более формально): *She left early in order to catch the train.*
 - **so that + подлежащее + can / will / would:** *I'll leave early so that I can catch the train.*
 
-Сравните: русское «чтобы» бывает без to: ❌ *for get a better job* → ✅ **to get a better job**.
+Не переводите «чтобы» словом *for* — перед глаголом нужно *to*: ❌ *for get a better job* → ✅ **to get a better job**.
 
 ### 3. Противопоставление
 Это самая богатая группа, и здесь чаще всего ошибаются.
@@ -74,7 +74,7 @@ minutes: 60
 
 > **Запомни.** По-русски мы часто говорим «хотя… но…». По-английски **нельзя** ставить *but* в предложении с *although*: ❌ *Although it was cold, but we went out.* ✅ **Although it was cold, we went out.**
 
-Слово **though** в разговорной речи может стоять **в конце**: *I like London. The weather is awful, though.* (хотя погода ужасная, но всё же)
+Слово **though** в разговорной речи может стоять **в конце**: *I like London. The weather is awful, though.* (Мне нравится Лондон. Погода, правда, ужасная.)
 
 **Despite** и **in spite of** («несмотря на») — это предлоги. После них идёт **существительное или -ing**, но не полное предложение:
 - **Despite** the rain, we went out.
@@ -239,7 +239,7 @@ minutes: 60
 | English | Перевод | Пример | Перевод примера |
 |---|---|---|---|
 | however | однако | It was cold. However, we went out. | Было холодно. Однако мы вышли. |
-| therefore | поэтому, следовательно | The train was late; therefore, we missed it. | Поезд опоздал, поэтому мы на него не успели. |
+| therefore | поэтому, следовательно | The train was late; therefore, we missed the meeting. | Поезд опоздал, поэтому мы не успели на встречу. |
 | although | хотя | Although he was tired, he worked. | Хотя он устал, он работал. |
 | moreover | более того | Moreover, the staff were friendly. | Более того, персонал был дружелюбным. |
 | in addition | кроме того | In addition, the room was clean. | Кроме того, в комнате было чисто. |
@@ -347,7 +347,7 @@ minutes: 60
 8. Which sentence is correct? :: There are many sports, such as tennis and golf.* | There are many sports, like as tennis and golf. | There are many sports, as example tennis and golf.
 
 ### Упражнение 6. Повторение: количество, фразовые глаголы, косвенная речь
-Выбери правильный вариант (уроки 35, 31, 38, 40).
+Выбери правильный вариант (уроки 31, 35, 38, 40).
 1. There isn't ___ milk left. :: much* | many | few
 2. I have ___ friends here, so I feel lonely. :: few* | a few | a little
 3. The room is small. It isn't ___ for ten people. :: big enough* | enough big | too big
@@ -374,7 +374,7 @@ minutes: 60
 2. As a result, we missed the train. :: результат* | противопоставление | пример
 3. On the other hand, it's cheaper. :: противопоставление* | вывод | последовательность
 4. In conclusion, I think English is useful. :: вывод* | пример | причина
-5. Moreover, the staff was rude. :: добавление* | противопоставление | результат
+5. Moreover, the staff were rude. :: добавление* | противопоставление | результат
 6. Whereas my sister likes coffee, I prefer tea. :: противопоставление* | причина | цель
 7. In order to save money, I cook at home. :: цель* | результат | причина
 8. Since it was late, we took a taxi. :: причина* | цель | противопоставление

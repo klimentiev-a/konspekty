@@ -144,7 +144,7 @@ window.StockResearchIndustry = (() => {
     const names={comparison_growth:'Рост выручки',comparison_revenue:'Выручка для сравнения',stores_growth:'Рост числа магазинов',area_growth:'Рост торговой площади',capex_share:'CAPEX / выручка',fcf_share:'FCF / выручка'};
     for(const c of s.industry.companies)for(const r of c.rows)for(const [k,v] of Object.entries(r.values)){
       const definition=s.industry.company_metric_definitions?.[k];
-      rows.push([c.name+' / '+(names[k]||window.StockResearch?.metrics[k]?.[0]||k),r.year,v,definition?.unit||(percent.has(k)?'%':k==='stores'?'шт.':k==='selling_space'?'тыс. м²':'млн ₽'),'company_data',r.sources?.[k]?.url||'/stock.html#research?sector=retail&company='+c.id+'&view=sources',s.industry.built_at,c.perimeter+(definition?.formula?' · '+definition.formula:'')]);
+      rows.push([c.name+' / '+(names[k]||window.StockResearch?.metrics[k]?.[0]||k),r.year,v,definition?.unit||(percent.has(k)?'%':k==='stores'?'шт.':k==='selling_space'?'тыс. м²':'млн ₽'),'company_data',r.sources?.[k]?.url||'akcii.html#research?sector=retail&company='+c.id+'&view=sources',s.industry.built_at,c.perimeter+(definition?.formula?' · '+definition.formula:'')]);
     }
     return '\uFEFF'+rows.map(r=>r.map(quote).join(';')).join('\r\n');
   }

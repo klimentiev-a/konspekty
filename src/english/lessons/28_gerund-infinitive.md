@@ -71,7 +71,7 @@ minutes: 60
 
 Отрицание ставится перед to: **not to**: *She decided not to go.* — Она решила не ехать.
 
-Различие между suggest и offer: **suggest + -ing** (*I suggest going*) и **offer + to** (*I offer to go*). Это разные группы, хотя по-русски оба «предлагать».
+Различие между suggest и offer: **suggest + -ing** (*I suggest going by bus* — предлагаю идею) и **offer + to** (*She offered to help* — предложила свою помощь). Это разные группы, хотя по-русски оба «предлагать».
 
 ### 4. Вежливое желание: I'd like to
 Конструкция **would like + to + инфинитив** (сокр. **I'd like to**) — вежливая замена *I want*. Именно она нужна в кафе, на работе и в любом разговоре, где *I want* звучит слишком резко:
@@ -194,7 +194,7 @@ minutes: 60
 - Anna: Perfect! Do you mind making some sandwiches, Tom? I'll bring the tea. | Отлично! Ты не против сделать бутерброды, Том? Я принесу чай.
 - Tom: Not at all. I'm good at making sandwiches! | Совсем нет. Я хорошо делаю бутерброды!
 - Anna: And I'm really looking forward to seeing the lake. | А я очень жду, когда увижу озеро.
-- Tom: Me too. Remember to wear warm clothes. It can be cold in the hills. | Я тоже. Не забудь тёплую одежду. В горах бывает холодно.
+- Tom: Me too. Remember to wear warm clothes. It can be cold in the hills. | Я тоже. Не забудь тёплую одежду. На холмах бывает холодно.
 - Anna: I won't forget. Shall I ask my brother to come, too? | Не забуду. Мне позвать брата?
 - Tom: Sure! I'd like him to meet Kate anyway. | Конечно! Я всё равно хочу, чтобы он познакомился с Кейт.
 - Anna: Okay, I'll text him now. See you on Sunday! | Хорошо, напишу ему сейчас. До воскресенья!
@@ -230,7 +230,7 @@ minutes: 60
 3. Не забудь купить хлеб! Remember ___ bread! :: buying | to buy* | buy
 4. Я помню, как мы с тобой познакомились. I remember ___ you. :: to meet | meeting* | meet
 5. Попробуй выключить и снова включить это (как эксперимент). Try ___ it off and on again. :: to turn | turning* | turn
-6. Я старался открыть дверь, но она была закрыта. I tried ___ the door, but it was locked. :: opening | to open* | open
+6. Я старался открыть дверь, но она была заперта. I tried ___ the door, but it was locked. :: opening | to open* | open
 7. Он забыл выключить свет. He forgot ___ off the light. :: turning | to turn* | turn
 
 ### Упражнение 4. Герундий после предлога

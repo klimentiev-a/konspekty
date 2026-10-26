@@ -97,7 +97,7 @@ minutes: 60
 - *Tom's bag.* — сумка Тома (**принадлежность**).
 - *Tom's got a car.* — у Тома есть машина (**has**).
 
-Различить помогает окружение: после 's стоит существительное → принадлежность; после 's стоит прилагательное или -ing / V3 → это *is* или *has*.
+Различить помогает окружение: после 's стоит существительное → принадлежность; после 's стоит прилагательное, форма на -ing или got → это *is* или *has*.
 
 ### 5. Объектные местоимения: me, you, him, her, it, us, them
 Объектные местоимения стоят **после глагола** или **после предлога**. Они отвечают на вопросы «кого? кому? с кем? для кого?»:
@@ -120,7 +120,7 @@ minutes: 60
 - **ask** her — спроси её
 - **help** them — помоги им
 - **thank** you — спасибо тебе (благодарю тебя)
-- А вот *look at him*, *listen to him*, *wait for him* — здесь предлог нужен (*look at, listen to, wait for*), хотя по-русски «слушай его», «жди его» — без предлога.
+- А вот *listen to him*, *wait for him* — здесь предлог нужен (*listen to, wait for*), хотя по-русски «слушай его», «жди его» — без предлога.
 
 Объектное местоимение может заменять любое дополнение: *The dog is hungry. Give **it** some food.* *I have two keys. I need **them** now.*
 
@@ -202,9 +202,9 @@ minutes: 60
 - Anna: Good morning. I think my bag is here. It's lost. | Доброе утро. Кажется, моя сумка здесь. Она потерялась.
 - Clerk: Good morning. What colour is it? | Доброе утро. Какого она цвета?
 - Anna: It's black. My name is on it. | Она чёрная. На ней написано моё имя.
-- Clerk: We have two black bags here. Whose is this one? | У нас тут две чёрные сумки. Чья эта?
+- Clerk: We have two black bags here. Is this one yours? | У нас тут две чёрные сумки. Эта ваша?
 - Anna: No, that one isn't mine. Mine is smaller. | Нет, эта не моя. Моя меньше.
-- Clerk: Is this one yours? | А эта ваша?
+- Clerk: And this one? | А эта?
 - Anna: Yes, it is! That's my bag. Thank you very much! | Да, моя! Это моя сумка. Большое спасибо!
 - Clerk: Please check it. Are your keys and your wallet inside? | Проверьте её, пожалуйста. Ваши ключи и кошелёк внутри?
 - Anna: My keys are here, but I can't see my wallet. | Ключи на месте, но я не вижу кошелька.
@@ -258,10 +258,10 @@ minutes: 60
 2. Anna is my sister. I often call ___. => her
 3. My keys are lost. I need ___ now. => them
 4. We are friends. Tom often helps ___. => us
-5. I am talking to you. Do you hear ___? => me
+5. Hi, it's Anna. Do you remember ___? => me
 6. This is my laptop. I love ___. => it
 7. The neighbours are nice. We talk to ___ every day. => them
-8. Kate is late. We are waiting for ___. => her
+8. Kate is our friend. We often go to the cinema with ___. => her
 9. You are my best friend. This gift is for ___. => you
 
 ### Упражнение 5. Подлежащее или дополнение?

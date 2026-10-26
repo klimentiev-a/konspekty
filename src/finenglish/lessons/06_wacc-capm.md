@@ -1,12 +1,12 @@
 # Topic 6. Cost of capital: CAPM and WACC
-short: Полная формула WACC, CAPM с страновой премией, unlever/relever беты по Хамаде, стоимость долга, веса по рынку, типичные ошибки и российская специфика
+short: Полная формула WACC, CAPM со страновой премией, unlever/relever беты по Хамаде, стоимость долга, веса по рынку, типичные ошибки и российская специфика
 level: C1
 unit: 2
 minutes: 8
 
 ## Theory
 
-> **In one minute.** WACC (средневзвешенная стоимость капитала) is the blended required return (требуемая доходность) of lenders and shareholders, weighted by market values of debt and equity. Ke comes from the CAPM with a beta relevered to the target capital structure; Kd is the current marginal borrowing cost (предельная стоимость заимствования) after tax. Small changes in WACC move a DCF a lot, so every input must be defensible (обоснованным).
+> **In one minute.** WACC (средневзвешенная стоимость капитала) is the blended required return (требуемая доходность) of lenders and shareholders, weighted by market values of debt and equity. Ke, the cost of equity (стоимость собственного капитала), comes from the CAPM, the capital asset pricing model (модель оценки капитальных активов), with a beta relevered to the target capital structure; Kd, the cost of debt (стоимость долга), is the current marginal borrowing cost (предельная стоимость заимствования) after tax. Small changes in WACC move a DCF (discounted cash flow, модель дисконтированных денежных потоков) a lot, so every input must be defensible (обоснованным).
 
 ## Formulas
 
@@ -19,11 +19,13 @@ Hamada:  β_U = β_L / [1 + (1 − t) × D/E]        (unlever peer betas)
          β_L = β_U × [1 + (1 − t) × D/E_target]  (relever to target)
 ```
 
+E and D are the market values of equity and debt, P and Kp — of preferred shares (привилегированные акции), t is the tax rate, Rf the risk-free rate, β_L and β_U the levered and unlevered betas (бета с учётом и без учёта долга).
+
 ## Inputs: cost of equity
 
-- **Risk-free rate (безрисковая ставка):** yield of long government bonds in the currency of the cash flows. Rouble DCF: 10-year OFZ; dollar DCF: 10-year US Treasury. Match currency and horizon.
+- **Risk-free rate (безрисковая ставка):** yield of long government bonds in the currency of the cash flows. Rouble DCF: 10-year OFZ (ОФЗ, облигации федерального займа); dollar DCF: 10-year US Treasury. Match currency and horizon.
 - **Equity risk premium, ERP (премия за риск акций):** long-run excess return of stocks over bonds; practitioners use 5–6% for developed markets (Damodaran, Kroll surveys).
-- **Country risk premium, CRP (страновая премия):** added for emerging markets; estimated from sovereign CDS spreads or sovereign bond spreads scaled by equity volatility. For a rouble DCF with OFZ as Rf part of the country risk is already in Rf; do not double count (не учитывать дважды).
+- **Country risk premium, CRP (страновая премия):** added for emerging markets; estimated from sovereign CDS (credit default swap, кредитный дефолтный своп) spreads or sovereign bond spreads scaled by equity volatility. For a rouble DCF with OFZ as Rf part of the country risk is already in Rf; do not double count (не учитывать дважды).
 - **Beta (бета):** regression of stock returns on the index, 2–5 years, weekly or monthly. Illiquid stocks give unreliable betas, so use a peer set (аналоги): unlever each peer's beta, take the median, relever to the target's D/E. Adjusted beta (Bloomberg) = 0.67 × raw + 0.33 × 1.
 - **Size premium (премия за размер)** and company-specific premium (специфическая премия) are used for small or private companies; justify them, do not plug.
 
@@ -33,11 +35,11 @@ Kd is the yield to maturity on the company's traded bonds or the rate on new loa
 
 ## Weights
 
-Market value of equity = market capitalization (diluted). Market value of debt ≈ book value unless bonds trade far from par. Use the target capital structure (целевая структура капитала): the industry median or management's stated leverage, not the distressed structure of today. WACC assumes the structure is constant; if leverage changes a lot (LBO), use APV (adjusted present value, скорректированная приведённая стоимость): unlevered value + PV of tax shields − PV of distress costs.
+Market value of equity = market capitalization (diluted). Market value of debt ≈ book value unless bonds trade far from par. Use the target capital structure (целевая структура капитала): the industry median or management's stated leverage, not the distressed structure of today. WACC assumes the structure is constant; if leverage changes a lot (LBO, leveraged buyout — покупка компании в долг), use APV (adjusted present value, скорректированная приведённая стоимость): unlevered value + PV of tax shields − PV of distress costs.
 
 ## Why debt is cheaper, up to a point
 
-Lenders are senior and interest is deductible, so Kd(1 − t) < Ke. Adding debt lowers WACC until expected costs of financial distress (ожидаемые издержки финансовых затруднений) and rising Ke and Kd outweigh the tax shield: trade-off theory (теория компромисса). Modigliani-Miller: without taxes and distress, capital structure is irrelevant; with taxes, V_L = V_U + t × D. Pecking order (теория иерархии): firms prefer internal funds, then debt, then equity, because equity issuance signals overvaluation.
+Lenders are senior and interest is deductible, so Kd(1 − t) < Ke. Adding debt lowers WACC until expected costs of financial distress (ожидаемые издержки финансовых затруднений) and rising Ke and Kd outweigh the tax shield: trade-off theory (теория компромисса). Modigliani-Miller: without taxes and distress, capital structure is irrelevant; with taxes, V_L = V_U + t × D (value of the levered firm equals the unlevered value plus the tax shield on debt). Pecking order (теория иерархии): firms prefer internal funds, then debt, then equity, because equity issuance signals overvaluation.
 
 ## Worked example (rouble)
 

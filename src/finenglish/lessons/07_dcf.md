@@ -6,7 +6,7 @@ minutes: 8
 
 ## Theory
 
-> **In one minute.** Forecast FCFF for 5–10 years, discount at WACC, add the present value of terminal value (терминальная стоимость), get enterprise value (стоимость предприятия). Subtract net debt and debt-like items, add non-operating assets, divide by diluted shares. Show a sensitivity grid (таблица чувствительности), never a single number. Terminal value is 60–80% of EV, so the cross-check of g against the exit multiple is the most important step.
+> **In one minute.** Forecast FCFF, free cash flow to the firm (свободный денежный поток для всех инвесторов), for 5–10 years, discount at WACC (средневзвешенная стоимость капитала), add the present value of terminal value (терминальная стоимость), get enterprise value, EV (стоимость предприятия). Subtract net debt and debt-like items, add non-operating assets, divide by diluted shares. Show a sensitivity grid (таблица чувствительности), never a single number. Terminal value is 60–80% of EV, so the cross-check of g, the perpetual growth rate (темп роста в бессрочном периоде), against the exit multiple is the most important step.
 
 ## Steps
 
@@ -21,9 +21,11 @@ minutes: 8
 7. Price = Equity value / diluted shares; sensitivity WACC × g
 ```
 
+D&A is depreciation and amortisation (амортизация), NWC — net working capital (оборотный капитал), TV — terminal value, DF — discount factor (коэффициент дисконтирования).
+
 ## Terminal value: two methods and the cross-check
 
-Perpetuity growth (бессрочный рост): g ≤ long-run nominal GDP growth; for rouble models 3–4%, for dollar 2–3%. The terminal year must be normalised (нормализован): capex ≈ D&A × (1 + g), NWC growing with revenue, margins at mid-cycle (среднециклические).
+Perpetuity growth (бессрочный рост): g ≤ long-run nominal GDP growth (рост номинального ВВП); for rouble models 3–4%, for dollar 2–3%. The terminal year must be normalised (нормализован): capex ≈ D&A × (1 + g), NWC growing with revenue, margins at mid-cycle (среднециклические).
 
 Exit multiple (выходной мультипликатор): current peer EV/EBITDA, often haircut (с дисконтом) because multiples at the end of a forecast are unknown. Always compute the implied values (подразумеваемые значения):
 
@@ -32,7 +34,7 @@ Implied g from a multiple:  g = (TV × WACC − FCFF_n) / (TV + FCFF_n)
 Implied multiple from g:    TV / EBITDA_n
 ```
 
-If the exit multiple implies g = 8%, the multiple is too high. If the Gordon TV implies 12x EBITDA for a 6x sector, g or margins are too high.
+If the exit multiple implies g = 8%, the multiple is too high. If the Gordon TV (терминальная стоимость по модели Гордона) implies 12x EBITDA for a 6x sector, g or margins are too high.
 
 Finite-life assets (конечные активы): mines, oil fields, concessions (концессии) get no TV; model to the end of reserves (life of mine, срок отработки запасов) plus closure and reclamation costs (затраты на закрытие и рекультивацию).
 
@@ -51,24 +53,26 @@ Equity value = EV
   + Non-core assets, financial investments
 ```
 
+NCI is non-controlling interest (неконтролирующая доля), JVs are joint ventures (совместные предприятия).
+
 Consistency rule: whatever is excluded from FCFF must be added or subtracted in the bridge, and vice versa. Price per share uses diluted shares via the treasury stock method (Topic 2).
 
 ## Sensitivity and scenarios
 
-Two-way table (двумерная таблица): WACC ± 1pp in rows, g or exit multiple in columns. Then operating sensitivities: commodity price, FX, margin, capex. Scenarios (сценарии): base, bull, bear, each with its own driver set. The output is a range (диапазон) on the football field (диаграмма «футбольное поле») next to trading comps and precedent transactions.
+Two-way table (двумерная таблица): WACC ± 1pp (percentage point, процентный пункт) in rows, g or exit multiple in columns. Then operating sensitivities: commodity price, FX (валютный курс), margin, capex. Scenarios (сценарии): base, bull (оптимистичный), bear (пессимистичный), each with its own driver set. The output is a range (диапазон) on the football field (диаграмма «футбольное поле») next to trading comps (сравнимые публичные компании) and precedent transactions (сделки‑аналоги).
 
 ## Sanity checks
 
 - TV share of EV above 85% → forecast too short or g too high.
 - Implied EV/EBITDA and P/E versus peers.
-- ROIC in the terminal year versus WACC: a perpetual ROIC far above WACC is a strong claim.
+- ROIC (return on invested capital, рентабельность инвестированного капитала) in the terminal year versus WACC: a perpetual ROIC far above WACC is a strong claim.
 - FCFF margin trend: should converge (сходиться) to history or peers.
-- Revenue CAGR (среднегодовой темп роста) versus market growth: market share (доля рынка) implied.
+- Revenue CAGR, compound annual growth rate (среднегодовой темп роста), versus market growth: market share (доля рынка) implied.
 - Currency: rouble flows, rouble WACC, rouble net debt; dollar debt converted at the spot rate (спотовый курс).
 
 ## DCF variants
 
-FCFE / DDM for banks and insurers (debt is raw material, not financing, so no EV). APV when leverage changes (LBO). Sum-of-the-parts, SOTP (оценка по частям) for conglomerates: value each segment (сегмент) by its own method, subtract corporate costs (корпоративные расходы) and apply a conglomerate discount (дисконт конгломерата) if the market does.
+FCFE / DDM (free cash flow to equity / dividend discount model — поток для акционеров / модель дисконтирования дивидендов) for banks and insurers (debt is raw material, not financing, so no EV). APV (adjusted present value, скорректированная приведённая стоимость) when leverage changes (LBO, leveraged buyout — покупка компании в долг). Sum-of-the-parts, SOTP (оценка по частям) for conglomerates: value each segment (сегмент) by its own method, subtract corporate costs (корпоративные расходы) and apply a conglomerate discount (дисконт конгломерата) if the market does.
 
 ## Words
 

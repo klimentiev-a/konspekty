@@ -182,3 +182,10 @@
     return realFetch(input, init);
   };
 })();
+
+/* Ссылки «источник» в данных StockAI ведут на адрес сайта брата /stock.html#research… —
+   у нас эта страница называется akcii.html и лежит в подпапке fin2/. Переписываем такие ссылки при клике. */
+document.addEventListener("click", function (e) {
+  const a = e.target && e.target.closest && e.target.closest('a[href^="/stock.html"]');
+  if (a) a.setAttribute("href", "akcii.html" + a.getAttribute("href").slice("/stock.html".length));
+}, true);

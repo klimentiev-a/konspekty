@@ -6,7 +6,7 @@ minutes: 7
 
 ## Theory
 
-> **In one minute.** Ratios compare across size and time; they mean nothing without a benchmark (ориентир). The one that matters for value is ROIC (рентабельность инвестированного капитала) against WACC: the spread (спред) times invested capital is EVA (экономическая добавленная стоимость). DuPont shows whether ROE comes from margin, turnover or leverage. Quality-of-earnings checks tell you whether the ratios are real.
+> **In one minute.** Ratios compare across size and time; they mean nothing without a benchmark (ориентир). The one that matters for value is ROIC, return on invested capital (рентабельность инвестированного капитала), against WACC, the weighted average cost of capital (средневзвешенная стоимость капитала): the spread (спред) times invested capital is EVA (экономическая добавленная стоимость). DuPont analysis (формула Дюпона) shows whether ROE, return on equity (рентабельность капитала), comes from margin, turnover or leverage. Quality-of-earnings checks tell you whether the ratios are real.
 
 ## Formulas
 
@@ -24,6 +24,8 @@ Efficiency:     Asset turnover;  DSO, DIO, DPO;  CCC
 Market:         P/E;  EV/EBITDA;  Dividend yield;  Payout = DPS / EPS
 ```
 
+NI is net income (чистая прибыль), ROA — return on assets (рентабельность активов), NOPAT — net operating profit after tax (операционная прибыль после налогов), DSCR — debt service coverage ratio (коэффициент покрытия обслуживания долга), CFADS — cash flow available for debt service, DSO/DIO/DPO — days of receivables, inventory and payables, CCC — cash conversion cycle (цикл оборота денег), DPS and EPS — dividend and earnings per share (дивиденд и прибыль на акцию).
+
 ## ROIC: the value ratio
 
 ROIC uses NOPAT (EBIT × (1 − t)) over invested capital (инвестированный капитал) = net debt + equity, or equivalently operating assets − operating liabilities. Exclude excess cash and non-operating assets; decide consistently on goodwill (with goodwill shows returns on acquisitions, without it shows operating economics). Value is created only when ROIC > WACC; growth with ROIC < WACC destroys value faster. Interview line: "Growth is worth paying for only when returns exceed the cost of capital."
@@ -40,7 +42,7 @@ A rising ROE driven only by the equity multiplier is risk, not performance. Five
 
 ## Leverage and coverage
 
-Net debt / EBITDA: < 1x conservative, 2–3x normal, > 4x stressed, with sector context (regulated utilities carry 4–5x; miners target < 1.5x). Interest coverage below 1.5–2x signals distress (финансовые трудности); rating agencies (рейтинговые агентства) map FFO/Debt and coverage to ratings. DSCR (покрытие обслуживания долга) is the project-finance (проектное финансирование) test: cash available for debt service, CFADS, over interest plus principal; lenders require ≥ 1.2–1.3x.
+Net debt / EBITDA: < 1x conservative, 2–3x normal, > 4x stressed, with sector context (regulated utilities carry 4–5x; miners target < 1.5x). Interest coverage below 1.5–2x signals distress (финансовые трудности); rating agencies (рейтинговые агентства) map FFO/Debt (funds from operations to debt) and coverage to ratings. DSCR (покрытие обслуживания долга) is the project-finance (проектное финансирование) test: cash available for debt service, CFADS, over interest plus principal; lenders require ≥ 1.2–1.3x.
 
 ## Efficiency and working capital
 
@@ -49,7 +51,7 @@ DSO, DIO, DPO and the cash conversion cycle (Topic 3). Asset turnover (обор�
 ## Quality of earnings: red flags
 
 - Receivables or inventory growing faster than revenue for 2+ years.
-- CFO persistently below net income; cash conversion < 60%.
+- CFO (operating cash flow, операционный денежный поток) persistently below net income; cash conversion < 60%.
 - Rising capitalised costs (development, interest), extended depreciation lives.
 - "Adjusted" EBITDA diverging from reported; recurring "one-offs".
 - Large related-party sales (продажи связанным сторонам) or receivables.
@@ -59,7 +61,7 @@ DSO, DIO, DPO and the cash conversion cycle (Topic 3). Asset turnover (обор�
 
 ## How to present ratio analysis
 
-Three to five years of history, peer median, one line per conclusion: "Leverage rose to 3.2x on debt-funded capex; coverage still 4x; working capital days stable; FCF turns positive in 2027 as capex normalises." Numbers without a sentence are not analysis.
+Three to five years of history, peer median, one line per conclusion: "Leverage rose to 3.2x on debt-funded capex; coverage still 4x; working capital days stable; FCF (free cash flow, свободный денежный поток) turns positive in 2027 as capex normalises." Numbers without a sentence are not analysis.
 
 ## Words
 

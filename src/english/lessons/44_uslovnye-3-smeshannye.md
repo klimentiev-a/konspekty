@@ -37,7 +37,7 @@ minutes: 60
 **Условие:** If + subject + **had + V3** (Past Perfect).
 **Результат:** subject + **would have + V3**.
 
-Формы V3 (третья форма глагола) у правильных глаголов совпадает с Past Simple (worked, played), а у неправильных нужно знать наизусть:
+Форма V3 (третья форма глагола) у правильных глаголов совпадает с Past Simple (worked, played), а у неправильных нужно знать наизусть:
 
 | V1 | V2 | V3 | V1 | V2 | V3 |
 |---|---|---|---|---|---|
@@ -169,7 +169,7 @@ minutes: 60
 - Tom: I did set it, but I turned it off and went back to sleep. | Я поставил, но выключил его и снова уснул.
 - Kate: You should have asked someone to call you. | Тебе следовало попросить кого-нибудь позвонить тебе.
 - Tom: I know. I wish I had done that. | Знаю. Жаль, что я так не сделал.
-- Kate: Why were you so tired? | Почему ты был так уставший?
+- Kate: Why were you so tired? | Почему ты так устал?
 - Tom: I stayed up late watching a film. I shouldn't have done that. | Я сидел допоздна и смотрел фильм. Мне не следовало этого делать.
 - Kate: What time did you wake up? | Во сколько ты проснулся?
 - Tom: At eight. The flight was at nine. | В восемь. Рейс был в девять.

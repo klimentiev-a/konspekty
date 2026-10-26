@@ -83,7 +83,7 @@ minutes: 60
 | this morning | (сейчас 11:00) *I've had two cups of tea this morning.* | (сейчас вечер) *I had two cups of tea this morning.* |
 | today | (сейчас день) *I've been busy today.* | (вечер, мы подводим итог) *I was busy today.* |
 | this week | (сейчас среда) *We've had three lessons this week.* | (суббота вечером, неделя «закрыта») *We had five lessons this week.* |
-| this year | (сейчас октябрь) *I've read ten books this year.* | (январь следующего года) *I read twenty books this year.* |
+| this afternoon | (сейчас 15:00) *I've made three calls this afternoon.* | (сейчас 20:00) *I made three calls this afternoon.* |
 
 Проверьте себя, когда вы видите в предложении «this …»: **период ещё не закончился → Present Perfect**.
 
@@ -109,8 +109,8 @@ minutes: 60
 
 **First time / last time.**
 - *It's the first time I've flown.* — Я лечу в первый раз в жизни (Present Perfect).
-- *The last time I flew was in 2022.* — Прошлый раз я летела в 2022 году (Past Simple).
-- *That was the first time I flew.* — Это был первый раз, когда я летела (рассказ в прошлом).
+- *The last time I flew was in 2022.* — В последний раз я летала в 2022 году (Past Simple).
+- *That was the first time I had flown.* — Это был первый раз, когда я летела (рассказ о прошлом; *had flown* — Past Perfect, урок 36).
 
 **How long ago / how long.**
 - *How long **ago** did you move here?* — Past Simple, ждём «три года назад».
@@ -251,7 +251,7 @@ minutes: 60
 1. (Сейчас 11 утра.) I ___ two cups of tea this morning. :: have drunk* | drank | drinks
 2. (Сейчас вечер.) I ___ a lot of tea this morning. :: drank* | have drunk | drinks
 3. (Сейчас среда.) We ___ four lessons this week. :: have had* | has had | having
-4. (Сейчас воскресенье вечером, неделя закончилась.) Last week we ___ five lessons. :: had* | have had | has had
+4. (Говорим о прошлой неделе.) Last week we ___ five lessons. :: had* | have had | has had
 5. He ___ in 1999. :: was born* | has been born | is born
 6. It's the first time I ___ in a helicopter. :: have flown* | flew | fly
 
@@ -272,7 +272,7 @@ minutes: 60
 4. I think the exam ___ difficult. :: will be* | is going | does
 5. Look at those clouds! It ___ rain. :: is going to* | rains | rained
 6. We ___ for a walk tonight. We've arranged it with Tom. :: are going* | went | have gone
-7. You ___ leave your bag here. Someone can steal it. :: shouldn't* | don't have to | mustn't to
+7. You ___ leave your bag here. Someone might steal it. :: shouldn't* | don't have to | mustn't to
 8. She is ___ than her sister. :: more tall | taller* | tallest
 
 ### Упражнение 9. Повторение: Past Continuous, будущее, Past Simple

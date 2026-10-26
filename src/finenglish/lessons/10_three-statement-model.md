@@ -6,7 +6,7 @@ minutes: 8
 
 ## Theory
 
-> **In one minute.** A three-statement model (модель трёх отчётов) forecasts the income statement, balance sheet and cash flow statement so that they tie (сходятся): the cash from the CFS equals cash on the balance sheet and assets equal liabilities plus equity in every year. Drivers (драйверы) sit on one assumptions sheet (лист предпосылок), schedules (расписания) compute debt, D&A and NWC, and a revolver (возобновляемая кредитная линия) balances the sheet.
+> **In one minute.** A three-statement model (модель трёх отчётов) forecasts the income statement, balance sheet and cash flow statement so that they tie (сходятся): the cash from the CFS, the cash flow statement (ОДДС), equals cash on the balance sheet and assets equal liabilities plus equity in every year. Drivers (драйверы) sit on one assumptions sheet (лист предпосылок), schedules (расписания) compute debt, D&A, depreciation and amortisation (амортизация), and NWC, net working capital (оборотный капитал), and a revolver (возобновляемая кредитная линия) balances the sheet.
 
 ## Layout
 
@@ -17,21 +17,23 @@ Schedules: D&A and capex (PP&E roll-forward), NWC (days), debt (tranches, intere
 Checks: BS balance = 0; cash CFS = cash BS; debt schedule = BS debt; no negative cash
 ```
 
+PP&E is property, plant and equipment (основные средства), NOLs are net operating losses (налоговые убытки к переносу), BS is the balance sheet.
+
 Conventions: inputs in blue, formulas in black, links in green; one formula per row across years; no hard-coded numbers (жёстко прописанные числа) inside formulas; historical columns to the left of forecast; units stated.
 
 ## Drivers
 
 - **Revenue:** volume × price, or segment growth; tie to capacity and market.
-- **Costs:** % of revenue for variable (переменные), fixed (постоянные) grown with inflation; split COGS and opex.
-- **NWC:** DSO, DIO, DPO days applied to revenue and COGS.
+- **Costs:** % of revenue for variable (переменные), fixed (постоянные) grown with inflation; split COGS, the cost of goods sold (себестоимость), and opex, operating expenses (операционные расходы).
+- **NWC:** DSO, DIO, DPO (days of receivables, inventory and payables — дни оборота дебиторки, запасов и кредиторки) applied to revenue and COGS.
 - **Capex and D&A:** capex as % of revenue or project list; D&A from the PP&E roll-forward (движение основных средств): opening + capex − D&A = closing; D&A = opening PP&E / useful life + new capex / life × ½.
-- **Tax:** statutory rate on EBT, adjusted for NOLs (перенос убытков) and non-deductibles; deferred tax if needed.
+- **Tax:** statutory rate on EBT (earnings before tax, прибыль до налогообложения), adjusted for NOLs (перенос убытков) and non-deductibles; deferred tax if needed.
 - **Debt:** tranches (транши) with rate, maturity, amortisation (график погашения); interest on average balance.
 - **Dividends:** payout ratio or policy formula.
 
 ## Balancing the model
 
-Cash is the plug (балансирующая статья) through the cash flow statement; it must never be forced. Minimum cash (минимальный остаток) is an assumption; if forecast cash falls below it, the revolver draws; if cash is above it, the revolver repays or a cash sweep (досрочное погашение из избытка денег) pays down term debt.
+Cash is the plug (балансирующая статья) through the cash flow statement; it must never be forced. Minimum cash (минимальный остаток) is an assumption; if forecast cash falls below it, the revolver draws; if cash is above it, the revolver repays or a cash sweep (досрочное погашение из избытка денег) pays down term debt (срочный кредит).
 
 ```f
 Revolver draw = MAX(0, Min cash − Cash before revolver)
@@ -47,13 +49,13 @@ Interest depends on average debt, debt depends on cash, cash depends on interest
 - Balance check row: Assets − Liabilities − Equity = 0 in all years, conditional formatting.
 - Cash tie: closing cash CFS = BS cash.
 - Debt tie: schedule balances = BS debt by tranche.
-- Signs: capex negative in CFI, D&A positive add-back, ΔNWC sign.
-- Sanity: margins, NWC days, capex/D&A, leverage within plausible ranges; TV share.
+- Signs: capex negative in CFI (investing cash flow, инвестиционный поток), D&A positive add-back, ΔNWC sign.
+- Sanity: margins, NWC days, capex/D&A, leverage within plausible ranges; TV (terminal value, терминальная стоимость) share.
 - Use IFERROR sparingly; errors should be visible, not hidden.
 
 ## Scenarios and sensitivity
 
-Scenario switch (переключатель сценариев) via CHOOSE or INDEX on the assumptions sheet: base, upside (оптимистичный), downside (пессимистичный). Data tables (таблицы данных, What-If) for two-way sensitivities; they slow the model, so keep them on a separate sheet. Goal Seek (подбор параметра) for break-even (точка безубыточности) questions: what revenue decline breaches the covenant?
+Scenario switch (переключатель сценариев) via CHOOSE or INDEX on the assumptions sheet: base, upside (оптимистичный), downside (пессимистичный). Data tables (таблицы данных, What-If) for two-way sensitivities; they slow the model, so keep them on a separate sheet. Goal Seek (подбор параметра) for break-even (точка безубыточности) questions: what revenue decline breaches the covenant (ковенант, условие кредитного договора)?
 
 ## Excel vocabulary
 

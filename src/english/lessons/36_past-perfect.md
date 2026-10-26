@@ -49,7 +49,7 @@ minutes: 60
 
 > **Важно.** Формы Past Perfect не меняются по лицам. Раз и навсегда: **had + V3**. Это одно из самых лёгких времён с точки зрения формы.
 
-Краткое **'d** может означать had или would: *I'd finished* (= I had finished), *I'd like a tea* (= I would like). Если после 'd стоит V3 — это **had**.
+Краткое **'d** может означать had или would: *I'd finished* (= I had finished), *I'd like some tea* (= I would like). Если после 'd стоит V3 — это **had**.
 
 ### 3. Когда используем Past Perfect
 **1. Действие закончилось до другого прошлого действия или момента:**
@@ -91,8 +91,8 @@ minutes: 60
 Нюансы:
 - Слова **already, just, never, ever** стоят **между had и V3**: *She had already left.* *I had never seen it.*
 - **By the time** + Past Simple (в придаточном): *By the time we arrived, the shop had closed.* В главной части — Past Perfect.
-- Со словом **ago** Past Perfect не употребляется. Вместо *two years ago* говорим *two years before / earlier*: *She said she had met him two years before.*
-- Фраза *when* может указывать и на последовательность, и на «до». Сравни: *When he saw me, he smiled.* (увидел, потом улыбнулся) и *When he saw me, he had already finished.* (он закончил до того, как увидел меня).
+- Со словом **ago** Past Perfect обычно не употребляется. В пересказе вместо *two years ago* говорим *two years before / earlier*: *She said she had met him two years before.*
+- Союз *when* может указывать и на последовательность, и на «до». Сравни: *When he saw me, he smiled.* (увидел, потом улыбнулся) и *When he saw me, he had already finished.* (он закончил до того, как увидел меня).
 
 ### 5. Past Perfect и Past Simple вместе
 Past Perfect почти никогда не бывает один: рядом с ним стоит Past Simple, который задаёт «вторую точку».
@@ -118,7 +118,7 @@ Present Perfect связано с моментом **«сейчас»**, Past Pe
 
 ### 7. Been и gone
 Различие в Present Perfect (*has been* / *has gone*) сохраняется и в Past Perfect:
-- When I called, she **had gone** to Paris. (она уехала и ещё там)
+- When I called, she **had gone** to Paris. (она уехала и в тот момент была там)
 - She **had been** to Paris twice before that trip. (она бывала там дважды)
 
 ### 8. Что нужно помнить о порядке слов в вопросах и ответах
@@ -153,7 +153,7 @@ Present Perfect связано с моментом **«сейчас»**, Past Pe
 - I **opened** the door and **saw** a cat. (я открыла дверь, потом увидела кошку — обычная цепочка)
 - I opened the door and saw that someone **had broken** the window. (разбили окно до того, как я открыла дверь)
 
-Так Past Perfect «открывает» предысторию. В письме, особенно в рассказах и новостях, это время встречается очень часто, а в разговоре — когда нужно что-то объяснить: *Sorry, I'm late. I had forgotten my phone at home, so I had to go back.*
+Так Past Perfect «открывает» предысторию. В письме, особенно в рассказах и новостях, это время встречается очень часто, а в разговоре — когда нужно что-то объяснить: *Sorry I didn't call you. My phone had died, and I had left the charger at work.*
 
 ## Слова
 | English | Перевод | Пример | Перевод примера |
@@ -202,7 +202,7 @@ Present Perfect связано с моментом **«сейчас»**, Past Pe
 - Kate: So when did you arrive in the end? | И когда ты в итоге приехал?
 - Sam: At eleven. The meeting had finished and everybody had left for lunch. | В одиннадцать. Собрание закончилось, и все ушли на обед.
 - Kate: Poor you! Had you eaten anything? | Бедняга! Ты хоть что-то ел?
-- Sam: No, I hadn't. I was relieved when you invited me for coffee! | Нет. Я так обрадовался, когда ты позвала меня на кофе!
+- Sam: No, I hadn't. I was relieved when you invited me for coffee! | Нет, не ел. Я выдохнул с облегчением, когда ты позвала меня на кофе!
 
 ## Упражнения
 
@@ -220,7 +220,7 @@ Present Perfect связано с моментом **«сейчас»**, Past Pe
 ### Упражнение 2. Past Simple или Past Perfect
 Выбери подходящую форму.
 1. I was late. When I arrived, the lesson ___ already. :: had started* | has started | was started
-2. She locked the door and went to bed. Вставь: She ___ the door and went to bed. :: locks | locked* | lock
+2. She ___ the door and went to bed. (действия идут по порядку) :: locked* | has locked | locks
 3. By the time he got home, we ___ dinner. :: had eaten* | eat | have eaten
 4. I didn't recognise him because he ___ a lot. :: has changed | had changed* | changes
 5. They ___ married for ten years when they moved. :: were | had been* | have been
@@ -234,7 +234,7 @@ Present Perfect связано с моментом **«сейчас»**, Past Pe
 2. First she left. Then I arrived. (By the time) => By the time I arrived, she had left. / By the time I got there, she had left. / By the time I got here, she had left.
 3. First he studied. Then he took the exam. (Before) => Before he took the exam, he had studied. / He had studied before he took the exam.
 4. First the train left. Then we reached the station. (By the time) => By the time we reached the station, the train had left. / By the time we got to the station, the train had left. / By the time we arrived at the station, the train had left.
-5. First they ate. Then the guests arrived. (When) => When the guests arrived, they had eaten. / They had eaten when the guests arrived.
+5. First we ate. Then the guests arrived. (When) => When the guests arrived, we had eaten. / We had eaten when the guests arrived. / When the guests arrived, we had already eaten. / We had already eaten when the guests arrived.
 6. First I read the book. Then I watched the film. (Before) => Before I watched the film, I had read the book. / I had read the book before I watched the film.
 
 ### Упражнение 4. Отрицание, вопрос, краткий ответ
@@ -304,7 +304,7 @@ Present Perfect связано с моментом **«сейчас»**, Past Pe
 - Отрицание: **hadn't + V3**; вопрос: **Had + подлежащее + V3?**; ответ: *Yes, I had. No, I hadn't.*
 - Слова-подсказки: **before, after, by the time, when, already, just, never … before**.
 - Already, just, never стоят **между had и V3**: *She had already left.*
-- Со словом **ago** Past Perfect не употребляется: *two years before / earlier.*
+- Со словом **ago** Past Perfect обычно не употребляется: в пересказе *two years before / earlier.*
 - Если события идут по порядку рассказа, хватает Past Simple; Past Perfect нужен для предыстории и причин.
 - Past Perfect — «Present Perfect, перенесённое в прошлое»: связь с моментом «тогда», а не «сейчас».
 
@@ -317,5 +317,5 @@ Present Perfect связано с моментом **«сейчас»**, Past Pe
 6. By the time we got there, the shop ___. :: closed | would close | had closed*
 7. I was angry because he ___ my phone. :: broke | had broken* | breaks
 8. Что значит «had already gone»? :: уже ушёл* | ещё не ушёл | собирается уйти
-9. Какое слово не используется с Past Perfect? :: before | by the time | ago*
+9. Какое слово обычно не используется с Past Perfect? :: before | by the time | ago*
 10. «Она сказала, что уже ела.» :: She said she already eat. | She said she had already eaten.* | She said she has already eaten.

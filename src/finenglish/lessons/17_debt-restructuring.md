@@ -6,7 +6,7 @@ minutes: 8
 
 ## Theory
 
-> **In one minute.** Debt is priced as base rate plus spread (базовая ставка плюс спред) for credit risk, structured by seniority (старшинство) and security (обеспечение), and policed by covenants (ковенанты). When cash flow fails, the sequence is waiver → amend and extend → restructuring (haircut, debt-for-equity) → bankruptcy. The waterfall (очерёдность выплат) decides who gets what.
+> **In one minute.** Debt is priced as base rate plus spread (базовая ставка плюс спред) for credit risk, structured by seniority (старшинство) and security (обеспечение), and policed by covenants (ковенанты). When cash flow fails, the sequence is waiver (вейвер, отказ кредиторов от требований за нарушение) → amend and extend (изменение условий и продление) → restructuring (haircut — списание части долга, debt-for-equity — конвертация долга в акции) → bankruptcy (банкротство). The waterfall (очерёдность выплат) decides who gets what.
 
 ## Instruments and pricing
 
@@ -17,18 +17,20 @@ Margin ratchet (ступенчатая маржа): spread steps with leverage
 Fees: arrangement (за организацию), commitment (за резервирование), prepayment (за досрочное погашение)
 ```
 
+RUONIA is the rouble overnight index average, SOFR the US secured overnight financing rate, EURIBOR the euro interbank offered rate; bp means basis points (базисные пункты, 0.01%).
+
 | Instrument | Typical use |
 |---|---|
 | Bilateral / club / syndicated loan | Working capital, capex, acquisitions; lead arranger (организатор) and agent bank (банк-агент) |
-| Revolver (RCF) | Liquidity; drawn / undrawn |
-| Term loan A/B | Amortising bank debt / institutional cov-lite |
-| Bonds (local, Eurobonds, replacement, yuan) | Longer tenor (срок), broader investor base, disclosure |
-| Commercial paper | Short-term unsecured |
-| Project finance | Non-recourse (без регресса) to the sponsor; DSCR-based sizing |
+| Revolver (RCF, revolving credit facility — возобновляемая кредитная линия) | Liquidity; drawn / undrawn |
+| Term loan A/B | Amortising bank debt / institutional cov-lite (covenant-lite, с облегчёнными ковенантами) |
+| Bonds (local, Eurobonds — еврооблигации, replacement — замещающие, yuan) | Longer tenor (срок), broader investor base, disclosure |
+| Commercial paper (коммерческие бумаги) | Short-term unsecured |
+| Project finance | Non-recourse (без регресса) to the sponsor; sizing by DSCR (debt service coverage ratio, покрытие обслуживания долга) |
 | Leasing, factoring, trade finance | Asset-based (под активы) |
-| Convertible, hybrid, perpetual | Equity-like features, rating agency equity credit |
+| Convertible, hybrid, perpetual | Equity-like features; rating agencies treat part of them as equity (equity credit) |
 
-Leveraged finance (левередж-финансирование) is lending to sub-investment-grade borrowers: LBO debt, high-yield bonds, unitranche (единый транш, private credit).
+Leveraged finance (левередж-финансирование) is lending to sub-investment-grade borrowers: LBO (leveraged buyout, выкуп в долг) debt, high-yield bonds, unitranche (единый транш, private credit).
 
 ## Seniority and security
 
@@ -39,13 +41,15 @@ Security: pledge of shares, PP&E, receivables, accounts; guarantees from subsidi
 Intercreditor agreement (межкредиторское соглашение): who enforces, standstill, release of security
 ```
 
-Recovery rates (уровень возмещения): senior secured 60–80%, unsecured 30–50%, subordinated 10–20% historically; LGD = 1 − recovery.
+DIP is debtor-in-possession financing (финансирование должника в ходе процедуры, Chapter 11), opco — the operating company (операционная компания), PP&E — property, plant and equipment (основные средства).
+
+Recovery rates (уровень возмещения): senior secured 60–80%, unsecured 30–50%, subordinated 10–20% historically; LGD, loss given default (потери при дефолте), = 1 − recovery.
 
 ## Covenants and ratings
 
 Maintenance (tested quarterly: leverage, coverage, minimum equity) versus incurrence (triggered by actions). Breach → event of default (случай неисполнения) → lenders may accelerate (потребовать досрочного погашения); cross-default (кросс-дефолт) spreads it to other debt. In practice: waiver for a fee, reset of covenants, amend and extend (A&E, изменение условий и продление).
 
-Ratings (Topic 11): agencies map FFO/debt, debt/EBITDA, coverage and business risk to a grade; outlook and watch signal direction. Covenant headroom and rating headroom are what the CFO manages.
+Ratings (Topic 11): agencies map FFO/debt (funds from operations to debt), debt/EBITDA, coverage and business risk to a grade; outlook and watch signal direction. Covenant headroom and rating headroom are what the CFO, chief financial officer (финансовый директор), manages.
 
 ## Refinancing and liability management
 
@@ -54,13 +58,13 @@ Refinance before the debt wall (стена погашений); extend maturitie
 ## Distress and restructuring
 
 ```f
-Signals: coverage < 1.5x, negative FCF, covenant breaches, rating in CCC, bonds below 70, auditor going-concern doubt (сомнение в непрерывности деятельности)
+Signals: coverage < 1.5x, negative FCF (free cash flow), covenant breaches, rating in CCC (near default), bonds below 70, auditor going-concern doubt (сомнение в непрерывности деятельности)
 Options: out-of-court restructuring (внесудебная) vs in-court (bankruptcy)
-Tools: maturity extension, coupon cut, PIK toggle, haircut (списание), debt-for-equity swap (конвертация долга в капитал),
+Tools: maturity extension, coupon cut, PIK toggle (право платить проценты бумагами), haircut (списание), debt-for-equity swap (конвертация долга в капитал),
        new money (новые деньги) with super-senior status, asset sales, sale of the company
 ```
 
-Distressed debt investors (инвесторы в проблемный долг) buy bonds at 30–60 cents to control the restructuring (fulcrum security, «опорная» бумага, which converts into equity). In Russia: Federal Law on Insolvency (Bankruptcy) No. 127-FZ — observation (наблюдение), financial rehabilitation (финансовое оздоровление), external management (внешнее управление), bankruptcy proceedings (конкурсное производство); creditors' meeting (собрание кредиторов), register of claims (реестр требований), priority of claims (очередность требований). US: Chapter 11 (reorganisation under court protection, DIP financing, cramdown) versus Chapter 7 (liquidation).
+Distressed debt investors (инвесторы в проблемный долг) buy bonds at 30–60 cents to control the restructuring (fulcrum security, «опорная» бумага, which converts into equity). In Russia: Federal Law on Insolvency (Bankruptcy) No. 127-FZ — observation (наблюдение), financial rehabilitation (финансовое оздоровление), external management (внешнее управление), bankruptcy proceedings (конкурсное производство); creditors' meeting (собрание кредиторов), register of claims (реестр требований), priority of claims (очерёдность требований). US: Chapter 11 (reorganisation under court protection, DIP financing, cramdown — утверждение плана вопреки несогласным кредиторам) versus Chapter 7 (liquidation).
 
 ## Words
 

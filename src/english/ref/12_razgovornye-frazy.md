@@ -429,7 +429,7 @@ short: Готовые фразы с переводом для 14 жизненн�
 | I'm sorry, but I can't. | Простите, но я не могу. |
 | Let's agree to disagree. | Останемся каждый при своём мнении. |
 
-> **Запомни.** Прямое *No, you're wrong* звучит грубо. Англичане мягко смягчают несогласие: *I'm afraid...*, *I see what you mean, but...*, *I'm not sure that...*.
+> **Запомни.** Прямое *No, you're wrong* звучит грубо. Англичане смягчают несогласие: *I'm afraid...*, *I see what you mean, but...*, *I'm not sure that...*.
 
 ### Предложения и приглашения
 

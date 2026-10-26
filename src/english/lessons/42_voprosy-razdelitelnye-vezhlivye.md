@@ -85,7 +85,7 @@ minutes: 60
 > **Запомни.** Хвостик — это «зеркало» с обратным знаком. Взяли вспомогательный глагол из основной части, поменяли «плюс» на «минус» (или наоборот), добавили местоимение.
 
 ### 4. Косвенные вопросы: зачем они нужны
-Прямой вопрос *Where is the station?* звучит нормально, но немного резко, особенно с незнакомым человеком. Чтобы звучать вежливее, англичане часто «встраивают» вопрос в начало: **Could you tell me where the station is?** Это и есть **косвенный вопрос** (indirect, embedded question).
+Прямой вопрос *Where is the station?* звучит нормально, но немного резко, особенно с незнакомым человеком. Чтобы звучать вежливее, англичане часто добавляют вежливое начало и «встраивают» в него вопрос: **Could you tell me where the station is?** Это и есть **косвенный вопрос** (indirect, embedded question).
 
 Главное, что нужно помнить: **в косвенном вопросе обычный порядок слов, как в утверждении**. Никакого вопросительного порядка и никаких do / does / did.
 
@@ -171,7 +171,7 @@ minutes: 60
 | wonder | интересоваться, гадать | I wonder where he is. | Интересно, где он. |
 | mind | возражать, быть против | Do you mind if I open the window? | Вы не против, если я открою окно? |
 | favour | услуга | Could you do me a favour? | Не могли бы вы оказать мне услугу? |
-| borrow | брать взаймы, одалживать | Can I borrow your pen? | Можно взять твою ручку? |
+| borrow | брать на время, занимать | Can I borrow your pen? | Можно взять твою ручку? |
 | lend | давать взаймы | Could you lend me ten pounds? | Не одолжишь мне десять фунтов? |
 | certainly | конечно, разумеется | Certainly, I can help you. | Конечно, я могу вам помочь. |
 | afraid | боюсь, к сожалению | I'm afraid I can't come. | К сожалению, я не смогу прийти. |
@@ -211,7 +211,7 @@ minutes: 60
 - Kate: Great! Do you mind if I get a cup now? | Здорово! Вы не против, если я возьму чашку сейчас?
 - Ben: Not at all. Help yourself. And could you do me a favour? Please send me your phone number. | Конечно. Угощайтесь. И не могли бы вы оказать мне услугу? Пришлите, пожалуйста, ваш номер телефона.
 - Kate: Sure. I was wondering if I could also have a key card. | Конечно. Я хотела спросить, можно ли мне ещё получить пропуск.
-- Ben: Of course. Ask Mr Brown at the reception. Let's go, shall we? | Разумеется. Попросите у мистера Брауна на ресепшене. Пойдёмте, ладно?
+- Ben: Of course. Ask Mr Brown at reception. Let's go, shall we? | Разумеется. Попросите у мистера Брауна на ресепшене. Пойдёмте, ладно?
 - Kate: Yes, let's. Thank you so much. I really appreciate your help. | Да, пойдёмте. Огромное спасибо. Я очень ценю вашу помощь.
 - Ben: No problem. Don't worry, you'll do great. | Не за что. Не волнуйтесь, у вас всё получится.
 
@@ -255,11 +255,11 @@ minutes: 60
 ### Упражнение 4. Выбери правильный косвенный вопрос
 Выбери предложение, в котором порядок слов верный.
 1. Выбери верную фразу. :: Could you tell me where is the station? | Could you tell me where the station is?* | Could you tell me where does the station is? | Could you tell me the station where is?
-2. Выбери верную фразу. :: Do you know what time does the bank close? | Do you know what time the bank closes?* | Do you know what time the bank does close? | Do you know what time closes the bank?
-3. Выбери верную фразу. :: I don't know where did he go. | I don't know where he did go. | I don't know where he went.* | I don't know where went he.
+2. Выбери верную фразу. :: Do you know what time does the bank close? | Do you know what time the bank closes?* | Do you know what time the bank close? | Do you know what time closes the bank?
+3. Выбери верную фразу. :: I don't know where did he go. | I don't know where he go. | I don't know where he went.* | I don't know where went he.
 4. Выбери верную фразу. :: Do you know if she is married?* | Do you know is she married? | Do you know if is she married? | Do you know she if is married?
-5. Выбери верную фразу. :: I wonder who did call. | I wonder who called.* | I wonder who he called me. | I wonder who does called.
-6. Выбери верную фразу. :: Can you tell me how long does it take? | Can you tell me how long it does take? | Can you tell me how long it takes?* | Can you tell me how it takes long?
+5. Выбери верную фразу. :: I wonder who did called. | I wonder who called.* | I wonder who he called me. | I wonder who does called.
+6. Выбери верную фразу. :: Can you tell me how long does it take? | Can you tell me how long it take? | Can you tell me how long it takes?* | Can you tell me how it takes long?
 7. Выбери верную фразу. :: I'd like to know whether you are free tonight.* | I'd like to know whether are you free tonight. | I'd like to know whether do you free tonight. | I'd like to know are you free tonight whether.
 
 ### Упражнение 5. Вежливая просьба

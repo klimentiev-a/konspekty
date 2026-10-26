@@ -41,7 +41,7 @@ minutes: 60
 ### 3. Отрицание и вопросы
 **Отрицание** — not после have/has: **haven't been** / **hasn't been** (полные формы *have not been*, *has not been*).
 - I **haven't been sleeping** well lately. — В последнее время я плохо сплю.
-- He **hasn't been working** hard. — Он не очень усердно работает.
+- He **hasn't been working** hard. — В последнее время он работает не слишком усердно.
 
 **Вопрос** — have/has выходит вперёд, перед подлежащим:
 - **Have you been waiting** long? — Ты давно ждёшь?
@@ -54,7 +54,7 @@ minutes: 60
 **Вопросы с вопросительным словом:**
 - **How long** have you been learning English? — Как долго ты учишь английский?
 - **What** have you been doing? — Чем ты занимался (в последнее время)?
-- **Where** have you been working? — Где ты работал?
+- **Where** have you been working? — Где ты работаешь (всё это время)?
 
 ### 4. Первое значение: «как долго?» — for и since
 Когда мы называем, **сколько времени** длится действие, нужны два слова:
@@ -107,7 +107,7 @@ minutes: 60
 Часть глаголов описывает состояние, а не действие, поэтому у них нет continuous-форм (ни в Present Continuous, ни здесь). Для них используем обычный Present Perfect: **know, like, love, hate, want, need, prefer, believe, understand, belong, own, seem** и **be** («быть» как состояние), **have** в значении «иметь».
 
 - ❌ *I've been knowing him for years.* ✅ **I've known him for years.**
-- ❌ *She's been wanting a dog since childhood.* ✅ **She's wanted a dog since childhood.**
+- ❌ *She's been liking jazz since childhood.* ✅ **She's liked jazz since childhood.**
 - ❌ *How long have you been being here?* ✅ **How long have you been here?**
 - I've had this phone for three years. (have = иметь, значит, Simple)
 
@@ -144,7 +144,7 @@ Present Perfect Continuous подходит и для действий, кото
 | lately | в последнее время | I've been sleeping badly lately. | В последнее время я плохо сплю. |
 | recently | недавно | He has been working a lot recently. | Он много работает в последнее время. |
 | all day | весь день | It has been raining all day. | Весь день идёт дождь. |
-| these days | в наши дни, сейчас | What have you been doing these days? | Чем ты занимаешься сейчас? |
+| these days | в последнее время, сейчас | I've been feeling better these days. | В последнее время я чувствую себя лучше. |
 | for ages | целую вечность | I've been waiting for ages. | Я жду целую вечность. |
 | wait | ждать | We've been waiting for the bus. | Мы ждём автобус. |
 | practise | тренироваться, практиковать | She has been practising the piano. | Она занимается на пианино. |
@@ -185,8 +185,8 @@ Present Perfect Continuous подходит и для действий, кото
 - Tom: How long have you been learning English? | Как давно ты учишь английский?
 - Kate: Since I was fifteen. I've been practising a lot these days. | С пятнадцати лет. В последнее время я много практикуюсь.
 - Tom: You've made great progress. Your English is much better now. | Ты сделала большие успехи. Твой английский теперь намного лучше.
-- Kate: Thanks! Let's have a break. Have you been waiting for a coffee? | Спасибо! Давай сделаем перерыв. Ты ведь уже ждёшь кофе?
-- Tom: For ages! But I'm having water. Coach's orders. | Целую вечность! Но я буду воду. Приказ тренера.
+- Kate: Thanks! Let's have a break. I've been dreaming about a coffee all afternoon! | Спасибо! Давай сделаем перерыв. Я уже полдня мечтаю о кофе!
+- Tom: Me too, for ages! But I'm having water. Coach's orders. | Я тоже, целую вечность! Но я буду воду. Приказ тренера.
 
 ## Упражнения
 
@@ -273,7 +273,7 @@ Present Perfect Continuous подходит и для действий, кото
 2. Мы ждём автобус с девяти часов. (wait) => We have been waiting for the bus since nine o'clock. / We've been waiting for the bus since nine o'clock. / We have been waiting for the bus since nine. / We've been waiting for the bus since nine.
 3. Весь день идёт дождь. (rain) => It has been raining all day. / It's been raining all day.
 4. Как долго ты здесь работаешь? (work) => How long have you been working here? / How long have you worked here?
-5. Он не спал всю ночь. (sleep) => He hasn't been sleeping all night. / He has not been sleeping all night. / He hasn't slept all night. / He has not slept all night.
+5. Он не спал всю ночь. (sleep) => He hasn't slept all night. / He has not slept all night. / He didn't sleep all night. / He did not sleep all night. / He hasn't been sleeping all night. / He has not been sleeping all night.
 6. Чем ты занимался в последнее время? (lately) => What have you been doing lately?
 7. Я знаю её десять лет. (know) => I have known her for ten years. / I've known her for ten years.
 

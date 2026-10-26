@@ -6,7 +6,7 @@ minutes: 8
 
 ## Theory
 
-> **In one minute.** The balance sheet is a photo: Assets = Liabilities + Equity. For valuation you need two things from it: net working capital, NWC (чистый оборотный капитал), because its change is a cash flow, and net debt (чистый долг) with debt-like items (долгоподобные статьи), because they are subtracted from enterprise value. Book equity (балансовый капитал) is history; market capitalization (рыночная капитализация) is expectation.
+> **In one minute.** The balance sheet is a photo: Assets = Liabilities + Equity. For valuation you need two things from it: net working capital, NWC (чистый оборотный капитал), because its change is a cash flow, and net debt (чистый долг) with debt-like items (долгоподобные статьи), because they are subtracted from enterprise value (EV, стоимость бизнеса). Book equity (балансовый капитал) is history; market capitalization (рыночная капитализация) is expectation.
 
 ## Operating NWC
 
@@ -16,6 +16,8 @@ NWC (operating) = Receivables + Inventory + Prepayments
 Excludes: cash, short-term debt, current portion of LTD, dividends payable
 ```
 
+LTD is long-term debt (долгосрочный долг): its current portion is debt, not working capital.
+
 Growth consumes NWC. ΔNWC > 0 is a cash outflow (отток), ΔNWC < 0 an inflow (приток). Forecast NWC through days (в днях), not as a lump sum:
 
 ```f
@@ -24,6 +26,8 @@ DIO = Inventory / COGS × 365             (дни оборота запасов)
 DPO = Payables / COGS × 365              (дни оборота кредиторки)
 Cash conversion cycle (CCC) = DSO + DIO − DPO
 ```
+
+DSO, DIO and DPO stand for days sales outstanding, days inventory outstanding and days payables outstanding; COGS is the cost of goods sold (себестоимость продаж).
 
 Retail and marketplaces often run a negative CCC: customers pay today, suppliers are paid in 45–60 days, so suppliers finance growth (поставщики финансируют рост). In a downturn this reverses: sales fall, payables still come due.
 
@@ -38,6 +42,8 @@ Debt-like items (subtract from EV in the bridge):
   unpaid dividends, litigation provisions
 Cash-like items (add): marketable securities, stakes in associates, non-core assets
 ```
+
+Translations: preferred shares (привилегированные акции), minority interest or NCI, non-controlling interest (неконтролирующая доля), earn-outs (доплаты продавцу при достижении целей), deferred consideration (отложенная оплата по сделке), litigation provisions (резервы под судебные иски), marketable securities (ликвидные ценные бумаги), stakes in associates (доли в ассоциированных компаниях), non-core assets (непрофильные активы).
 
 Restricted cash (ограниченные в использовании денежные средства) is not cash. Trapped cash (заблокированные деньги) in foreign subsidiaries may be discounted. For a consistent EV/EBITDA, lease liabilities go into net debt only if EBITDA is post-IFRS 16.
 
@@ -55,11 +61,11 @@ Utilities and infrastructure carry higher leverage because cash flows are regula
 
 ## Equity
 
-Share capital (уставный капитал), share premium (эмиссионный доход), retained earnings, other comprehensive income, OCI (прочий совокупный доход: FX translation, revaluation), treasury shares (negative). Book value per share (балансовая стоимость на акцию) matters for banks and insurers, where P/B is the key multiple; for industrials it is mostly irrelevant.
+Share capital (уставный капитал), share premium (эмиссионный доход), retained earnings, other comprehensive income, OCI (прочий совокупный доход: FX translation, revaluation), treasury shares (negative). Book value per share (балансовая стоимость на акцию) matters for banks and insurers, where P/B (price to book, цена к балансовой стоимости) is the key multiple; for industrials it is mostly irrelevant.
 
 ## Off-balance-sheet and hidden liabilities
 
-Guarantees (поручительства) for subsidiaries, take-or-pay contracts (контракты «бери или плати»), commitments (обязательства по капзатратам), contingent liabilities (условные обязательства) in litigation, factoring without recourse (факторинг без регресса) that removes receivables but not risk. All live in the notes (примечания). Due diligence (комплексная проверка) in M&A spends most of its time here.
+Guarantees (поручительства) for subsidiaries, take-or-pay contracts (контракты «бери или плати»), commitments (обязательства по капзатратам), contingent liabilities (условные обязательства) in litigation, factoring without recourse (факторинг без регресса) that removes receivables but not risk. All live in the notes (примечания). Due diligence (комплексная проверка) in M&A (mergers and acquisitions, слияния и поглощения) spends most of its time here.
 
 ## Reading the balance sheet in five minutes
 
@@ -67,7 +73,7 @@ Guarantees (поручительства) for subsidiaries, take-or-pay contract
 2. NWC days versus history and peers: are receivables ageing (стареет ли дебиторка)?
 3. Goodwill and intangibles share of assets: acquisition-driven growth, impairment risk.
 4. Cash versus short-term debt: liquidity cushion (подушка ликвидности), undrawn facilities (невыбранные кредитные линии).
-5. Equity sign: negative equity (отрицательный капитал) after losses or buybacks is a covenant and solvency (платёжеспособность) issue.
+5. Equity sign: negative equity (отрицательный капитал) after losses or buybacks is a covenant (ковенант, условие кредитного договора) and solvency (платёжеспособность) issue.
 
 ## Words
 

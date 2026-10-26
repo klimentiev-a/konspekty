@@ -6,7 +6,7 @@ minutes: 8
 
 ## Theory
 
-> **In one minute.** An LBO (выкуп с долговым финансированием) buys a company with 50–70% debt secured on its own cash flows and sells it in 3–7 years. Returns come from debt paydown (погашение долга), EBITDA growth and multiple expansion (рост мультипликатора). The model answers two questions: what IRR does the sponsor (фонд) get at a given price, and what price can it pay for a target IRR (20–25%).
+> **In one minute.** An LBO, leveraged buyout (выкуп с долговым финансированием), buys a company with 50–70% debt secured on its own cash flows and sells it in 3–7 years. Returns come from debt paydown (погашение долга), EBITDA growth and multiple expansion (рост мультипликатора). The model answers two questions: what IRR, internal rate of return (внутренняя норма доходности), does the sponsor (фонд) get at a given price, and what price can it pay for a target IRR (20–25%).
 
 ## Sources and uses
 
@@ -16,6 +16,8 @@ Sources: Senior debt (term loan A/B, revolver) + Second lien / mezzanine / HY bo
 Entry EV = EBITDA × entry multiple;  total leverage = Debt / EBITDA (4–6x US/EU; 2–3x Russia at current rates)
 ```
 
+M&A fees are advisory fees (комиссии консультантов по сделке); HY bonds are high-yield bonds (высокодоходные облигации); second lien (долг второй очереди залога) and mezzanine (мезонинный долг) rank behind senior debt.
+
 Rollover equity (переходящая доля): management or seller reinvests part of proceeds. Management incentive plan, MIP (опционная программа менеджмента): 5–10% of equity upside.
 
 ## Debt structure
@@ -24,8 +26,8 @@ Rollover equity (переходящая доля): management or seller reinvest
 |---|---|---|---|
 | Revolver | Base + 2–3% | Drawn / repaid as needed | Liquidity, commitment fee (комиссия за резервирование) |
 | Term loan A | Base + 3–4% | Amortising (амортизируемый) | Bank debt, maintenance covenants |
-| Term loan B | Base + 4–5% | 1% a year, bullet (единовременно в конце) | Institutional, cov-lite |
-| Second lien / mezzanine | 10–14%, PIK option | Bullet | Subordinated, warrants |
+| Term loan B | Base + 4–5% | 1% a year, bullet (единовременно в конце) | Institutional, cov-lite (covenant-lite, без поддерживаемых ковенантов) |
+| Second lien / mezzanine | 10–14%, PIK option | Bullet | Subordinated, warrants (варранты) |
 | High-yield bonds | Fixed 7–10% | Bullet | Incurrence covenants, call protection (защита от досрочного погашения) |
 
 PIK (payment-in-kind, проценты капитализируются) interest accrues to principal instead of being paid in cash. Cash sweep (досрочное погашение из избыточных денег): 50–100% of excess cash flow repays senior debt first.
@@ -40,6 +42,8 @@ PIK (payment-in-kind, проценты капитализируются) interes
 5. Returns: MOIC = Exit equity / Entry equity;  IRR from dated flows (XIRR)
 6. Sensitivities: entry/exit multiple, leverage, EBITDA growth; ability-to-pay analysis (максимальная цена под целевую IRR)
 ```
+
+S&U is sources and uses, PPA — purchase price allocation (распределение цены покупки), NWC — net working capital (оборотный капитал), FCF — free cash flow (свободный денежный поток), MIP — management incentive plan; XIRR is the Excel function for IRR on dated cash flows.
 
 ## Return attribution
 
@@ -57,7 +61,7 @@ Entry EBITDA 100, 8x → EV 800, debt 500, equity 300. Exit year 5: EBITDA 130, 
 
 ## What makes a target LBO-able
 
-Stable cash flows and margins, low capex intensity, low cyclicality, hard assets as collateral (обеспечение), fragmented market for bolt-ons (дополняющие покупки), weak existing balance sheet (room to lever), clear exit (strategic buyer, IPO, secondary buyout, продажа другому фонду). Not LBO-able: loss-making growth, heavy capex, regulated prices with political risk.
+Stable cash flows and margins, low capex intensity, low cyclicality, hard assets as collateral (обеспечение), fragmented market for bolt-ons (дополняющие покупки), weak existing balance sheet (room to lever), clear exit (strategic buyer, IPO — initial public offering, первичное размещение, or secondary buyout — продажа другому фонду). Not LBO-able: loss-making growth, heavy capex, regulated prices with political risk.
 
 ## Lender's view and covenants
 
@@ -65,7 +69,7 @@ Maintenance covenants (поддерживаемые ковенанты) tested q
 
 ## PE fund mechanics
 
-LPs commit capital (обязательства инвесторов); GP calls it (capital call) as deals close; 2% management fee, 20% carry over an 8% hurdle with catch-up (догоняющая выплата); clawback (возврат переплаченного вознаграждения) if later deals lose. Fund life 10 years: investment period (инвестиционный период) 5, harvesting (выход из инвестиций) 5. DPI (распределения к вложенному капиталу) and TVPI (общая стоимость к вложенному) complement IRR.
+In a PE, private equity (прямые инвестиции), fund LPs, limited partners (инвесторы фонда), commit capital (обязательства инвесторов); the GP, general partner (управляющий партнёр), calls it (capital call) as deals close; 2% management fee (комиссия за управление), 20% carry, carried interest (доля управляющего в прибыли), over an 8% hurdle (пороговая доходность) with catch-up (догоняющая выплата); clawback (возврат переплаченного вознаграждения) if later deals lose. Fund life 10 years: investment period (инвестиционный период) 5, harvesting (выход из инвестиций) 5. DPI, distributions to paid-in capital (распределения к вложенному капиталу), and TVPI, total value to paid-in capital (общая стоимость к вложенному), complement IRR.
 
 ## Words
 
@@ -87,7 +91,7 @@ LPs commit capital (обязательства инвесторов); GP calls i
 | dividend recapitalisation | дивидендная рекапитализация | A dividend recap returned 0.5x early. |
 | bolt-on acquisition | дополняющее поглощение | Bolt-ons double the platform's EBITDA. |
 | secondary buyout | продажа другому фонду | Exit via secondary buyout to another sponsor. |
-| maintenance / incurrence covenants | поддерживаемые / ограничительные ковенанты | Term loan B has only incurrence covenants. |
+| maintenance / incurrence covenants | поддерживаемые ковенанты / ковенанты на действия | Term loan B has only incurrence covenants. |
 | headroom | запас по ковенанту | Covenant headroom is 30% to EBITDA. |
 | equity cure | исправление нарушения ковенанта взносом в капитал | An equity cure right allows two cures over the life. |
 | share pledge | залог акций | Lenders hold a share pledge over the target. |

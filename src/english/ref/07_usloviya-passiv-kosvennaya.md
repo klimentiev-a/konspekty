@@ -71,9 +71,9 @@ short: сводные таблицы: условные 0–3 и смешанны
 |---|---|---|---|
 | Просьба в первом типе | If + Present, + повелительное | If you see Tom, tell him I called. | Если увидишь Тома, скажи, что я звонил. |
 | Вежливая просьба | If you could..., I would be grateful | If you could wait a moment, I would be grateful. | Если бы вы могли подождать минутку... |
-| Совсем маловероятно: **If ... should** | If you should see him, give him this. | Если вдруг увидишь его, передай это. |
-| Инверсия вместо if (3-й тип, формально) | Had I known, I would have come. | Если бы я знал, я бы пришёл. |
-| Инверсия вместо if (1-й тип, формально) | Should you need help, call me. | Если вам понадобится помощь, позвоните мне. |
+| Совсем маловероятно | If + should + глагол | If you should see him, give him this. | Если вдруг увидишь его, передай это. |
+| Инверсия вместо if (3-й тип, формально) | Had + подлежащее + V3 | Had I known, I would have come. | Если бы я знал, я бы пришёл. |
+| Инверсия вместо if (1-й тип, формально) | Should + подлежащее + глагол | Should you need help, call me. | Если вам понадобится помощь, позвоните мне. |
 
 ---
 
@@ -149,7 +149,7 @@ short: сводные таблицы: условные 0–3 и смешанны
 
 Пассив продолженных перфектных времён (Present Perfect Continuous, Past Perfect Continuous) и Future Continuous звучит громоздко и в речи почти не встречается, поэтому их не учим.
 
-### 3.3. Формы be + V3 для трёх базовых времён
+### 3.3. Формы be + V3 в основных временах
 
 | | Утверждение | Отрицание | Вопрос |
 |---|---|---|---|
@@ -221,7 +221,7 @@ short: сводные таблицы: условные 0–3 и смешанны
 | Вводящий глагол в настоящем | She says she works here. | Она говорит, что работает здесь. |
 | Вечная истина | He said the Earth goes round the Sun. | Он сказал, что Земля вращается вокруг Солнца. |
 | Всё ещё актуально | She said she lives in Paris. | Она сказала, что живёт в Париже (и сейчас тоже). |
-| Present Perfect в вводящей части | He has told me he is tired. | Он сказал мне, что устал. |
+| Present Perfect во вводящей части | He has told me he is tired. | Он сказал мне, что устал. |
 
 ### 4.3. Изменение слов времени и места
 
@@ -374,7 +374,7 @@ short: сводные таблицы: условные 0–3 и смешанны
 
 | Ошибка | Правильно | Пояснение |
 |---|---|---|
-| ❌ The man who he called is my boss. | ✅ The man who called is my boss. / The man he called... | Нельзя повторять подлежащее или дополнение |
+| ❌ The man who I met him is my boss. | ✅ The man who I met is my boss. / The man I met is my boss. | Нельзя повторять дополнение местоимением |
 | ❌ The book what I read. | ✅ The book that I read. | what не заменяет which |
 | ❌ My mother, that is a nurse... | ✅ My mother, who is a nurse... | В non-defining that нельзя |
 | ❌ The house where I live in. | ✅ The house where I live. / The house I live in. | Не дублируем предлог |

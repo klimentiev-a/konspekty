@@ -6,7 +6,7 @@ minutes: 8
 
 ## Theory
 
-> **In one minute.** Revenue → gross profit → EBITDA → EBIT → EBT → net income. EBITDA (прибыль до процентов, налогов и амортизации) is the banker's proxy for operating cash generation (операционная генерация денег): it strips out financing (interest), jurisdiction (tax) and asset age (D&A). Everyone adjusts it, so always ask which EBITDA: reported (отчётная), adjusted (скорректированная), pre- or post-IFRS 16, LTM or forward.
+> **In one minute.** Revenue → gross profit → EBITDA → EBIT → EBT → net income. EBITDA (прибыль до процентов, налогов и амортизации) is the banker's proxy for operating cash generation (операционная генерация денег): it strips out financing (interest), jurisdiction (tax) and asset age (D&A, амортизация). Everyone adjusts it, so always ask which EBITDA: reported (отчётная), adjusted (скорректированная), pre- or post-IFRS 16 (МСФО 16), LTM (last twelve months, за последние 12 месяцев) or forward (прогнозная).
 
 ## Structure
 
@@ -20,6 +20,8 @@ Revenue
 ÷ Diluted shares            → Diluted EPS
 ```
 
+COGS is the cost of goods sold (себестоимость продаж), SG&A — selling, general and administrative expenses (коммерческие и управленческие расходы), R&D — research and development (исследования и разработки), opex — operating expenses (операционные расходы), EBIT — earnings before interest and tax (операционная прибыль), EBT — earnings before tax (прибыль до налогообложения), FX — foreign exchange (курсовые разницы), EPS — earnings per share (прибыль на акцию).
+
 Margins (маржа, рентабельность) are each line divided by revenue. "Operating leverage" (операционный рычаг) means margins expand when revenue grows because part of the costs is fixed (постоянные затраты).
 
 ## EBITDA adjustments
@@ -30,7 +32,7 @@ Adjusted EBITDA (скорректированная EBITDA) removes items that a
 - impairments (обесценения) and write-offs (списания);
 - share-based compensation (вознаграждение акциями) — US practice adds it back, many analysts do not;
 - FX revaluation (курсовые переоценки) of debt and balances;
-- income from associates (доход от ассоциированных компаний) if their value is added separately in the EV bridge.
+- income from associates (доход от ассоциированных компаний) if their value is added separately in the EV bridge (мост от стоимости бизнеса к стоимости акций).
 
 Rule: whatever you add back to EBITDA must be treated consistently (единообразно) across all peers and in the EV bridge. Suspicious sign: "adjustments" every year in the same direction.
 
@@ -48,7 +50,7 @@ Interest expense (процентные расходы) net of interest income; F
 
 ## Diluted EPS and the treasury stock method
 
-Basic EPS (базовая прибыль на акцию) = net income to common shareholders / weighted average shares (средневзвешенное число акций). Diluted EPS (разводнённая) adds potential shares from options, warrants and convertibles (конвертируемые бумаги).
+Basic EPS (базовая прибыль на акцию) = net income to common shareholders / weighted average shares (средневзвешенное число акций). Diluted EPS (разводнённая) adds potential shares from options (опционы), warrants (варранты) and convertibles (конвертируемые бумаги). The TSM assumes that option proceeds are used to buy back shares at the market price; only in-the-money options (опционы «в деньгах», strike — цена исполнения — below the share price) count.
 
 ```f
 Treasury stock method (TSM):
@@ -56,13 +58,13 @@ new shares = options × (1 − strike / share price)      — only in-the-money 
 Convertibles (if-converted): add conversion shares, add back after-tax interest to NI
 ```
 
-Diluted share count is also what you use in the EV bridge and for price per share in a DCF.
+Diluted share count is also what you use in the EV bridge and for price per share in a DCF (discounted cash flow, модель дисконтированных денежных потоков).
 
 ## Quality of earnings checks
 
 - Revenue grows, receivables grow faster → aggressive recognition.
-- EBITDA grows, CFO does not → working capital or capitalised costs.
-- Capitalised development (капитализированные разработки) rising → costs moved from P&L to balance sheet.
+- EBITDA grows, CFO (operating cash flow, операционный денежный поток) does not → working capital or capitalised costs.
+- Capitalised development (капитализированные разработки) rising → costs moved from the P&L (ОФР) to the balance sheet.
 - Frequent changes in depreciation lives (сроки амортизации) or inventory method.
 - Large "other income" (прочие доходы).
 

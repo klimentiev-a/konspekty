@@ -66,7 +66,7 @@ short: предлоги времени, места и направления; г
 | Предлог | Значение | Примеры | Перевод |
 |---|---|---|---|
 | **in** | внутри, в пределах | in a room, in London, in the box, in a car, in bed, in the picture | в комнате, в Лондоне, в коробке, в машине, в постели, на картинке |
-| **on** | на поверхности, на линии | on the table, on the wall, on the floor, on the first floor, on a bus, on the left | на столе, на стене, на полу, на первом этаже, в автобусе, слева |
+| **on** | на поверхности, на линии | on the table, on the wall, on the floor, on the first floor, on a bus, on the left | на столе, на стене, на полу, на втором этаже (брит.; в США first floor — первый), в автобусе, слева |
 | **at** | в точке, у (место-пункт) | at the door, at the bus stop, at school, at work, at home, at the station | у двери, на остановке, в школе, на работе, дома, на вокзале |
 
 ### 2.2. Что с чем употребляется
@@ -97,7 +97,7 @@ short: предлоги времени, места и направления; г
 | **in front of** | перед, впереди | There's a car in front of the house. | Перед домом стоит машина. |
 | **behind** | за, позади | The garden is behind the house. | Сад позади дома. |
 | **opposite** | напротив | The bank is opposite the school. | Банк напротив школы. |
-| **inside / outside** | внутри / снаружи | Wait outside the room. | Подожди снаружи комнаты. |
+| **inside / outside** | внутри / снаружи | Wait outside the room. | Подожди за дверью (снаружи). |
 | **on top of** | на вершине, сверху | The cat sat on top of the cupboard. | Кошка сидела на шкафу. |
 | **at the back / front of** | в задней / передней части | I sat at the back of the class. | Я сидела в конце класса. |
 | **in the middle of** | посреди | in the middle of the room | посреди комнаты |
@@ -221,7 +221,7 @@ short: предлоги времени, места и направления; г
 | insist **on** | настаивать на | She insisted on paying. | Она настояла на том, чтобы заплатить. |
 | spend (money) **on** | тратить на | I spent £50 on shoes. | Я потратила 50 фунтов на туфли. |
 | agree **with** (человек) | соглашаться с | I agree with you. | Я с тобой согласна. |
-| agree **to** (предложение) | соглашаться на | He agreed to the plan. | Он согласился с планом. |
+| agree **to** (предложение) | соглашаться на | He agreed to the plan. | Он согласился на этот план. |
 | argue **with** (кем) / argue **about** (о чём) | спорить | They argue with each other about money. | Они спорят друг с другом о деньгах. |
 | deal **with** | иметь дело; справляться | I can deal with it. | Я с этим справлюсь. |
 | cope **with** | справляться с | She copes with stress well. | Она хорошо справляется со стрессом. |
@@ -240,7 +240,7 @@ short: предлоги времени, места и направления; г
 
 | Сочетание | Перевод | Пример | Перевод |
 |---|---|---|---|
-| good **at** | хороший в, способный к | She is good at maths. | Она хороша в математике. |
+| good **at** | хороший в, способный к | She is good at maths. | Она сильна в математике. |
 | bad / terrible **at** | плохой в | I'm bad at drawing. | Я плохо рисую. |
 | interested **in** | интересоваться | I'm interested in art. | Я интересуюсь искусством. |
 | afraid **of** | бояться | He is afraid of dogs. | Он боится собак. |

@@ -11,7 +11,7 @@ minutes: 60
 - Использовать just, already, yet и still с Present Perfect и ставить их на нужное место.
 - Не путать Present Perfect и Past Simple в фразах о длительности (have lived и lived, since и ago).
 - Знать глаголы-состояния, с которыми удобно говорить «как долго»: know, live, have, be, work.
-- Избежать главной русской ошибки: «Я знаю её пять лет» → *I know her for five years*.
+- Избежать главной русской ошибки: «Я знаю её пять лет» — не *I know her for five years*, а *I have known her for five years*.
 
 ## Теория
 
@@ -35,7 +35,7 @@ minutes: 60
 > **Запомни.** Хочешь сказать «Я делаю это уже N времени» — используй **have/has + V3 + for/since**. Хочешь сказать «Я делала это N времени, но это закончилось» — Past Simple.
 
 ### 2. For и since: «сколько» и «с какого момента»
-Оба слова переводятся «в течение / с», но используются по-разному.
+**For** переводится «в течение» (или вообще не переводится), **since** — «с (какого-то момента)».
 
 | | **for** | **since** |
 |---|---|---|
@@ -140,7 +140,7 @@ minutes: 60
 | **already** | утверждение, иногда вопрос | между have и V3 или в конце | I've already eaten. |
 | **yet** | вопрос, отрицание | в конце | Have you eaten yet? |
 
-> **Запомни.** В русском «уже» и «ещё не» — и в вопросе, и в ответе. В английском: утверждение → **already**; вопрос и отрицание → **yet**. ❌ *I haven't already finished.* ✅ **I haven't finished yet.**
+> **Запомни.** По-русски «уже» стоит и в утверждении, и в вопросе. В английском: утверждение → **already**; вопрос («уже?») и отрицание («ещё не») → **yet**. ❌ *I haven't already finished.* ✅ **I haven't finished yet.**
 
 ### 9. Still: «всё ещё», «до сих пор»
 **Still** с Present Perfect используется в отрицании и показывает раздражение или удивление: «до сих пор не…». Место: **перед haven't/hasn't**.
@@ -201,7 +201,7 @@ minutes: 60
 | own | владеть | They have owned this shop since 2010. | Они владеют этим магазином с 2010 года. |
 | miss | пропустить, скучать | I have missed the bus. | Я опоздала на автобус. |
 | childhood | детство | I have loved music since childhood. | Я люблю музыку с детства. |
-| all my life | всю мою жизнь | I have lived here all my life. | Я прожила здесь всю жизнь. |
+| all my life | всю мою жизнь | I have lived here all my life. | Я живу здесь всю жизнь. |
 
 ## Диалог
 **Старые знакомые**
@@ -209,7 +209,7 @@ minutes: 60
 - Tom: Hi, Anna! I'm fine. I have just moved to a new flat. | Привет, Анна! Всё хорошо. Я только что переехал в новую квартиру.
 - Anna: Really? How long have you lived in London? | Правда? А как давно ты живёшь в Лондоне?
 - Tom: For five years. I came here in 2021. And you? | Пять лет. Я приехал сюда в 2021 году. А ты?
-- Anna: I have lived here since September. I'm still learning the city. | Я живу здесь с сентября. Я всё ещё изучаю город.
+- Anna: I have lived here since September. I'm still getting to know the city. | Я живу здесь с сентября. Я всё ещё знакомлюсь с городом.
 - Tom: Have you found a job yet? | Ты уже нашла работу?
 - Anna: Not yet. But I have already sent ten emails to companies. | Ещё нет. Но я уже отправила десять писем в компании.
 - Tom: Don't worry. My colleague has worked at a school for years. I can ask her. | Не волнуйся. Моя коллега давно работает в школе. Я могу её спросить.
@@ -230,7 +230,7 @@ minutes: 60
 4. We have waited ___ an hour. => for
 5. He has been ill ___ Monday. => since
 6. I have known her ___ a long time. => for
-7. It has rained ___ yesterday evening. => since
+7. It has been cold ___ yesterday evening. => since
 8. My parents have been married ___ thirty years. => for
 
 ### Упражнение 2. For, since или ago
@@ -317,7 +317,7 @@ minutes: 60
 ## Вместе
 Эти задания удобно делать вдвоём — вслух, без бумажки.
 
-**Задание 1. Интервью «How long?»** Задайте друг другу 8 вопросов о постоянных вещах в жизни: *How long have you lived in your flat? How long have you known your best friend? How long have you had your phone? How long have you studied English? How long have you been a student/worked at your job?* Отвечайте полным предложением с for или since: *I've lived here for two years. / I've had this phone since last year.* Запишите самое длинное «стаж» у каждого.
+**Задание 1. Интервью «How long?»** Задайте друг другу 8 вопросов о постоянных вещах в жизни: *How long have you lived in your flat? How long have you known your best friend? How long have you had your phone? How long have you studied English? How long have you been a student/worked at your job?* Отвечайте полным предложением с for или since: *I've lived here for two years. / I've had this phone since last year.* Запишите самый долгий «стаж» у каждого.
 
 **Задание 2. Что уже сделано?** Составьте список из 8 дел на день (*do homework, call mum, wash the dishes, buy bread, tidy the room, write an email, cook dinner, go for a walk*). Один играет «менеджера» и спрашивает: *Have you done your homework yet?* Второй отвечает по списку: *Yes, I have already done it. / No, I haven't done it yet. / I've just finished it.* Затем поменяйтесь ролями и придумайте свой список.
 

@@ -155,7 +155,7 @@ minutes: 60
 
 ### 7. Мини-грамматика на сегодня
 **1) Do you know how to…?** — «Ты знаешь, как…?» + инфинитив: *Do you know how to reset the router?*
-**2) Could you…?** — вежливая просьба (урок 7 и 42): *Could you help me with this app? Could you send me the file?*
+**2) Could you…?** — вежливая просьба (уроки 7 и 42): *Could you help me with this app? Could you send me the file?*
 **3) Present Continuous** для того, что происходит сейчас: *The app is loading. I'm waiting for an answer. My phone is charging.*
 **4) Present Perfect с yet и already** (урок 23): *Have you updated the app yet? — Yes, I've already updated it.* / *No, I haven't updated it yet.*
 **5) Spend time + -ing:** *I spend two hours a day scrolling through photos.* — Я провожу по два часа в день, листая фотографии.
@@ -208,7 +208,7 @@ minutes: 60
 | delivery | доставка | Delivery takes three days. | Доставка занимает три дня. |
 | basket | корзина | The shoes are in my basket. | Туфли лежат у меня в корзине. |
 | review | отзыв | Read the reviews before you buy. | Прочитай отзывы перед покупкой. |
-| crash | вылетать, зависать, сбой | The app keeps crashing. | Приложение постоянно вылетает. |
+| crash | вылетать, падать (о программе); сбой | The app keeps crashing. | Приложение постоянно вылетает. |
 | restart | перезагрузить | Please restart your computer. | Пожалуйста, перезагрузите компьютер. |
 | hang up | положить трубку | She hung up before I could answer. | Она положила трубку, прежде чем я успел ответить. |
 | hold on | подождать (на линии) | Hold on, please. I'll check. | Подождите, пожалуйста. Я проверю. |
@@ -217,11 +217,11 @@ minutes: 60
 ## Диалог
 **Звонок в службу поддержки**
 - Mark: Hello, TechHelp. Mark speaking. How can I help you? | Здравствуйте, ТехХелп, Марк слушает. Чем могу помочь?
-- Anna: Hello, Mark. This is Anna Petrova. My laptop keeps crashing. | Здравствуйте, Марк. Это Анна Петрова. Мой ноутбук постоянно зависает.
+- Anna: Hello, Mark. This is Anna Petrova. My laptop keeps crashing. | Здравствуйте, Марк. Это Анна Петрова. Мой ноутбук постоянно даёт сбой.
 - Mark: I'm sorry to hear that. When did the problem start? | Мне жаль это слышать. Когда началась проблема?
 - Anna: Yesterday, after I updated the system. | Вчера, после того как я обновила систему.
 - Mark: Is the battery charged? Is the charger plugged in? | Батарея заряжена? Зарядка подключена?
-- Anna: Yes, it is. The screen goes black after five minutes. | Да. Экран гаснет через пять минут.
+- Anna: Yes, both. The screen goes black after five minutes. | Да, и то и другое. Экран гаснет через пять минут.
 - Mark: Hold on a moment, please. Can you restart it for me? | Подождите минутку, пожалуйста. Вы можете перезагрузить его?
 - Anna: OK. I'm restarting it now. It's loading. | Хорошо. Я перезагружаю его. Идёт загрузка.
 - Mark: If it works, you'll see the home screen. Can you log in? | Если всё в порядке, вы увидите главный экран. Вы можете войти?
@@ -267,7 +267,7 @@ minutes: 60
 8. Hello, ___ is Anna. :: it | this* | that
 
 ### Упражнение 4. Проблемы и решения
-Впиши слово в нужной форме. Правило: после keep — форма на -ing, после if и will — глагол без изменений.
+Впиши слово в нужной форме. Правило: после keep и spend (time) — форма на -ing, после if, will и can — глагол без изменений.
 1. If you ___ (restart) the app, it will work. => restart
 2. If you don't charge your phone, it will ___ (die). => die
 3. If you forget your password, you can ___ (reset) it. => reset

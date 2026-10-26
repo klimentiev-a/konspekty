@@ -154,7 +154,7 @@ short: Пятьдесят ошибок, которые чаще всего де�
 |---|---|---|---|
 | — | I am boring at school. | I am bored at school. | Bored — мне скучно, boring — скучный. -ed о человеке и его чувстве, -ing о предмете, который вызывает чувство. |
 | — | I am interested for music. | I am interested in music. | Interested in; предлог in. |
-| — | I made a mistake: I did a photo. | I took a photo. | С photo используем take. Do a photo — не английское сочетание. |
+| — | I did a photo. | I took a photo. | С photo используем take. Do a photo — не английское сочетание. |
 | — | Make homework. | Do homework. | Do homework, do the dishes, do exercise; make a mistake, make a cake, make a decision. |
 
 ## 6. Произношение (ошибки 44–50)
@@ -164,7 +164,7 @@ short: Пятьдесят ошибок, которые чаще всего де�
 | № | ❌ Неправильно | ✅ Правильно | Почему |
 |---|---|---|---|
 | 44 | think → «синк», the → «зе» | think /θɪŋk/, the /ðə/: кончик языка между зубами | Звуки th в русском отсутствуют. Подмена на с/з (sink — тонуть) или т/д меняет слово. |
-| 45 | very → «вэри» как wery, wine → «вайн» | wine /waɪn/ с округлёнными губами, very /ˈveri/ с зубами на губе | W произносится губами без зубов, V — зубами о нижнюю губу. Wine и vine — разные слова. |
+| 45 | very как «уэри» (через w), wine как «вайн» (через v) | wine /waɪn/ с округлёнными губами, very /ˈveri/ с зубами на губе | W произносится губами без зубов, V — зубами о нижнюю губу. Wine и vine — разные слова. |
 | 46 | bad → «бат», dog → «док» | bad /bæd/, dog /dɒɡ/ | В русском на конце слова звонкие оглушаются. В английском нет: на конце bad, bag, dog звонкая согласная сохраняется. Bed и bet — разные слова. |
 | 47 | house, hello с русским «х» | house /haʊs/: лёгкий выдох | H в английском — это лёгкий выдох из горла, не твёрдый русский х. Не произносится в hour и honest. |
 | 48 | worked → «воркед», played → «плэйед» | worked /wɜːkt/, played /pleɪd/, wanted /ˈwɒntɪd/ | Окончание -ed произносится по трём правилам: t, d или id после t/d. Отдельным слогом оно звучит только после t и d. |
@@ -206,7 +206,7 @@ short: Пятьдесят ошибок, которые чаще всего де�
 3. Читайте эти предложения вслух каждое утро в течение недели.
 4. Через две недели проверьте себя: напишите короткий текст из пяти предложений на ту же тему.
 
-### Самопроверка: найдите ошибку
+### Проверь себя: найдите ошибку
 
 | Предложение с ошибкой | Что неправильно | Исправленный вариант |
 |---|---|---|
@@ -217,7 +217,7 @@ short: Пятьдесят ошибок, которые чаще всего де�
 | We have lunch at the 1 o'clock. | лишний артикль | We have lunch at 1 o'clock. |
 | Can you say me the time? | say вместо tell | Can you tell me the time? |
 | I didn't saw her. | saw после didn't | I didn't see her. |
-| It's an interesting information. | an и информация неисчисляемая | It's interesting information. |
+| It's an interesting information. | information неисчисляемое, an не нужен | It's interesting information. |
 
 ## Что запомнить
 

@@ -24,7 +24,7 @@ minutes: 60
 - если сначала идёт часть с **if**, между частями ставится **запятая**: *If it rains, we will stay at home.*
 - если сначала идёт главная часть, запятой **нет**: *We will stay at home if it rains.*
 
-Смысл от перестановки не меняется. В устной речи чаще всего звучит именно второй вариант (главная часть первой), а в письме — оба.
+Смысл от перестановки не меняется, оба порядка одинаково употребительны.
 
 В английском есть четыре типа условных предложений. Сегодня мы разбираем два самых простых и самых нужных:
 - **нулевой тип (zero conditional)** — всегда так бывает, общие факты и привычки;
@@ -153,7 +153,7 @@ Unless удобен, когда мысль звучит как «только в
 | unless | если не, разве что | Unless you hurry, you'll be late. | Если не поторопишься, опоздаешь. |
 | in case | на случай, если | Take a coat in case it gets cold. | Возьми пальто на случай, если похолодает. |
 | as soon as | как только | Call me as soon as you arrive. | Позвони мне, как только приедешь. |
-| as long as | при условии, что | You can stay as long as you are quiet. | Можешь остаться, если будешь тихим. |
+| as long as | при условии, что | You can stay as long as you are quiet. | Можешь остаться, если будешь вести себя тихо. |
 | until | до тех пор, пока не | Wait until I finish. | Подожди, пока я закончу. |
 | probably | вероятно | It will probably rain tomorrow. | Завтра, вероятно, пойдёт дождь. |
 | chance | шанс | There is a chance of snow. | Есть шанс, что пойдёт снег. |
@@ -187,7 +187,7 @@ Unless удобен, когда мысль звучит как «только в
 - Anna: OK. And if it's sunny? | Хорошо. А если будет солнечно?
 - Tom: If it's sunny, we'll have a picnic by the lake. I'll bring the sandwiches. | Если будет солнечно, устроим пикник у озера. Я принесу бутерброды.
 - Anna: I'll bring some juice. And I'll take an umbrella in case it rains. | Я принесу сок. И возьму зонт на случай дождя.
-- Tom: Good thinking. I'll call you as soon as I get up. | Хорошо придумано. Я позвоню тебе, как только проснусь.
+- Tom: Good thinking. I'll call you as soon as I get up. | Хорошо придумано. Я позвоню тебе, как только встану.
 - Anna: Please don't call too early. If you call before eight, I won't answer! | Только не звони слишком рано. Если позвонишь до восьми, я не отвечу!
 - Tom: OK, OK. We'll leave at ten unless you want to sleep longer. | Ладно, ладно. Выедем в десять, если ты не захочешь поспать подольше.
 - Anna: Ten is perfect. Can I invite Kate? | Десять — идеально. Можно я приглашу Кейт?
@@ -271,7 +271,7 @@ Unless удобен, когда мысль звучит как «только в
 5. Я возьму зонт на случай дождя. :: I'll take an umbrella in case it rains.* | I'll take an umbrella in case it will rain. | I'll take an umbrella in case of it rains.
 6. If I will have time, I will help you. :: If I had time, I will help you. | If I have time, I help you will. | If I have time, I will help you.*
 
-### Упражнение 8. Повторение: Present Simple, Past Simple, Present Perfect
+### Упражнение 8. Повторение прошлых уроков
 Это повторение прошлых уроков. Первые четыре пункта — выбор, остальные — ввод.
 1. ___ she work on Saturdays? :: Do | Does* | Is
 2. I enjoy ___ English. :: to learn | learning* | learn

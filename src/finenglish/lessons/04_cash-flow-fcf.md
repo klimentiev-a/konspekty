@@ -6,7 +6,7 @@ minutes: 8
 
 ## Theory
 
-> **In one minute.** CFO (операционный поток) starts from net income, adds back non-cash items and subtracts ΔNWC. FCFF (поток для всех инвесторов) is unlevered (без учёта долга) and discounted at WACC to get enterprise value; FCFE (поток для акционеров) is levered (с учётом долга) and discounted at the cost of equity to get equity value. Never cross them.
+> **In one minute.** CFO, cash flow from operations (операционный денежный поток), starts from net income, adds back non-cash items and subtracts ΔNWC, the change in net working capital (изменение оборотного капитала). FCFF, free cash flow to the firm (поток для всех инвесторов), is unlevered (без учёта долга) and discounted at WACC, the weighted average cost of capital (средневзвешенная стоимость капитала), to get enterprise value (стоимость бизнеса); FCFE, free cash flow to equity (поток для акционеров), is levered (с учётом долга) and discounted at the cost of equity (стоимость собственного капитала) to get equity value (стоимость акционерного капитала). Never cross them.
 
 ## The three sections
 
@@ -17,7 +17,9 @@ CFF = + Debt raised − Debt repaid + Equity issued − Buybacks − Dividends �
 Δ Cash = CFO + CFI + CFF + FX effect
 ```
 
-Under IFRS interest paid and dividends received can sit in CFO or CFF; US GAAP puts interest paid in CFO. For comparisons, reclassify (переклассифицировать) to one convention.
+CFI and CFF are investing and financing cash flows (инвестиционный и финансовый потоки), D&A is depreciation and amortisation (амортизация), SBC is share-based compensation (вознаграждение акциями).
+
+Under IFRS (МСФО) interest paid and dividends received can sit in CFO or CFF; US GAAP puts interest paid in CFO. For comparisons, reclassify (переклассифицировать) to one convention.
 
 ## FCFF and FCFE
 
@@ -30,13 +32,13 @@ FCFE = FCFF − Interest × (1 − t) + Net borrowing
      = CFO − Capex + Net borrowing                  (if interest is in CFO)
 ```
 
-NOPAT (чистая операционная прибыль после налогов) uses EBIT, not EBT, because interest has not been deducted: the cash is available to lenders and shareholders together. Net borrowing (чистое привлечение долга) = new debt − repayments.
+Here t is the tax rate (ставка налога). NOPAT, net operating profit after tax (чистая операционная прибыль после налогов), uses EBIT (operating profit, операционная прибыль), not EBT (прибыль до налогообложения), because interest has not been deducted: the cash is available to lenders and shareholders together. Net borrowing (чистое привлечение долга) = new debt − repayments.
 
 | Flow | Belongs to | Discount at | Result |
 |---|---|---|---|
 | FCFF | Lenders + shareholders | WACC | Enterprise value |
 | FCFE | Shareholders | Cost of equity (Ke) | Equity value |
-| Dividends | Shareholders | Ke | Equity value (DDM) |
+| Dividends | Shareholders | Ke | Equity value (DDM, dividend discount model) |
 
 ## Simple FCF and dividend capacity
 
@@ -46,7 +48,7 @@ FCF yield = FCF / Market cap
 Dividend capacity = FCF − mandatory debt repayments − lease principal
 ```
 
-Russian dividend policies (дивидендная политика) often reference FCF (Lukoil: 100% of adjusted FCF), net income under IFRS (SOEs: 50%), or leverage thresholds (Severstal, NLMK: 100% of FCF if Net debt/EBITDA < 1x). Read the policy, then rebuild the formula.
+Russian dividend policies (дивидендная политика) often reference FCF (Lukoil: 100% of adjusted FCF), net income under IFRS (SOEs, state-owned enterprises — госкомпании: 50%), or leverage thresholds (Severstal, NLMK: 100% of FCF if Net debt/EBITDA < 1x). Read the policy, then rebuild the formula.
 
 ## Capex: maintenance versus growth
 

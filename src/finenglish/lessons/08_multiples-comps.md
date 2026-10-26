@@ -6,7 +6,7 @@ minutes: 8
 
 ## Theory
 
-> **In one minute.** A multiple (мультипликатор) is value divided by a metric. EV goes with pre-interest metrics (revenue, EBITDA, EBIT); equity value goes with post-interest metrics (net income, book equity). Trading comps (сопоставимые публичные компании) give the market's price for a minority stake; precedent transactions (прошлые сделки) include a control premium (премия за контроль). Multiples are a compressed DCF: high growth and low risk mean a high multiple.
+> **In one minute.** A multiple (мультипликатор) is value divided by a metric. EV, enterprise value (стоимость бизнеса), goes with pre-interest metrics (revenue, EBITDA, EBIT); equity value (стоимость акционерного капитала) goes with post-interest metrics (net income, book equity). Trading comps (сопоставимые публичные компании) give the market's price for a minority stake; precedent transactions (прошлые сделки) include a control premium (премия за контроль). Multiples are a compressed DCF (discounted cash flow, модель дисконтированных денежных потоков): high growth and low risk mean a high multiple.
 
 ## Consistency
 
@@ -17,11 +17,13 @@ Wrong: EV / Net income, Price / EBITDA
 EV = Market cap (diluted) + Net debt + NCI + Preferred − Associates
 ```
 
-If EBITDA is post-IFRS 16, EV must include lease liabilities. If EBITDA excludes associates, their value is excluded from EV. Same rule for pensions and other debt-like items.
+NCI is non-controlling interest (неконтролирующая доля); associates (ассоциированные компании) are subtracted because their profit is not in EBITDA.
+
+If EBITDA is post-IFRS 16 (МСФО 16), EV must include lease liabilities. If EBITDA excludes associates, their value is excluded from EV. Same rule for pensions and other debt-like items.
 
 ## Choosing and calendarising metrics
 
-LTM (за последние 12 месяцев): last annual + current YTD − prior YTD. NTM / forward (прогнозные): consensus (консенсус-прогноз) for the next 12 months. Calendarisation (календаризация): align peers with different fiscal year ends (конец финансового года). Normalise (нормализовать) EBITDA and net income for one-offs; use diluted shares; convert currencies at the same date.
+LTM (last twelve months, за последние 12 месяцев): last annual + current YTD (year to date, с начала года) − prior YTD. NTM / forward (прогнозные): consensus (консенсус-прогноз) for the next 12 months. Calendarisation (календаризация): align peers with different fiscal year ends (конец финансового года). Normalise (нормализовать) EBITDA and net income for one-offs; use diluted shares; convert currencies at the same date.
 
 ## Peer selection
 
@@ -33,17 +35,19 @@ Criteria: industry and business model, size, geography, growth, margins, capital
 From Gordon:  P/E ≈ Payout / (Ke − g);   EV/EBITDA ≈ (1 − t)(1 − reinvestment rate) / (WACC − g) × (EBIT/EBITDA)
 ```
 
-So compare multiples with growth and returns: PEG = P/E / growth; "EV/EBITDA versus EBITDA growth" scatter. A premium (премия) to peers needs a reason: higher growth, higher ROIC, lower risk, better governance (корпоративное управление). A discount (дисконт) can be a sanctions, liquidity, free-float or governance discount; Russian equities trade at a steep discount to EM peers for all four.
+Here Ke is the cost of equity (стоимость собственного капитала), g the long-term growth rate, t the tax rate, and the reinvestment rate (доля реинвестирования) is the share of NOPAT spent on capex and working capital.
+
+So compare multiples with growth and returns: PEG (price/earnings to growth) = P/E / growth; "EV/EBITDA versus EBITDA growth" scatter. A premium (премия) to peers needs a reason: higher growth, higher ROIC (return on invested capital, рентабельность инвестированного капитала), lower risk, better governance (корпоративное управление). A discount (дисконт) can be a sanctions, liquidity, free-float (доля акций в свободном обращении) or governance discount; Russian equities trade at a steep discount to EM (emerging markets, развивающиеся рынки) peers for all four.
 
 ## Industry-specific multiples
 
 | Sector | Multiples |
 |---|---|
-| Banks, insurers | P/E, P/B, P/TBV (к материальному капиталу), ROE vs P/B |
-| Oil and gas, mining | EV/EBITDA, EV/reserves (к запасам), EV/production, EV/2P |
+| Banks, insurers | P/E, P/B, P/TBV (к материальному капиталу), ROE (return on equity, рентабельность капитала) vs P/B |
+| Oil and gas, mining | EV/EBITDA, EV/reserves (к запасам), EV/production, EV/2P (proved + probable reserves, доказанные и вероятные запасы) |
 | Retail | EV/EBITDA(R), EV/Sales, sales per square metre |
 | Telecom, utilities | EV/EBITDA, EV/subscriber, EV/MW or EV/RAB (регулируемая база активов) |
-| Tech, SaaS | EV/Sales, EV/ARR, Rule of 40 |
+| Tech, SaaS (software as a service, ПО по подписке) | EV/Sales, EV/ARR (annual recurring revenue, годовая повторяющаяся выручка), Rule of 40 (правило 40: рост выручки + маржа ≥ 40%) |
 | Real estate | P/NAV (к чистой стоимости активов), cap rate (ставка капитализации) |
 
 ## Trading comps versus precedent transactions
@@ -53,21 +57,21 @@ So compare multiples with growth and returns: PEG = P/E / growth; "EV/EBITDA ver
 | Price reflects | Minority stake, liquid market, today | Control, synergies, deal conditions, past dates |
 | Level | Lower | Higher by control premium of 20–40% |
 | Data | Public, current | Deal terms often undisclosed |
-| Use | Fair market value, IPO pricing | M&A, fairness opinions (заключение о справедливости цены) |
+| Use | Fair market value, IPO (initial public offering, первичное размещение) pricing | M&A (mergers and acquisitions, слияния и поглощения), fairness opinions (заключение о справедливости цены) |
 
 For precedent deals, note the date (the cycle), the buyer type (strategic vs financial), the stake (control or minority), payment form (cash or stock) and whether synergies were priced.
 
 ## Pitfalls
 
 - Peak-cycle earnings make cyclicals look cheap; use mid-cycle or EV/capacity.
-- Negative or tiny earnings → P/E meaningless; move up the P&L to EBITDA or sales.
+- Negative or tiny earnings → P/E meaningless; move up the P&L (ОФР) to EBITDA or sales.
 - Different accounting: capitalised costs, IFRS 16, revenue gross vs net.
 - Stale market data; pre-announcement prices for targets (unaffected price, цена до объявления).
 - Multiples of controlled companies with low free float are not clean references.
 
 ## Presentation
 
-Football field: horizontal bars for each method — 52-week range (диапазон за 52 недели), analyst targets, trading comps (25th–75th percentile), precedents, DCF (WACC × g range), LBO value. The overlap (пересечение) is the defensible range.
+Football field: horizontal bars for each method — 52-week range (диапазон за 52 недели), analyst targets, trading comps (25th–75th percentile), precedents, DCF (WACC × g range), LBO value (LBO, leveraged buyout — цена, которую может заплатить фонд при покупке в долг). The overlap (пересечение) is the defensible range.
 
 ## Words
 
@@ -86,7 +90,7 @@ Football field: horizontal bars for each method — 52-week range (диапаз�
 | tangible book value (TBV) | материальный балансовый капитал | Banks trade on price to tangible book value. |
 | regulated asset base (RAB) | регулируемая база активов | Utilities are valued on EV/RAB. |
 | net asset value (NAV) | чистая стоимость активов | REITs trade at a discount to NAV. |
-| cap rate | ставка капитализации | A 10% cap rate implies 10x rent. |
+| cap rate | ставка капитализации | A 10% cap rate implies a value of 10x net operating income. |
 | minority stake | миноритарный пакет | Trading comps price a minority stake. |
 | control premium | премия за контроль | The control premium averaged 30%. |
 | fairness opinion | заключение о справедливости цены | The board obtained a fairness opinion. |

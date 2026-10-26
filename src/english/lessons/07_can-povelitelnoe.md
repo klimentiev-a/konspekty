@@ -60,7 +60,7 @@ minutes: 60
 - **well** — хорошо: *I can cook well.*
 - **a little** — немного: *I can speak French a little.*
 - **not very well** — не очень хорошо: *He can't swim very well.*
-- **badly** — плохо: *They can dance badly, but they love it.*
+- **badly** — плохо: *They dance badly, but they love it.*
 
 **Возможность в данный момент.** Can часто стоит с глаголами восприятия:
 - I can see the sea. — Я вижу море.
@@ -72,7 +72,7 @@ minutes: 60
 **Просьба.** Начинаем вопрос с *Can you…?*:
 - Can you open the window, please? — Открой окно, пожалуйста.
 - Can you help me? — Ты можешь мне помочь?
-- Can you wait a minute? — Подожди минутку, пожалуйста.
+- Can you wait a minute? — Можешь подождать минутку?
 
 Если нужно сказать **вежливее**, используют **Could you…?** (*Could you open the window, please?*). Подробно о could мы поговорим позже, пока запомни: Could звучит мягче, чем Can.
 
@@ -207,7 +207,7 @@ minutes: 60
 - Tom: Wonderful! Kate can bring her guitar. | Чудесно! Кейт может взять свою гитару.
 - Anna: OK. And you, can you cook? | Хорошо. А ты умеешь готовить?
 - Tom: No, I can't! I can't cook at all. Let's buy sandwiches. | Нет! Я совсем не умею готовить. Давай купим бутерброды.
-- Anna: Ha-ha! OK. Don't forget your umbrella, just in case. | Ха-ха! Хорошо. Не забудь зонт, на всякий случай.
+- Anna: Ha-ha! OK. Don't forget the sandwiches! | Ха-ха! Хорошо. Не забудь бутерброды!
 - Tom: Don't worry, I never forget food! | Не волнуйся, еду я никогда не забываю!
 
 ## Упражнения

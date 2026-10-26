@@ -264,7 +264,7 @@ minutes: 60
 9. «Buy one, get one free» значит :: купи один, второй бесплатно* | купи два, заплати за три | всё бесплатно
 
 ### Упражнение 3. Вставь слово
-Впиши одно слово. В скобках — подсказка по-русски.
+Впиши одно слово (в п. 2 подойдёт и фразовый глагол). В скобках — подсказка по-русски.
 1. Can I pay ___ card? => by
 2. I'd like to ___ £100 from my account. (снять) => withdraw / take out
 3. Do you have this jacket ___ a larger size? => in
@@ -309,7 +309,7 @@ minutes: 60
 8. It costs five pound. :: It costs five pounds.* | It costs five pound's. | It costs fives pound.
 
 ### Упражнение 7. Повторение: сравнения, Present Perfect, количество
-Выбери правильный вариант (уроки 9, 19, 22, 23, 28, 31).
+Выбери правильный вариант (уроки 9, 19, 22, 23, 28, 31, 32).
 1. This bag is ___ than that one. :: cheaper* | more cheap | cheapest
 2. It's the ___ shop in town. :: biggest* | bigger | most big
 3. Have you ___ bought anything online? :: ever* | still | since

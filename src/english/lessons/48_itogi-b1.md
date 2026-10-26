@@ -9,7 +9,7 @@ minutes: 60
 - Увидеть весь курс одной картиной: времена, модальные глаголы, условные, пассив, косвенная речь.
 - Повторить и закрепить ключевые конструкции уровней A1, A2 и B1.
 - Проверить себя по чек-листу «Я умею (B1)» и найти слабые места.
-- Исправить самые частые ошибки русскоговорящих изучающих английский.
+- Исправить самые частые ошибки русскоговорящих, изучающих английский.
 - Составить личный план развития: чтение, фильмы, подкасты, разговорная практика, привычки.
 - Пройти большой итоговый тест по всему курсу.
 
@@ -100,7 +100,7 @@ minutes: 60
 | “Don't be late.” | She told me not to be late. |
 Глагол *say* — без объекта (*said that…*), *tell* — с объектом (*told me that…*). Время и место меняются: *now → then, today → that day, tomorrow → the next day, yesterday → the day before, here → there*.
 
-**Относительные придаточные:** *who* — люди, *which* — вещи, *that* — и то и другое в defining-придаточных, *whose* — «чей», *where* — место. *The man who lives next door is a doctor.* *This is the book (that) I told you about.* *The woman whose car was stolen called the police.* *London, which is the capital of the UK, is very big.* — во втором, неопределяющем придаточном есть запятые и нельзя использовать *that*.
+**Относительные придаточные:** *who* — люди, *which* — вещи, *that* — и то и другое в defining-придаточных, *whose* — «чей», *where* — место. *The man who lives next door is a doctor.* *This is the book (that) I told you about.* *The woman whose car was stolen called the police.* *London, which is the capital of the UK, is very big.* — в последнем примере придаточное неопределяющее: оно выделяется запятыми, и *that* в нём использовать нельзя.
 
 ### 6. Герундий и инфинитив, количество, сравнения
 | Тема | Правило | Пример |
@@ -139,7 +139,7 @@ minutes: 60
 - **Связки:** *and, but, so, because, although, however, therefore, firstly, finally*. *Although* — внутри предложения (*Although it was cold, we went out*), *however* — между предложениями с запятой (*It was cold. However, we went out.*).
 - **Разделительные вопросы:** *You like tea, don't you? She isn't here, is she?* Положительное утверждение → отрицательный хвост, и наоборот.
 - **Вежливые и косвенные вопросы:** *Could you tell me where the station is?* (порядок слов как в утверждении, без do). *Do you mind opening the window?*
-- **Прилагательные -ed / -ing:** *bored – boring, tired – tiring, excited – exciting*. -ed описывает человека, -ing — предмет.
+- **Прилагательные -ed / -ing:** *bored – boring, tired – tiring, excited – exciting*. -ed — что чувствует человек, -ing — что вызывает это чувство.
 - **Разговорные клише:** *In my opinion…, I see your point, but…, Sorry to interrupt, but…, Pardon? So do I. Neither do I.*
 
 ### 9. Самые частые ошибки русскоговорящих: сводка
@@ -152,7 +152,7 @@ minutes: 60
 | I have 25 years. | I am 25. | возраст через to be |
 | I have seen him yesterday. | I saw him yesterday. | с yesterday нужен Past Simple |
 | He said me to go. | He told me to go. | после said нет объекта |
-| I'm interesting in music. | I'm interested in music. | -ed о человеке |
+| I'm interesting in music. | I'm interested in music. | -ed — о чувстве человека |
 | It depends from you. | It depends on you. | предлог on |
 | If it will rain, … | If it rains, … | после if нет will |
 | I listen music. | I listen to music. | listen to |
@@ -186,7 +186,7 @@ minutes: 60
 Если можешь поставить ✓ напротив 16–20 пунктов — ты уверенно на уровне B1. Если 10–15 — ты на уровне A2+/B1, нужна ещё практика. Меньше 10 — вернись к блоку, где больше всего «✗».
 
 ### 11. Что делать дальше: личный план развития
-Курс закончился, но язык не «заканчивается». Вот как закрепить результат и пойти к B2.
+Основной курс закончился (дальше — блок B1+, уроки 49–60), но язык не «заканчивается». Вот как закрепить результат и двигаться к B2.
 
 **Правило 1. Лучше 20 минут каждый день, чем 3 часа раз в неделю.** Язык запоминается через частые повторы. Выбери постоянное время и привяжи его к привычке: *после утреннего кофе — 20 минут английского*.
 
@@ -206,9 +206,9 @@ minutes: 60
 
 **Слова.** Веди тетрадь или карточки (*flashcards*). Записывай не отдельное слово, а **фразу с примером**: *make a decision*, а не просто *decision*. Повторяй по схеме: на следующий день, через 3 дня, через неделю, через месяц. Фразовые глаголы учи небольшими группами — по 5 за раз — и сразу составляй свои предложения.
 
-**Журнал ошибок.** Заведи страницу «Мои 5 ошибок». Записывай то, что повторяется (*Did she worked? I am agree?*), и раз в неделю просматривай. Как только ошибка исчезла за месяц, замени её следующей.
+**Журнал ошибок.** Заведи страницу «Мои 5 ошибок». Записывай то, что повторяется (*Did she worked? I am agree?*), и раз в неделю просматривай. Если ошибка не появлялась целый месяц, замени её следующей.
 
-**Разговорная практика.** Найди постоянного партнёра для разговора — друга, знакомого, участника онлайн-клуба. Договаривайтесь о теме заранее и записывайте на диктофон 2 минуты речи: запись видно и слышно прогресс.
+**Разговорная практика.** Найди постоянного партнёра для разговора — друга, знакомого, участника онлайн-клуба. Договаривайтесь о теме заранее и записывайте на диктофон 2 минуты речи: по записям хорошо слышен прогресс.
 
 **Если кажется, что прогресса нет.** После уровня A2–B1 наступает «плато»: кажется, что ты стоишь на месте. Это нормально: мозг усваивает накопленное. Помогает: смена материалов, новая тема, разговор с живым человеком, письменная работа с обратной связью (*feedback*).
 
@@ -220,7 +220,7 @@ minutes: 60
 5. Написать 12 коротких текстов (письмо, отзыв, дневник).
 6. Повторить «слабые» уроки из курса по чек-листу.
 
-**Когда будешь готова к B2**, ты сможешь свободно рассуждать на абстрактные темы, понимать новости и фильмы с минимальной опорой на субтитры, использовать пассив во всех временах, сложные формы косвенной речи и разнообразные связки. Если захочешь подтвердить уровень, можно подготовиться к международному экзамену уровня B1–B2.
+**Когда будешь готова к B2**, ты сможешь свободно рассуждать на абстрактные темы, понимать новости и фильмы с минимальной опорой на субтитры, использовать пассив во всех временах, сложные формы косвенной речи и разнообразные связки (многое из этого — в блоке B1+, уроки 49–60). Если захочешь подтвердить уровень, можно подготовиться к международному экзамену уровня B1–B2.
 
 > **Запомни.** Лучший способ забыть язык — не пользоваться им. Лучший способ выучить — использовать каждый день, даже понемногу, и не бояться ошибок.
 
@@ -258,7 +258,7 @@ minutes: 60
 
 ## Диалог
 **Последний урок: что дальше?**
-- Anna: Can you believe it? This is our last lesson. | Не верится! Это наш последний урок.
+- Anna: Can you believe it? This is the last lesson of the main course. | Не верится! Это последний урок основного курса.
 - Tom: I know. Do you remember lesson one? We said, “I am a student.” | Помню. Помнишь первый урок? Мы говорили: «Я студент(ка)».
 - Anna: Yes! Now I can talk about my plans, my past experience and my opinions. | Да! Теперь я могу говорить о планах, о прошлом опыте и о своём мнении.
 - Tom: Your progress is amazing. What was the hardest part for you? | Твой прогресс потрясающий. Что было самым трудным?
@@ -313,7 +313,7 @@ minutes: 60
 9. Could you tell me where ___? :: is the bank | the bank is* | does the bank be
 10. You like tea, ___ you? :: don't* | doesn't | aren't
 
-### Упражнение 4. Артикли, количество, сравнения
+### Упражнение 4. Относительные придаточные, артикли, количество, сравнения
 Выбери правильный вариант.
 1. The girl ___ lives next door is a doctor. :: who* | which | whose
 2. This is the book ___ I told you about. :: who | that* | whose
@@ -372,9 +372,9 @@ minutes: 60
 ## Вместе
 Эти задания рассчитаны на двоих. Проведите итоговую «встречу» в формате живого разговора.
 
-**Задание 1. Интервью уровня B1.** Задайте друг другу по 10 вопросов, каждый на свою конструкцию: *What do you usually do on Sundays? What are you doing this week? Have you ever been abroad? What did you do last weekend? What were you doing at 8 o'clock yesterday? What are you going to do next month? What would you do if you won a million? What do you wish you could do? What was the best film you've seen? What did your teacher tell you to do?* Отвечайте развёрнуто, минимум 2–3 предложения. Пусть партнёр отмечает, какое время вы использовали правильно.
+**Задание 1. Интервью уровня B1.** Задайте друг другу по 10 вопросов, каждый на свою конструкцию: *What do you usually do on Sundays? What are you doing this week? Have you ever been abroad? What did you do last weekend? What were you doing at 8 o'clock yesterday? What are you going to do next month? What would you do if you won a million? What do you wish you could do? What's the best film you've ever seen? What did your teacher tell you to do?* Отвечайте развёрнуто, минимум 2–3 предложения. Пусть партнёр отмечает, какое время вы использовали правильно.
 
-**Задание 2. Цепочка рассказа.** Вместе придумайте историю, где каждая новая реплика использует другую конструкцию из таблицы: Present Simple → Past Simple → Past Continuous → Past Perfect → Passive → Conditional 3 → Reported speech. Например: *A man works in a bank. Yesterday he found a strange letter. While he was reading it, the phone rang…* Продолжайте, пока не используете все 10 конструкций. Если партнёр слышит ошибку, он вежливо поправляет: *Sorry to interrupt, but I think we say…*
+**Задание 2. Цепочка рассказа.** Вместе придумайте историю, где каждая новая реплика использует другую конструкцию из таблицы: Present Simple → Past Simple → Past Continuous → Past Perfect → Passive → Conditional 3 → Reported speech. Например: *A man works in a bank. Yesterday he found a strange letter. While he was reading it, the phone rang…* Продолжайте, пока не используете все 7 конструкций. Если партнёр слышит ошибку, он вежливо поправляет: *Sorry to interrupt, but I think we say…*
 
 **Задание 3. Наш план на три месяца.** Обсудите по-английски: что ты хочешь улучшить, как будешь заниматься, сколько раз в неделю будете говорить друг с другом. Используйте *I'm going to…, I'd like to…, I think we should…, In my opinion… I see your point, but…* Запишите итоговый план из 5 пунктов. В конце один пересказывает договорённости как будто третьему человеку: *She suggested meeting every Saturday. He promised to send me a podcast every week. She advised me to keep a notebook.*
 

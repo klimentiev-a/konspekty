@@ -56,7 +56,7 @@ minutes: 60
 - ❌ *She likes her works.* → ✅ **She likes her work. / her job.**
 - *It's a good job. / It's hard work.* — оба правильно.
 
-Глагол **work** (работать) обычен: *I work, she works.* Когда вы имеете в виду «ходить на работу» или «быть на работе», артикль не нужен: **go to work, be at work, start work, finish work.** *I'm at work now.* (Я сейчас на работе.) *He leaves work at six.*
+Глагол **work** (работать) — обычный правильный глагол: *I work, she works, I worked.* Когда вы имеете в виду «ходить на работу» или «быть на работе», артикль не нужен: **go to work, be at work, start work, finish work.** *I'm at work now.* (Я сейчас на работе.) *He leaves work at six.*
 
 ### 3. Профессии и суффиксы
 Многие названия профессий образованы от глагола или названия сферы с помощью суффиксов:
@@ -65,7 +65,7 @@ minutes: 60
 - **-ian**: electrician, musician, librarian;
 - **-ant**: accountant, assistant.
 
-Слова *lawyer, waiter, cook, programmer, shop assistant* придётся запомнить. Названия профессий обычно **одинаковы для мужчин и женщин**: *a doctor, a teacher, a manager*. Исключения (waiter / waitress, actor / actress) встречаются, но сегодня многие говорят *actor* о женщине тоже. Хорошая безопасная модель: **I'm a** … для любой профессии. Перед гласным звуком используем **an**: *an engineer, an accountant, an electrician*.
+Не все названия строятся по этим правилам: **cook** — повар (а *cooker* — плита!), **shop assistant** — продавец, **lawyer** — юрист. Их придётся запомнить. Названия профессий обычно **одинаковы для мужчин и женщин**: *a doctor, a teacher, a manager*. Исключения (waiter / waitress, actor / actress) встречаются, но сегодня многие говорят *actor* о женщине тоже. Хорошая безопасная модель: **I'm a** … для любой профессии. Перед гласным звуком используем **an**: *an engineer, an accountant, an electrician*.
 
 Профессии всегда с артиклем: ❌ *I am doctor.* → ✅ **I am a doctor.** Это самая частая ошибка после русского «Я врач».
 
@@ -102,7 +102,7 @@ minutes: 60
 2. **Profile** — две-три строки о себе.
 3. **Work experience** — места работы в обратном порядке (последнее сначала).
 4. **Education** — образование.
-5. **Skills** — навыки (computer skills, languages).
+5. **Skills** — навыки (computer skills, driving licence).
 6. **Languages** — например, *Russian — native, English — intermediate.*
 7. **References** — рекомендации (*available on request* — «по запросу»).
 
@@ -111,7 +111,7 @@ minutes: 60
 **Anna Smirnova**, Moscow, anna.smirnova@mail.com
 *Profile:* Friendly shop assistant with two years of experience. Good at talking to people.
 *Work experience:*
-2023–2025 Shop assistant, Green Shop, Moscow — helped customers, worked with the till, trained new staff.
+2023–2025 Shop assistant, Green Shop, Moscow — helped customers, used the till, trained new staff.
 2022–2023 Waitress, Blue Café, Moscow — took orders, served food.
 *Education:* 2018–2022 Moscow State University, economics.
 *Languages:* Russian (native), English (intermediate).
@@ -180,7 +180,7 @@ minutes: 60
 9. ❌ *I look forward to hear from you.* → ✅ **I look forward to hearing from you.**
 
 ### 9. Произношение
-- **Colleague** [ˈkɒliːɡ]: «КО-лиг», g в конце читается, второй слог долгий.
+- **Colleague** [ˈkɒliːɡ]: «КО-лииг», g в конце читается, второй слог долгий.
 - **Salary** [ˈsæləri] — «СЭ-лэ-ри». **Interview** [ˈɪntəvjuː] — «ИН-те-вью».
 - **Engineer** [ˌendʒɪˈnɪə] — ударение на последнем слоге, **accountant** [əˈkaʊntənt] — на втором.
 - Профессии на **-er** произносим с коротким [ə] на конце: *teacher* [ˈtiːtʃə].
@@ -226,7 +226,7 @@ minutes: 60
 - Ms Clark: Why do you want this job? | Почему вы хотите эту работу?
 - Anna: I like working with people, and your company is very famous. | Мне нравится работать с людьми, а ваша компания очень известна.
 - Ms Clark: Do you have any experience in an office? | У вас есть опыт работы в офисе?
-- Anna: Not much, but I worked as an assistant for six months in 2023. | Немного, но в 2023 году я полгода работала помощником.
+- Anna: Not much, but I worked as an office assistant for six months when I was a student. | Немного, но, когда я училась, я полгода работала помощником в офисе.
 - Ms Clark: What are your strengths? | Каковы ваши сильные стороны?
 - Anna: I'm friendly, and I'm good at solving problems. I can also use a computer well. | Я дружелюбная и умею решать проблемы. Ещё я хорошо работаю с компьютером.
 - Ms Clark: Can you work in a team? | Вы умеете работать в команде?

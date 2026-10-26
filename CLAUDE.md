@@ -77,6 +77,7 @@
 - Сборка: `bash scripts/build_all.sh`. Конспекты редактировать в `src/index.src.html` (JSON в `<script type="application/json" id="data">`, зеркало в `src/data.json`), финансы — `src/finance/content/*.md`, хаб — `src/finance/make_hub.py` и `hub.html`. Готовые `*.html` в корне руками не править.
 - В `sw.js` поднимать `V` (формат `hub-vNNN`) при каждом выпуске.
 - Проверять в браузере на 1280 и 390 px: нет горизонтального переполнения, нет ошибок в консоли.
+- Полный обход всех страниц и #-маршрутов: `python3 -m http.server 8765 &` из корня, затем `NODE_PATH=$(npm root -g) node tests/crawl.js` (ошибки JS, 404, шире экрана, элементы за краем, текст вылезает из коробки, наложения кнопок, undefined/NaN, битые ссылки; итог в `crawl.out`). Раз в сутки его гоняет задача по расписанию.
 - Перед пушем: `git pull -q --rebase -X theirs origin main`, затем `git push origin HEAD:main`.
 - В конце коммита: строки `Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>` и `Claude-Session: <ссылка сессии>`.
 - Новая версия сайта у Артёма появляется после двух загрузок страницы (service worker). Говорить это.

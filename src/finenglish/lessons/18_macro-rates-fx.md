@@ -17,19 +17,21 @@ Key rate ↑ → deposit and loan rates ↑ → credit growth ↓, saving ↑ �
 Real rate = Key rate − expected inflation;  neutral real rate (нейтральная ставка) ≈ 3–4% in Russia (Bank of Russia estimate)
 ```
 
+OFZ are Russian federal government bonds (ОФЗ, облигации федерального займа).
+
 Tightening (ужесточение) and easing (смягчение); hawkish / dovish (ястребиный / голубиный) signal (сигнал); forward guidance (сигнал о будущих решениях); the Bank of Russia publishes a key rate path forecast (траектория ставки) four times a year. Average key rate forecast (среднегодовая ставка) is what the OFZ curve prices.
 
 ## Inflation measures
 
-CPI (ИПЦ) headline and core (базовая); seasonally adjusted annualised rate, SAAR (сезонно скорректированная в годовом выражении) is what the Bank of Russia watches week to week; inflation expectations from the inFOM household survey (опрос населения) and enterprise price expectations (ценовые ожидания предприятий); trimmed mean (усечённое среднее). Target (цель): 4%. Disinflation (замедление инфляции), deflation, stagflation (стагфляция: no growth, high inflation).
+CPI, the consumer price index (ИПЦ), headline and core (базовая); the seasonally adjusted annualised rate (SAAR, сезонно скорректированная инфляция в годовом выражении) is what the Bank of Russia watches week to week; inflation expectations from the household survey by inFOM, a polling company working for the Bank of Russia (опрос населения) and enterprise price expectations (ценовые ожидания предприятий); trimmed mean (усечённое среднее). Target (цель): 4%. Disinflation (замедление инфляции), deflation, stagflation (стагфляция: no growth, high inflation).
 
 ## Growth and the cycle
 
-GDP (ВВП) real growth; output gap (разрыв выпуска): positive gap = overheating (перегрев) → inflation. PMI (индекс деловой активности), industrial production (промпроизводство), retail sales (розничные продажи), unemployment (безработица) at record lows = labour shortage (дефицит кадров) → wage inflation. Soft landing / hard landing (мягкая / жёсткая посадка); recession = two consecutive quarters of contraction.
+GDP (ВВП) real growth; output gap (разрыв выпуска): positive gap = overheating (перегрев) → inflation. PMI, purchasing managers' index (индекс деловой активности), industrial production (промпроизводство), retail sales (розничные продажи), unemployment (безработица) at record lows = labour shortage (дефицит кадров) → wage inflation. Soft landing / hard landing (мягкая / жёсткая посадка); recession = two consecutive quarters of contraction.
 
 ## Yield curve as a forecast
 
-Short OFZ yields ≈ expected average key rate over the tenor plus term premium (премия за срок). Inversion (инверсия) = cuts expected. Slope changes: bull steepening (short end rallies on cuts), bear flattening (short end sells off on hikes). Breakeven inflation from linkers. RUONIA and the overnight repo rate (ставка репо овернайт) track the key rate daily; money-market funds (фонды денежного рынка) earn it.
+Short OFZ yields ≈ expected average key rate over the tenor plus term premium (премия за срок). Inversion (инверсия) = cuts expected. Slope changes: bull steepening (short end rallies on cuts), bear flattening (short end sells off on hikes). Breakeven inflation (вменённая инфляция) from linkers (облигации с индексируемым номиналом). RUONIA, the rouble overnight index average, and the overnight repo rate (ставка репо овернайт) track the key rate daily; money-market funds (фонды денежного рынка) earn it.
 
 ## The rouble
 
@@ -37,11 +39,11 @@ Short OFZ yields ≈ expected average key rate over the tenor plus term premium 
 Drivers: current account (счёт текущих операций) = trade balance + services + income;
          exporters' FX sales (продажа валютной выручки), import demand, capital outflows (отток капитала),
          Bank of Russia / Ministry of Finance operations under the budget rule, sanctions on payment channels
-Budget rule: oil and gas revenue above the cut-off price (цена отсечения) → buy FX/gold into the NWF (ФНБ);
+Budget rule: oil and gas revenue above the cut-off price (цена отсечения) → buy FX/gold into the NWF, National Wealth Fund (ФНБ, Фонд национального благосостояния);
              below → sell. Smooths the rouble and the budget.
 ```
 
-Since 2022: capital controls (ограничения на движение капитала), yuan as the main traded currency, official rate from OTC data after MOEX dollar/euro trading stopped in June 2024, mandatory FX sales for exporters at times, carry trade limited. Rouble strength hurts exporters' rouble EBITDA and budget revenue; weakness feeds inflation through imports with a lag of 2–3 quarters (pass-through, эффект переноса).
+Since 2022: capital controls (ограничения на движение капитала), yuan as the main traded currency, official rate from OTC (over-the-counter, внебиржевой рынок) data after MOEX (Мосбиржа) dollar/euro trading stopped in June 2024, mandatory FX sales for exporters at times, carry trade limited. Rouble strength hurts exporters' rouble EBITDA and budget revenue; weakness feeds inflation through imports with a lag of 2–3 quarters (pass-through, эффект переноса).
 
 ## Fiscal
 
@@ -51,12 +53,12 @@ Budget deficit (дефицит бюджета) financed by OFZ issuance (раз�
 
 | Release | Who | Market reaction |
 |---|---|---|
-| Key rate decision + statement, 8 per year, 13:30 MSK | Bank of Russia | OFZ, rouble, banks, developers |
+| Key rate decision + statement, 8 per year, 13:30 MSK (московское время) | Bank of Russia | OFZ, rouble, banks, developers |
 | Weekly CPI (Wed), monthly CPI | Rosstat | Rate expectations |
 | inFOM expectations | Bank of Russia | Rate expectations |
 | Budget execution (monthly) | Ministry of Finance | OFZ supply, rouble |
-| FOMC, 8 per year; US CPI; non-farm payrolls (first Friday) | Fed, BLS | Global risk, dollar, gold, crypto |
-| OPEC+ meetings, EIA inventories | — | Oil, rouble, oil stocks |
+| FOMC (Federal Open Market Committee, комитет ФРС по ставкам), 8 per year; US CPI; non-farm payrolls (first Friday) | Fed (ФРС), BLS (Bureau of Labor Statistics, бюро статистики труда США) | Global risk, dollar, gold, crypto |
+| OPEC+ (ОПЕК+) meetings, EIA (US Energy Information Administration) inventories | — | Oil, rouble, oil stocks |
 
 Reaction rules of thumb: hike → bonds down, banks mixed (margins up, credit quality down), developers and leveraged names down, rouble up; cut → the reverse; oil up → rouble up, oil stocks up with a lag through FX.
 

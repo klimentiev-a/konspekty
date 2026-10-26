@@ -6,43 +6,43 @@ minutes: 8
 
 ## Theory
 
-> **In one minute.** One exchange (MOEX), one mega-regulator (Bank of Russia), one benchmark (IMOEX). A commodity- and state-heavy index with the strongest dividend culture among large markets, OFZ as the rouble risk-free curve, the key rate as the main driver. Since 2022: domestic retail-dominated investor base, frozen foreign holdings, yuan instead of dollar, sanctions shaping every deal.
+> **In one minute.** One exchange (MOEX, Мосбиржа), one mega-regulator (мегарегулятор: Bank of Russia), one benchmark (IMOEX, индекс Мосбиржи). A commodity- and state-heavy index with the strongest dividend culture among large markets, OFZ (ОФЗ, облигации федерального займа) as the rouble risk-free curve, the key rate as the main driver. Since 2022: domestic retail-dominated investor base, frozen foreign holdings, yuan instead of dollar, sanctions shaping every deal.
 
 ## Infrastructure
 
-Moscow Exchange group: exchange, NCC clearing (НКЦ), NSD depository (НРД); T+1 settlement; sessions 7:00–23:50 with the main one 10:00–18:50 MSK. Bank of Russia supervises banks, brokers, insurers, funds and issuers. Qualified investor (квалифицированный инвестор) status gates complex and foreign instruments; unqualified investors pass tests. Retail investors (частные инвесторы) are 70–80% of equity turnover; institutions: NPFs (НПФ, pension funds), mutual funds (ПИФы), insurers, banks' prop desks.
+Moscow Exchange group: exchange, NCC — National Clearing Centre (НКЦ), NSD — National Settlement Depository (НРД); T+1 settlement (расчёты на следующий день); sessions 7:00–23:50 with the main one 10:00–18:50 MSK (московское время). Bank of Russia supervises banks, brokers, insurers, funds and issuers. Qualified investor (квалифицированный инвестор) status gates complex and foreign instruments; unqualified investors pass tests. Retail investors (частные инвесторы) are 70–80% of equity turnover; institutions: NPFs, non-state pension funds (НПФ), mutual funds (ПИФы), insurers, banks' prop desks (собственная торговля банков).
 
-Indices: IMOEX (rouble, free-float weighted, 15% single-name cap), RTS (dollar), MOEX sector indices, RGBI (OFZ), RUCBI (corporates), RVI (volatility), MOEX Blue Chip index.
+Indices: IMOEX (rouble, free-float weighted, 15% single-name cap), RTS index (индекс РТС, in dollars), MOEX sector indices, RGBI (Russian Government Bond Index, OFZ), RUCBI (Russian Corporate Bond Index), RVI (Russian Volatility Index), MOEX Blue Chip index.
 
 ## Issuers by sector
 
 | Sector | Names | Analyst focus |
 |---|---|---|
 | Oil and gas | Lukoil, Rosneft, Gazprom, Novatek, Surgutneftegas, Tatneft, Gazprom Neft, Transneft | Urals price and discount to Brent, rouble, taxes (MET / НДПИ, export duty), dividend policy |
-| Banks | Sberbank, VTB, T-Technologies, Sovcombank, MKB, BSPB | ROE, CET1 (достаточность капитала), cost of risk (стоимость риска), NIM (чистая процентная маржа), 50% payout |
-| Metals and mining | Norilsk Nickel, Polyus, Severstal, NLMK, MMK, Rusal, Alrosa, Mechel | Prices, China, sanctions, leverage, FCF-based dividends |
-| Tech and internet | Yandex, Ozon, VK, HeadHunter, Positive Technologies, Astra, Diasoft | Growth, re-domiciliation, GMV, take rate, adjusted EBITDA |
+| Banks | Sberbank, VTB, T-Technologies, Sovcombank, MKB, BSPB | ROE (return on equity, рентабельность капитала), CET1 (common equity tier 1, достаточность базового капитала), cost of risk (стоимость риска), NIM (net interest margin, чистая процентная маржа), 50% payout |
+| Metals and mining | Norilsk Nickel, Polyus, Severstal, NLMK, MMK, Rusal, Alrosa, Mechel | Prices, China, sanctions, leverage, FCF-based (free cash flow, свободный денежный поток) dividends |
+| Tech and internet | Yandex, Ozon, VK, HeadHunter, Positive Technologies, Astra, Diasoft | Growth, re-domiciliation, GMV (gross merchandise value, оборот площадки), take rate, adjusted EBITDA |
 | Consumer | X5, Magnit, Lenta, Fix Price, Henderson | LFL sales (сопоставимые продажи), inflation pass-through, margins |
 | Telecom, utilities, transport | MTS, Rostelecom, Inter RAO, Rosseti, Aeroflot, Sovcomflot, Globaltrans | Regulated tariffs (регулируемые тарифы), capex, leverage |
 | Developers | PIK, Samolet, LSR, Etalon | Mortgage subsidies (льготная ипотека), escrow, debt |
 
-SOEs (госкомпании) pay 50% of IFRS net income by government directive; many private companies tie dividends to FCF and leverage (Severstal, NLMK: 100% FCF below 1x net debt/EBITDA; Lukoil: 100% adjusted FCF). Surgutneftegas preferred dividends depend on FX revaluation of its dollar deposits ("кубышка").
+SOEs, state-owned enterprises (госкомпании), pay 50% of IFRS (МСФО) net income by government directive; many private companies tie dividends to FCF and leverage (Severstal, NLMK: 100% FCF below 1x net debt/EBITDA; Lukoil: 100% adjusted FCF). Surgutneftegas preferred dividends depend on FX revaluation of its dollar deposits ("кубышка").
 
 ## Bonds and the key rate
 
-OFZ types: PD (fixed), PK (RUONIA floaters), IN (linkers), AD (amortising); weekly MinFin auctions (аукционы Минфина); OFZ yields are the rouble risk-free for CAPM. Corporate market: floaters tied to key rate / RUONIA dominated 2024–2025; replacement bonds (замещающие облигации) in USD/EUR terms settled in roubles; yuan bonds; ratings by ACRA, Expert RA, NCR, NRA. Key rate: 7.5% mid-2023 → 21% October 2024 → easing from 2025; the OFZ curve stayed inverted while cuts were expected. Deposits and money-market funds (фонды денежного рынка, LQDT) absorbed retail money at high rates.
+OFZ types: PD (fixed), PK (floaters on RUONIA, the rouble overnight rate), IN (linkers), AD (amortising); weekly MinFin auctions (аукционы Минфина); OFZ yields are the rouble risk-free rate for CAPM (capital asset pricing model, модель оценки капитальных активов). Corporate market: floaters tied to key rate / RUONIA dominated 2024–2025; replacement bonds (замещающие облигации) in USD/EUR terms settled in roubles; yuan bonds; ratings by ACRA (АКРА), Expert RA (Эксперт РА), NCR (НКР), NRA (НРА). Key rate: 7.5% mid-2023 → 21% October 2024 → easing from 2025; the OFZ curve stayed inverted while cuts were expected. Deposits and money-market funds (фонды денежного рынка, e.g. LQDT — the ticker of the largest one) absorbed retail money at high rates.
 
 ## The rouble and capital controls
 
-Floating rate with controls: restrictions on transfers abroad, periodic mandatory FX sales by exporters (обязательная продажа валютной выручки), yuan as the main traded currency, official rate from OTC data since June 2024 (MOEX dollar and euro trading halted after US sanctions on the exchange). Drivers: oil export revenue and the Urals discount, import recovery, budget rule operations in yuan and gold, sanctions on payment channels (secondary sanctions, вторичные санкции). Limited carry trade: rates do not pull foreign capital in.
+Floating rate with controls: restrictions on transfers abroad, periodic mandatory FX sales by exporters (обязательная продажа валютной выручки), yuan as the main traded currency, official rate from OTC (over-the-counter, внебиржевой рынок) data since June 2024 (MOEX dollar and euro trading halted after US sanctions on the exchange). Drivers: oil export revenue and the Urals discount, import recovery, budget rule operations in yuan and gold, sanctions on payment channels (secondary sanctions, вторичные санкции). Limited carry trade: rates do not pull foreign capital in.
 
 ## Sanctions and deal specifics
 
 - Foreign holders from unfriendly states (недружественные страны): shares frozen in type-C accounts (счета типа «С»); exit deals need Government Commission (правительственная комиссия) approval, a 50%+ discount to valuation and a voluntary contribution (добровольный взнос) to the budget.
 - Depositary receipts converted to local shares; re-domiciliation (редомициляция) from Cyprus, Netherlands, Jersey to Russia or special administrative regions (САР: Kaliningrad, Russky Island); some companies split (Yandex) or swapped shares.
 - Disclosure (раскрытие) partly suspended; some issuers publish limited IFRS, which raises the governance discount.
-- Western banks and the Big Four left; local advisers (Kept, B1, DRT, TeDo) and local banks run deals; valuation references are domestic.
-- Sanctioned counterparties: payment rails, correspondent banking (корреспондентские отношения), compliance (комплаенс) and blocking sanctions (блокирующие санкции, SDN) dominate M&A due diligence.
+- Western banks and the Big Four (Deloitte, PwC, EY, KPMG — крупнейшие аудиторско‑консалтинговые сети) left; their former Russian practices (Kept, B1, DRT, TeDo) and local banks run deals; valuation references are domestic.
+- Sanctioned counterparties: payment rails, correspondent banking (корреспондентские отношения), compliance (комплаенс) and blocking sanctions (блокирующие санкции; SDN — Specially Designated Nationals, американский список лиц под блокирующими санкциями) dominate M&A (mergers and acquisitions, слияния и поглощения) due diligence (комплексная проверка).
 
 ## Interview phrases
 

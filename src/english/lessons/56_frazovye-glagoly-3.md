@@ -25,7 +25,7 @@ minutes: 60
 | **Предложный глагол** (prepositional verb) | глагол + предлог | depend on, insist on, apologise for, consist of |
 | **Трёхсловный** (phrasal-prepositional) | глагол + частица + предлог | put up with, look forward to, get away with, come up with |
 
-Разница слышна на слух. В фразовых глаголах ударение падает на частицу (*take **O**ver*, *give **UP***), а в предложных — на сам глагол (***DE**pend on*, ***IN**sist on*).
+Разница слышна на слух. Во фразовых глаголах ударение падает на частицу (*take **O**ver*, *give **UP***), а в предложных — на сам глагол (***DE**pend on*, ***IN**sist on*).
 
 **Что можно «разорвать».** У многих фразовых глаголов дополнение можно поставить между глаголом и частицей: *take over the business — take the business over*. Если дополнение — местоимение, оно **обязательно** стоит посередине: *take it over* (не *take over it*). Предложные и трёхсловные глаголы **не разрываются никогда**: частица или предлог остаётся рядом с глаголом, а местоимение стоит в самом конце:
 - *We **put up with** the noise → We **put up with it**.* (не *put it up with*)
@@ -39,7 +39,7 @@ minutes: 60
 Самые частые трёхсловные глаголы можно выучить блоками:
 - **Отношение к людям:** *look up to* (уважать), *look down on* (смотреть свысока), *stand up for* (отстаивать, защищать), *get on with* (ладить; урок 43).
 - **Терпение и безнаказанность:** *put up with* (мириться, терпеть), *get away with* (остаться безнаказанным).
-- **Идеи и планы:** *come up with* (придумать), *look forward to* (с нетерпением ждать), *get round to* (дойти до дела, дойти руки), *face up to* (признать и принять трудность), *make up for* (компенсировать), *keep up with* (не отставать от), *miss out on* (упустить возможность).
+- **Идеи и планы:** *come up with* (придумать), *look forward to* (с нетерпением ждать), *get round to* (наконец заняться, «дошли руки»), *face up to* (признать и принять трудность), *make up for* (компенсировать), *keep up with* (не отставать от), *miss out on* (упустить возможность).
 - **Запасы:** *run out of* (кончиться), *cut down on* (сократить потребление).
 
 Примеры с нюансами:
@@ -66,7 +66,7 @@ minutes: 60
 | congratulate sb **on** | I congratulated her **on passing** the exam. |
 | blame sb **for** | Don't blame me **for losing** it. |
 | think **of** | I'm thinking **of moving** to Spain. |
-| rely **on** | You can rely **on me** to keep a secret. |
+| rely **on** | We can't rely **on getting** a taxi at night. |
 
 > **Запомни.** Хотите проверить, инфинитив это или предлог? Попробуйте поставить после слова **to** существительное: *look forward to **the holiday*** — получается, значит *to* предлог, и нужна форма -ing. *I want to **the holiday*** невозможно — это инфинитив. Тот же приём работает для *object to, get used to, be committed to*.
 
@@ -105,7 +105,7 @@ minutes: 60
 - **set off**: «отправиться в путь» (*We set off at dawn*); также «запустить сигнализацию» (*The smoke set off the alarm*).
 
 ### 5а. Предлог остаётся в конце: вопросы и придаточные
-В русском предлог стоит перед вопросительным словом: «**На что** это зависит?», «**С кем** ты разговаривал?». В английском разговорной нормой считается другой порядок: предлог остаётся **при глаголе, в конце предложения**.
+В русском предлог стоит перед вопросительным словом: «**От чего** это зависит?», «**С кем** ты разговаривал?». В английском разговорной нормой считается другой порядок: предлог остаётся **при глаголе, в конце предложения**.
 - *What does it depend **on**?* (не *On what does it depend?* — так звучит книжно)
 - *Who are you waiting **for**?*
 - *What are you looking forward **to**?*
@@ -123,7 +123,7 @@ minutes: 60
 Ещё одна важная привычка: когда в английском тексте вы видите неожиданный предлог, не пропускайте его. Выпишите всю фразу целиком (*prevent someone from doing*, *congratulate someone on*), и через пару недель такие связки станут автоматическими.
 
 ### 6. Формальный и неформальный выбор
-В письме, особенно в эссе и официальных письмах, часто предпочитают односложные глаголы латинского происхождения. В разговоре — фразовые:
+В письме, особенно в эссе и официальных письмах, часто предпочитают глаголы из одного слова, обычно латинского происхождения. В разговоре — фразовые:
 
 | Разговорная речь | Письмо, формальный стиль |
 |---|---|
@@ -161,7 +161,7 @@ minutes: 60
 | run into | случайно встретить | I ran into my old teacher yesterday. | Вчера я случайно встретила старого учителя. |
 | look down on | смотреть свысока, презирать | Don't look down on people. | Не смотри на людей свысока. |
 | look up to | уважать, брать пример | He looks up to his grandfather. | Он уважает своего дедушку. |
-| get round to | дойти до дела, дойти руки | I never got round to answering. | У меня так и не дошли руки ответить. |
+| get round to | наконец заняться, «дошли руки» | I never got round to answering. | У меня так и не дошли руки ответить. |
 | face up to | признать и принять (проблему) | You must face up to the truth. | Ты должен признать правду. |
 | make up for | компенсировать, загладить | I'll make up for the lost time. | Я наверстаю потерянное время. |
 | stand up for | отстаивать, защищать | She always stands up for her friends. | Она всегда защищает друзей. |
@@ -193,10 +193,10 @@ minutes: 60
 - Tom: He did, but he insisted on practising every evening. | Извинился, но настаивал на том, чтобы репетировать каждый вечер.
 - Lena: That's so rude. He thinks he can get away with anything. | Это так грубо. Он думает, что ему всё сойдёт с рук.
 - Tom: Exactly. I've been trying to come up with a solution for a week. | Именно. Я уже неделю пытаюсь придумать решение.
-- Lena: Why don't you talk to the landlord? It depends on the contract, but he might take it over. | Почему бы тебе не поговорить с хозяином квартиры? Всё зависит от договора, но он может взяться за это.
+- Lena: Why don't you talk to the landlord? It depends on the contract, but he might back you up. | Почему бы тебе не поговорить с хозяином квартиры? Всё зависит от договора, но он может тебя поддержать.
 - Tom: Good idea. I never got round to reading my contract. | Хорошая мысль. У меня так и не дошли руки прочитать мой договор.
 - Lena: Well, face up to it: you'll have to read it. | Ну так признай это: тебе придётся его прочитать.
-- Tom: I know. I don't want to miss out on any sleep tonight! | Знаю. Я не хочу упустить ещё одну ночь сна!
+- Tom: I know. I don't want to miss out on another night's sleep! | Знаю. Я не хочу упустить ещё одну ночь сна!
 - Lena: You can rely on me. I'll help you write a letter. | Ты можешь на меня положиться. Я помогу тебе написать письмо.
 - Tom: Thanks. It turned out to be a good thing that I ran into you today. | Спасибо. Оказывается, очень хорошо, что я сегодня тебя встретил.
 - Lena: Stand up for yourself, Tom. And I'm looking forward to hearing the good news! | Постой за себя, Том. А я с нетерпением жду хороших новостей!
@@ -224,7 +224,7 @@ minutes: 60
 4. look down on :: презирать, смотреть свысока* | заглядывать вниз | заботиться о
 5. make up for :: компенсировать, загладить* | придумать | помириться
 6. turn out (It turned out to be wrong.) :: оказаться* | выключить | отказать
-7. get round to (I never got round to it.) :: дойти до дела, дойти руки* | обойти по кругу | вернуться домой
+7. get round to (I never got round to it.) :: наконец заняться, «дошли руки»* | обойти по кругу | вернуться домой
 8. pass out :: потерять сознание* | выйти на улицу | сдать экзамен
 9. face up to :: признать и принять* | поднять лицо | быть похожим
 10. miss out on :: упустить возможность* | соскучиться по | промахнуться мимо цели

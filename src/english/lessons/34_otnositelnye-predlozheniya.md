@@ -142,7 +142,7 @@ minutes: 60
 ### 11. Типичные ошибки русскоговорящих
 1. ❌ *The girl what lives here is Polish.* → ✅ **The girl who lives here is Polish.**
 2. ❌ *The film which I saw it was boring.* → ✅ **The film which I saw was boring.**
-3. ❌ *I have a friend which lives in Spain.* → ✅ **I have a friend who lives in Spain.** (о человеке лучше who; which — грубовато)
+3. ❌ *I have a friend which lives in Spain.* → ✅ **I have a friend who lives in Spain.** (which о людях не используют)
 4. ❌ *This is the man who his wife is a doctor.* → ✅ **This is the man whose wife is a doctor.**
 5. ❌ *London, that is the capital, is big.* → ✅ **London, which is the capital, is big.**
 6. ❌ *The place where we met there.* → ✅ **The place where we met.**
@@ -173,8 +173,8 @@ minutes: 60
 | borrow | брать взаймы, одалживать у кого-то | Can I borrow your pen? | Можно одолжить твою ручку? |
 | lend | одалживать кому-то | I can lend you some money. | Я могу одолжить тебе денег. |
 | invite | приглашать | We invited everyone who knows him. | Мы пригласили всех, кто его знает. |
-| repair | чинить | He repairs cars for a living. | Он чинит машины на жизнь. |
-| steal | красть | Someone stole the bike I left outside. | Кто-то украл велосипед, который я оставил снаружи. |
+| repair | чинить | He repairs cars for a living. | Он зарабатывает на жизнь ремонтом машин. |
+| steal | красть | Someone stole the bike I left outside. | Кто-то украл велосипед, который я оставил на улице. |
 | belong to | принадлежать | This bag belongs to my sister. | Эта сумка принадлежит моей сестре. |
 | introduce | представлять (знакомить) | Let me introduce my friend, who is a vet. | Позвольте представить моего друга, он ветеринар. |
 | opinion | мнение | The teacher whose opinion I trust is Mr Lee. | Учитель, чьему мнению я доверяю, — мистер Ли. |
@@ -193,12 +193,12 @@ minutes: 60
 - Ben: I don't know. I think she's the neighbour Anna told us about. | Не знаю. Думаю, это соседка, о которой нам рассказывала Анна.
 - Mia: The one who has the big dog? | Та, у которой большая собака?
 - Ben: Yes. She lives in the house where Anna grew up. | Да. Она живёт в доме, где выросла Анна.
-- Mia: That's funny. This is the party I was waiting for all week! | Забавно. Это вечеринка, которой я ждала всю неделю!
+- Mia: That's funny. This is the party I've been waiting for all week! | Забавно. Это вечеринка, которой я ждала всю неделю!
 - Ben: Everything that Anna organises is great. Did you try the cake? | Всё, что организует Анна, прекрасно. Ты пробовала торт?
 - Mia: Not yet. Which one is it? | Ещё нет. Какой из них?
 - Ben: The one that looks like a castle. It's in the kitchen. | Тот, который похож на замок. Он на кухне.
 - Mia: Wow! Let's go. I need a person who can help me cut it. | Ого! Пошли. Мне нужен человек, который поможет мне его разрезать.
-- Ben: I'm the best person you can ask. | Я лучший человек, у кого ты можешь попросить.
+- Ben: I'm the best person you can ask. | Лучше меня помощника не найти.
 
 ## Упражнения
 

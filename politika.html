@@ -421,7 +421,7 @@ button.ck:hover{border-color:var(--accent)}button.ck.on{background:var(--accent)
 .reader h1{margin:6px 0 12px;font:600 clamp(24px,4.6vw,32px)/1.25 var(--serif);text-wrap:balance}
 .reader .gist{margin:16px 0;padding:14px 18px;border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:12px;background:var(--surface)}
 .reader .gist h3{margin:0 0 6px;font:600 12px/1.2 var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
-.reader .gist p.gp{margin:.55em 0;font:400 16.5px/1.65 var(--sans)}.reader .gist p.gp:first-of-type{margin-top:0}.reader .orig{margin:6px 0 0;font:400 13.5px/1.4 var(--sans);color:var(--faint)}.trb.hot{color:var(--accent2);border-color:color-mix(in srgb,var(--accent2) 45%,var(--line))}.trb.srcn{color:var(--accent)}
+.reader .gist p.gp{margin:.55em 0;font:400 16.5px/1.65 var(--sans);overflow-wrap:break-word}.reader .gist p.gp:first-of-type{margin-top:0}.reader .orig{margin:6px 0 0;font:400 13.5px/1.4 var(--sans);color:var(--faint)}.trb.hot{color:var(--accent2);border-color:color-mix(in srgb,var(--accent2) 45%,var(--line))}.trb.srcn{color:var(--accent)}
 .trb{font:500 11px/1 var(--sans);color:var(--faint);border:1px solid var(--line);border-radius:999px;padding:2px 6px}
 .reader .gist ul{margin:0;padding-left:1.2em}.reader .gist li{margin:.45em 0;font:400 16.5px/1.6 var(--sans)}.reader .gist li::marker{color:var(--accent)}
 .readsrc{display:inline-flex;align-items:center;min-height:44px;padding:0 18px;border-radius:999px;background:var(--fg);color:var(--bg);font:600 15px var(--sans);text-decoration:none}
@@ -615,15 +615,15 @@ html.wfs-lock,html.wfs-lock body{overflow:hidden}
 .rk-t .no{color:var(--faint);font:600 12px/1 var(--mono);text-align:right}.rk-t .nm b{font-weight:600}.rk-t .nm small{display:block;color:var(--muted);font-size:12px;margin-top:1px}
 .rk-t .v{font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}.rk-bar{grid-column:2/4;height:5px;border-radius:3px;background:var(--line2);overflow:hidden}.rk-bar i{display:block;height:100%;background:color-mix(in srgb,var(--accent) 55%,transparent);border-radius:3px}
 .rk-h{margin:26px 0 4px;font:600 18px/1.2 var(--serif)}
-.rk-cnt{display:grid;grid-template-columns:7.5em 1fr 2.2em;gap:10px;align-items:center;margin:6px 0;font:400 13.5px/1.2 var(--sans)}.rk-cnt div{height:8px;border-radius:4px;background:var(--line2);overflow:hidden}.rk-cnt i{display:block;height:100%;background:var(--accent);border-radius:4px}.rk-cnt b{text-align:right;font-variant-numeric:tabular-nums}
+.rk-cnt{display:grid;grid-template-columns:11em 1fr 2.2em;gap:10px;align-items:center;margin:6px 0;font:400 13.5px/1.2 var(--sans)}.rk-cnt div{height:8px;border-radius:4px;background:var(--line2);overflow:hidden}.rk-cnt i{display:block;height:100%;background:var(--accent);border-radius:4px}.rk-cnt b{text-align:right;font-variant-numeric:tabular-nums}
 .lf-h,.lf-t{display:grid;grid-template-columns:minmax(0,1fr) 5.2em 3.6em 5.4em;gap:6px 8px;align-items:baseline}
 .lf-h{padding:6px 0;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--bg);z-index:2}.lf-h button{font:600 11px/1.2 var(--sans);color:var(--faint);text-align:right}.lf-h button:first-child{text-align:left}.lf-h button.on{color:var(--accent)}
 .lf-r{border-bottom:1px solid var(--line2);padding:9px 0 8px;font:400 13.5px/1.3 var(--sans);font-variant-numeric:tabular-nums}.lf-t>span:nth-child(n+2){text-align:right}.lf-t .nt{font-weight:600}
 .lf-bar{height:5px;border-radius:3px;background:var(--line2);margin-top:6px;overflow:hidden;position:relative}.lf-bar i{position:absolute;left:0;top:0;bottom:0;background:color-mix(in srgb,var(--accent) 30%,transparent)}.lf-bar b{position:absolute;left:0;top:0;bottom:0;background:var(--accent)}
 .scr-f{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin:10px 0}.scr-f select,.scr-f input{font:500 14px/1.2 var(--sans);padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--fg);min-width:0}.scr-b{margin:2px 0 6px}
-.scr-h{display:grid;grid-template-columns:1fr 5.6em 5.6em 3.6em;gap:6px;padding:6px 0;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--bg);z-index:2}.scr-h button{background:none;border:0;font:600 11px/1.2 var(--sans);letter-spacing:.04em;text-transform:uppercase;color:var(--faint);text-align:right;cursor:pointer;padding:0}.scr-h button:first-child{text-align:left}.scr-h button.on{color:var(--accent)}
-.scr-r{border-bottom:1px solid var(--line2)}.scr-t{display:grid;grid-template-columns:1fr 5.6em 5.6em 3.6em;gap:6px;width:100%;text-align:left;background:none;border:0;padding:9px 0;font:400 13.5px/1.3 var(--sans);color:var(--fg);cursor:pointer;align-items:baseline;font-variant-numeric:tabular-nums}.scr-t .v{text-align:right;font-weight:600;white-space:nowrap}.scr-t .v.neg{color:var(--bad,#B3402E)}.scr-t .mg{font-weight:400;color:var(--faint)}.scr-t .rg{display:block;color:var(--faint);font-size:11.5px;margin-top:1px}.scr-r.open{background:color-mix(in srgb,var(--accent) 4%,transparent)}.scr-r .wcb{padding:2px 8px 12px}
-@media(max-width:560px){.scr-h,.scr-t{grid-template-columns:1fr 6.6em 6.6em}.scr-t{font-size:12.5px}.scr-t .mg,.scr-h button:nth-child(4){display:none}}
+.scr-h{display:grid;grid-template-columns:1fr 7.4em 7.4em 3.6em;gap:6px;padding:6px 0;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--bg);z-index:2}.scr-h button{background:none;border:0;font:600 11px/1.2 var(--sans);letter-spacing:.04em;text-transform:uppercase;color:var(--faint);text-align:right;cursor:pointer;padding:0}.scr-h button:first-child{text-align:left}.scr-h button.on{color:var(--accent)}
+.scr-r{border-bottom:1px solid var(--line2)}.scr-t{display:grid;grid-template-columns:1fr 7.4em 7.4em 3.6em;gap:6px;width:100%;text-align:left;background:none;border:0;padding:9px 0;font:400 13.5px/1.3 var(--sans);color:var(--fg);cursor:pointer;align-items:baseline;font-variant-numeric:tabular-nums}.scr-t .v{text-align:right;font-weight:600;white-space:nowrap}.scr-t .v.neg{color:var(--bad,#B3402E)}.scr-t .mg{font-weight:400;color:var(--faint)}.scr-t .rg{display:block;color:var(--faint);font-size:11.5px;margin-top:1px}.scr-r.open{background:color-mix(in srgb,var(--accent) 4%,transparent)}.scr-r .wcb{padding:2px 8px 12px}
+@media(max-width:560px){.scr-h,.scr-t{grid-template-columns:1fr 7.4em 7.4em}.scr-t{font-size:12.5px}.scr-t .mg,.scr-h button:nth-child(4){display:none}}
 .wsrcd{font-size:.74rem;color:var(--faint);margin-top:12px}.wsrcd summary{cursor:pointer;opacity:.8}
 .wb{stroke:var(--surface);stroke-width:.9;vector-effect:non-scaling-stroke;fill-opacity:.88;cursor:pointer;transition:fill .35s,opacity .2s}
 .wb.hv{stroke:var(--fg);stroke-width:1.4;fill-opacity:1}.wb.sel{stroke:var(--fg);stroke-width:2.2;fill-opacity:1}
@@ -840,6 +840,10 @@ details.more{position:relative;flex:none}details.more>summary{list-style:none;cu
 .morep{position:absolute;left:0;top:calc(100% + 6px);z-index:40;min-width:240px;padding:6px;border:1px solid var(--line);border-radius:14px;background:var(--surface);box-shadow:0 12px 32px rgba(0,0,0,.18)}
 .morep a{display:flex;flex-direction:column;gap:1px;padding:9px 12px;border-radius:9px;text-decoration:none;color:var(--fg);font:500 14.5px/1.3 var(--sans)}.morep a small{font:400 12px/1.3 var(--sans);color:var(--faint)}.morep a:hover,.morep a.on{background:var(--rail)}
 @media (max-width:640px){.sub1{flex-wrap:nowrap;overflow-x:auto}.morep{position:fixed;left:12px;right:12px;top:auto;bottom:calc(84px + env(safe-area-inset-bottom,0px));min-width:0;z-index:60}.morep a{padding:12px 14px}}
+/* длинные строки в блоках кода прокручиваются внутри блока, а не обрезаются краем экрана */
+pre{overflow-x:auto;max-width:100%}
+/* подписи плиток расчётов на узком экране: длинные слова («мультипликатора») помещаются в плитку */
+@media(max-width:420px){.tile .k{font-size:11px;letter-spacing:.02em}}
 </style></head><body>
 <header class="top">
   <div class="bar">
@@ -2226,7 +2230,7 @@ var CALCS=[
     return '<div class="tiles">'+tile('NPV','<span class="'+(npv>=0?'up':'down')+'">'+money(npv)+'</span>',npv>=0?'проект создаёт стоимость':'проект разрушает стоимость')+
       tile('IRR',irr==null?'—':p1(irr),irr==null?'не найдена (проверь знаки потоков)':(irr>r?'выше ставки → принимаем':'ниже ставки'))+
       tile('Простой payback',pb==null?'не окупается':nf(pb,1)+' г.','по номинальным потокам')+
-      tile('Дисконтированный payback',dpb==null?'не окупается':nf(dpb,1)+' г.','по приведённым потокам')+
+      tile('Payback с дисконтом',dpb==null?'не окупается':nf(dpb,1)+' г.','по приведённым потокам')+
       (pi!=null?tile('PI',nf(pi,2),'PV притоков / инвестиции'):'')+'</div>'+
       mini(['Год','Поток','Коэф. дисконта','PV','Накопл. PV'],rows)+
       '<p class="note">IRR считается по номинальным датам (как ВСД в Excel). Формулы — в главе «Деньги во времени».</p>';

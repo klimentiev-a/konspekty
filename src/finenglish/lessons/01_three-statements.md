@@ -6,7 +6,7 @@ minutes: 8
 
 ## Theory
 
-> **In one minute.** The income statement (ОФР, отчёт о прибылях и убытках) shows performance over a period; the balance sheet (баланс) shows the position at a date; the cash flow statement (ОДДС, отчёт о движении денежных средств) reconciles (сверяет) profit with cash. Net income (чистая прибыль) is the link: it flows into retained earnings (нераспределённая прибыль) on the balance sheet and is the first line of cash flow from operations (операционный денежный поток). Every change you make to one statement must land on the other two, and the balance sheet must still balance.
+> **In one minute.** The income statement (P&L; ОФР, отчёт о прибылях и убытках) shows performance over a period; the balance sheet (баланс) shows the position at a date; the cash flow statement (ОДДС, отчёт о движении денежных средств) reconciles (сверяет) profit with cash. Net income (NI, чистая прибыль) is the link: it flows into retained earnings (нераспределённая прибыль) on the balance sheet and is the first line of cash flow from operations (CFO, операционный денежный поток). Every change you make to one statement must land on the other two, and the balance sheet must still balance.
 
 ## The three links
 
@@ -17,6 +17,8 @@ minutes: 8
    Capex → PP&E; new debt → Liabilities; dividends → Retained earnings ↓
 ```
 
+Abbreviations: D&A is depreciation and amortisation (амортизация), ΔNWC is the change in net working capital (изменение оборотного капитала), CFS is the cash flow statement, PP&E is property, plant and equipment (основные средства), CFI and CFF are investing and financing cash flows (инвестиционный и финансовый денежные потоки).
+
 Assets = Liabilities + Equity holds after every transaction (операция). If it does not, you have forgotten one leg of the entry (проводка).
 
 ## Walk me through: depreciation up by 10 (tax 25%)
@@ -25,7 +27,7 @@ The standard interview script, line by line.
 
 | Statement | Change | Why |
 |---|---|---|
-| Income statement | EBIT −10, tax −2.5, net income −7.5 | D&A (амортизация) is an expense before tax |
+| Income statement | EBIT (operating profit, операционная прибыль) −10, tax −2.5, net income −7.5 | D&A is an expense before tax |
 | Cash flow statement | NI −7.5, add back D&A +10, CFO +2.5, cash +2.5 | D&A is non-cash (неденежный расход); the tax saving is real |
 | Balance sheet | Cash +2.5, PP&E −10 → assets −7.5; retained earnings −7.5 → equity −7.5 | Both sides down 7.5, balances |
 
@@ -35,11 +37,11 @@ The tax shield (налоговый щит) is the only cash effect: 10 × 25% = 
 
 | Statement | Change |
 |---|---|
-| Income statement | Revenue +100, COGS +60, EBIT +40, tax +10, NI +30 |
+| Income statement | Revenue +100, COGS (cost of goods sold, себестоимость продаж) +60, EBIT +40, tax +10, NI +30 |
 | Cash flow statement | NI +30, receivables (дебиторская задолженность) +100 → −100 in ΔNWC, inventory −60 → +60; CFO −10; cash −10 |
 | Balance sheet | Cash −10, receivables +100, inventory −60 → assets +30; retained earnings +30 |
 
-Profit rose by 30 while cash fell by 10: the sale is booked under the accrual principle (принцип начисления) before the customer pays. This is why analysts compare cash conversion (конверсия прибыли в деньги) = CFO / EBITDA across years.
+Profit rose by 30 while cash fell by 10: the sale is booked under the accrual principle (принцип начисления) before the customer pays. This is why analysts compare cash conversion (конверсия прибыли в деньги) = CFO / EBITDA (earnings before interest, taxes, depreciation and amortisation; прибыль до процентов, налогов и амортизации) across years.
 
 ## Walk me through: 100 of capex financed with debt
 

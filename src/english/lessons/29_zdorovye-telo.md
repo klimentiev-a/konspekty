@@ -29,7 +29,7 @@ minutes: 60
 | throat | горло | stomach | живот, желудок |
 | leg / foot (feet) | нога / стопа | knee | колено |
 
-В английском нет разных слов для «рука» и «кисть руки» в бытовой речи: **arm** — вся рука от плеча, **hand** — кисть. Для «палец на ноге» говорят **toe**.
+По-русски «рука» — это и вся рука, и кисть, а в английском это разные слова: **arm** — вся рука от плеча, **hand** — кисть. С ногой так же: **leg** — вся нога, **foot** — стопа. Палец руки — **finger**, палец на ноге — **toe**.
 
 С частями тела в английском обычно используют **my / your / his** — не артикль: *My head hurts.* (не *The head hurts*).
 
@@ -51,7 +51,7 @@ minutes: 60
 - **backache** — боль в спине;
 - **stomach ache** — боль в животе.
 
-Они используются с глаголом **have** и артиклем: **I have a headache.** (или *I've got a headache*, см. урок 5). Все эти слова исчисляемые: *a headache*, *two headaches*.
+Они используются с глаголом **have**: **I have a headache.** (или *I've got a headache*, см. урок 5). С *headache* артикль a нужен всегда. С *toothache, earache, backache, stomach ache* в британском английском артикль можно опустить: *I have toothache* = *I have a toothache*.
 
 **Способ 3. Слово sore и pain.** **Sore** — «воспалённый, саднящий». **I have a sore throat.** — У меня болит горло (горло саднит). *My eyes are sore.* — Глаза болят. **Pain** — «боль» вообще: *I have a pain in my chest.* — У меня боль в груди. *a pain in the neck* — буквально «боль в шее», переносное значение «нудный человек, досада».
 
@@ -91,7 +91,7 @@ minutes: 60
 
 Обратите внимание на **Present Perfect**: *How long have you had it?* — «Как давно это у вас?» Вы уже знаете for / since (урок 23): *I've had a cough **for** three days. I've felt bad **since** Monday.* Можно и Present Perfect Continuous (урок 26): *How long have you been feeling like this? — I've been feeling dizzy since yesterday.*
 
-Чтобы записаться к врачу: **make an appointment** (BrE) или **book an appointment**: *I'd like to make an appointment with Dr Brown.* (о конструкции I'd like to — урок 28). Врач проверяет вас: **take your temperature** (измерить температуру), **listen to your chest** (послушать грудную клетку), **look at your throat**.
+Чтобы записаться к врачу: **make an appointment** или **book an appointment**: *I'd like to make an appointment with Dr Brown.* (о конструкции I'd like to — урок 28). Врач проверяет вас: **take your temperature** (измерить температуру), **listen to your chest** (послушать грудную клетку), **look at your throat**.
 
 В конце врач скажет, что делать: *You should stay in bed. You need to rest. Take these tablets. I'll give you a prescription.*
 
@@ -121,7 +121,7 @@ minutes: 60
 - You **shouldn't go** to work. — Вам не стоит идти на работу.
 - **Should I** take these tablets? — Мне принимать эти таблетки?
 
-**2. had better ('d better) + инфинитив без to** — «лучше бы…», совет, за которым может последовать плохой результат, если не послушаться. Звучит сильнее, чем should. Это конкретная ситуация сейчас или в ближайшем будущем, а не общий совет.
+**2. had better ('d better) + инфинитив без to** — «лучше бы…», совет с предупреждением: если не послушаться, будет плохо. Звучит сильнее, чем should. Это конкретная ситуация сейчас или в ближайшем будущем, а не общий совет.
 - You'**d better stay** in bed. — Тебе лучше остаться в постели.
 - We'**d better not wait**. — Нам лучше не ждать.
 - I'**d better go** now. — Мне пора идти.
@@ -151,7 +151,7 @@ minutes: 60
 
 ### 8. Типичные ошибки русскоговорящих
 1. ❌ *I have a pain head.* → ✅ **I have a headache. / My head hurts.**
-2. ❌ *My head is hurting me.* → ✅ **My head hurts.**
+2. ❌ *My head is ill.* → ✅ **My head hurts.** (ill говорят о человеке, а не о части тела)
 3. ❌ *I have ill.* → ✅ **I am ill.** (ill — прилагательное, нужен to be)
 4. ❌ *I drink pills.* → ✅ **I take pills.** (лекарство принимают: take)
 5. ❌ *You should to go to a doctor.* → ✅ **You should go to a doctor.**
@@ -179,7 +179,7 @@ minutes: 60
 | flu | грипп | She has the flu. | У неё грипп. |
 | temperature | температура | He has a high temperature. | У него высокая температура. |
 | runny nose | насморк | I have a runny nose. | У меня насморк. |
-| dizzy | головокружение; с кружащейся головой | I feel dizzy. | У меня кружится голова. |
+| dizzy | чувствующий головокружение | I feel dizzy. | У меня кружится голова. |
 | allergy | аллергия | I have an allergy to nuts. | У меня аллергия на орехи. |
 | hurt | болеть; ушибить | My knee hurts. | У меня болит колено. |
 | pain | боль | I have a pain in my chest. | У меня боль в груди. |
@@ -195,7 +195,7 @@ minutes: 60
 | chest | грудь, грудная клетка | The doctor listened to my chest. | Врач послушал мою грудную клетку. |
 | knee | колено | I hurt my knee at football. | Я ушибла колено на футболе. |
 | shoulder | плечо | My shoulder hurts when I swim. | Плечо болит, когда я плаваю. |
-| tooth | зуб | I need to see about my tooth. | Мне надо заняться зубом. |
+| tooth | зуб | I need to see a dentist about my tooth. | Мне надо показать зуб стоматологу. |
 | rest | отдых; отдыхать | You need to get some rest. | Тебе нужно отдохнуть. |
 | get better | поправиться | I hope you get better soon. | Надеюсь, ты скоро поправишься. |
 | plenty of | много | Drink plenty of water. | Пей много воды. |
@@ -203,7 +203,7 @@ minutes: 60
 ## Диалог
 **На приёме у врача**
 - Doctor: Good morning, Anna. Sit down, please. What seems to be the problem? | Доброе утро, Анна. Садитесь, пожалуйста. Что вас беспокоит?
-- Anna: Good morning, doctor. I don't feel well. I have a sore throat and a cough. | Доброе утро, доктор. Я плохо себя чувствую. У меня болит горло и кашель.
+- Anna: Good morning, doctor. I don't feel well. I have a sore throat and a cough. | Доброе утро, доктор. Я плохо себя чувствую. У меня болит горло, и я кашляю.
 - Doctor: How long have you had them? | Как давно это у вас?
 - Anna: For about four days. And I've got a headache, too. | Около четырёх дней. И ещё у меня болит голова.
 - Doctor: Let me take your temperature. It's 38.2. You have a temperature. Do you feel dizzy? | Давайте измерим температуру. 38,2. У вас температура. Голова кружится?

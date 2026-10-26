@@ -6,7 +6,7 @@ minutes: 8
 
 ## Theory
 
-> **In one minute.** IFRS (МСФО) is principles-based (на принципах), US GAAP (ОПБУ США) rules-based (на правилах); the logic matches, the details differ. Consolidation (консолидация) depends on control (контроль): subsidiaries (дочерние компании) are consolidated line by line with NCI (доля меньшинства); associates (ассоциированные компании, 20–50%) use the equity method (метод долевого участия); JVs likewise. Goodwill = price − fair value of net assets, tested for impairment, never amortised under IFRS.
+> **In one minute.** IFRS (МСФО) is principles-based (на принципах), US GAAP (ОПБУ США) rules-based (на правилах); the logic matches, the details differ. Consolidation (консолидация) depends on control (контроль): subsidiaries (дочерние компании) are consolidated line by line with NCI (доля меньшинства); associates (ассоциированные компании, 20–50%) use the equity method (метод долевого участия); JVs, joint ventures (совместные предприятия), likewise. Goodwill = price − fair value of net assets, tested for impairment, never amortised under IFRS.
 
 ## Perimeter of consolidation
 
@@ -17,7 +17,9 @@ Joint control (IFRS 11): joint venture → equity method; joint operation → pr
 < 20%: financial asset at fair value (FVTPL / FVOCI)
 ```
 
-Consolidation steps: add 100% of the subsidiary's lines, eliminate (исключить) intercompany balances and sales (внутригрупповые обороты), unrealised profit in inventory, the parent's investment against the subsidiary's equity; what remains is goodwill; the part of net assets not owned is NCI. Equity-accounted income is in EBIT or below depending on policy and is excluded from EBITDA by most analysts, so the stake is added separately in the EV bridge.
+IAS are the older International Accounting Standards still in force (МСФО (IAS)); FVTPL means fair value through profit or loss, FVOCI — fair value through other comprehensive income (see below).
+
+Consolidation steps: add 100% of the subsidiary's lines, eliminate (исключить) intercompany balances and sales (внутригрупповые обороты), unrealised profit in inventory, the parent's investment against the subsidiary's equity; what remains is goodwill; the part of net assets not owned is NCI. Equity-accounted income is in EBIT or below depending on policy and is excluded from EBITDA by most analysts, so the stake is added separately in the EV bridge (мост от стоимости бизнеса к стоимости акций).
 
 ## Goodwill and impairment
 
@@ -28,9 +30,11 @@ Impairment test (IAS 36) annually at cash-generating unit (CGU, единица, 
 Under US GAAP: qualitative step then quantitative; no reversal of goodwill impairment under either standard
 ```
 
-Impairment is non-cash but signals overpayment and often precedes dividend cuts or covenant pressure.
+Impairment is non-cash but signals overpayment and often precedes dividend cuts or covenant (ковенант) pressure.
 
 ## Key IFRS vs US GAAP differences
+
+FIFO and LIFO are first-in-first-out and last-in-first-out inventory methods (ФИФО и ЛИФО); ASC is the US GAAP Accounting Standards Codification; CFS, CFO and CFF are the cash flow statement and its operating and financing sections.
 
 | Area | IFRS | US GAAP |
 |---|---|---|
@@ -48,11 +52,11 @@ RAS (РСБУ) differences: tax-driven, less fair value, no consolidation requir
 
 ## Deferred taxes and other items
 
-Deferred tax liability, DTL (отложенное налоговое обязательство) arises when book value exceeds tax base (налоговая база): accelerated tax depreciation, write-ups in PPA. Deferred tax asset, DTA (отложенный налоговый актив): tax losses, provisions. DTL from PPA is debt-like only if it will reverse in cash. Provisions (резервы, IAS 37): recognised when probable and measurable; contingent liabilities (условные обязательства) only disclosed. Segment reporting (IFRS 8, сегментная отчётность): revenue and EBITDA by segment feed SOTP.
+A deferred tax liability (DTL, отложенное налоговое обязательство) arises when book value exceeds tax base (налоговая база): accelerated tax depreciation, write-ups in the PPA, purchase price allocation (распределение цены покупки). Deferred tax asset (DTA, отложенный налоговый актив): tax losses, provisions. DTL from PPA is debt-like only if it will reverse in cash. Provisions (резервы, IAS 37): recognised when probable and measurable; contingent liabilities (условные обязательства) only disclosed. Segment reporting (IFRS 8, сегментная отчётность): revenue and EBITDA by segment feed the SOTP, sum-of-the-parts valuation (оценка по частям).
 
 ## Fair value and financial instruments
 
-IFRS 9 classification: amortised cost (амортизированная стоимость), FVOCI (через прочий совокупный доход), FVTPL (через прибыль или убыток); expected credit loss, ECL (ожидаемые кредитные убытки) model with stages 1–3 for banks. Hedge accounting (учёт хеджирования) aligns derivative gains with the hedged item. Fair value hierarchy: Level 1 quoted prices, Level 2 observable inputs, Level 3 models.
+IFRS 9 classification: amortised cost (амортизированная стоимость), FVOCI (через прочий совокупный доход), FVTPL (через прибыль или убыток); the expected credit loss (ECL, ожидаемые кредитные убытки) model with stages 1–3 for banks. Hedge accounting (учёт хеджирования) aligns derivative gains with the hedged item. Fair value hierarchy: Level 1 quoted prices, Level 2 observable inputs, Level 3 models.
 
 ## Audit vocabulary
 

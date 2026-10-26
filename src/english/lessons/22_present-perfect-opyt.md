@@ -186,7 +186,7 @@ minutes: 60
 - Who **did** you **go** with? — I **went** with my sister.
 
 ### 5. Been и gone
-Это один из любимых вопросов на экзаменах. У глагола *go* есть две «третьих формы» в Present Perfect:
+Это один из любимых вопросов на экзаменах. Когда речь о поездках, в Present Perfect встречаются две похожие формы: **gone** (V3 от *go*) и **been** (V3 от *be*, здесь — «побывать»):
 
 | Фраза | Значение | Где человек сейчас |
 |---|---|---|
@@ -285,8 +285,8 @@ minutes: 60
 - Anna: Have you ever tried Polish food? | Ты когда-нибудь пробовал польскую кухню?
 - Tom: Yes, I have. It was great! I have never eaten so much soup in my life. | Да, пробовал. Было здорово! Я никогда в жизни не ел столько супа.
 - Anna: I have never been abroad on my own. Have you travelled alone? | Я никогда не ездила за границу одна. А ты путешествовал один?
-- Tom: Yes, I have. Once. It was a bit scary, but I have learnt a lot. | Да, один раз. Было немного страшно, но я многому научился.
-- Anna: My friend Kate has lived abroad. She has gone to Italy for a month. | Моя подруга Кейт жила за границей. Она уехала в Италию на месяц.
+- Tom: Yes, I have. Once. It was a bit scary, but I learnt a lot. | Да, один раз. Было немного страшно, но я многому научился.
+- Anna: My friend Kate has lived abroad. Now she has gone to Italy for a month. | Моя подруга Кейт жила за границей. А сейчас она уехала в Италию на месяц.
 - Tom: Has she come back yet? | Она уже вернулась?
 - Anna: No, she hasn't. She has gone to a small island near Naples. | Нет, ещё нет. Она уехала на маленький остров недалеко от Неаполя.
 - Tom: Wow! Have you ever been on an island? | Ого! А ты когда-нибудь была на острове?
@@ -341,11 +341,11 @@ minutes: 60
 7. I have never seen this film ___. :: before* | ago | yesterday
 8. They have been to Greece ___. :: tomorrow | twice* | next year
 
-### Упражнение 5. Составь вопрос и ответ
+### Упражнение 5. Составь вопрос
 Переведи вопрос на английский.
 1. Ты когда-нибудь был в Лондоне? => Have you ever been to London?
 2. Она когда-нибудь пробовала суши? => Has she ever tried sushi? / Has she ever eaten sushi?
-3. Вы когда-нибудь видели этот фильм? => Have you ever seen this film? / Have you ever seen that film?
+3. Вы когда-нибудь видели этот фильм? => Have you ever seen this film? / Have you ever seen that film? / Have you ever watched this film?
 4. Он когда-нибудь ездил верхом? => Has he ever ridden a horse? / Has he ever ridden horses?
 5. Они когда-нибудь выигрывали? => Have they ever won?
 6. Ты когда-нибудь терял паспорт? => Have you ever lost your passport?
@@ -388,7 +388,7 @@ minutes: 60
 1. I have saw that film. :: I have seen that film.* | I has seen that film. | I have see that film.
 2. She have been to Paris. :: She has been to Paris.* | She is been to Paris. | She had be to Paris.
 3. Did you ever been to Italy? :: Did you ever go Italy? | Have you ever been to Italy?* | Are you ever been to Italy?
-4. I haven't never eaten sushi. :: I haven't ever eaten sushi.* | I haven't never ate sushi. | I not have never eaten sushi.
+4. I haven't never eaten sushi. :: I have never eaten sushi.* | I haven't never ate sushi. | I not have never eaten sushi.
 5. He has gone to Rome three times. :: He has been to Rome three times.* | He has went to Rome three times. | He was gone to Rome three times.
 
 ## Вместе

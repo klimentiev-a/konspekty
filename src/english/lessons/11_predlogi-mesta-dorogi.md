@@ -16,7 +16,7 @@ minutes: 60
 ## Теория
 
 ### 1. Три главных предлога места: in, on, at
-Вопрос «Где?» по-английски — **Where?** Ответ почти всегда начинается с предлога. Три самых частых: **in**, **on**, **at**. Представьте их так:
+Вопрос «Где?» по-английски — **Where?** Ответ почти всегда начинается с предлога. Три самых частых: **in**, **on**, **at**. Представь их так:
 
 - **in** — «внутри» чего-то: в комнате, в городе, в стране, в коробке. Пространство вокруг.
 - **on** — «на поверхности»: на столе, на стене, на полу, на этаже, на улице.
@@ -28,7 +28,7 @@ minutes: 60
 | **on** | поверхность, линия, этаж, улица | on the table, on the wall, on the floor, on the second floor, on the left, on Oxford Street |
 | **at** | точка, место встречи, адрес с номером | at home, at school, at work, at the station, at the bus stop, at the door, at 10 Baker Street |
 
-Обратите внимание на устойчивые выражения — их лучше просто запомнить:
+Обрати внимание на устойчивые выражения — их лучше просто запомнить:
 - **at home, at school, at work, at university** — без артикля.
 - **in the car, in a taxi**, но **on the bus, on the train, on the plane** — в общественном транспорте, где можно встать и пройтись, говорят *on*.
 - **on the left / on the right** — слева / справа: *The bank is on the left.*
@@ -36,7 +36,7 @@ minutes: 60
 - **in bed** — в постели, **in the picture** — на картинке, **on the page** — на странице.
 - **on the corner** — на углу (снаружи, на перекрёстке улиц); **in the corner** — в углу комнаты.
 
-> **Запомни.** Русское «в» и «на» не совпадают с in / on / at. Мы говорим «в школе», а англичанин скажет *at school*. Мы говорим «на этаже» — по-английски *on the floor*. Не переводите предлог слово в слово, а запоминайте целую модель.
+> **Запомни.** Русское «в» и «на» не совпадают с in / on / at. Мы говорим «в школе», а англичанин скажет *at school*. Мы говорим «на вокзале» — по-английски *at the station*; «в автобусе» — *on the bus*. Не переводи предлог слово в слово, а запоминай целую модель.
 
 ### 2. Где что находится: предлоги расположения
 Это самые нужные слова для рассказа о доме и городе.
@@ -78,16 +78,16 @@ minutes: 60
 | **up / down** | вверх / вниз | Go up the stairs. Walk down the hill. |
 | **round / around** | вокруг, за угол | Walk round the corner. |
 
-Разница между **at** и **to**: *I am at school* (я нахожусь в школе — место), но *I go to school* (я иду в школу — направление). Сравните: *She is at home* и *She goes home* — после **go / come / get** слово **home** употребляется **без предлога**: ❌ *I go to home* → ✅ *I go home*.
+Разница между **at** и **to**: *I am at school* (я нахожусь в школе — место), но *I go to school* (я иду в школу — направление). Сравни: *She is at home* и *She goes home* — после **go / come / get** слово **home** употребляется **без предлога**: ❌ *I go to home* → ✅ *I go home*.
 
-Глагол **arrive** (прибывать) требует разных предлогов: **arrive in** + город или страна (*We arrive in London*), **arrive at** + более «точечное» место — вокзал, аэропорт, отель, дом (*We arrive at the station*). А вот *get to* подходит всегда: *I get to work at nine.*
+Глагол **arrive** (прибывать) требует разных предлогов: **arrive in** + город или страна (*We arrive in London*), **arrive at** + более «точечное» место — вокзал, аэропорт, отель, дом (*We arrive at the station*). А вот *get to* подходит почти всегда: *I get to work at nine.* (Но *get home* — без to.)
 
 Как добираться: **by** + транспорт без артикля — *by bus, by car, by train, by plane, by taxi, by bike*. Пешком — **on foot**: *I go to work on foot.*
 
-> **Важно.** **By** называет способ передвижения: *I go by bus*. А когда вы находитесь внутри транспорта, говорят **on the bus**: *I'm on the bus* (я сейчас в автобусе). Сравните: *I go to work by bus* и *I'm on the bus now.*
+> **Важно.** **By** называет способ передвижения: *I go by bus*. А когда ты находишься внутри транспорта, говорят **on the bus**: *I'm on the bus* (я сейчас в автобусе). Сравни: *I go to work by bus* и *I'm on the bus now.*
 
 ### 4. Как спросить дорогу
-Начинайте всегда вежливо: **Excuse me** («Извините»). Фразы для вопросов:
+Начинай всегда вежливо: **Excuse me** («Извините»). Фразы для вопросов:
 
 - **Excuse me, where is the station?** — Извините, где вокзал?
 - **How do I get to the post office?** — Как мне добраться до почты?
@@ -97,7 +97,7 @@ minutes: 60
 - **Is it far from here?** — Это далеко отсюда?
 - **I'm lost.** — Я заблудился. **I'm looking for the library.** — Я ищу библиотеку.
 
-В chemist's (британский вариант) на конце стоит апостроф и s — «аптека»; в американском английском аптеку называют *pharmacy* или *drugstore*.
+**Chemist's** (британское «аптека») пишется с апострофом: это сокращение от *the chemist's shop* («лавка аптекаря»). В американском английском аптеку называют *pharmacy* или *drugstore*.
 
 ### 5. Как объяснить дорогу
 Здесь работает повелительное наклонение (урок 7): глагол без подлежащего.
@@ -120,7 +120,7 @@ minutes: 60
 Отрицание тоже по уроку 7: **Don't turn left here.** — «Не поворачивайте здесь налево». Ответ на благодарность: **You're welcome.** или **No problem.**
 
 ### 6. Как описать место подробнее
-Чтобы указать точный адрес или положение, соединяйте предлоги в цепочку. Порядковые числа из урока 10 здесь очень полезны: *the first street on the left, the second turning on the right, the third floor.*
+Чтобы указать точный адрес или положение, соединяй предлоги в цепочку. Порядковые числа из урока 10 здесь очень полезны: *the first street on the left, the second turning on the right, the third floor.*
 
 - **on the corner of Green Street and High Street** — на углу улиц Грин-стрит и Хай-стрит;
 - **at the end of the road** — в конце дороги;
@@ -143,7 +143,7 @@ minutes: 60
 10. ❌ *I go by the bus.* → ✅ **I go by bus.** (без артикля)
 
 ### 8. Произношение
-- **through** — [θruː], как «срУ» с языком между зубами; **thought** — другое слово!
+- **through** — [θruː]: кончик языка между зубами, затем «ру»; не путай с **thought** [θɔːt] — это другое слово!
 - **opposite** — [ˈɒpəzɪt], ударение на первый слог: «ОП-а-зит».
 - **between** — [bɪˈtwiːn], ударение на второй слог: «би-ТВИН».
 - **chemist's** — [ˈkemɪsts], буква *ch* читается как «к».
@@ -159,7 +159,7 @@ minutes: 60
 | station | вокзал, станция | The station is far from here. | Вокзал далеко отсюда. |
 | bus stop | автобусная остановка | I wait at the bus stop. | Я жду на остановке. |
 | library | библиотека | The library is opposite the park. | Библиотека напротив парка. |
-| museum | музей | We visit the museum on Sunday. | Мы ходим в музей в воскресенье. |
+| museum | музей | We visit the museum on Sundays. | Мы ходим в музей по воскресеньям. |
 | park | парк | The park is behind the school. | Парк позади школы. |
 | hospital | больница | My aunt works in a hospital. | Моя тётя работает в больнице. |
 | bridge | мост | Walk across the bridge. | Перейдите мост. |
@@ -197,8 +197,10 @@ minutes: 60
 - Emma: Yes, there is. It's opposite the museum, between the chemist's and the cafe. | Да. Он напротив музея, между аптекой и кафе.
 - Ben: Thank you very much. Is there a bus stop near here? | Большое спасибо. Здесь рядом есть автобусная остановка?
 - Emma: Yes, it's at the end of the street, on the corner. You can't miss it. | Да, она в конце улицы, на углу. Вы не пропустите.
-- Ben: Do I go to the museum by bus or on foot? | Мне ехать в музей на автобусе или идти пешком?
-- Emma: On foot. It's quicker. You're welcome! | Пешком. Так быстрее. Не за что!
+- Ben: Is it better to go to the museum by bus or on foot? | В музей лучше ехать на автобусе или идти пешком?
+- Emma: On foot. It's quicker. | Пешком. Так быстрее.
+- Ben: Thanks again! | Ещё раз спасибо!
+- Emma: You're welcome! | Не за что!
 
 ## Упражнения
 
@@ -269,7 +271,7 @@ minutes: 60
 7. You can't ___ it. (не пропустите) => miss
 8. ___ turn left here! (не поворачивайте) => don't / do not
 
-### Упражнение 7. Повторение: уроки 5, 7, 8 и 10
+### Упражнение 7. Повторение: уроки 5–8 и 10
 Выбери верный вариант.
 1. ___ there a supermarket near here? :: Are | Is* | Has
 2. There ___ two banks in this street. :: is | are* | have
@@ -277,7 +279,7 @@ minutes: 60
 4. ___ you tell me the way to the park? :: Can* | Do | Are
 5. She ___ got a map. :: have | is | has*
 6. I can't find ___ keys. (его) :: he | him | his*
-7. Be quiet! I ___ for the right street. :: am looking* | look | looks
+7. Wait a minute! I ___ for the right street. :: am looking* | look | looks
 8. ___ turn right here! It's the wrong way. :: Not | Don't* | No
 9. The museum opens ___ 10 a.m. :: in | on | at*
 10. The library is closed ___ Sunday. :: in | on* | at

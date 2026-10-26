@@ -38,7 +38,7 @@ minutes: 60
 
 > **Запомни.** Число **40** пишется **forty** (без u!), а не *fourty*. Но **14** — **fourteen**, с u. Ещё две частые ловушки: **15 — fifteen** (не *fiveteen*) и **50 — fifty** (не *fivety*); **13 — thirteen**, **30 — thirty**, **18 — eighteen**, **80 — eighty**.
 
-**-teen или -ty?** Эти окончания легко перепутать на слух. В числах на **-teen** (13–19) ударение падает на конец слова: thir**TEEN**, four**TEEN**. В числах на **-ty** (30–90) ударение стоит в начале: **THIR**ty, **FOR**ty. Если вам диктуют телефон или цену — переспрашивайте: *Thirteen or thirty?*
+**-teen или -ty?** Эти окончания легко перепутать на слух. В числах на **-teen** (13–19) ударение падает на конец слова: thir**TEEN**, four**TEEN**. В числах на **-ty** (30–90) ударение стоит в начале: **THIR**ty, **FOR**ty. Если тебе диктуют телефон или цену — переспрашивай: *Thirteen or thirty?*
 
 ### 2. Большие числа
 - **100** — a hundred / one hundred
@@ -90,13 +90,13 @@ minutes: 60
 
 Слово **o'clock** используем **только** для ровного часа: *It's nine o'clock.* Нельзя сказать *It's ten past nine o'clock*.
 
-> **Осторожно, русская ловушка.** По-русски «половина седьмого» — это 6:30: мы называем **следующий** час. По-английски 6:30 — *half past six*, то есть «половина после шести»: называется час, который **уже прошёл**. Поэтому не переводите «половина восьмого» слово в слово, а считайте по часам: 7:30 = **half past seven**, а 6:30 = **half past six**.
+> **Осторожно, русская ловушка.** По-русски «половина седьмого» — это 6:30: мы называем **следующий** час. По-английски 6:30 — *half past six*, то есть «половина после шести»: называется час, который **уже прошёл**. Поэтому не переводи «половина восьмого» слово в слово, а считай по часам: 7:30 = **half past seven**, а 6:30 = **half past six**.
 
 Есть и **цифровой** способ, он проще и тоже совершенно нормален: 7:40 — *seven forty*, 7:05 — *seven oh five*, 9:15 — *nine fifteen*. Так говорят особенно часто в расписаниях: *The train leaves at 10:45 (ten forty-five).*
 
 Чтобы отличить утро от вечера, добавляют **a.m.** (с полуночи до полудня) и **p.m.** (с полудня до полуночи): *8 a.m.* — восемь утра, *8 p.m.* — восемь вечера. Ещё два полезных слова: **noon** (полдень, 12:00) и **midnight** (полночь).
 
-Вопрос о времени события: **What time does the lesson start?** — **It starts at nine.** Обратите внимание на структуру Present Simple из уроков 3–4: *What time does she get up? What time do you have lunch?*
+Вопрос о времени события: **What time does the lesson start?** — **It starts at nine.** Обрати внимание на структуру Present Simple из уроков 3–4: *What time does she get up? What time do you have lunch?*
 
 ### 5. Дни недели, месяцы, времена года
 Дни недели и месяцы **всегда пишутся с большой буквы**, в отличие от русского.
@@ -108,7 +108,7 @@ minutes: 60
 Вопросы: **What day is it today?** — *It's Thursday.* **What's the date today?** — *It's the twelfth of October.* **When is your birthday?** — *It's on the third of March.*
 
 ### 6. Даты: как писать и как читать
-В британском английском день идёт **перед** месяцем: **5 May 2025** или **5th May 2025**. Читаем: *the fifth of May, twenty twenty-five*. Допустимо и *May the fifth*. В американском английском порядок другой — месяц, потом день: *May 5, 2025*. Поэтому запись **03/04/2025** в Великобритании означает 3 апреля, а в США — 4 марта. Если вы пишете иностранцу, лучше назвать месяц словом.
+В британском английском день идёт **перед** месяцем: **5 May 2025** или **5th May 2025**. Читаем: *the fifth of May, twenty twenty-five*. Допустимо и *May the fifth*. В американском английском порядок другой — месяц, потом день: *May 5, 2025*. Поэтому запись **03/04/2025** в Великобритании означает 3 апреля, а в США — 4 марта. Если пишешь иностранцу, лучше назови месяц словом.
 
 **Годы читают парами цифр:**
 - 1999 — *nineteen ninety-nine*
@@ -130,7 +130,7 @@ minutes: 60
 - Часть суток — **in the morning**, но **at night**. А если указан день, то **on**: *on Monday morning, on Friday evening*.
 - **At the weekend** — британский вариант. Американцы говорят *on the weekend*.
 - Если в выражении есть **this, next, last, every, today, tomorrow, yesterday**, предлог **не нужен**: *next Monday, last year, every day, this evening, tomorrow morning*. Нельзя сказать *on next Monday* или *in tomorrow*.
-- Рабочие дни и выходные во множественном числе: *on weekdays, on Sundays* (по воскресеньям).
+- Для повторяющихся дней — множественное число: *on weekdays* (по будням), *on Sundays* (по воскресеньям).
 
 ### 8. Типичные ошибки русскоговорящих
 1. ❌ *I was born at 1998.* → ✅ **in 1998.** (год — in)
@@ -142,7 +142,7 @@ minutes: 60
 7. ❌ *Two hundreds books.* → ✅ **two hundred books.**
 8. ❌ *Today is the 5 of May.* → ✅ **the fifth of May** (порядковое число и the).
 9. ❌ *Now is five o'clock.* → ✅ **It's five o'clock.**
-10. ❌ *It's half seven* (когда хотели сказать «половина седьмого», 6:30) → ✅ **It's half past six.**
+10. ❌ *It's half seven* (когда хотели сказать «половина седьмого», 6:30) → ✅ **It's half past six.** (В Британии *half seven* — разговорное «7:30».)
 
 ### 9. Продолжительность и частота
 Чтобы сказать, когда что-то начинается и заканчивается, используем **from … to …**: *The shop is open from nine to six. The lesson is from half past nine to half past ten.* Вопрос о длительности: **How long is the lesson?** — *It's one hour.* (Конструкция *How long* ещё раз встретится дальше в курсе.)
@@ -182,7 +182,7 @@ minutes: 60
 | meeting | встреча, совещание | The meeting is on Monday. | Встреча в понедельник. |
 | lesson | урок | The lesson starts at ten. | Урок начинается в десять. |
 | start | начинаться, начинать | The film starts at eight. | Фильм начинается в восемь. |
-| finish | заканчиваться, заканчивать | School finishes at three. | Школа заканчивается в три. |
+| finish | заканчиваться, заканчивать | School finishes at three. | Уроки в школе заканчиваются в три. |
 | early | рано | I get up early. | Я встаю рано. |
 | free | свободный | Are you free on Friday? | Ты свободна в пятницу? |
 
@@ -216,7 +216,7 @@ minutes: 60
 7. 76 => seventy-six / seventy six
 8. 100 => one hundred / a hundred
 9. 1000 => one thousand / a thousand
-10. 205 => two hundred and five / two hundred five / two hundred and 5
+10. 205 => two hundred and five / two hundred five
 
 ### Упражнение 2. Порядковые числительные
 Выбери правильное слово.

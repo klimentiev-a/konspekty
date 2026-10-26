@@ -6,7 +6,7 @@ theme: yes
 minutes: 60
 
 ## Цели
-- Пройти по-английски все этапы поездки: регистрация, security, паспортный контроль, посадка, прибытие.
+- Пройти по-английски все этапы поездки: регистрация, досмотр (security), паспортный контроль, посадка, прибытие.
 - Купить железнодорожный билет и узнать расписание: single / return, platform, timetable.
 - Забронировать номер, оформить заезд и выезд в отеле, задать вопросы администратору.
 - Вежливо просить и спрашивать: I'd like…, Could I have…?, Is there…?, How long does it take?
@@ -153,7 +153,7 @@ minutes: 60
 ### 8. Рассказываем о поездке (повторение Past Simple)
 Мы часто рассказываем о поездках в прошедшем времени, и тут пригодятся неправильные глаголы: **fly – flew** (лететь), **take – took**, **get – got**, **lose – lost**, **leave – left**, **buy – bought**, **see – saw**.
 
-*Last summer we flew to Rome. Our flight was delayed for two hours, but we didn't mind. We took a taxi from the airport to the hotel and checked in at six o'clock. On the second day we visited the Colosseum and had a lot of fun. Unfortunately, on the last day I lost my phone, but a kind waiter found it.*
+*Last summer we flew to Rome. Our flight was delayed by two hours, but we didn't mind. We took a taxi from the airport to the hotel and checked in at six o'clock. On the second day we visited the Colosseum and had a lot of fun. Unfortunately, on the last day I lost my phone, but a kind waiter found it.*
 
 А если случилась неприятность, воспользуйся такими фразами:
 - **Our flight was cancelled.** — Наш рейс отменили.
@@ -182,7 +182,7 @@ minutes: 60
 | luggage | багаж | I have a lot of luggage. | У меня много багажа. |
 | suitcase | чемодан | My suitcase is very heavy. | Мой чемодан очень тяжёлый. |
 | hand luggage | ручная кладь | I have only hand luggage. | У меня только ручная кладь. |
-| departures | вылет, зал вылета | Departures are on the first floor. | Зал вылета на первом этаже. |
+| departures | вылет, зал вылета | Departures are upstairs. | Зал вылета наверху. |
 | arrivals | прилёт, зал прилёта | I'll wait for you in arrivals. | Я буду ждать тебя в зале прилёта. |
 | delay | задержка; задерживать | There is a delay of one hour. | Задержка составляет один час. |
 | passenger | пассажир | All passengers must wait here. | Всем пассажирам нужно ждать здесь. |
@@ -277,7 +277,7 @@ minutes: 60
 5. I have a lot of ___. :: luggages | a luggage | luggage*
 6. She is ___ holiday in Spain. :: in | on* | at
 7. Our flight was ___ because of the fog. :: delay | delayed* | delaying
-8. I lost my ticket, so I ___ the train. :: missed* | arrived | booked
+8. I got up late, so I ___ the train. :: missed* | arrived | booked
 
 ### Упражнение 6. Переведи на английский
 Переведи фразу так, как сказал бы вежливый путешественник. Можно использовать любой из верных вариантов.

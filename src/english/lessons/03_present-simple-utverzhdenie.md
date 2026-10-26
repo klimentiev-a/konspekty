@@ -93,7 +93,7 @@ Present Simple используем, когда говорим:
 3. В отрицании используйте **don't / doesn't** вместо «no» перед глаголом: ❌ *I no speak English* → ✅ *I don't speak English.*
 
 ### 7. Сравнение: to be и обычные глаголы
-Не забывай, что в одном предложении может быть только один глагол «основной»:
+В простом предложении не ставят рядом **am / is / are** и обычный глагол: либо to be, либо обычный глагол:
 
 | С to be | С обычным глаголом |
 |---|---|
@@ -176,7 +176,7 @@ Present Simple используем, когда говорим:
 | breakfast | завтрак | We have breakfast at eight. | Мы завтракаем в восемь. |
 | weekend | выходные | I relax at the weekend. | Я отдыхаю на выходных. |
 | every day | каждый день | They study every day. | Они учатся каждый день. |
-| homework | домашнее задание | The children do homework. | Дети делают домашнее задание. |
+| homework | домашнее задание | The children do their homework. | Дети делают домашнее задание. |
 | music | музыка | I love music. | Я люблю музыку. |
 
 ## Диалог
@@ -236,7 +236,7 @@ Present Simple используем, когда говорим:
 7. You know Tom. => You don't know Tom. / You do not know Tom.
 8. The shop opens at seven. => The shop doesn't open at seven. / The shop does not open at seven.
 
-### Упражнение 4. Do, does, don't или doesn't?
+### Упражнение 4. Don't, doesn't или isn't / aren't?
 Выбери нужное слово.
 1. My brother ___ like fish. :: don't | doesn't* | isn't
 2. We ___ live in London. :: doesn't | aren't | don't*
@@ -253,7 +253,7 @@ Present Simple используем, когда говорим:
 2. He work in a bank. :: He working in a bank. | He is work in a bank. | He works in a bank.*
 3. My sister studys English. :: My sister studies English.* | My sister study English. | My sister studyes English.
 4. They doesn't live here. :: They doesn't lives here. | They don't live here.* | They no live here.
-5. I am work in a school. :: I am working in a school. | I work in a school.* | I works in a school.
+5. I am work in a school. :: I working in a school. | I work in a school.* | I works in a school.
 6. He haves a dog. :: He has a dog.* | He have a dog. | He haves got a dog.
 
 ### Упражнение 6. Переведи на английский

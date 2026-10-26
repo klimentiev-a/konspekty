@@ -45,7 +45,7 @@ minutes: 60
 > **Запомни главное правило.** В отрицании и вопросе **смысловой глагол остаётся в начальной форме** там, где есть do/does/did: *Did she go?* (не *Did she went?*), *She doesn't work* (не *works*). В Present Perfect после have/has стоит **V3**: *Has she gone?*
 
 ### 3. Как выбрать время: пять вопросов
-1. **Есть ли в предложении точное время в прошлом** (yesterday, ago, last year, in 2019, когда в вопросе *When did…*)? → **Past Simple**.
+1. **Есть ли в предложении точное время в прошлом** (yesterday, ago, last year, in 2019, вопрос *When…?*)? → **Past Simple**.
 2. **Действие происходит прямо сейчас** (now, at the moment, Look!)? → **Present Continuous**.
 3. **Это повторяется, это факт?** (always, usually, every day) → **Present Simple**.
 4. **Событие связано с настоящим** (опыт, результат, ситуация длится: ever, never, just, already, yet, for, since)? → **Present Perfect**.
@@ -125,7 +125,7 @@ minutes: 60
 | **don't have to** | не обязан, не нужно | You don't have to come. |
 | **mustn't** | нельзя, запрещено | You mustn't smoke here. |
 | **should** | следует, советую | You should see a doctor. |
-| **may / might** | возможно (50 на 50) | It might rain. |
+| **may / might** | возможно, может быть (не уверен) | It might rain. |
 | **may** | разрешение (вежливо) | May I come in? |
 
 После модального глагола — **инфинитив без to** и без окончания -s: *She can swim. He must go. It might rain.* Прошедшее время для must и have to — **had to**: *I had to wait.* (На must нет формы *musted*.)
@@ -157,8 +157,8 @@ minutes: 60
 14. ❌ *I'm agree.* → ✅ **I agree.**
 15. ❌ *Yesterday I was go to the shop.* → ✅ **Yesterday I went to the shop.** (was не соединяется с V1)
 
-### 11. Чек-лист самопроверки
-Перед тестом спросите себя:
+### 11. Проверь себя перед тестом
+Спросите себя:
 - Могу ли я назвать 10 неправильных глаголов в трёх формах без шпаргалки?
 - Объясню ли я разницу между *I saw* и *I have seen*?
 - Знаю ли я, когда нужен for, а когда since?
@@ -215,7 +215,7 @@ minutes: 60
 
 ## Упражнения
 
-### Упражнение 1. Формы неправильных глаголов
+### Упражнение 1. Формы глаголов
 Напиши нужную форму глагола (V2 — Past Simple, V3 — причастие).
 1. go (V2) ___ => went
 2. go (V3) ___ => gone
@@ -333,7 +333,7 @@ minutes: 60
 ## Вместе
 Повторите вдвоём всё, что выучили за блок.
 
-**Задание 1. Цепочка времён.** Возьмите один глагол (например, *go*) и по очереди называйте предложения во всех временах: *I go to work every day. I'm going to work now. I went to work yesterday. I was going to work when it started to rain. I have gone to work. I will go to work tomorrow. I'm going to go to work next week.* Потом то же самое с глаголами *eat*, *see*, *write*. Кто сбился или назвал неправильную форму V2/V3 — теряет очко.
+**Задание 1. Цепочка времён.** Возьмите один глагол (например, *go*) и по очереди называйте предложения во всех временах: *I go to work every day. I'm going to work now. I went to work yesterday. I was going to work when it started to rain. I have never gone to work by taxi. I will go to work tomorrow. I'm going to go to work next week.* Потом то же самое с глаголами *eat*, *see*, *write*. Кто сбился или назвал неправильную форму V2/V3 — теряет очко.
 
 **Задание 2. Расскажи о неделе.** Каждый готовит рассказ на 8–10 предложений о прошлых выходных (Past Simple, Past Continuous), о том, что уже сделано на этой неделе (Present Perfect: *I have already…, I haven't… yet*) и о планах (going to, Present Continuous). Партнёр слушает и задаёт по 3 вопроса в разных временах: *Where did you go? What were you doing at 8? Have you finished the report yet? What are you going to do on Sunday?*
 

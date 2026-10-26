@@ -15,7 +15,7 @@ minutes: 60
 ## Теория
 
 ### 1. Как работать с этим уроком
-Это урок-повторение. Читайте таблицы как справочник: если какая-то строка кажется незнакомой — вернитесь к нужному уроку (номер указан в скобках). Затем выполните упражнения «вслепую», не подглядывая. Ошибки смотрите в разделе 12, там они сгруппированы по темам.
+Это урок-повторение. Читай таблицы как справочник: если какая-то строка кажется незнакомой — вернись к нужному уроку (номер указан в скобках). Затем выполни упражнения «вслепую», не подглядывая. Типичные ошибки — в разделе 12, там они сгруппированы по темам.
 
 ### 2. Глагол to be (урок 1)
 | Лицо | Утверждение | Отрицание | Вопрос |
@@ -90,7 +90,7 @@ minutes: 60
 
 - Притяжательное стоит **перед существительным**: *my book*. Самостоятельное стоит **без существительного**: *This book is mine.* Нельзя сказать *this is mine book*.
 - Объектное местоимение стоит **после глагола или предлога**: *I love him. Look at them. Come with us.*
-- **'s** обозначает принадлежность: *Anna's bag, my brother's car*. Если существительное во множественном числе на -s — только апостроф: *my parents' house*. Не путайте **it's** (= it is) и **its** (принадлежность): *It's a dog. Its tail is long.*
+- **'s** обозначает принадлежность: *Anna's bag, my brother's car*. Если существительное во множественном числе на -s — только апостроф: *my parents' house*. Не путай **it's** (= it is) и **its** (принадлежность): *It's a dog. Its tail is long.*
 - Вопрос **Whose …?** — «чей?»: *Whose bag is this? — It's Anna's. / It's mine.*
 
 ### 7. Can и повелительное наклонение (урок 7)
@@ -162,7 +162,7 @@ minutes: 60
 20. ❌ *He goes often to the cinema.* → ✅ **He often goes to the cinema.**
 
 ### 13. Как оценить результат
-Выполните все упражнения и мини-тест. Если вы сделали **меньше 3 ошибок** из 10 в тесте и не больше 8–10 ошибок во всех упражнениях — вы готовы к блоку 2 «Прошлое и будущее». Если ошибок больше, вернитесь к тем разделам теории, где вы ошибались. Чаще всего источник ошибок — to be, Present Simple, артикли и предлоги.
+Выполни все упражнения и мини-тест. Если в тесте **меньше 3 ошибок** из 10, а во всех упражнениях не больше 8–10 — ты готова к блоку 2 «Прошлое и будущее». Если ошибок больше, вернись к тем разделам теории, где были ошибки. Чаще всего источник ошибок — to be, Present Simple, артикли и предлоги.
 
 ## Слова
 | English | Перевод | Пример | Перевод примера |
@@ -202,7 +202,7 @@ minutes: 60
 - Kate: Thanks, Tom. It's very nice. How many rooms are there? | Спасибо, Том. Очень мило. Сколько здесь комнат?
 - Tom: There are three rooms and a small kitchen. | Три комнаты и маленькая кухня.
 - Kate: Have you got a lot of furniture? | У тебя много мебели?
-- Tom: No, I haven't. I've got only a bed, a table and two chairs. | Нет. У меня только кровать, стол и два стула.
+- Tom: No, I haven't. I've only got a bed, a table and two chairs. | Нет. У меня только кровать, стол и два стула.
 - Kate: Whose guitar is that? | Чья это гитара?
 - Tom: It's my brother's. He plays it every evening, but he can't sing! | Это гитара моего брата. Он играет на ней каждый вечер, но не умеет петь!
 - Kate: Is he at home now? | Он сейчас дома?
@@ -273,7 +273,7 @@ minutes: 60
 3. There is a bank here. (вопрос) => Is there a bank here?
 4. They are playing football. (вопрос) => Are they playing football?
 5. We have got a car. (вопрос) => Have we got a car?
-6. He works on Saturday. (отрицание) => He doesn't work on Saturday. / He does not work on Saturday.
+6. He works on Saturdays. (отрицание) => He doesn't work on Saturdays. / He does not work on Saturdays.
 7. I can drive. (отрицание) => I can't drive. / I cannot drive. / I can not drive.
 8. She is reading. (отрицание) => She isn't reading. / She is not reading. / She's not reading.
 9. There are some apples. (отрицание) => There aren't any apples. / There are not any apples. / There are no apples.

@@ -9,3 +9,11 @@
 .settings-pop .sp-link[href*="Guide"] { display:none !important; }
 /* таблицы StockAI: скрытые подписи для экранного диктора (.ai-sr-only, position:absolute) вылезали за прокручиваемую обёртку и давали горизонтальную прокрутку всей страницы на телефоне */
 .ai-table-wrap{position:relative}
+
+/* Таблицы фонда (СЧА по датам, «нет опубликованной истории») стоят без обёртки .ai-table-wrap —
+   на телефоне растягивали страницу вбок. Прокручиваем их внутри панели. */
+.ssr-panel > table.ai-company-table,.ssr-panel details > table.ai-company-table{display:block;max-width:100%;min-width:0 !important;overflow-x:auto}
+.ui-fund-detail-charts > *{min-width:0}
+
+/* Карточка фонда на телефоне: длинные значения («Недвижимость») вылезали из узкой клетки при 23px */
+@media (max-width: 420px) { .ui-facts strong { font-size: 18px; overflow-wrap: break-word; } }

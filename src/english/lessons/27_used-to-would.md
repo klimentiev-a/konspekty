@@ -193,7 +193,7 @@ Past Simple тоже говорит о прошлом, и во многих пр
 7. I ___ coffee, but now I love it. :: didn't used to like | didn't use to like* | not use to like
 8. We ___ here twice last year. :: used to be | were* | would be
 
-### Упражнение 3. Be used to или get used to?
+### Упражнение 3. После be used to и get used to
 Впиши глагол в скобках в форме -ing или существительное, как требуется.
 1. I'm used to ___ (get up) early. => getting up
 2. It took me a month to get used to ___ (drive) on the left. => driving
@@ -220,7 +220,8 @@ Past Simple тоже говорит о прошлом, и во многих пр
 2. Did you used to smoke? :: Did you using to smoke? | Did you use to smoke?* | Do you used to smoke?
 3. I'm used to get up early. :: I'm used to getting up early.* | I'm used to gets up early. | I used to getting up early.
 4. She didn't used to like tea. :: She not used to like tea. | She didn't use to like tea.* | She didn't used like tea.
-5. We would be happy in the village. :: We would being happy in the village. | We used to be happy in the village.* | We would to be happy in the village.
+5. In those days we would be happy in the village. :: In those days we would being happy in the village. | In those days we used to be happy in the village.* | In those days we would to be happy in the village.
+// Would в значении «бывало» не используют с глаголами состояния (be, have, live).
 6. He is get used to the cold. :: He is getting used to the cold.* | He getting used to the cold. | He is get use to the cold.
 
 ### Упражнение 6. Перепиши с used to

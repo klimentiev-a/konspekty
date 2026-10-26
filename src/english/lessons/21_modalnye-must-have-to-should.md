@@ -69,7 +69,7 @@ minutes: 60
 
 > **Запомни.** Две негативные формы значат противоположное: **mustn't = нельзя**, **don't have to = необязательно**. Перепутать их — серьёзная ошибка, особенно на табличках.
 
-Ещё один способ выразить разрешение: **be allowed to** — *You are not allowed to park here.* (Вам не разрешено здесь парковаться.) Это почти то же, что *You mustn't park here.*
+Разрешение и запрет можно выразить и через **be allowed to** (разрешено): *You are allowed to take photos.* (Фотографировать можно.) *You are not allowed to park here.* (Здесь парковаться нельзя.) Отрицательная форма почти то же, что *You mustn't park here.*
 
 ### 5. Прошедшее и будущее: had to, will have to
 Must не имеет формы прошедшего. Когда рассказываем о прошлом, используем **had to**:
@@ -96,7 +96,7 @@ Must не имеет формы прошедшего. Когда рассказ�
 |---|---|---|
 | must / have to | необходимо | You must / have to wear a helmet. |
 | should / ought to | стоит, рекомендация | You should wear a helmet. |
-| can | можно, возможно | You can wear a helmet. |
+| can | можно, по желанию | You can wear a helmet. |
 
 Совет можно смягчить: *Maybe you should…*, *Why don't you…?*, *I think you should…*.
 
@@ -106,7 +106,7 @@ Must не имеет формы прошедшего. Когда рассказ�
 - She **might** be at home. (Она, может быть, дома.)
 - We **might** go to Spain this summer. (Возможно, мы поедем в Испанию.)
 
-Разница между may и might невелика: **might** чуть менее уверен (шанс ниже). В отрицании: **may not / might not**: *He might not come.* Сокращение *mayn't* не используется. Сокращение *mightn't* бывает, но редко.
+Разница между may и might невелика: с **might** говорящий чуть менее уверен (шанс ниже). В отрицании: **may not / might not**: *He might not come.* Сокращение *mayn't* не используется. Сокращение *mightn't* бывает, но редко.
 
 Внимание: не путайте с **can't**. *She can't be at home* (Она точно не дома) — это уже уверенность. Об этом мы поговорим в уроке 45.
 
@@ -134,7 +134,7 @@ Must не имеет формы прошедшего. Когда рассказ�
 Краткие ответы с модальными глаголами повторяют сам глагол:
 - Must I go? — **Yes, you must.** / **No, you needn't.** (Не **No, you mustn't** — это значило бы «Нет, вам нельзя».)
 - Should I call him? — **Yes, you should.** / **No, you shouldn't.**
-- Might it rain? — **It might.** / **It might not.**
+- Will it rain tomorrow? — **It might.** / **It might not.** (на вопрос о будущем часто отвечают через may / might)
 
 С глаголом have to ответ строится через do:
 - Do you have to work on Sundays? — **Yes, I do.** / **No, I don't.**
@@ -155,7 +155,7 @@ Must не имеет формы прошедшего. Когда рассказ�
 - **You don't have to answer now.** — Отвечать прямо сейчас не обязательно.
 
 Помните, что русские «надо / нужно» бывают трёх видов, и английский их различает:
-1. **Я хочу, потому что считаю нужным** → *I must…* (личное мнение: *I must learn English*).
+1. **Я сам считаю это нужным** → *I must…* (личное мнение: *I must learn English*).
 2. **Меня обязывают** → *I have to…* (требование: *I have to wear a uniform*).
 3. **Было бы разумно** → *I should…* (совет: *I should sleep more*).
 
@@ -201,7 +201,7 @@ Must не имеет формы прошедшего. Когда рассказ�
 | exam | экзамен | I have an exam tomorrow. | Завтра у меня экзамен. |
 | pass | сдать (экзамен); передать | I hope I pass the exam. | Надеюсь, я сдам экзамен. |
 | hurry | торопиться | We must hurry, or we'll be late. | Нам надо поторопиться, иначе опоздаем. |
-| rest | отдыхать; отдых | You should rest. | Тебе нужно отдохнуть. |
+| rest | отдыхать; отдых | You should rest. | Тебе стоит отдохнуть. |
 | apologise | извиняться | You should apologise to her. | Тебе стоит перед ней извиниться. |
 | borrow | брать взаймы | May I borrow your pen? | Можно взять твою ручку? |
 | umbrella | зонт | Take an umbrella. | Возьми зонт. |
@@ -241,7 +241,7 @@ Must не имеет формы прошедшего. Когда рассказ�
 8. You ___ touch that. It's dangerous! :: mustn't* | don't have to | doesn't have to
 
 ### Упражнение 2. Формы have to
-Впиши нужную форму. Можно использовать сокращения там, где это возможно.
+Впиши нужную форму have to. Можно использовать сокращения там, где это возможно.
 1. Yesterday I ___ get up at 5 a.m. => had to
 2. Tomorrow we ___ get up early. => will have to / 'll have to
 3. She ___ wear glasses to read. => has to

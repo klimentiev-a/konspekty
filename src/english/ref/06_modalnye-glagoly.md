@@ -44,7 +44,7 @@ short: can, could, may, might, must, have to, should, ought to, will, would, sha
 | Просьба (неформально) | Can you open the window? | Ты можешь открыть окно? |
 | Предложение помощи | Can I help you? | Вам помочь? |
 | Запрет | You can't park here. | Здесь нельзя парковаться. |
-| Сильное сомнение (вывод) | That can't be true! | Этого не может быть! |
+| Уверенный вывод «не может быть» | That can't be true! | Этого не может быть! |
 
 ### Could: прошлое умение, вежливая просьба, вероятность
 
@@ -89,7 +89,7 @@ short: can, could, may, might, must, have to, should, ought to, will, would, sha
 - He **might not** come. = Он, возможно, не придёт.
 - You **may not** park here. = Вам нельзя здесь парковаться (формальный запрет).
 
-> **Запомни.** Вопрос «Is it possible?» с may/might не строят: ❌ *Might it rain?* Лучше: *Do you think it will rain?* или *Could it rain?*
+> **Запомни.** Вопросы о возможности с may / might почти не строят: *Might it rain?* звучит книжно. Лучше: *Do you think it will rain?* или *Could it rain?*
 
 ---
 
@@ -130,8 +130,8 @@ short: can, could, may, might, must, have to, should, ought to, will, would, sha
 
 | Уверенность | Модальный глагол | Пример | Перевод |
 |---|---|---|---|
-| Почти 100 процентов да | **must be** | He must be at home. | Он, наверное, дома. |
-| Почти 100 процентов нет | **can't be** | He can't be at home. | Его не может быть дома. |
+| Почти 100 процентов да | **must be** | He must be at home. | Он наверняка дома. |
+| Почти 100 процентов нет | **can't be** | He can't be at home. | Не может быть, чтобы он был дома. |
 | Возможно | **may / might / could be** | He might be at home. | Он, возможно, дома. |
 
 ❌ *He mustn't be at home* в смысле «его наверняка нет дома»: для этого используется **can't be**.
@@ -182,7 +182,7 @@ short: can, could, may, might, must, have to, should, ought to, will, would, sha
 | Предпочтение: would rather | I'd rather stay at home. | Я бы предпочёл остаться дома. |
 | Привычка в прошлом | When I was a child, I would play outside. | В детстве я часто играл на улице. |
 | Будущее в прошедшем (косвенная речь) | He said he would call. | Он сказал, что позвонит. |
-| Ожидаемое поведение | She would say that! | Она бы такое сказала! (Это на неё похоже.) |
+| Ожидаемое поведение | She would say that! | Ну конечно, она так и сказала! (Это на неё похоже.) |
 
 Would для привычки в прошлом подходит только для **действий**, а не для состояний: ✅ *We would visit my grandma every Sunday.* ❌ *I would have a bike* (состояние, нужно **had** или **used to have**).
 
@@ -212,7 +212,7 @@ Would для привычки в прошлом подходит только д
 | Не пришлось | **didn't have to** | They didn't have to pay. | Им не пришлось платить. |
 | Разрешали в прошлом | **was/were allowed to** / **could** | Children weren't allowed to talk. | Детям не разрешали разговаривать. |
 | Привычка в прошлом | **would / used to** | We used to play chess. | Мы раньше играли в шахматы. |
-| Вывод о прошлом (уверен) | **must have + V3** | He must have missed the bus. | Он, наверное, пропустил автобус. |
+| Вывод о прошлом (уверен) | **must have + V3** | He must have missed the bus. | Он, должно быть, пропустил автобус. |
 | Вывод о прошлом (уверен в обратном) | **can't have + V3** | She can't have seen us. | Она не могла нас видеть. |
 | Возможно, было | **may / might / could have + V3** | They might have got lost. | Они, возможно, заблудились. |
 | Надо было, но не сделал | **should have + V3** | I should have studied. | Мне надо было заниматься. |
@@ -359,6 +359,6 @@ Would для привычки в прошлом подходит только д
 | ought to | I ought to go. | I ought not to go. | Ought I to go? (редко) | ought to have gone |
 | will | I will go. | I won't go. | Will I go? | would (в косвенной речи) |
 | would | I would go. | I wouldn't go. | Would you go? | would have gone |
-| shall | Shall I go? | Shall I not go? (редко) | Shall we go? | should (в косвенной речи) |
+| shall | I shall go. (брит., формально) | I shan't go. (редко) | Shall we go? | should (в косвенной речи) |
 
 > **Запомни.** Главные пары, которые нужно держать в голове: **mustn't** (нельзя) и **don't have to** (не обязательно); **can** (умею) и **could** (умел, вежливо); **may/might** (возможно) и **must/can't** (наверняка); **should** (стоит) и **should have** (надо было).

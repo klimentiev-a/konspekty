@@ -6,13 +6,13 @@ minutes: 8
 
 ## Theory
 
-> **In one minute.** Equity capital markets, ECM (рынок акционерного капитала) is how companies sell shares: IPO (первичное размещение), follow-on (вторичное размещение: SPO, ABB, rights issue). Banks run bookbuilding (сбор заявок), set the price, stabilise (стабилизируют) with a greenshoe and bind insiders with a lock-up. On the secondary market the stock is valued on free float, liquidity, index weight and the dividend/buyback policy.
+> **In one minute.** Equity capital markets (ECM, рынок акционерного капитала) are how companies sell shares: IPO, initial public offering (первичное размещение), and follow-on deals (вторичные размещения: SPO, ABB, rights issue — see the table below). Banks run bookbuilding (сбор заявок), set the price, stabilise (стабилизируют) with a greenshoe and bind insiders with a lock-up. On the secondary market the stock is valued on free float (доля акций в свободном обращении), liquidity, index weight and the dividend/buyback policy.
 
 ## IPO process
 
 ```f
 1. Beauty parade (конкурс банков) → mandate: global coordinators, bookrunners, co-managers
-2. Due diligence, prospectus (проспект), audited IFRS for 3 years, corporate restructuring
+2. Due diligence (комплексная проверка), prospectus (проспект), audited IFRS (МСФО) accounts for 3 years, corporate restructuring
 3. Analyst presentation → pre-deal investor education (PDIE), early-look meetings
 4. Price range (ценовой диапазон) set; roadshow (роуд-шоу) 1–2 weeks; bookbuilding
 5. Pricing (определение цены): demand, quality of the book, allocation (аллокация)
@@ -40,17 +40,17 @@ Primary shares (новые акции) bring cash to the company (cash-in); seco
 | Convertible bond | Debt convertible into shares | Days | Premium to spot |
 | Block trade | Large stake sold to one or few buyers | Hours | Negotiated |
 
-TERP (теоретическая цена после отсечения прав) = (old shares × price + new shares × subscription price) / total shares.
+TERP, theoretical ex-rights price (теоретическая цена после отсечения прав) = (old shares × price + new shares × subscription price) / total shares.
 
 ## Dividends and buybacks
 
-Dates: declaration (объявление), record date (дата закрытия реестра), ex-dividend date (экс-дивидендная дата, T−1 of record under T+1 settlement), payment date (дата выплаты). The stock falls by the dividend on the ex-date: dividend gap (дивидендный гэп); its closing (закрытие гэпа) is a Russian retail obsession. Policy types: % of net income (SOEs 50% of IFRS NI), % of FCF with leverage triggers, progressive (прогрессивная, не снижается), special dividends (специальные). Interim (промежуточные) and final (итоговые).
+Dates: declaration (объявление), record date (дата закрытия реестра), ex-dividend date (экс-дивидендная дата, one trading day before the record date under T+1 settlement, расчёты на следующий день), payment date (дата выплаты). The stock falls by the dividend on the ex-date: dividend gap (дивидендный гэп); its closing (закрытие гэпа) is a Russian retail obsession. Policy types: % of net income (SOEs, state-owned enterprises — госкомпании: 50% of IFRS net income), % of FCF (free cash flow, свободный денежный поток) with leverage triggers, progressive (прогрессивная, не снижается), special dividends (специальные). Interim (промежуточные) and final (итоговые).
 
-Buyback (обратный выкуп): on-market (на бирже), tender offer at a premium, or via a subsidiary; shares become treasury (казначейские) or quasi-treasury (квазиказначейские, on a subsidiary's balance sheet, keep votes) and may be cancelled (погашены). Buybacks raise EPS and are tax-efficient (налогово эффективны) versus dividends in many jurisdictions; in Russia dividends carry 13–15% personal tax.
+Buyback (обратный выкуп): on-market (на бирже), tender offer at a premium, or via a subsidiary; shares become treasury (казначейские) or quasi-treasury (квазиказначейские, on a subsidiary's balance sheet, keep votes) and may be cancelled (погашены). Buybacks raise EPS (earnings per share, прибыль на акцию) and are tax-efficient (налогово эффективны) versus dividends in many jurisdictions; in Russia dividends carry 13–15% personal tax.
 
 ## Market structure facts to quote
 
-Market cap, free float and free-float-adjusted weight in IMOEX; index inclusion (включение в индекс) triggers passive buying; liquidity in average daily volume, ADV (среднедневной объём); turnover velocity (оборачиваемость); shareholder structure (структура акционеров): state, strategic, management, float. Depositary receipts (депозитарные расписки: ADR/GDR) represent shares abroad; most Russian DRs were converted after 2022.
+Market cap, free float and free-float-adjusted weight in IMOEX (индекс Мосбиржи); index inclusion (включение в индекс) triggers passive buying; liquidity in average daily volume, ADV (среднедневной объём); turnover velocity (оборачиваемость); shareholder structure (структура акционеров): state, strategic, management, float. Depositary receipts (депозитарные расписки: ADR/GDR — American and global depositary receipts) represent shares abroad; most Russian DRs were converted into local shares after 2022.
 
 ## Words
 

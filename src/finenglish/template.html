@@ -74,6 +74,8 @@ mark.hl{background:var(--mark);color:inherit;border-radius:3px;padding:0 2px}
 @keyframes pulse{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--accent) 55%,transparent)}100%{box-shadow:0 0 0 14px transparent}}
 .pulse{animation:pulse 1.1s ease-out 2}
 @media (prefers-reduced-motion:reduce){.pulse{animation:none}.bar2 i{transition:none}}
+/* длинные строки в блоках кода прокручиваются внутри блока, а не обрезаются краем экрана */
+pre{overflow-x:auto;max-width:100%}
 </style></head><body>
 <header class="top" id="top">
   <div class="bar">

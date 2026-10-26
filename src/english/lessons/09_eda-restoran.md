@@ -198,7 +198,7 @@ minutes: 60
 | soup | суп | The soup is delicious. | Суп очень вкусный. |
 | salad | салат | Can I have a salad? | Можно мне салат? |
 | vegetable | овощ | I eat a lot of vegetables. | Я ем много овощей. |
-| fruit | фрукты | Fruit is good for you. | Фрукты полезны для тебя. |
+| fruit | фрукты | Fruit is good for you. | Фрукты полезны. |
 | potato | картофель | He loves potatoes. | Он обожает картошку. |
 | sugar | сахар | I don't take sugar in my tea. | Я не кладу сахар в чай. |
 | milk | молоко | We need some milk. | Нам нужно молоко. |
@@ -209,7 +209,7 @@ minutes: 60
 | waiter | официант | The waiter is very polite. | Официант очень вежлив. |
 | bill | счёт | Can we have the bill, please? | Можно нам счёт? |
 | order | заказывать; заказ | I'd like to order now. | Я хотел бы сделать заказ. |
-| starter | закуска (первое блюдо) | I'd like soup as a starter. | Я возьму суп как закуску. |
+| starter | закуска (первое блюдо) | I'd like soup as a starter. | На закуску я возьму суп. |
 | main course | основное блюдо | The fish is my main course. | Рыба — моё основное блюдо. |
 | dessert | десерт | Would you like a dessert? | Хотите десерт? |
 | delicious | очень вкусный | This cake is delicious! | Этот торт очень вкусный! |
@@ -308,7 +308,7 @@ minutes: 60
 8. Тебя спросили: «Eat in or take away?» Ты берёшь с собой. :: Take away, please.* | Eat out, please. | Away take, please.
 
 ### Упражнение 7. Повторение: there is, to be, Present Simple
-Материал уроков 1–5. Впиши слово или форму.
+Материал уроков 1–6. Впиши слово или форму.
 1. ___ there any milk in the fridge? => Is
 2. There ___ two eggs in the bowl. => are
 3. She ___ got a big family. => has / 's

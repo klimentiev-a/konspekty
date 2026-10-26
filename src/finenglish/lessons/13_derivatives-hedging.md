@@ -6,7 +6,7 @@ minutes: 8
 
 ## Theory
 
-> **In one minute.** Forwards and futures fix a price; options buy a right for a premium; swaps exchange cash flows. The forward price is spot plus cost of carry (стоимость удержания); an option's value is intrinsic (внутренняя) plus time value (временная), driven by volatility (волатильность). Companies hedge (хеджируют) inputs, outputs, FX and rates; analysts check hedge accounting (учёт хеджирования) and derivative exposure in the notes.
+> **In one minute.** Forwards and futures fix a price; options buy a right for a premium; swaps exchange cash flows. The forward price is spot plus cost of carry (стоимость удержания); an option's value is intrinsic (внутренняя) plus time value (временная), driven by volatility (волатильность). Companies hedge (хеджируют) inputs, outputs, FX (валютный курс) and rates; analysts check hedge accounting (учёт хеджирования) and derivative exposure in the notes.
 
 ## Forwards and futures
 
@@ -17,7 +17,9 @@ FX forward:     F = S × (1 + r_RUB)/(1 + r_USD)   — covered interest parity (
 Contango: F > S;  Backwardation: F < S
 ```
 
-Futures: exchange-traded, standardised, cleared through a CCP, daily mark-to-market (переоценка), initial and variation margin (начальная и вариационная маржа). MOEX futures: Si (USD/RUB), CNY/RUB, RTS, Brent, gold, single stocks. Basis (базис) = futures − spot; basis risk (базисный риск) is what remains after a hedge.
+S is the spot price (спотовая цена), r the interest rate, T the time to maturity, q the income yield of the asset (e.g. dividend yield), y the convenience yield (выгода от владения товаром).
+
+Futures: exchange-traded, standardised, cleared through a CCP, central counterparty (центральный контрагент), daily mark-to-market (переоценка), initial and variation margin (начальная и вариационная маржа). MOEX (Мосбиржа) futures: Si (USD/RUB), CNY/RUB, RTS index (индекс РТС), Brent, gold, single stocks. Basis (базис) = futures − spot; basis risk (базисный риск) is what remains after a hedge.
 
 ## Options
 
@@ -28,13 +30,13 @@ Premium = Intrinsic value + Time value
 Black-Scholes inputs: S, K, T, r, σ (volatility), q
 ```
 
-Moneyness: in / at / out of the money (в деньгах / около денег / вне денег). European (исполнение только в дату) vs American (в любой день). Greeks: delta (Δ, sensitivity to S; also hedge ratio), gamma (Γ, change of delta), theta (Θ, time decay, временной распад), vega (ν, sensitivity to σ), rho (ρ, to rates). Implied volatility (подразумеваемая волатильность) is backed out of market prices; the volatility smile/skew (улыбка / перекос волатильности) shows puts priced richer than calls. RVI is the MOEX volatility index.
+Moneyness: in / at / out of the money (в деньгах / около денег / вне денег). European (исполнение только в дату) vs American (в любой день). Greeks: delta (Δ, sensitivity to S; also hedge ratio), gamma (Γ, change of delta), theta (Θ, time decay, временной распад), vega (ν, sensitivity to σ), rho (ρ, to rates). Implied volatility (подразумеваемая волатильность) is backed out of market prices; the volatility smile/skew (улыбка / перекос волатильности) shows puts priced richer than calls. RVI (Russian Volatility Index) is the MOEX volatility index.
 
 Strategies in a sentence: covered call (покрытый колл: long stock + short call for income), protective put (защитный пут), collar (коллар: put financed by selling a call), straddle (стрэддл: bet on volatility), spread (спред: limit cost and payoff).
 
 ## Swaps
 
-Interest rate swap, IRS (процентный своп): pay fixed, receive floating (RUONIA / key rate) or the reverse; converts a floating loan into fixed. Cross-currency swap (валютно-процентный своп): exchange principal and interest in two currencies; used to turn yuan or dollar funding into roubles. CDS (кредитный дефолтный своп): protection buyer pays a spread, receives par minus recovery (стоимость возмещения) on default; the CDS spread is a market view on PD. Total return swap (своп на совокупный доход) replicates ownership without holding the asset.
+Interest rate swap, IRS (процентный своп): pay fixed, receive floating (RUONIA / key rate) or the reverse; converts a floating loan into fixed. Cross-currency swap (валютно-процентный своп): exchange principal and interest in two currencies; used to turn yuan or dollar funding into roubles. CDS (кредитный дефолтный своп): protection buyer pays a spread, receives par minus recovery (стоимость возмещения) on default; the CDS spread is a market view on PD, the probability of default (вероятность дефолта). Total return swap (своп на совокупный доход) replicates ownership without holding the asset.
 
 ## Corporate hedging
 
@@ -46,11 +48,11 @@ Interest rate swap, IRS (процентный своп): pay fixed, receive floa
 | Output price | Sell forward / put, collar | Gold miner sets a floor |
 | Translation of foreign subsidiary | Net investment hedge | Holding with foreign assets |
 
-Natural hedge (естественный хедж): match the currency of debt with the currency of revenue. Hedge ratio (коэффициент хеджирования) is usually 30–70% of expected volumes 12–24 months out. Hedge accounting (учёт хеджирования, IFRS 9) lets gains and losses on the hedge sit in OCI until the hedged item hits the P&L; without it, derivatives create P&L volatility (волатильность прибыли). Mark-to-market of hedges can produce large "paper" losses when prices rally: read the notes before judging a quarter.
+Natural hedge (естественный хедж): match the currency of debt with the currency of revenue. Hedge ratio (коэффициент хеджирования) is usually 30–70% of expected volumes 12–24 months out. Hedge accounting (учёт хеджирования, IFRS 9) lets gains and losses on the hedge sit in OCI, other comprehensive income (прочий совокупный доход), until the hedged item hits the P&L (ОФР); without it, derivatives create P&L volatility (волатильность прибыли). Mark-to-market of hedges can produce large "paper" losses when prices rally: read the notes before judging a quarter.
 
 ## Risks the reader should flag
 
-Leverage (plечо) in derivatives; margin calls (требования о довнесении маржи) draining liquidity; counterparty risk on OTC contracts with sanctioned or foreign banks; embedded derivatives (встроенные деривативы) in contracts (price formulas with caps and floors); speculative positions disguised as hedges (Barings, Metallgesellschaft, 2008 CDOs).
+Leverage (плечо) in derivatives; margin calls (требования о довнесении маржи) draining liquidity; counterparty risk (риск контрагента) on OTC, over-the-counter (внебиржевых), contracts with sanctioned or foreign banks; embedded derivatives (встроенные деривативы) in contracts (price formulas with caps and floors); speculative positions disguised as hedges (Barings, Metallgesellschaft, the CDOs of 2008 — collateralised debt obligations, обеспеченные долговые обязательства).
 
 ## Words
 

@@ -50,7 +50,7 @@ minutes: 60
 Вопросы с вопросительными словами: *How many brothers and sisters have you got? — I've got two brothers and one sister.* *What colour eyes has she got? — Blue.*
 
 #### Вариант с do: have без got
-Те же значения можно выразить глаголом **have** как обычным (с do / does, урок 3–4). Такая форма стандартна в американском английском, но используется и в Британии:
+Те же значения можно выразить глаголом **have** как обычным (с do / does, уроки 3–4). Такая форма стандартна в американском английском, но используется и в Британии:
 - *I have a sister.* / *I don't have a sister.* / *Do you have a sister?* — Yes, I do.
 - *She has a car.* / *She doesn't have a car.* / *Does she have a car?* — Yes, she does.
 
@@ -128,7 +128,7 @@ minutes: 60
 - *My grandparents are retired.* — Мои бабушка и дедушка на пенсии. (retired — на пенсии)
 - *We're a big family.* — У нас большая семья.
 
-Слово **family** в британском английском может быть единственным или множественным: *My family is big / My family are all doctors.* В начале можно использовать единственное число — *is* — и не ошибёшься.
+Слово **family** в британском английском может быть единственным или множественным: *My family is big / My family are all doctors.* На первых порах используй единственное число — *is* — и не ошибёшься.
 
 ### 5. Внешность
 Для описания внешности используем две схемы:
@@ -230,7 +230,7 @@ minutes: 60
 ## Диалог
 **Фотографии семьи**
 - Anna: Tom, is this your family in the photo? | Том, это твоя семья на фотографии?
-- Tom: Yes, it is. This is my mum and dad. They've got a house near London. | Да. Это мои мама и папа. У них есть дом недалеко от Лондона.
+- Tom: Yes, it is. These are my mum and dad. They've got a house near London. | Да. Это мои мама и папа. У них есть дом недалеко от Лондона.
 - Anna: Is there a garden? | Там есть сад?
 - Tom: Yes, there is. There's a big garden with some flowers. | Да. Там большой сад с цветами.
 - Anna: Have you got any brothers or sisters? | У тебя есть братья или сёстры?
@@ -244,6 +244,7 @@ minutes: 60
 - Anna: Is there a sofa in the living room? | В гостиной есть диван?
 - Tom: Yes, there's a big sofa, but there aren't any chairs. | Да, есть большой диван, но стульев нет.
 - Anna: Oh, I like sofas! Is your flat near the university? | О, я люблю диваны! Твоя квартира рядом с университетом?
+- Tom: Yes, it is. It's only five minutes from here. | Да. Всего пять минут отсюда.
 
 ## Упражнения
 
@@ -298,8 +299,8 @@ Anna is tall and slim. She has got long fair hair and green eyes. She hasn't got
 1. Is Anna tall? => Yes, she is.
 2. Has Anna got glasses? => No, she hasn't. / No, she has not.
 3. Has Anna got short hair? => No, she hasn't. / No, she has not.
-4. Is there a garden in the flat? => No, there isn't. / No, there is not.
-5. Is there a balcony in the flat? => Yes, there is.
+4. Is there a garden? => No, there isn't. / No, there is not.
+5. Is there a balcony? => Yes, there is.
 6. Are there two bedrooms? => Yes, there are.
 7. Has she got green eyes? => Yes, she has.
 
@@ -311,7 +312,7 @@ Anna is tall and slim. She has got long fair hair and green eyes. She hasn't got
 4. В комнате есть диван. => There is a sofa in the room. / There's a sofa in the room.
 5. На столе три книги. => There are three books on the table.
 6. В холодильнике нет молока. => There isn't any milk in the fridge. / There is no milk in the fridge. / There's no milk in the fridge. / There is not any milk in the fridge.
-7. Какая она? (о внешности) => What does she look like?
+7. Как она выглядит? => What does she look like?
 8. У моей мамы короткие волосы. => My mum has short hair. / My mum has got short hair. / My mum's got short hair. / My mother has short hair. / My mother has got short hair.
 
 ### Упражнение 7. Повторение: Present Simple (уроки 3–4)

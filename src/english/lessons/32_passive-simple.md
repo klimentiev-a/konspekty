@@ -94,7 +94,7 @@ minutes: 60
 - Исполнитель **очевиден**: *The thief was arrested.* (понятно, что полицией)
 - Исполнитель **неважен или общий**: *English is spoken all over the world.*
 
-А там, где мы знаем исполнителя и говорим о себе или близких, активный залог звучит естественнее: ❌ *The soup was cooked by me.* ✅ **I cooked the soup.**
+А там, где мы знаем исполнителя и говорим о себе или близких, активный залог звучит естественнее: *The soup was cooked by me* — неуклюже, лучше ✅ **I cooked the soup.**
 
 Если нужно назвать **инструмент**, используем **with**: *The window was broken with a stone.* — Окно разбили камнем.
 
@@ -129,7 +129,7 @@ minutes: 60
 - ❌ *He was died in 1990.* → ✅ **He died in 1990.**
 - ❌ *We were arrived at six.* → ✅ **We arrived at six.**
 
-Ещё одна ловушка: русские глаголы на «-ся» («книга продаётся», «письмо отправлено», «ремонт делается») не переводи активным глаголом, если действие совершает кто-то другой. Здесь нужен пассив: *The book is sold in all shops. The letter was sent yesterday. The work is done.* А вот «магазин открывается в девять» — обычный активный глагол: *The shop opens at nine.*
+Ещё одна ловушка: русские глаголы на «-ся» и краткие причастия («книга продаётся», «письмо отправлено», «работа сделана») не переводи активным глаголом, если действие совершает кто-то другой. Здесь нужен пассив: *The book is sold in all shops. The letter was sent yesterday. The work is done.* А вот «магазин открывается в девять» — обычный активный глагол: *The shop opens at nine.*
 
 ### 9. Полезные устойчивые выражения
 - **be born** — родиться (о конкретном человеке — только в Past Simple): *I was born in Moscow. Where were you born?* ❌ *I am born.* (Present возможен лишь о рождении вообще: *Babies are born blind.*)
@@ -167,7 +167,7 @@ minutes: 60
 | steal | красть | My phone was stolen on the bus. | Мой телефон украли в автобусе. |
 | repair | ремонтировать | The car will be repaired tomorrow. | Машину отремонтируют завтра. |
 | deliver | доставлять | Pizza is delivered in 30 minutes. | Пиццу доставляют за тридцать минут. |
-| damage | повреждать, ущерб | The roof was damaged by the storm. | Крышу повредила гроза. |
+| damage | повреждать, ущерб | The roof was damaged by the storm. | Крышу повредила буря. |
 | translate | переводить (текст) | The novel is translated into 30 languages. | Роман переведён на тридцать языков. |
 | invite | приглашать | We were invited to the wedding. | Нас пригласили на свадьбу. |
 | build | строить | The castle was built in the 12th century. | Замок построен в XII веке. |

@@ -48,7 +48,7 @@ minutes: 60
 **Admit и deny** (признать и отрицать) — две модели на выбор: -ing или that-придаточное.
 - "I broke the window." → He **admitted breaking** the window. / He **admitted that he had broken** the window.
 - "I didn't take your pen." → She **denied taking** my pen. / She **denied that she had taken** my pen.
-Если речь о прошлом, после этих глаголов можно использовать и perfect-форму: *denied having taken*. Это чуть более формально. ❌ *He admitted to break the window.* — после admit никогда не ставим to + глагол.
+Если речь о прошлом, после этих глаголов можно использовать и perfect-форму: *denied having taken*. Это чуть более формально. ❌ *He admitted to break the window.* — после admit никогда не ставим to + глагол. (Предлог to + -ing возможен: *He admitted to breaking the window.*)
 
 **Accuse и blame** переводятся похоже («обвинять»), но строятся по-разному и значат разное.
 - **accuse sb of + -ing**: сказать, что человек сделал плохое. *They accused him of stealing.* (Они сказали, что он украл — это обвинение, оно может быть ложным.)
@@ -273,7 +273,7 @@ minutes: 60
 ### Упражнение 5. Вопросы в косвенной речи
 Перепиши вопрос в косвенной речи, начав с данных слов. Пиши одно предложение.
 1. "Who called you last night?" Anna asked me. (Anna asked me) => Anna asked me who had called me the night before. / Anna asked me who had called me the previous night. / Anna asked me who called me the night before. / Anna asked me who called me the previous night.
-2. "Where can I park?" the driver asked. (The driver asked) => The driver asked where he could park. / The driver asked where to park.
+2. "Where can I park?" the driver asked. (The driver asked) => The driver asked where he could park. / The driver asked where she could park. / The driver asked where to park.
 3. "Is the museum open on Sundays?" Tom asked the guide. (Tom asked the guide) => Tom asked the guide if the museum was open on Sundays. / Tom asked the guide whether the museum was open on Sundays.
 4. "What time does the train leave?" she asked me. (She asked me) => She asked me what time the train left.
 5. "Shall I open the window?" he asked. (He asked) => He asked if he should open the window. / He asked whether he should open the window.

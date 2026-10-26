@@ -18,7 +18,7 @@ minutes: 60
 ### 1. Что такое Past Simple
 **Past Simple** (простое прошедшее) рассказывает о действии или состоянии, которые **полностью закончились** в прошлом и связаны с конкретным моментом: *Yesterday I worked at home. We were in Paris last year.* В русском языке для этого есть одна форма на «-л»: «я работал / работала». В английском для всех лиц и чисел форма одна — но с глаголом **to be** есть небольшое различие (was / were), а у остальных глаголов к основе добавляется **-ed**.
 
-Сравните:
+Сравни:
 
 | Present Simple | Past Simple |
 |---|---|
@@ -66,7 +66,7 @@ minutes: 60
 - *When were you born? — I was born in March. Where were you born? — In Moscow.* — Когда ты родилась? В марте. Где ты родилась? В Москве.
 - *How old were you in 2015? — I was fifteen.* — Сколько тебе было в 2015? Пятнадцать.
 
-Обратите внимание: по-русски «мне было десять» — безличная конструкция, а по-английски — обычное предложение с подлежащим **I**: *I was ten.*
+Обрати внимание: по-русски «мне было десять» — безличная конструкция, а по-английски — обычное предложение с подлежащим **I**: *I was ten.*
 
 ### 3. Правильные глаголы: окончание -ed
 Правильные (regular) глаголы образуют Past Simple добавлением **-ed** к начальной форме. Окончание одно для всех лиц: *I worked, she worked, we worked, they worked.*
@@ -94,9 +94,9 @@ minutes: 60
 | **[d]** | после звонких звуков и гласных | played, lived, opened, listened, cleaned, called, enjoyed, studied, answered |
 | **[ɪd]** | после t и d: добавляется целый слог | wanted, needed, started, waited, visited, decided, invited |
 
-Практическое правило: **слог добавляется только после t и d** (*want-ed, need-ed*). Во всех остальных случаях слов столько же слогов, сколько в начальной форме: *walk — walked* (один слог).
+Практическое правило: **слог добавляется только после t и d** (*want-ed, need-ed*). Во всех остальных случаях в слове столько же слогов, сколько в начальной форме: *walk — walked* (один слог).
 
-Если сомневаетесь в написании, проверьте последние буквы глагола: **-e** → только **d**; **согласная + y** → **ied**; короткий односложный глагол «согласная + гласная + согласная» → удвоение. Во всех остальных случаях просто пишем **-ed**.
+Если сомневаешься в написании, проверь последние буквы глагола: **-e** → только **d**; **согласная + y** → **ied**; короткий односложный глагол «согласная + гласная + согласная» → удвоение. Во всех остальных случаях просто пишем **-ed**.
 
 ### 5. Слова-маркеры прошлого
 | Слово | Пример |
@@ -113,7 +113,7 @@ minutes: 60
 Чтобы связать несколько действий, пригодятся слова **first** (сначала), **then** (потом), **after that** (после этого), **finally** (в итоге): *First we cleaned the flat. Then we cooked dinner. Finally we watched a film.*
 
 ### 6. Как пользоваться Past Simple в рассказе
-Типичный рассказ о выходных строится так: **время + действие**. *On Saturday I visited my grandmother. We walked in the park, and then we cooked dinner. On Sunday I stayed at home and watched a film.* Для описания состояния используйте was / were: *The weather was good. We were tired.*
+Типичный рассказ о выходных строится так: **время + действие**. *On Saturday I visited my grandmother. We walked in the park, and then we cooked dinner. On Sunday I stayed at home and watched a film.* Для описания состояния используй was / were: *The weather was good. We were tired.*
 
 Заглянем вперёд. **Вопросы и отрицания** с обычными глаголами в прошедшем времени строятся иначе — со вспомогательным глаголом **did** (*Did you work? I didn't work.*). Мы подробно разберём это в уроке 15. Пока важно запомнить одно: **с was / were did не нужен**, а в утверждении с правильным глаголом окончание -ed нужно ставить всегда.
 
@@ -262,7 +262,7 @@ minutes: 60
 
 ### Упражнение 7. Повторение: уроки 3, 8 и 10
 Выбери время и предлог. Здесь есть и настоящее, и прошедшее время.
-1. She ___ to work every day. :: walks* | walked | is walked
+1. These days she ___ to work every day. :: walks* | walked | is walked
 2. Last night I ___ TV. :: watch | watched* | watches
 3. Right now I ___ English. :: am studying* | studied | studies
 4. He ___ early yesterday. :: starts | started* | start

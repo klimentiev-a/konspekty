@@ -10,7 +10,7 @@ short: устойчивые сочетания с make, do, take, have, get, go,
 | принять решение | do a decision | make a decision (в британском допустимо и take a decision) |
 | сделать фото | do a photo | take a photo |
 | принять душ | accept a shower | have / take a shower |
-| выпить кофе | drink a coffee (звучит как инструкция) | have a coffee |
+| выпить кофе | drink a coffee (возможно, но звучит менее естественно) | have a coffee |
 | сделать домашнее задание | make homework | do homework |
 | сделать ошибку | do a mistake | make a mistake |
 | принять лекарство | accept medicine | take medicine |
@@ -93,7 +93,7 @@ Do обычно значит «выполнять работу, дело, дея
 | do a puzzle | собирать пазл | do some work | поработать |
 | do nothing | ничего не делать | do your duty | выполнить долг |
 | do the right thing | поступить правильно | do wonders | творить чудеса |
-| do an experiment | провести эксперимент | do a degree | получить степень (брит.) |
+| do an experiment | провести эксперимент | do a degree | учиться на степень, получать высшее образование (брит.) |
 | do the maths | считать (брит.) | do the talking | вести разговор |
 | do well | преуспевать | do badly | плохо справляться |
 | do the trick | сработать | do a favour | сделать одолжение |
@@ -175,7 +175,7 @@ Have в этих сочетаниях не значит «владеть», а �
 | have an argument | поспорить | have a fight | подраться, поссориться |
 | have a go | попробовать | have a look | взглянуть |
 | have a try | попытаться | have a baby | родить ребёнка |
-| have a cold | простудиться | have a headache | страдать головной болью |
+| have a cold | быть простуженным | have a headache | (у кого-то) болит голова |
 | have a fever | иметь температуру | have a problem | иметь проблему |
 | have an accident | попасть в аварию | have an idea | иметь идею |
 | have a dream | видеть сон | have a day off | иметь выходной |
@@ -225,7 +225,7 @@ Get имеет три основных значения: **получить**, *
 | get better | поправиться | get worse | ухудшиться |
 | get old | постареть | get cold | замёрзнуть |
 | get hungry | проголодаться | get excited | разволноваться |
-| get dark | стемнеть | get late | стать поздно |
+| get dark | стемнеть | get late | становиться поздно (It's getting late.) |
 | get fit | набрать форму | get ready | приготовиться |
 | get dressed | одеться | get lost | заблудиться |
 | get married | пожениться | get divorced | развестись |
@@ -342,7 +342,7 @@ Get имеет три основных значения: **получить**, *
 | keep away | держаться подальше | keep it up | так держать |
 | keep company | составлять компанию | keep busy | быть занятым |
 | keep healthy | оставаться здоровым | keep an appointment | прийти на встречу |
-| keep a seat | занять место | keep your temper | сдерживаться |
+| keep a seat | придержать место (для кого-то) | keep your temper | сдерживаться |
 | keep it simple | не усложнять | keep cool | сохранять хладнокровие |
 
 Примеры:
@@ -378,7 +378,7 @@ Get имеет три основных значения: **получить**, *
 | close friend | близкий друг | near friend |
 | best friend | лучший друг | top friend |
 | bright idea | светлая мысль | light idea |
-| narrow escape | чудом спасся | thin escape |
+| narrow escape | чудесное спасение | thin escape |
 | fresh air | свежий воздух | new air |
 | hard work | тяжёлая работа | strong work |
 | hot weather | жаркая погода | high weather |
@@ -386,7 +386,7 @@ Get имеет три основных значения: **получить**, *
 | high temperature | высокая температура | big temperature |
 | long way | далёкий путь | far way |
 | tall building | высокое здание | long building |
-| high mountain | высокая гора | tall mountain |
+| high mountain | высокая гора | long mountain |
 | tall man | высокий мужчина | high man |
 
 ### Наречие + глагол / прилагательное

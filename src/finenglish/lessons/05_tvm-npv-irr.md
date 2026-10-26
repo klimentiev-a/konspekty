@@ -6,7 +6,7 @@ minutes: 7
 
 ## Theory
 
-> **In one minute.** PV = CF / (1 + r)^t. Perpetuity = C / r; growing perpetuity = C / (r − g). NPV (чистая приведённая стоимость) > 0 means the project earns more than its cost of capital; IRR (внутренняя норма доходности) is the rate at which NPV = 0. NPV decides, IRR communicates.
+> **In one minute.** PV = CF / (1 + r)^t: present value (приведённая стоимость) is a cash flow (денежный поток) discounted at rate r for t years. Perpetuity (перпетуитет, бессрочный поток) = C / r; growing perpetuity = C / (r − g), where g is the growth rate (темп роста). NPV (чистая приведённая стоимость) > 0 means the project earns more than its cost of capital; IRR (внутренняя норма доходности) is the rate at which NPV = 0. NPV decides, IRR communicates.
 
 ## Core formulas
 
@@ -20,7 +20,9 @@ EAR = (1 + APR / m)^m − 1            continuous: FV = PV × e^(rt)
 Rule of 72: doubling time ≈ 72 / r(%)
 ```
 
-Cash flows arrive through the year, not on 31 December, so DCF models use the mid-year convention (поправка на середину года); it raises value by roughly half a year of discounting. Nominal flows (номинальные, с инфляцией) go with nominal rates, real with real; rouble flows with a rouble rate.
+FV is future value (будущая стоимость), C is a fixed annual payment, n the number of periods; EAR is the effective annual rate (эффективная годовая ставка) and APR the quoted annual rate (номинальная годовая ставка) compounded m times a year.
+
+Cash flows arrive through the year, not on 31 December, so DCF (discounted cash flow, дисконтированные денежные потоки) models use the mid-year convention (поправка на середину года); it raises value by roughly half a year of discounting. Nominal flows (номинальные, с инфляцией) go with nominal rates, real with real; rouble flows with a rouble rate.
 
 ## NPV
 
@@ -41,11 +43,11 @@ Accept if IRR > hurdle rate (пороговая ставка). Traps:
 - **Multiple IRRs** when flows change sign more than once (mine closure costs, refinancing).
 - **Reinvestment assumption:** IRR assumes interim flows are reinvested at the IRR. MIRR (модифицированная IRR) uses the cost of capital.
 - **Scale:** a 50% IRR on 1 million is worth less than 20% on 100 million. Mutually exclusive projects (взаимоисключающие проекты): use NPV, or incremental IRR (приростная IRR).
-- **Timing games:** early cash out inflates IRR; private equity uses subscription lines (кредитные линии под обязательства инвесторов) to delay capital calls and lift IRR without creating value.
+- **Timing games:** early cash out inflates IRR; private equity (фонды прямых инвестиций) uses subscription lines (кредитные линии под обязательства инвесторов) to delay capital calls (требования о внесении капитала) and lift IRR without creating value.
 
 ## IRR, MOIC and time
 
-Private equity reports IRR together with MOIC (мультипликатор вложенного капитала), because IRR alone hides duration.
+Private equity reports IRR together with MOIC, multiple on invested capital (мультипликатор вложенного капитала), because IRR alone hides duration.
 
 | MOIC | 3 years | 5 years | 7 years |
 |---|---|---|---|
@@ -61,7 +63,7 @@ Payback (срок окупаемости) ignores time value and later flows; di
 
 ## Choosing the discount rate
 
-The rate must match the risk and the currency of the flow: risk-free (безрисковая ставка) for certain flows, WACC for the firm's operating flows, Ke for equity flows, a project-specific rate (ставка под проект) when the project's risk differs from the company's. Using the company WACC for a riskier project is a classic value-destroying error.
+The rate must match the risk and the currency of the flow: risk-free (безрисковая ставка) for certain flows, WACC (weighted average cost of capital, средневзвешенная стоимость капитала) for the firm's operating flows, Ke (cost of equity, стоимость собственного капитала) for equity flows, a project-specific rate (ставка под проект) when the project's risk differs from the company's. Using the company WACC for a riskier project is a classic value-destroying error.
 
 ## Words
 

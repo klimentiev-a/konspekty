@@ -191,7 +191,7 @@ minutes: 60
 | identical | одинаковый, идентичный | The twins look identical. | Близнецы выглядят одинаково. |
 | fairly | довольно | The exam was fairly easy. | Экзамен был довольно лёгким. |
 | unique | уникальный | Each fingerprint is unique. | Каждый отпечаток пальца уникален. |
-| previous | предыдущий | I lived there in my previous job. | Я жила там на прошлой работе. |
+| previous | предыдущий | In my previous job, I worked with children. | На прошлой работе я работала с детьми. |
 | additional | дополнительный | There is an additional charge. | Есть дополнительная плата. |
 | ordinary | обычный | It was an ordinary day. | Это был обычный день. |
 | landscape | пейзаж, ландшафт | The landscape was breathtaking. | Пейзаж захватывал дух. |
@@ -201,7 +201,7 @@ minutes: 60
 - Tom: Kira, I've finally booked our holiday! We're flying to the Netherlands in August. | Кира, я наконец забронировал наш отпуск! Мы летим в Нидерланды в августе.
 - Kira: The Netherlands? Great! I've always wanted to see the canals and the tulip fields. | Нидерланды? Здорово! Я всегда хотела увидеть каналы и поля тюльпанов.
 - Tom: We can also take the train to Belgium for a couple of days. It's such a short trip. | Мы можем ещё съездить на поезде в Бельгию на пару дней. Это такая короткая поездка.
-- Kira: Good idea. I'd like to see another country, not just one. | Хорошая идея. Я бы хотела увидеть ещё одну страну, а не только одну.
+- Kira: Good idea. I'd like to see another country too, not just the Netherlands. | Хорошая идея. Я бы хотела увидеть ещё одну страну, а не только Нидерланды.
 - Tom: Exactly. I found two hotels in Amsterdam. One is in the centre, the other is near the airport. | Именно. Я нашёл два отеля в Амстердаме. Один в центре, другой около аэропорта.
 - Kira: The one in the centre, of course. Is it expensive? | Тот, что в центре, конечно. Он дорогой?
 - Tom: Quite expensive, actually, but breakfast is included. | Довольно дорогой, вообще-то, но завтрак включён.
@@ -233,7 +233,7 @@ minutes: 60
 Выбери верный вариант.
 1. She goes to ___ school every day. (она ученица) :: no article* | the | a
 2. We had ___ lunch at a small café. :: no article* | the | an
-3. I need to see ___ doctor about my back. :: a* | the | no article
+3. My brother is ___ doctor. He works in a big hospital. :: a* | the | no article
 4. I think ___ music helps people relax. :: no article* | the | a
 5. What ___ beautiful view! :: a* | the | no article
 6. She plays ___ piano very well. :: the* | a | no article
@@ -307,7 +307,7 @@ minutes: 60
 5. The city has a ___ of two million people. (POPULATE) => population
 6. Mountains and lakes are ___ features. (GEOGRAPHY) => geographical / geographic
 7. We are not friends, just ___ . (ACQUAINT) => acquaintances
-8. The two twins look almost ___ . (IDENTITY) => identical
+8. The twins look almost ___ . (IDENTITY) => identical
 9. Their ___ is very close. (RELATE) => relationship
 
 ### Упражнение 9. Переведи на английский

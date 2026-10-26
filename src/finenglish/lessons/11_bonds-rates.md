@@ -6,7 +6,7 @@ minutes: 8
 
 ## Theory
 
-> **In one minute.** Price and yield move inversely (в противоположных направлениях). YTM (доходность к погашению) is the IRR of the bond's cash flows. Duration (дюрация) is the price sensitivity to yield: ΔP/P ≈ −D_mod × Δy. Credit spread (кредитный спред) over the risk-free curve prices default risk; ratings map it. The yield curve (кривая доходности) shows the market's path for the policy rate.
+> **In one minute.** Price and yield move inversely (в противоположных направлениях). YTM, yield to maturity (доходность к погашению), is the IRR, internal rate of return (внутренняя норма доходности), of the bond's cash flows. Duration (дюрация) is the price sensitivity to yield: ΔP/P ≈ −D_mod × Δy, where D_mod is modified duration (модифицированная дюрация). Credit spread (кредитный спред) over the risk-free curve prices default risk; ratings map it. The yield curve (кривая доходности) shows the market's path for the policy rate (ключевая ставка центрального банка).
 
 ## Pricing
 
@@ -29,26 +29,28 @@ Modified duration D_mod = D / (1 + y)
 DV01 (PVBP) = price change per 1 bp = D_mod × P × 0.0001
 ```
 
-Longer maturity and lower coupon → higher duration. A 10-year OFZ with D_mod ≈ 6 loses about 6% if yields rise 100 bp. Convexity (выпуклость) is positive for plain bonds: prices rise more when yields fall than they drop when yields rise. Floaters (флоатеры) have duration close to the next reset date, so they protect against rising rates.
+DV01 (dollar value of one basis point) and PVBP (price value of a basis point) are the same measure; 1 bp, one basis point (базисный пункт), is 0.01%.
+
+Longer maturity and lower coupon → higher duration. A 10-year OFZ (ОФЗ, облигации федерального займа) with D_mod ≈ 6 loses about 6% if yields rise 100 bp. Convexity (выпуклость) is positive for plain bonds: prices rise more when yields fall than they drop when yields rise. Floaters (флоатеры) have duration close to the next reset date, so they protect against rising rates.
 
 ## Credit
 
 ```f
 Yield = Risk-free (same maturity) + Credit spread (bp) [+ liquidity premium]
-Expected loss = PD × LGD × EAD    (вероятность дефолта × потери при дефолте × сумма под риском)
+Expected loss = PD × LGD × EAD    (probability of default × loss given default × exposure at default: вероятность дефолта × потери при дефолте × сумма под риском)
 ```
 
-Ratings: AAA–BBB− investment grade (инвестиционный уровень), BB+ and below high yield (высокодоходные). Russian scale: ACRA, Expert RA, NCR, NRA from AAA(RU) down. A downgrade (понижение) widens spreads; a fallen angel (падший ангел) crosses below investment grade and forces index-driven selling. Covenants (ковенанты), seniority (старшинство) and security (обеспечение) determine LGD (Topic 17).
+Ratings: AAA–BBB− investment grade (инвестиционный уровень), BB+ and below high yield (высокодоходные). Russian scale: ACRA (АКРА), Expert RA (Эксперт РА), NCR (НКР), NRA (НРА) from AAA(RU) down. A downgrade (понижение) widens spreads; a fallen angel (падший ангел) crosses below investment grade and forces index-driven selling. Covenants (ковенанты), seniority (старшинство) and security (обеспечение) determine LGD (Topic 17).
 
-Government bonds: OFZ-PD fixed coupon (постоянный купон), OFZ-PK floater linked to RUONIA (переменный купон), OFZ-IN inflation-linked (индексируемый номинал), OFZ-AD amortising (амортизация долга). Corporate: fixed, floaters tied to key rate or RUONIA, replacement bonds (замещающие облигации) that replaced Eurobonds, yuan bonds. Put via offer (оферта): the investor may redeem early at a set date; call (колл): the issuer may.
+Government bonds: OFZ-PD fixed coupon (ОФЗ‑ПД, постоянный купон), OFZ-PK floater linked to RUONIA, the rouble overnight index average (ОФЗ‑ПК, переменный купон), OFZ-IN inflation-linked (ОФЗ‑ИН, индексируемый номинал), OFZ-AD amortising (ОФЗ‑АД, амортизация долга). Corporate: fixed, floaters tied to key rate or RUONIA, replacement bonds (замещающие облигации) that replaced Eurobonds (еврооблигации), yuan bonds. Put via offer (оферта): the investor may redeem early at a set date; call (колл): the issuer may.
 
 ## Yield curve
 
-Term structure (временная структура ставок): yield against maturity for one issuer. Normal (upward), flat, inverted (инвертированная). Theories: expectations (ожидания будущих коротких ставок), liquidity premium (премия за срок), segmentation. An inverted curve means the market expects cuts: Russia 2024–2025 with short OFZ above long. Steepening (увеличение наклона) and flattening (выравнивание) are traded through curve positions. RGBI (индекс гособлигаций) tracks OFZ prices.
+Term structure (временная структура ставок): yield against maturity for one issuer. Normal (upward), flat, inverted (инвертированная). Theories: expectations (ожидания будущих коротких ставок), liquidity premium (премия за срок), segmentation. An inverted curve means the market expects cuts: Russia 2024–2025 with short OFZ above long. Steepening (увеличение наклона) and flattening (выравнивание) are traded through curve positions. RGBI (Russian Government Bond Index, индекс гособлигаций Мосбиржи) tracks OFZ prices.
 
 ## Bond math for the desk
 
-- Breakeven inflation (вменённая инфляция) = nominal yield − linker real yield.
+- Breakeven inflation (вменённая инфляция) = nominal yield − linker (облигация с индексируемым номиналом) real yield.
 - Carry and roll-down (кэрри и скатывание по кривой): the return from holding a bond as it ages down a steep curve.
 - Reinvestment risk (риск реинвестирования) vs price risk: they offset at the horizon equal to duration (immunisation, иммунизация).
 - Yield to call / yield to put / yield to worst (доходность к худшему) for bonds with options.
@@ -56,7 +58,7 @@ Term structure (временная структура ставок): yield again
 
 ## Reading a bond headline
 
-"Issuer placed a 3-year bond at 15.5%, 150 bp over OFZ, book covered 2x, duration 2.4." "OFZ curve bull-steepened (ралли на коротком конце) after the dovish statement." "Spreads tightened (сузились) 40 bp."
+"Issuer placed a 3-year bond at 15.5%, 150 bp over OFZ, book covered 2x, duration 2.4." "OFZ curve bull-steepened (ралли на коротком конце) after the dovish statement (мягкий сигнал ЦБ о снижении ставки)." "Spreads tightened (сузились) 40 bp."
 
 ## Words
 

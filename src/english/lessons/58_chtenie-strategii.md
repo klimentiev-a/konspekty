@@ -33,7 +33,7 @@ minutes: 60
 
 ### 3. Порядок действий: пять шагов
 1. **Сначала прочитай вопросы**, потом текст. Так ты знаешь, что искать. Слова из вопросов подчеркни (*who, when, why, the writer's attitude*).
-2. **Skim**: посмотри на заголовок (*headline*), подзаголовки, первую и последнюю строки. Пойми, жанр: письмо, блог, объявление, мнение.
+2. **Skim**: посмотри на заголовок (*headline*), подзаголовки, первую и последнюю строки. Пойми жанр: письмо, блог, объявление, мнение.
 3. **Scan** за деталями: найди в тексте слова из вопроса или близкие по смыслу (синонимы!).
 4. **Прочитай внимательно** найденное место и 1–2 соседних предложения: ответ часто стоит рядом.
 5. **Проверь** ответ: подтверждается ли он текстом? Не придумал ли ты его сам?
@@ -80,16 +80,16 @@ minutes: 60
 | dunno | «данно» | don't know | I dunno what to say. |
 | lemme / gimme | «лемми, гимми» | let me / give me | Gimme a minute. |
 | kinda | «кайнда» | kind of | It's kinda cold. |
-| whaddaya | «вотаю» | what do you | Whaddaya want? |
+| whaddaya | «уодая» | what do you | Whaddaya want? |
 | shoulda / coulda / woulda | «шуда, куда, вуда» | should / could / would have | You shoulda told me. |
 | I'd've | «айдав» | I would have | I'd've called you. |
 
 Три важных замечания:
 1. Это **устная** форма. В письме, особенно формальном, пиши *going to*, *want to*, *should have*. Допустимо встретить *gonna* в сообщении другу или в субтитрах, но не в эссе.
 2. Самая частая письменная ошибка на слух: **should of** вместо **should have**. Слышится *shoulda* /ʃʊdə/, и многие пишут *of*. Правильно только **should have** (или сокращение *should've*). То же с *could have, would have, must have*.
-3. В быстрой речи различать **can** и **can't** трудно: *can* звучит слабо /kən/, а *can't* — полно и с долгим гласным. Ориентируйся на контекст, смысл и ударение: в утверждении *I can swim* ударение падает на *swim*, а в отрицании *I can't swim* — на *can't*.
+3. В быстрой речи различать **can** и **can't** трудно: *can* звучит слабо /kən/, а *can't* — полно (в британском варианте с долгим гласным /kɑːnt/). Ориентируйся на контекст, смысл и ударение: в утверждении *I can swim* ударение падает на *swim*, а в отрицании *I can't swim* — на *can't*.
 
-> **Запомни.** Не пытайся услышать каждое слово. Ловится ударное слово — **содержательные слова** (существительные, глаголы, прилагательные, числа). Служебные слова (*to, of, a, the, can*) «проглатываются». По ударным словам почти всегда можно восстановить смысл.
+> **Запомни.** Не пытайся услышать каждое слово. Лови ударные слова — это **содержательные слова** (существительные, глаголы, прилагательные, числа). Служебные слова (*to, of, a, the, can*) «проглатываются». По ударным словам почти всегда можно восстановить смысл.
 
 ### 7. Как тренироваться: план на неделю
 - **Понедельник, среда, пятница**: читай один короткий текст (150–250 слов). Сначала skim за 30 секунд — запиши одно предложение «о чём это». Затем scan за деталями. Только потом проверь значения 3–5 слов.
@@ -119,6 +119,8 @@ minutes: 60
 - **Писать то, что слышишь:** *should of*, *gonna* в эссе, *wanna* в письме преподавателю.
 
 ### Текст 1. Неделя без телефона (личный блог)
+*Автор блога — Надя (Nadia).*
+
 Last month I tried an experiment: seven days without my smartphone. I didn't throw it away. I just switched it off, put it in a box and gave the box to my sister. I thought the hardest part would be missing messages from friends. In fact, the hardest part was the silence. On the first day I kept reaching into my pocket every few minutes, and on the bus I didn't know where to look.
 
 By Wednesday things started to change. I bought a paper map and found a new way to walk to work through a park I had never visited. I also began to read again, because I had nothing else to do in the evenings. My friends were surprised when I phoned them from the old phone in my kitchen instead of sending a text. Two of them said it was the first real conversation we had had for months.
@@ -251,7 +253,7 @@ I'm not saying that everyone should throw away their computers. For long reports
 Выбери ответ по текстам 1, 2 и 3. Помни: Not given — когда в тексте нет информации.
 1. Nadia gave the box with the phone to her sister. (Текст 1) :: True* | False | Not given
 2. Nadia was on time for every meeting that week. (Текст 1) :: True | False* | Not given
-3. Nadia bought a new phone after the experiment. (Текст 1) :: True | False | Not given*
+3. Nadia's sister also tried a week without a phone. (Текст 1) :: True | False | Not given*
 4. The conversation club is free every week. (Текст 2) :: True | False* | Not given
 5. The language club has moved to a new building. (Текст 2) :: True* | False | Not given
 6. The café on the ground floor serves cheap coffee. (Текст 2) :: True | False | Not given*

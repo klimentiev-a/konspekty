@@ -102,13 +102,13 @@ minutes: 60
 | По-русски | По-английски |
 |---|---|
 | делать из мухи слона | make a mountain out of a molehill (из кротовины гору) |
-| как две капли воды | like two peas in a pod (как два горошка в стручке) |
+| как две капли воды | like two peas in a pod (как две горошины в стручке) |
 | засучив рукава | roll up your sleeves (закатать рукава) |
 | проще простого | a piece of cake (кусок торта) |
 | капля в море | a drop in the ocean (капля в океане) |
 | ни пуха ни пера | break a leg (сломай ногу), пожелание удачи |
 
-Будьте осторожны: ❌ *Break a leg!* нельзя сказать вместо «Good luck» в любой ситуации. Это пожелание артистам и тем, кто выходит выступать.
+Будьте осторожны: *Break a leg!* нельзя говорить вместо *Good luck* в любой ситуации. Это пожелание артистам и тем, кто выходит выступать.
 
 ### 8. Коллокации уровня B1+
 **Коллокация** — это слова, которые «дружат» между собой по привычке языка, а не по логике. Запомните их парами, как маленькие идиомы.
@@ -181,16 +181,16 @@ minutes: 60
 **Трудная неделя**
 - Ben: Hi Rachel! You look a bit under the weather. | Привет, Рейчел! Ты выглядишь неважно.
 - Rachel: I'm just snowed under at work. I've been burning the midnight oil all week. | Я просто завалена работой. Всю неделю сижу допоздна.
-- Ben: Why? I thought you could hit the ground running in your new job. | Почему? Я думал, ты сразу включишься в новую работу.
+- Ben: Why? I thought you hit the ground running in your new job. | Почему? Я думал, ты сразу включилась в новую работу.
 - Rachel: I did, but the boss gave me three projects at the eleventh hour. | Включилась, но начальник в последнюю минуту дал мне три проекта.
 - Ben: That sounds awful. Are you still going to the concert on Saturday? | Звучит ужасно. Ты всё ещё пойдёшь на концерт в субботу?
 - Rachel: Come rain or shine! I bought the tickets, and they cost an arm and a leg. | Хоть потоп! Я купила билеты, и они стоили целое состояние.
 - Ben: Wow, you paid through the nose, then. Who's footing the bill for dinner? | Ого, значит, ты сильно переплатила. А кто платит за ужин?
-- Rachel: Me, I suppose. It won't break the bank, but I'm saving for a rainy day too. | Наверное, я. Это нас не разорит, но я ещё и коплю на чёрный день.
+- Rachel: Me, I suppose. It won't break the bank, but I'm saving for a rainy day too. | Наверное, я. Это меня не разорит, но я ещё и коплю на чёрный день.
 - Ben: Keep your chin up! Every cloud has a silver lining. | Не вешай нос! Нет худа без добра.
 - Rachel: I know, but I have butterflies in my stomach about Monday's presentation. | Знаю, но я ужасно волнуюсь из-за презентации в понедельник.
 - Ben: Don't get cold feet now. You always go the extra mile. | Не струсь сейчас. Ты всегда делаешь больше нормы.
-- Rachel: Thanks, Ben. You're the only friend I see once in a blue moon who still cheers me up. | Спасибо, Бен. Ты единственный друг, которого я вижу раз в сто лет и который всё равно меня подбадривает.
+- Rachel: Thanks, Ben. I only see you once in a blue moon, but you always cheer me up. | Спасибо, Бен. Я вижу тебя раз в сто лет, но ты всегда меня подбадриваешь.
 - Ben: That's because time flies when we're together! Let's call it a day and get a coffee. | Это потому что время летит, когда мы вместе! Давай закончим на сегодня и выпьем кофе.
 - Rachel: Great idea. I need to kill some time before my train anyway. | Отличная идея. Мне всё равно нужно скоротать время до поезда.
 

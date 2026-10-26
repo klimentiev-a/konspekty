@@ -129,7 +129,8 @@ minutes: 60
 Полезные фразы:
 - I stayed at home. — Я остался дома.
 - I had a great time. — Я отлично провёл время.
-- It was boring / lovely / a busy weekend. — Было скучно / чудесно / насыщенные выходные.
+- It was boring / lovely. — Было скучно / чудесно.
+- It was a busy weekend. — Выходные были насыщенными.
 - I didn't do anything special. — Ничего особенного не делал.
 
 ### 9. Типичные ошибки русскоговорящих
@@ -306,7 +307,7 @@ minutes: 60
 - Глагол **to be** не использует did: *Were you at home? I wasn't there.*
 - Вопрос к подлежащему идёт без did: *Who called you? What happened?*
 - **ago** ставится после отрезка времени (two days ago), а **last** — перед словом (last week), без предлога.
-- После отрицания didn't используйте anything / anybody, а не nothing / nobody.
+- После отрицания didn't используй anything / anybody, а не nothing / nobody.
 
 ## Мини-тест
 1. Как правильно спросить «Ты ходил в кино вчера?» :: Did you went to the cinema yesterday? | Did you go to the cinema yesterday?* | Do you went to the cinema yesterday?

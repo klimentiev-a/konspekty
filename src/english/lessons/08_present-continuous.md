@@ -48,7 +48,7 @@ minutes: 60
 - have → **having**
 - take → **taking**
 
-Исключения, где -e остаётся: *be → being*, *see → seeing* (две гласные, окончание -ee).
+Исключения, где -e остаётся: *be → being*, *see → seeing* (здесь e читается, она не немая).
 
 **Правило 2. Короткий глагол «согласная–гласная–согласная» удваивает последнюю согласную.**
 - run → **running**
@@ -203,7 +203,7 @@ minutes: 60
 | happen | происходить | What is happening here? | Что здесь происходит? |
 | right now | прямо сейчас | I am busy right now. | Я занят прямо сейчас. |
 | at the moment | в данный момент | She is working at the moment. | Она сейчас работает. |
-| these days | в эти дни, нынче | He is studying a lot these days. | Он много занимается в эти дни. |
+| these days | в последнее время, сейчас | He is studying a lot these days. | В последнее время он много занимается. |
 | today | сегодня | I am staying at home today. | Сегодня я остаюсь дома. |
 | tonight | сегодня вечером | We are going out tonight. | Сегодня вечером мы идём гулять. |
 | this week | на этой неделе | She is on holiday this week. | Она в отпуске на этой неделе. |
@@ -211,17 +211,17 @@ minutes: 60
 ## Диалог
 **Звонок другу**
 - Anna: Hello, Tom! Where are you? What are you doing? | Привет, Том! Где ты? Что делаешь?
-- Tom: Hi, Anna! I'm in the park. I'm walking with my dog. | Привет, Анна! Я в парке. Гуляю с собакой.
+- Tom: Hi, Anna! I'm in the park. I'm walking my dog. | Привет, Анна! Я в парке. Гуляю с собакой.
 - Anna: Is it raining there? It's raining here. | У вас идёт дождь? А у нас идёт.
 - Tom: No, it isn't. The sun is shining, but it's getting cold. | Нет. Светит солнце, но становится холодно.
 - Anna: Are you wearing a coat? | На тебе пальто?
 - Tom: Yes, I am. And the dog is running after a ball. | Да. А собака бежит за мячом.
 - Anna: Ha-ha! Is Kate with you? | Ха-ха! Кейт с тобой?
-- Tom: No, she isn't. She's studying at the library. She is studying for her exam these days. | Нет. Она занимается в библиотеке. Она готовится к экзамену в эти дни.
+- Tom: No, she isn't. She's at the library. She's studying for an exam these days. | Нет. Она в библиотеке. В последнее время она готовится к экзамену.
 - Anna: Poor Kate! Are you doing anything tonight? | Бедная Кейт! А ты что-нибудь делаешь сегодня вечером?
 - Tom: I'm meeting Kate for dinner. Do you want to come? | Я встречаюсь с Кейт за ужином. Хочешь пойти с нами?
 - Anna: Yes, please! I'm making a cake right now. | Да, с удовольствием! Я как раз пеку торт.
-- Tom: Wonderful! Bring the cake. We are waiting for you at seven. | Чудесно! Принеси торт. Мы ждём тебя в семь.
+- Tom: Wonderful! Bring the cake. Come to the café at seven. | Чудесно! Приноси торт. Приходи в кафе к семи.
 - Anna: Is Kate enjoying her studies? | А Кейт нравится учиться?
 - Tom: Yes, she is. But she's very tired at the moment. | Да. Но сейчас она очень устала.
 - Anna: OK. See you at seven. Bye! | Хорошо. Увидимся в семь. Пока!

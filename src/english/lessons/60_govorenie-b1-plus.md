@@ -86,7 +86,7 @@ I think the photo was taken in the evening, as the light is warm. Personally, I 
 | Степень | comparative + than; not as … as; the … the … | It is not as relaxing as home. |
 | Выбор | I would choose … because …; I prefer … to …; On balance, … | On balance, I would choose the library. |
 
-Нюансы: **different from** (британский вариант; в американском допустимы *different than* и *different to*), но не *different with*. **Unlike** стоит перед существительным: *Unlike the first photo, the second one is dark.* Не забывай *than* после сравнительной степени: ❌ *better as mine* ✅ *better than mine*.
+Нюансы: **different from** — стандартный вариант и в британском, и в американском английском (разговорно встречаются *different to* в британском и *different than* в американском), но не *different with*. **Unlike** стоит перед существительным: *Unlike the first photo, the second one is dark.* Не забывай *than* после сравнительной степени: ❌ *better as mine* ✅ *better than mine*.
 
 ### Модель 3. Сравнение двух картинок
 Both pictures show people who are studying, but the places are very different. In the first picture, a student is working in a library, whereas in the second one a girl is sitting on a sofa with a laptop.
@@ -126,7 +126,7 @@ Personally, I would choose the library because I find it easier to concentrate w
 | I live here since 2020. | I have lived here since 2020. |
 | She explained me the rule. | She explained the rule to me. |
 
-Над произношением работай по трём направлениям. (1) **Ударение**: *ˈcomfortable* (три слога: /ˈkʌmftəbl/), *ˈvegetable* (три слога), *inˈteresting*; в многосложных словах ударный слог звучит дольше и громче, остальные ослаблены. (2) **Звуки**: *th* (/θ/ и /ð/) — язык между зубами, не «з» и не «с»; *w* в *want* не превращай в *v*; на конце слова звонкие согласные остаются звонкими (*bad* не звучит как *bat*). (3) **Интонация**: в вопросах «да/нет» голос идёт вверх (*Do you like it?*), в вопросах со словом *what, where, why* — вниз.
+Над произношением работай по трём направлениям. (1) **Ударение**: *ˈcomfortable* (три слога: /ˈkʌmftəbl/), *ˈvegetable* (три слога), *ˈinteresting* (/ˈɪntrəstɪŋ/, ударение на первый слог); в многосложных словах ударный слог звучит дольше и громче, остальные ослаблены. (2) **Звуки**: *th* (/θ/ и /ð/) — язык между зубами, не «з» и не «с»; *w* в *want* не превращай в *v*; на конце слова звонкие согласные остаются звонкими (*bad* не звучит как *bat*). (3) **Интонация**: в вопросах «да/нет» голос идёт вверх (*Do you like it?*), в вопросах со словом *what, where, why* — вниз.
 
 ### 8. Чек-лист «Я умею B1+»
 Отметь для себя, что уже получается уверенно.

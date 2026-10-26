@@ -69,7 +69,7 @@ Past Perfect = **had + V3**. Он нужен, когда мы «возвраща
 
 Три нюанса.
 
-**а) Past Perfect не нужен, если порядок событий ясен из слов before / after.** Обе формы верны: *After he **had finished**, he went out.* и *After he **finished**, he went out.* Но без связки порядок показывает только время: *When she **left**, I called her* (сначала ушла) против *When she **had left**, I called her* (я позвонила, когда её уже не было).
+**а) Past Perfect не нужен, если порядок событий ясен из слов before / after.** Обе формы верны: *After he **had finished**, he went out.* и *After he **finished**, he went out.* А вот со связкой **when** порядок показывает только форма глагола: *When I arrived, she **left**.* (сначала пришла я, потом ушла она) против *When I arrived, she **had left**.* (она ушла ещё до моего прихода).
 
 **б) Нельзя ставить Past Perfect при точной дате без второго события.** ❌ *Yesterday I had visited my aunt.* ✅ *Yesterday I visited my aunt.* Past Perfect всегда нуждается во «второй точке» — другом событии или моменте в прошлом (*by 5 o'clock, by then, when we arrived*).
 
@@ -92,7 +92,7 @@ Past Perfect Continuous = **had been + V-ing**. Он нужен, когда ва
 | Подходит для глаголов состояния: *I had known him for years.* | Глаголы состояния не используются: ❌ *I had been knowing him* |
 | Разовое законченное действие: *He had broken his leg.* | Действие шло и могло ещё продолжаться: *He had been running.* |
 
-Если есть **how long**, **for** и **since**, а глагол действия (work, wait, learn, drive), чаще всего нужен Continuous. Если есть **how many** или **how much**, нужен простой Perfect: *How many pages had she written?*
+Если есть **how long**, **for** или **since**, а глагол действия (work, wait, learn, drive), чаще всего нужен Continuous. Если есть **how many** или **how much**, нужен простой Perfect: *How many pages had she written?*
 
 ### 6. Связки для рассказа
 Хороший рассказ держится на связках. Сгруппируем их по смыслу.
@@ -112,7 +112,7 @@ Past Perfect Continuous = **had been + V-ing**. Он нужен, когда ва
 - **eventually** — «в конце концов, со временем», после процесса или задержки: *Eventually, she found a job.*
 - **in the end** — итог ситуации; **at the end of** + существительное — конец чего-то: *At the end of the film, everyone cried.* ❌ *At the end, we found a hotel.* ✅ *In the end, we found a hotel.*
 - **while** + Continuous (процесс), а **when** чаще с коротким событием: *While I was walking, I saw a fox. / I was walking when I saw a fox.*
-- **as soon as** со Past Simple: *As soon as she came in, everybody stopped talking.* Если нужно подчеркнуть порядок, допустим и Past Perfect: *As soon as she had come in …*
+- **as soon as** с Past Simple: *As soon as she came in, everybody stopped talking.* Если нужно подчеркнуть порядок, допустим и Past Perfect: *As soon as she had come in …*
 - **by the time** + Past Simple в придаточном, а в главном часто Past Perfect: *By the time the police arrived, the thieves had escaped.*
 - **until** в отрицательном предложении: *She didn't leave until the rain stopped.* — Она ушла только тогда, когда кончился дождь.
 

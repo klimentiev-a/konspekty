@@ -50,41 +50,41 @@ minutes: 60
 Чтобы не учить список «в столбик», разобьём глаголы на смысловые группы. Полные переводы и примеры есть в разделе «Слова», а здесь — нюансы, которые важно знать.
 
 **А. Работа и учёба**
-- **set up** (отделяемый) — создать, организовать, настроить: *set up a company, set up a meeting, set up the Wi-Fi.* Это «запустить что-то новое».
-- **hand in** (отделяемый) — сдать (работу, документ): *hand in your essay.* Говорят про домашнее задание, отчёты, заявления.
-- **fill in** (отделяемый) — заполнить (бланк, форму): *fill in a form.* В американском английском чаще *fill out*; в британском допустимы оба.
-- **deal with** (неотделяемый) — справляться, заниматься (проблемой, клиентом): *I'll deal with it.* Также «рассматривать тему»: *The book deals with love.*
-- **sort out** (отделяемый) — разобраться, уладить: *sort out a problem, sort out the papers.* Очень частый глагол в британском английском.
-- **point out** (отделяемый) — указать, обратить внимание: *He pointed out my mistake.*
-- **come up with** (неотделяемый) — придумать, предложить (идею, план, решение): *She came up with a great idea.*
+- **set up** (разделяемый) — создать, организовать, настроить: *set up a company, set up a meeting, set up the Wi-Fi.* Это «запустить что-то новое».
+- **hand in** (разделяемый) — сдать (работу, документ): *hand in your essay.* Говорят про домашнее задание, отчёты, заявления.
+- **fill in** (разделяемый) — заполнить (бланк, форму): *fill in a form.* В американском английском чаще *fill out*; в британском допустимы оба.
+- **deal with** (неразделяемый) — справляться, заниматься (проблемой, клиентом): *I'll deal with it.* Также «рассматривать тему»: *The book deals with love.*
+- **sort out** (разделяемый) — разобраться, уладить: *sort out a problem, sort out the papers.* Очень частый глагол в британском английском.
+- **point out** (разделяемый) — указать, обратить внимание: *He pointed out my mistake.*
+- **come up with** (неразделяемый) — придумать, предложить (идею, план, решение): *She came up with a great idea.*
 - **carry on** (без дополнения или with/-ing) — продолжать: *Carry on, please. / She carried on working. / Carry on with your work.*
 
 **Б. Проблемы и решения**
-- **figure out** (отделяемый) — понять, разобраться, найти решение: *I can't figure out how it works. / I can't figure it out.*
+- **figure out** (разделяемый) — понять, разобраться, найти решение: *I can't figure out how it works. / I can't figure it out.*
 - **work out** — у этого глагола три главных значения: (1) решить, вычислить — *work out the answer*; (2) тренироваться — *I work out three times a week*; (3) «сложиться» — *Everything worked out fine.*
-- **run out of** (неотделяемый) — истощиться, закончиться (у нас): *We've run out of milk.* Подлежащее — тот, у кого закончилось, а не то, что закончилось. ❌ *The milk ran out of.* ✅ *We ran out of milk.* (Но можно и просто *The milk ran out*.)
+- **run out of** (неразделяемый) — истощиться, закончиться (у нас): *We've run out of milk.* Подлежащее — тот, у кого закончилось, а не то, что закончилось. ❌ *The milk ran out of.* ✅ *We ran out of milk.* (Но можно и просто *The milk ran out*.)
 - **break down** (без дополнения) — сломаться (машина, техника): *My car broke down.* Также «не выдержать», например, расплакаться.
-- **come across** (неотделяемый) — случайно наткнуться, встретить: *I came across an old friend in the shop.* Ещё одно значение: *come across as* — «производить впечатление»: *He comes across as shy.*
-- **go through** (неотделяемый) — пережить (трудный период) или внимательно просмотреть: *She went through a difficult time. / Let's go through the report together.*
-- **get over** (неотделяемый) — оправиться, пережить (болезнь, расставание, разочарование): *It took me a week to get over the flu.*
+- **come across** (неразделяемый) — случайно наткнуться, встретить: *I came across an old friend in the shop.* Ещё одно значение: *come across as* — «производить впечатление»: *He comes across as shy.*
+- **go through** (неразделяемый) — пережить (трудный период) или внимательно просмотреть: *She went through a difficult time. / Let's go through the report together.*
+- **get over** (неразделяемый) — оправиться, пережить (болезнь, расставание, разочарование): *It took me a week to get over the flu.*
 
 **В. Планы и решения**
-- **call off** (отделяемый) — отменить (то, что было запланировано): *call off the match.*
-- **put off** (отделяемый) — отложить, перенести: *put off the meeting until Monday.* После put off — герундий: *Stop putting off going to the dentist.*
-- **turn down** (отделяемый) — отклонить (предложение, приглашение, кандидата) или убавить звук: *turn down a job offer, turn down the music.*
-- **take up** (отделяемый) — начать заниматься (хобби, спортом): *take up yoga, take up painting.*
-- **look forward to** (неотделяемый) — ждать с нетерпением. **to здесь предлог, поэтому дальше -ing:** *I'm looking forward to seeing you.*
+- **call off** (разделяемый) — отменить (то, что было запланировано): *call off the match.*
+- **put off** (разделяемый) — отложить, перенести: *put off the meeting until Monday.* После put off — герундий: *Stop putting off going to the dentist.*
+- **turn down** (разделяемый) — отклонить (предложение, приглашение, кандидата) или убавить звук: *turn down a job offer, turn down the music.*
+- **take up** (разделяемый) — начать заниматься (хобби, спортом): *take up yoga, take up painting.*
+- **look forward to** (неразделяемый) — ждать с нетерпением. **to здесь предлог, поэтому дальше -ing:** *I'm looking forward to seeing you.*
 - **end up** (без дополнения) — в итоге оказаться (где-то или в какой-то ситуации): *We ended up in a small café. / I ended up paying for everyone.*
 
 **Г. Люди и отношения**
-- **get along (with)** (неотделяемый) — ладить: *I get along with my colleagues.* В британском английском так же часто говорят *get on (with)*.
-- **let down** (отделяемый) — подвести, разочаровать: *Don't let me down.*
-- **bring up** (отделяемый) — (1) вырастить, воспитать ребёнка: *She was brought up by her grandmother*; (2) поднять тему в разговоре: *Don't bring up that subject.*
-- **make up** (отделяемый) — (1) выдумать: *make up a story*; (2) помириться: *They had an argument but made up*; (3) *make up your mind* — принять решение.
-- **catch up (with)** (неотделяемый) — (1) наверстать, догнать: *I need to catch up with my work*; (2) пообщаться после долгой разлуки: *Let's catch up over coffee.*
+- **get along (with)** (неразделяемый) — ладить: *I get along with my colleagues.* В британском английском так же часто говорят *get on (with)*.
+- **let down** (разделяемый) — подвести, разочаровать: *Don't let me down.*
+- **bring up** (разделяемый) — (1) вырастить, воспитать ребёнка: *She was brought up by her grandmother*; (2) поднять тему в разговоре: *Don't bring up that subject.*
+- **make up** (разделяемый) — (1) выдумать: *make up a story*; (2) помириться: *They had an argument but made up*; (3) *make up your mind* — принять решение.
+- **catch up (with)** (неразделяемый) — (1) наверстать, догнать: *I need to catch up with my work*; (2) пообщаться после долгой разлуки: *Let's catch up over coffee.*
 - **show up** (без дополнения) — появиться, прийти (часто о том, кто опоздал или должен был прийти): *He never showed up.*
 - **drop by** (без дополнения) — зайти ненадолго, «заглянуть»: *Drop by any time.*
-- **cut down on** (неотделяемый) — сократить потребление: *cut down on sugar, cut down on coffee.*
+- **cut down on** (неразделяемый) — сократить потребление: *cut down on sugar, cut down on coffee.*
 
 ### 4. Формы глагола: время, пассив, вопросы
 Фразовый глагол **спрягается по обычным правилам** — меняется только первое слово (сам глагол). Частица остаётся без изменений. Многие базовые глаголы — неправильные, а мы уже учили их в уроках 14 и 22.
@@ -108,7 +108,7 @@ minutes: 60
 **Пассив.** Многие разделяемые глаголы часто стоят в пассиве: *The match was called off. The meeting has been put off until Monday. The company was set up in 2015. He was brought up by his grandparents.* Частица остаётся сразу после причастия.
 
 **Вопросы и отрицания** строятся с do/did, а частицу не отрывают от глагола (если она не отделена местоимением):
-- Did you **figure** it **out**? — Нет, **I haven't figured** it out yet.
+- Did you **figure** it **out**? — No, **I haven't figured** it out yet.
 - We didn't **run out of** time.
 - What are you **looking forward to**? Who do you **get along with**? — предлог (to, with) в вопросе остаётся в конце, это нормально.
 
@@ -142,7 +142,7 @@ minutes: 60
 4. ❌ *I came it across.* → ✅ **I came across it.** (неразделяемый глагол)
 5. ❌ *He put off to go to the dentist.* → ✅ **He put off going to the dentist.** (после put off — герундий)
 6. ❌ *We deal about the problem.* → ✅ **We deal with the problem.** (предлог with, не about)
-7. ❌ *They get along together.* → ✅ **They get along well.** / *They get on well.* (together не нужно)
+7. ❌ *They get along well each other.* → ✅ **They get along well with each other.** / *They get on well.* (перед тем, с кем ладят, нужен with)
 8. ❌ *Please carry on to write.* → ✅ **Please carry on writing.** (после carry on — -ing или with)
 9. ❌ *My car was broken down yesterday.* → ✅ **My car broke down yesterday.** (в рассказе о событии используем активный Past Simple)
 10. Путают **figure out** (понять, найти решение) и **find out** (узнать новую информацию): *I found out that he was ill* — узнал; *I figured out how it works* — разобрался.
@@ -326,5 +326,5 @@ minutes: 60
 6. Что значит «put off the meeting»? :: перенести встречу* | отменить встречу | провести встречу
 7. Что значит «My car broke down»? :: Машина сломалась.* | Машина разбилась. | Машину продали.
 8. Which sentence is correct? :: He put off to go to the dentist. | He put off going to the dentist.* | He put off for going to the dentist.
-9. «Они хорошо ладят» — это... :: They get along well.* | They get at well. | They get along together well.
+9. «Они хорошо ладят» — это... :: They get along well.* | They get at well. | They get along each other well.
 10. She made ___ a story to explain why she was late. :: up* | on | out

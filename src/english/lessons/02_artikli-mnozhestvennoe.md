@@ -32,7 +32,7 @@ minutes: 60
 **A / an** произошёл от слова *one* («один»), поэтому ставится **только перед существительным в единственном числе**, которое можно посчитать: *a book, an apple*. Перед множественным числом a/an не бывает — вместо него просто ничего: *a student → students*.
 
 Когда использовать a / an:
-1. **Первое упоминание, «один из многих».** *Anna is a student. The student is from Moscow.* — Анна — студентка (одна из многих). Эта студентка (уже известная) из Москвы.
+1. **Первое упоминание, «один из многих».** *I have a sister and a brother.* — У меня есть сестра и брат (говорим о них впервые; дальше уже будет *the*, см. раздел 3).
 2. **Профессия, национальность-существительное, роль.** *She is a teacher. He is an engineer.* (В уроке 1 мы уже писали *I am a student* — это оно.)
 3. **Название предмета: «Что это?».** *It is a key.* — Это ключ.
 4. **Восклицание «Какой…!».** *What a nice day!* — Какой хороший день! *What an old house!* — Какой старый дом!
@@ -100,7 +100,7 @@ minutes: 60
 Окончание читается тремя способами:
 - **[s]** после глухих согласных (p, t, k, f): *books, cats, cups, hats*.
 - **[z]** после звонких согласных и гласных: *dogs, pens, boys, keys, days*.
-- **[ɪz]** после шипящих и свистящих (s, z, sh, ch, x, j): *buses, watches, boxes, dishes, oranges*.
+- **[ɪz]** после шипящих и свистящих (s, z, sh, ch, x, ge [dʒ]): *buses, watches, boxes, dishes, oranges*.
 
 Это же правило потом пригодится для глаголов (he works, she watches) в уроке 3.
 
@@ -139,7 +139,7 @@ minutes: 60
 
 Примеры:
 - **This** is a pen. (У меня в руке.) — Это ручка.
-- **That** is a bus. (Вон там, на улице.) — То автобус.
+- **That** is a bus. (Вон там, на улице.) — Вон то — автобус.
 - **These** are my keys. (Лежат рядом.) — Это мои ключи.
 - **Those** are my friends. (Стоят там вдалеке.) — Это мои друзья.
 
@@ -184,7 +184,7 @@ minutes: 60
 | book | книга | This is a good book. | Это хорошая книга. |
 | pen | ручка | Is this your pen? | Это твоя ручка? |
 | bag | сумка | The bag is on the chair. | Сумка лежит на стуле. |
-| phone | телефон | That is my phone. | Вот мой телефон. |
+| phone | телефон | That is my phone. | Вон тот телефон — мой. |
 | key | ключ | These are my keys. | Это мои ключи. |
 | table | стол | The book is on the table. | Книга лежит на столе. |
 | chair | стул | There is a chair in the room. | В комнате есть стул. |
@@ -199,7 +199,7 @@ minutes: 60
 | tomato | помидор | These are tomatoes. | Это помидоры. |
 | umbrella | зонт | Where is my umbrella? | Где мой зонт? |
 | ticket | билет | Here is your ticket. | Вот ваш билет. |
-| shop | магазин | The shop is near. | Магазин близко. |
+| shop | магазин | The shop is near here. | Магазин недалеко отсюда. |
 | bus | автобус | The bus is late. | Автобус опаздывает. |
 | car | машина | It is an old car. | Это старая машина. |
 | dog | собака | Dogs are friendly. | Собаки дружелюбны. |
@@ -210,7 +210,7 @@ minutes: 60
 | wife | жена | His wife is a doctor. | Его жена — врач. |
 | watch | наручные часы | This is a new watch. | Это новые часы. |
 | hour | час | The lesson is in an hour. | Урок через час. |
-| university | университет | She is at a university. | Она учится в университете. |
+| university | университет | She is a university student. | Она студентка университета. |
 
 ## Диалог
 **В аудитории: чья это вещь?**

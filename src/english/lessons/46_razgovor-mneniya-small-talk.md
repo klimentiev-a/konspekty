@@ -40,7 +40,7 @@ minutes: 60
 - ❌ *I think it isn't a good idea.*
 - ✅ **I don't think it's a good idea.**
 
-То же с *believe*: *I don't believe he is ready.* Первый вариант понятен, но звучит неестественно: носители английского почти всегда говорят *I don't think…*. В коротких ответах: **I think so** (я так думаю), **I don't think so** (не думаю), **I hope so / I hope not** (надеюсь, что да / надеюсь, что нет).
+То же с *believe*: *I don't believe he is ready.* Вариант *I think it isn't…* понятен, но звучит неестественно: носители английского почти всегда говорят *I don't think…*. В коротких ответах: **I think so** (я так думаю), **I don't think so** (не думаю), **I hope so / I hope not** (надеюсь, что да / надеюсь, что нет).
 
 **Как спросить мнение:**
 - **What do you think about / of** this idea? — Что ты думаешь об этой идее?
@@ -223,7 +223,7 @@ minutes: 60
 - Anna: I couldn't agree more. I think people work better at home. | Полностью согласна. Я думаю, дома люди работают лучше.
 - Mark: Well, I'm not so sure. I don't think it's good for everyone. I miss my colleagues when I stay at home. | Ну, я не так уверен. Не думаю, что это подходит всем. Дома мне не хватает коллег.
 - Anna: Sorry, I didn't catch the last part. What do you miss? | Прости, я не расслышала последнюю часть. Чего тебе не хватает?
-- Mark: My colleagues. Chatting with people is important for me. | По коллегам. Общение с людьми для меня важно.
+- Mark: My colleagues. Chatting with people is important for me. | Коллег. Общение с людьми для меня важно.
 - Anna: I see your point, but you can always call them. | Я понимаю тебя, но им всегда можно позвонить.
 - Mark: Sorry to interrupt, but do you mean video calls? | Прости, что перебиваю, но ты имеешь в виду видеозвонки?
 - Anna: Yes, exactly. We use them every day. | Да, именно. Мы пользуемся ими каждый день.
@@ -316,7 +316,7 @@ minutes: 60
 1. Have you ever ___ (be) to London? => been
 2. I ___ (see) him yesterday. => saw
 3. We ___ (not meet) before. Nice to meet you! => haven't met / have not met
-4. How long have you ___ (live) here? => lived
+4. How long have you ___ (live) here? => lived / been living
 5. She ___ (finish) work an hour ago. => finished
 6. I've just ___ (hear) the news. => heard
 

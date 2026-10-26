@@ -44,7 +44,7 @@ minutes: 60
 Особенности:
 - Глагол **be** после wish принимает форму **were** для всех лиц: *I wish I were rich. I wish he were here.* В разговорной речи часто звучит и *was*: *I wish I was taller.* В экзамене и письме безопаснее were.
 - Для умений используем **could**, для необходимости — **didn't have to**.
-- Глаголы состояния (know, have, like, live) отлично работают в Past Simple: *I wish I knew his name.* Для действий в процессе подойдёт Past Continuous: *I wish I was lying on a beach right now.*
+- Глаголы состояния (know, have, like, live) отлично работают в Past Simple: *I wish I knew his name.* Для действий в процессе подойдёт Past Continuous: *I wish I were lying on a beach right now.*
 - Нельзя ставить will или would для собственной ситуации: ❌ *I wish I would have a car.* ✅ **I wish I had a car.**
 - Слово **that** после wish можно опустить: *I wish (that) I had more time.*
 
@@ -279,7 +279,7 @@ Suppose бывает и мягким предложением: *Suppose we ask h
 2. Look at those clouds! It looks as if it ___ rain. :: is going to* | had rained | rains
 3. It's 11 pm! It's high time you ___ to bed. :: went* | go | will go
 4. Suppose you ___ a million pounds, what would you do? :: won* | win | would win
-5. She looked at me as though she ___ me before. She hadn't. :: had never seen* | has never seen | never sees
+5. She looked at me as though she ___ me before. (На самом деле мы давно знакомы.) :: had never seen* | has never seen | never sees
 6. Suppose he calls tomorrow, what ___ you say? :: will* | would have | did
 7. I wish it ___ raining. It has rained all week. :: would stop* | will stop | stops
 8. He isn't ill, but he's acting as if he ___ very sick. :: were* | is | will be
@@ -344,6 +344,6 @@ Suppose бывает и мягким предложением: *Suppose we ask h
 5. I ___ you pass your driving test tomorrow! :: hope* | wish | would rather
 6. I'd rather you ___ in the room. :: didn't smoke* | don't smoke | not smoke
 7. It's high time we ___ . :: left* | leave | will leave
-8. She looked at me as if she ___ me before. (She hasn't.) :: had never seen* | has never seen | never saw
+8. She looked at me as if she ___ me before. (На самом деле мы знакомы.) :: had never seen* | has never seen | never saw
 9. Suppose you ___ the job, what would you do? :: got* | get | will get
 10. Какое предложение верное? :: I'd rather to go home. | I'd rather go home.* | I'd rather going home.
