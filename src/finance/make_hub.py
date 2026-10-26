@@ -38,7 +38,7 @@ def gate(p):
 
 
 EXTRA_CSS = """<style>
-.top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:-28px 0 26px}
+.top{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;margin:-28px 0 26px}
 .top a,.top button{display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 14px;border:1px solid var(--line);border-radius:999px;background:var(--surface);color:var(--muted);font:500 13.5px/1 'IBM Plex Sans',system-ui,sans-serif;text-decoration:none;cursor:pointer}
 .top a:hover,.top button:hover{color:var(--fg);border-color:var(--faint)}
 .prof .card{font:inherit;text-align:left;cursor:pointer;color:inherit;min-height:170px}
@@ -53,7 +53,7 @@ EXTRA_CSS = """<style>
 .empty .ic{font:600 34px/1 'Literata',Georgia,serif;color:var(--faint);margin-bottom:10px}
 h1.brand{line-height:0;margin:4px 0 14px}h1.brand .wm{height:clamp(52px,12vw,76px);width:auto;display:block}.wm [stroke=\"#25221C\"]{stroke:var(--fg)}.wm [fill=\"#25221C\"]{fill:var(--fg)}:root[data-theme=dark] .wm [stroke=\"#0A9466\"]{stroke:#2FD69C}:root[data-theme=dark] .wm [fill=\"#0A9466\"]{fill:#2FD69C}@media (prefers-color-scheme:dark){:root:not([data-theme=light]) .wm [stroke=\"#0A9466\"]{stroke:#2FD69C}:root:not([data-theme=light]) .wm [fill=\"#0A9466\"]{fill:#2FD69C}}
 /* переключатель темы */
-.top .tr{display:flex;gap:8px;align-items:center}
+.top .tr{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:8px;align-items:center}
 .thm{flex:none;width:36px;height:36px;padding:0!important;justify-content:center;border:1px solid var(--line);border-radius:50%;background:var(--surface);color:var(--muted);display:grid;place-items:center;cursor:pointer}
 .thm svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2}
 .thm:hover{color:var(--fg)}
@@ -172,6 +172,28 @@ index_html = page('Hub', index_body)
 
 # ---------------- artem.html ----------------
 cards_artem = re.search(r'<div class="cards">.*?\n  </div>', TPL, re.S).group(0)
+# Главная Артёма: Учёба · Финансы (→ Финансы 1, Финансы 2) · Другое (всё остальное). Подразделы — в той же
+# странице по адресу artem.html#fin и #other, кнопка «Назад» телефона возвращает к трём карточкам.
+_cards = {re.search(r'href="([^"]+)"', c).group(1): c for c in re.findall(r'    <div class="card[^"]*">.*?\n    </div>', cards_artem, re.S)}
+def _card(href): return _cards[href]
+_fin1 = _card('finance.html').replace('<b>Финансы</b>', '<b>Финансы 1</b>', 1).replace('aria-label="Финансы"', 'aria-label="Финансы 1"', 1)
+_main = ('<div class="cards" data-group="">\n' + _card('ucheba.html') + '\n'
+         '    <div class="card f"><a class="cover" href="#fin" aria-label="Финансы"></a>\n'
+         '      <div class="ic">₽</div><b>Финансы</b><span>Финансы 1: обучение, рынки, мир. Финансы 2: облигации и акции РФ</span>\n'
+         '      <div class="links"><a href="finance.html">Финансы 1</a><a href="fin2/index.html#screener">Финансы 2</a></div>\n    </div>\n'
+         '    <div class="card e"><a class="cover" href="#other" aria-label="Другое"></a>\n'
+         '      <div class="ic">⋯</div><b>Другое</b><span>Политика, английский, нефть и газ</span>\n'
+         '      <div class="links"><a href="politika.html">Политика</a><a href="fin-english.html">Английский</a><a href="energy.html">Нефть и газ</a></div>\n    </div>\n  </div>')
+_fin = '<div class="cards" data-group="fin" hidden>\n' + _fin1 + '\n' + _card('fin2/index.html') + '\n  </div>'
+_oth = ('<div class="cards" data-group="other" hidden>\n' + '\n'.join(c for h, c in _cards.items() if h not in ('ucheba.html', 'finance.html', 'fin2/index.html')) + '\n  </div>')
+cards_artem = _main + '\n  ' + _fin + '\n  ' + _oth + r"""
+  <script>
+  (function(){var N={fin:'Финансы',other:'Другое'};
+  function v(){var g=location.hash.slice(1);if(!N[g])g='';
+    document.querySelectorAll('[data-group]').forEach(function(e){e.hidden=e.getAttribute('data-group')!==g});
+    var h=document.getElementById('hh');if(h)h.textContent=N[g]||'Артем';var b=document.getElementById('hback');if(b)b.hidden=!g}
+  window.addEventListener('hashchange',v);v()})();
+  </script>"""
 TODAY = ('<div class="today">'
          '<a class="tb" id="t-sched" href="ucheba.html#schedule"><h3>Пары</h3><div class="sk"></div><div class="sk" style="width:70%"></div></a>'
          '<a class="tb" id="t-mkt" href="finance.html#markets"><h3>Рынок сейчас</h3><div class="sk"></div><div class="sk" style="width:60%"></div></a>'
@@ -214,7 +236,7 @@ J('news.json').then(function(n){
 })();
 </script>'''
 
-artem_body = ('<div class="w">\n  ' + topbar('index.html', 'Профили', 'artem') + '\n  <h1>Артем</h1>\n  '
+artem_body = ('<div class="w">\n  ' + topbar('index.html', 'Профили', 'artem') + '\n  <a id="hback" class="hback" href="#" hidden>← Артем</a>\n  <h1 id="hh">Артем</h1>\n  '
               + cards_artem + '\n  ' + foot + '\n</div>\n' + LOGOUT_JS)
 SEARCH_BTN = '<a class="sbtn" href="search.html" aria-label="Поиск по сайту"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>Поиск</a>'
 SLOVAR_BTN = '<a class="sbtn" href="slovar.html" aria-label="Словарь терминов">Словарь</a>'

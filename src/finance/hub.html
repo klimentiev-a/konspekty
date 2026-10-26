@@ -92,7 +92,8 @@ body{margin:0;min-height:100vh;background:var(--bg);color:var(--fg);font:400 16p
 .w{max-width:880px;margin:0 auto}
 h1{margin:0;font:600 clamp(34px,7vw,56px)/1.05 'Literata',Georgia,serif;letter-spacing:-.02em}
 .lead{margin:12px 0 0;font:400 17px/1.5 'Literata',Georgia,serif;color:var(--muted)}
-.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:14px;margin-top:34px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:14px;margin-top:34px}.cards[hidden],.hback[hidden]{display:none}
+.hback{display:inline-flex;align-items:center;margin-top:18px;padding:6px 12px;border:1px solid var(--line);border-radius:999px;color:var(--muted);text-decoration:none;font-size:14px}.hback:hover{color:var(--fg);border-color:var(--faint)}
 .card{position:relative;display:flex;flex-direction:column;gap:10px;min-height:190px;padding:22px 22px 18px;border:1px solid var(--line);border-radius:18px;background:var(--surface);text-decoration:none;color:inherit;transition:border-color .15s}
 .card:hover{border-color:var(--faint)}
 .card .ic{font:600 30px/1 'Literata',Georgia,serif}
