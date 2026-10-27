@@ -1111,12 +1111,14 @@ var tip=document.getElementById('tip'),tipEl=null,tipT;
 function showTip(el){
   var x=TT[+el.getAttribute('data-tt')];if(!x)return;
   if(tipEl)tipEl.classList.remove('on');tipEl=el;el.classList.add('on');
-  tip.innerHTML='<b>'+esc(x.t)+'</b>'+esc(x.d)+'<br><a href="#learn/glossariy">Весь глоссарий →</a>';tip.hidden=false;
+  tip.innerHTML='<b>'+esc(x.t)+'</b>'+esc(x.d)+'<br><a href="#learn/glossariy/'+encodeURIComponent(el.textContent.trim())+'" data-glalt="'+esc(JSON.stringify(ttAlts(x.t)))+'">Открыть в глоссарии →</a>';tip.hidden=false;
   var z=parseFloat(document.documentElement.style.zoom)||1,r=el.getBoundingClientRect(),w=tip.offsetWidth*z,h=tip.offsetHeight*z;
   var left=Math.max(12,Math.min(r.left,innerWidth-w-12)),top=r.bottom+8;
   if(top+h>innerHeight-12)top=Math.max(12,r.top-h-8);
   tip.style.left=(left/z)+'px';tip.style.top=(top/z)+'px';
 }
+function ttAlts(t){var a=[],m=String(t).match(/^([^(—]+?)\s*(?:\(|—|$)/);if(m)a.push(m[1].trim());var b=String(t).match(/\(([^)]+)\)/);if(b)a.push(b[1].split('—')[0].trim());return a}
+tip.addEventListener('click',function(e){var l=e.target.closest('[data-glalt]');if(l){try{sessionStorage.setItem('fin:glalt',l.getAttribute('data-glalt'))}catch(x){}}});
 function hideTip(){tip.hidden=true;if(tipEl)tipEl.classList.remove('on');tipEl=null}
 var canHover=window.matchMedia&&matchMedia('(hover:hover) and (pointer:fine)').matches;
 var lastMove=0;document.addEventListener('mousemove',function(){lastMove=Date.now()},{passive:true});   /* mouseover без движения мыши — это перерисовка страницы под курсором, подсказку не показываем */
@@ -3366,7 +3368,15 @@ function renderLife(){
 
 /* ---------------- роутинг ---------------- */
 var state='',LASTCARD='';
-function glFocus(t){setTimeout(function(){var q=t.trim().toLowerCase(),hit=null;view.querySelectorAll('.prose tbody tr').forEach(function(tr){if(!hit&&tr.cells[0].textContent.trim().toLowerCase()===q)hit=tr});if(!hit)return;hit.scrollIntoView({block:'center'});hit.classList.add('flash');setTimeout(function(){hit.classList.remove('flash')},2500)},60)}
+function glFocus(t){var alts=[];try{alts=JSON.parse(sessionStorage.getItem('fin:glalt')||'[]');sessionStorage.removeItem('fin:glalt')}catch(e){}
+  setTimeout(function(){var rows=[].slice.call(view.querySelectorAll('.prose tbody tr')),hit=null,cs=[t].concat(alts).map(function(x){return String(x).trim().toLowerCase()}).filter(Boolean);
+    var key=function(tr){return tr.cells[0].textContent.trim().toLowerCase()};
+    for(var k=0;k<cs.length&&!hit;k++){var q=cs[k];
+      hit=rows.filter(function(tr){return key(tr)===q})[0]
+        ||rows.filter(function(tr){return key(tr).split(/\s*\/\s*|\s*,\s*|\s*\(|\)/).some(function(v){return v.trim()===q})})[0]
+        ||rows.filter(function(tr){var c=key(tr);return c.indexOf(q+' ')===0||c.indexOf(q+'(')===0})[0]
+        ||(q.length>=5?rows.filter(function(tr){return key(tr).indexOf(q.slice(0,Math.max(4,q.length-3)))===0})[0]:null)}
+    if(!hit)return;hit.scrollIntoView({block:'center'});hit.classList.add('flash');setTimeout(function(){hit.classList.remove('flash')},2500)},60)}
 function route(){
   var h=decodeURIComponent(location.hash.slice(1));
   if(POLAPP){   // в «Политике» нет экономики: любой чужой адрес ведёт на политическую карту
@@ -3403,7 +3413,7 @@ function route(){
   }else{
     clearInterval(timer);
     var c=CH.filter(function(x){return x.id===p[1]})[0];
-    if(c){renderChapter(c);document.title=c.title+' · Финансы';store('fin:last',c.id);if(c.id==='glossariy'&&p[2])glFocus(p.slice(2).join('/'))}else{renderLearn();document.title='Финансы'}
+    if(c){renderChapter(c);document.title=c.title+' · Финансы';if(c.id!=='glossariy'&&c.id!=='istochniki'&&c.id!=='marshrut')store('fin:last',c.id);if(c.id==='glossariy'&&p[2])glFocus(p.slice(2).join('/'))}else{renderLearn();document.title='Финансы'}
   }
 }
 function enter(){view.classList.remove('enter');void view.offsetWidth;view.classList.add('enter')}
