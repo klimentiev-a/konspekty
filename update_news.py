@@ -97,7 +97,19 @@ NAMES_RX = {'AAPL': r'Apple|Эппл', 'MSFT': r'Microsoft|Майкрософт'
     'NFLX': r'Netflix', 'KO': r'Coca-Cola|Coca Cola', 'CVX': r'Chevron', 'BAC': r'Bank of America', 'AMD': r'AMD|Advanced Micro', 'ORCL': r'Oracle',
     'BTC': r'Bitcoin|[Бб]иткоин[а-яё]*|BTC', 'ETH': r'Ethereum|[Ээ]фириум[а-яё]*|Эфир[а-яё]*|Ether\b|ETH\b', 'SOL': r'Solana|[Сс]олан[аеыу]', 'XRP': r'XRP|Ripple', 'TON': r'Toncoin|TON\b|[Тт]онкоин[а-яё]*',
     'DOGE': r'Dogecoin|DOGE', 'BNB': r'BNB|Binance Coin', 'USDT': r'Tether|USDT',
-    '^GSPC': r'S&P 500|S&P|Wall Street|Уолл-стрит|американск[а-я]+ (?:рын|бирж|акци)', '^IXIC': r'Nasdaq|Насдак', '^DJI': r'Dow Jones|Dow(?= )|Доу-Джонс'}
+    '^GSPC': r'S&P 500|S&P|Wall Street|Уолл-стрит|американск[а-я]+ (?:рын|бирж|акци)', '^IXIC': r'Nasdaq|Насдак', '^DJI': r'Dow Jones|Dow(?= )|Доу-Джонс',
+    '000688.SS': r'STAR Market|STAR 50|Star Market|Star 50|科创板|Научно-технологическ\w+ инновацион\w+ бирж\w+|Star-?market|китайск\w+ чип\w+|Cambricon|SMIC|Cambricon|Камбрикон',
+    '^HSTECH': r'Hang Seng Tech|Hang Seng TECH|Hang Seng Technology|HSTECH',
+    '000300.SS': r'CSI 300|CSI300|Shanghai[- ]Shenzhen 300|沪深300',
+    '399006.SZ': r'ChiNext|Chinext|创业板|Shenzhen Component|Shenzhen Composite',
+    '^HSCE': r'Hang Seng China Enterprises|HSCEI|H-share|H-shares',
+    '^TWII': r'TAIEX|Taiex|Taiwan Weighted|TSMC|Taiwan Semiconductor|ТСМС',
+    '^HSI': r'Hang Seng(?! Tech)(?! China)|Hang Seng Index|Хан[гк]\s?Сен\w*|гонконгск\w+ (?:индекс|бирж|рын)',
+    '^N225': r'Nikkei|Никкей|Nikkei 225|Токийск\w+ бирж',
+    '^STOXX50E': r'Euro Stoxx|STOXX 50|Stoxx 50',
+    '^GDAXI': r'\bDAX\b|Франкфуртск\w+ бирж',
+    '^FTSE': r'FTSE 100|FTSE|Лондонск\w+ бирж',
+    '^KS11': r'KOSPI|Kospi'}
 NAMES_RX = {k: re.compile(r'(?<![A-Za-zА-Яа-яЁё])(?:' + v + r')(?![a-zа-яё])') for k, v in NAMES_RX.items()}
 MOEX_CO = re.compile(r'(?i)акци[яиюй]\s+(?:«)?Мос[Бб]ирж|Мос[Бб]ирж[аеиу]\S*\s+(?:увелич|сократ|отчит|выплат|направ|рекоменд|получ|заработ|снизил|нарастил)|дивиденд|прибыл|выручк|МСФО|РСБУ|комисси[ия] биржи|Moscow Exchange (?:profit|revenue|dividend)')
 def tags_of(title):
