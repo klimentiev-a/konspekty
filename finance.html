@@ -4,6 +4,7 @@
 <meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="Финансы">
 <link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="favicon.svg?v=31" type="image/svg+xml"><link rel="icon" href="icon-192.png?v=31" sizes="192x192"><link rel="apple-touch-icon" href="apple-touch-icon.png?v=31">
 <title>Финансы</title>
+<script>/* тема до первой отрисовки: без вспышки светлого фона и без плавной смены на старте */(function(){try{var d=document.documentElement,v=localStorage.getItem('fin:skin')||localStorage.getItem('theme')||'auto',T={ocean:'light',dark:'dark',light:'light',graphite:'dark',news:'dark'};if(!T[v])return;if(v==='ocean'||v==='graphite'||v==='news')d.setAttribute('data-skin',v);d.setAttribute('data-theme',T[v])}catch(e){}})()</script>
 <script>(function(){
 var Z=[0.8,0.9,1,1.1,1.2,1.3,1.45,1.6];
 function g(){try{if(!localStorage.getItem('siteZoomLocal')){localStorage.removeItem('siteZoom');localStorage.setItem('siteZoomLocal','1')}var v=parseFloat(localStorage.getItem('siteZoom'));return v>0?v:1}catch(e){return 1}}
@@ -932,8 +933,8 @@ function applyTheme(t){if(t)root.setAttribute('data-theme',t);else root.removeAt
 /* оформление раздела: store('fin:skin') = '' (системное) | 'light' | 'dark' | id из SKINS */
 var SKINS=[['auto','Как в системе','#F4F1E8','#1F6B57',''],['ocean','Океан','#E9F0F6','#1A5FA8','light'],
   ['dark','Ночь','#171611','#5FC2A3','dark'],['graphite','Графит','#15171B','#7BA7F5','dark'],['news','Газета','#161512','#E0483B','dark']];
-function applySkin(id){
-  root.classList.add('tt');setTimeout(function(){root.classList.remove('tt')},360);
+function applySkin(id,quiet){
+  if(!quiet){root.classList.add('tt');setTimeout(function(){root.classList.remove('tt')},360)}
   var sk=SKINS.filter(function(x){return x[0]===id})[0];if(!sk){id='auto';sk=SKINS[0]}
   if(id==='auto'){root.removeAttribute('data-skin');applyTheme('')}
   else if(id==='light'||id==='dark'){root.removeAttribute('data-skin');applyTheme(id)}
@@ -941,7 +942,7 @@ function applySkin(id){
   try{var bg=getComputedStyle(root).getPropertyValue('--bg').trim();document.querySelectorAll('meta[name=theme-color]').forEach(function(m){if(bg)m.setAttribute('content',bg)})}catch(e){}
 }
 function skinGet(){var v=store('fin:skin');if(v)return v;var t=store('theme');return t==='dark'||t==='light'?t:'auto'}
-applySkin(skinGet());
+applySkin(skinGet(),true);
 function skinMenu(open){
   var m=document.getElementById('thm');
   if(!open){if(m)m.remove();return}

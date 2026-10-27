@@ -4,6 +4,7 @@
 <meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="Finance English">
 <link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="favicon.svg?v=31" type="image/svg+xml"><link rel="icon" href="icon-192.png?v=31" sizes="192x192"><link rel="apple-touch-icon" href="apple-touch-icon.png?v=31">
 <title>Английский · Финансы</title>
+<script>/* тема до первой отрисовки: без вспышки светлого фона и без плавной смены на старте */(function(){try{var d=document.documentElement,v=localStorage.getItem('fin:skin')||localStorage.getItem('theme')||'auto',T={ocean:'light',dark:'dark',light:'light',graphite:'dark',news:'dark'};if(!T[v])return;if(v==='ocean'||v==='graphite'||v==='news')d.setAttribute('data-skin',v);d.setAttribute('data-theme',T[v])}catch(e){}})()</script>
 <!--ZOOM-->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Literata:opsz,wght@7..72,400..700&family=JetBrains+Mono:wght@400;500&display=swap" media="print" onload="this.media='all'">
@@ -121,7 +122,7 @@ function applySkin(id){
   try{var bg=getComputedStyle(root).getPropertyValue('--bg').trim();$$('meta[name=theme-color]').forEach(function(m){if(bg)m.setAttribute('content',bg)})}catch(e){}
 }
 function skinGet(){var v=store('fin:skin');if(v)return v;var t=store('theme');return t==='dark'||t==='light'?t:'auto'}
-applySkin(skinGet());
+applySkin(skinGet(),true);
 function skinMenu(open){
   var m=document.getElementById('thm');
   if(!open){if(m)m.remove();return}
