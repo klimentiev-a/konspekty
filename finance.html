@@ -796,6 +796,7 @@ mark.pulse{animation:mkpulse 1.2s ease-out 2}
 /* поиск акций */
 .ssrch{position:relative;margin-top:12px;max-width:560px}
 .ssrch .sq{width:100%;box-sizing:border-box;padding:11px 14px;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--fg);font:inherit;font-size:15px}
+.pcwhy{margin:0 0 8px;font:400 13px/1.4 var(--sans);color:var(--muted)}.pcwhy b{color:var(--accent)}
 .plg{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:10px;margin-top:8px}
 .plk{display:block;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--fg);text-decoration:none}
 a.plk:hover{border-color:var(--faint)}
@@ -2006,7 +2007,15 @@ function enFile(kind,key){return (kind==='idx'?'ix':kind==='cr'?'cr':kind==='us'
 function loadEN(f){if(ENEWS[f])return Promise.resolve();return getJSON(DATA_BASE+'hist/news-'+f+'.json',15000).then(function(j){ENEWS[f]=(j.items||[]).map(function(x){x.u=x.u||x.g;return x})}).catch(function(){ENEWS[f]=[]})}
 var NKW=/акци|дивиденд|прибыл|выручк|отч[её]т|МСФО|санкц|упал|рост|вырос|подешев|подорож|рекоменд|снизил|повысил|обвал|котировк|shares|stock|fell|rose|drop|jump|earnings|revenue|guidance|рухн|взлет|взлёт|прогноз/i;
 var NLOW=/Motley Fool|Zacks|InvestorPlace|Simply Wall|MarketBeat|Benzinga|Stocktwits/i,NBAIT=/should you|prediction:|could (?:triple|double|soar)|here.s why|is it time|stocks? to buy|cheaper than|millionaire|\bbest\b.*stocks?|не упустите|стоит ли покупать|\?$/i;
-function nscore(x){return (TEXTS&&TEXTS[x.id]?3:0)+(x.sum&&x.sum.length?2:0)+(NKW.test(x.t)?1:0)-(NLOW.test(x.s||'')?3:0)-(NBAIT.test(x.to||x.t)?2:0)}
+var DRV=[['Геополитика и переговоры',/переговор|перемири|мирн|урегулир|\bСВО\b|Украин|Трамп|Путин|Зеленск|Песков|саммит|Уиткофф|ceasefire|peace|truce|Ukraine|Trump|Putin|Witkoff/i,6],['Санкции и пошлины',/санкц|пошлин|тариф|sanction|tariff/i,4],['Ставка, ЦБ и ФРС',/ключев\w* ставк|ставк\w* ЦБ|Банк\w* России|\bФРС\b|\bFed\b|rate (?:cut|hike)|инфляц|inflation/i,4],['Нефть и газ',/нефт|Brent|ОПЕК|OPEC|\bgas\b|\boil\b/i,3],['Рубль и валюта',/рубл|юан|курс доллар|ruble/i,2],['Отчётность и дивиденды',/дивиденд|прибыл|выручк|отч[её]т|earnings|dividend/i,2]];
+var GENR=/итоги торгов|закрылся|закрыл|закрытие торгов|торги на Мосбирже|обзор рынка|прибавил|потерял|\bвырос|\bупал|снизился|рынок акций РФ|stocks (?:close|end)|Wall Street (?:closes|ends)/i;
+/* насколько заголовок объясняет ПРИЧИНУ движения, а не пересказывает его */
+function causeScore(x){var t=x.t+' '+((x.sum||[]).join(' ')).slice(0,300),sc=0;DRV.forEach(function(d){if(d[1].test(x.t))sc+=d[2]*1.5;else if(d[1].test(t))sc+=d[2]});
+  if(/на фоне|из-за|после того|благодаря|в ожидании|ожидани|надежд|опасени|amid|on hopes|on fears|hopes|fears/i.test(x.t))sc+=3;
+  if(GENR.test(x.t))sc-=4;if(x.t.length<28||/\.\.$/.test(x.t)||/^Москва\.\s*\d/.test(x.t))sc-=9;return sc+Math.min(4,(x.imp||0)/4)}
+function whyLine(nn){var c={};nn.slice(0,8).forEach(function(x){var t=x.t+' '+((x.sum||[]).join(' ')).slice(0,200);DRV.forEach(function(d){if(d[1].test(t))c[d[0]]=(c[d[0]]||0)+1})});
+  var k=Object.keys(c).sort(function(a,b){return c[b]-c[a]}).slice(0,3);return k.length?'<p class="pcwhy"><b>Что двигало:</b> '+k.map(function(n){return esc(n)+' · '+c[n]}).join(' · ')+'</p>':''}
+function nscore(x){var cz=(PC&&PC.kind==='idx')?causeScore(x):((x.t.length<28||/\.\.$/.test(x.t))?-9:0);return cz+(TEXTS&&TEXTS[x.id]?3:0)+(x.sum&&x.sum.length?2:0)+(NKW.test(x.t)?1:0)-(NLOW.test(x.s||'')?3:0)-(NBAIT.test(x.to||x.t)?2:0)}
 var NSTOP=/^(это|этот|того|также|будет|было|были|может|после|более|через|около|однако|заявил|сообщил|россии|россия|года|году|that|this|with|from|have|will|after|says|said|into|over|about|shares|stock)/;
 function ntoks(t){var o={};(t.toLowerCase().replace(/цод\S*/g,'дата центр').replace(/бпла|дрон\S*/g,'беспилотник').match(/[a-zа-яё0-9]{4,}/g)||[]).forEach(function(w){if(!NSTOP.test(w))o[/[а-яё]/.test(w)?w.slice(0,4):w.slice(0,5)]=1});return o}
 function nsame(a,b){var n=0,ka=Object.keys(a),kb=Object.keys(b);ka.forEach(function(k){if(b[k])n++});return n>=3&&n/Math.max(1,Math.min(ka.length,kb.length))>=0.5}
@@ -2046,7 +2055,7 @@ function pcStory(m){
   if(!TEXTS){waiting=true;loadTexts().then(function(){if(PC.mk===m)drawPC()})}
   else if(!TEXTA&&!out.length&&main.d<hoursAgo(40)){waiting=true;loadTextsArch().then(function(){if(PC.mk===m)drawPC()})}
   var rest=nn.filter(function(x){return x!==main}).slice(0,6);
-  return '<div class="pcst"><a class="pcst-t" href="#markets/news/'+main.id+'">'+esc(main.t)+'</a>'+
+  return '<div class="pcst">'+whyLine(nn)+'<a class="pcst-t" href="#markets/news/'+main.id+'">'+esc(main.t)+'</a>'+
     (out.length?out.map(function(q){return '<p>'+esc(q)+'</p>'}).join(''):'<p class="mut">'+(waiting?'Подгружаю подробности…':'Пересказа этой новости нет — подробности по ссылке ниже.')+'</p>')+
     '<p class="pcst-s">'+esc(main.s)+' · '+fmtDT(main.d)+' · <a href="#markets/news/'+main.id+'">читать целиком →</a></p></div>'+
     (rest.length?'<details class="pcmore"><summary>Ещё новости этого дня ('+rest.length+')</summary>'+rest.map(function(x){return '<div class="pcn"><a href="#markets/news/'+x.id+'">'+esc(x.t)+'</a><span class="mut"> · '+esc(x.s)+'</span></div>'}).join('')+'</details>':'');

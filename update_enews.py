@@ -29,6 +29,8 @@ IX = {'IMOEX': ('индекс Мосбиржи', 'ru'), 'RGBI': ('ОФЗ дох�
 CR = {'BTC': 'Bitcoin price', 'ETH': 'Ethereum price', 'SOL': 'Solana price', 'XRP': 'XRP price', 'BNB': 'BNB price', 'DOGE': 'Dogecoin price',
       'TON': 'Toncoin', 'ADA': 'Cardano price', 'TRX': 'TRON TRX price'}
 
+IXQ2 = {'ix-IMOEX': ('рынок акций России на фоне переговоры OR санкции OR ставка OR нефть', 'ru'), 'ix-RGBI': ('ОФЗ на фоне ставка OR ЦБ OR инфляция', 'ru'),
+        'ix-_GSPC': ('Wall Street stocks amid Fed OR tariffs OR Trump OR Ukraine', 'en'), 'ix-_IXIC': ('Nasdaq amid Fed OR tariffs OR AI', 'en'), 'ix-_DJI': ('Dow Jones amid Fed OR tariffs OR Trump', 'en')}
 RU_EN = {'SBER': 'Sberbank', 'LKOH': 'Lukoil', 'ROSN': 'Rosneft', 'NVTK': 'Novatek', 'SIBN': 'Gazprom Neft', 'GAZP': 'Gazprom', 'GMKN': 'Nornickel OR "Norilsk Nickel"',
          'TATN': 'Tatneft', 'PLZL': 'Polyus gold', 'YDEX': 'Yandex', 'TRNFP': 'Transneft', 'SNGS': 'Surgutneftegas', 'T': '"T-Bank" OR "T-Technologies"', 'VTBR': 'VTB bank',
          'OZON': 'Ozon', 'PHOR': 'PhosAgro', 'CHMF': 'Severstal', 'X5': '"X5 Group"', 'NLMK': 'NLMK', 'RUAL': 'Rusal', 'MOEX': '"Moscow Exchange"', 'MTSS': 'MTS Russia',
@@ -64,8 +66,18 @@ def series(src):
 KEYW = re.compile(r'акци|дивиденд|прибыл|выручк|отч[её]т|МСФО|РСБУ|санкц|упал|рост|вырос|подешев|подорож|рекоменд|совет директоров|байбэк|выкуп|SPO|IPO|прогноз|снизил|повысил|рекорд|обвал|ралли|котировк|капитализац|'
                   r'shares|stock|fell|falls|rose|rises|drop|jump|slide|slump|surge|soar|plunge|tumble|rall|earnings|revenue|guidance|downgrade|upgrade|price target|sell-?off|record|outlook|forecast|lawsuit|deal|acquir|ETF|liquidat|SEC\b', re.I)
 NOISE = re.compile(r'\b(?:\d+ (?:best|top)|should you buy|is it time to|motley fool|prediction:|here.s why|zacks rank)\b', re.I)
-def score(t):
-    return len(KEYW.findall(t)) * 2 - (3 if NOISE.search(t) else 0)
+DRIVER = [(re.compile(r'переговор|перемири|мирн|урегулир|\bСВО\b|Украин|Трамп|Путин|Зеленск|Песков|саммит|Уиткофф|ceasefire|peace|truce|Ukraine|Trump|Putin|Witkoff', re.I), 6),
+          (re.compile(r'санкц|пошлин|тариф|sanction|tariff', re.I), 4),
+          (re.compile(r'ключев\w* ставк|ставк\w* ЦБ|Банк\w* России|\bФРС\b|\bFed\b|rate (?:cut|hike)|инфляц|inflation', re.I), 4),
+          (re.compile(r'нефт|Brent|ОПЕК|OPEC|\boil\b', re.I), 3), (re.compile(r'рубл|юан|ruble', re.I), 2)]
+CAUSAL = re.compile(r'на фоне|из-за|после того|благодаря|в ожидании|ожидани|надежд|опасени|amid|on hopes|on fears|hopes|fears', re.I)
+GENERIC = re.compile(r'итоги торгов|закрылся|закрыл|закрытие торгов|торги на Мосбирже|обзор рынка|прибавил|потерял|\bвырос|\bупал|снизился|рынок акций РФ|stocks (?:close|end)|Wall Street (?:closes|ends)', re.I)
+def junk(t): return len(t) < 28 or t.endswith('..') or re.match(r'Москва\.\s*\d', t) is not None
+def score(t, ix=False):
+    sc = len(KEYW.findall(t)) * 2 - (3 if NOISE.search(t) else 0) - (9 if junk(t) else 0)
+    if ix:   # для индексов важна ПРИЧИНА движения, а не пересказ «индекс вырос на 1%»
+        sc += sum(w for r, w in DRIVER if r.search(t)) + (3 if CAUSAL.search(t) else 0) - (4 if GENERIC.search(t) else 0)
+    return sc
 
 STOP = {'gn': False}
 def gsearch(q, lang):
@@ -94,7 +106,7 @@ def toks(t):
     t = re.sub(r'(?i)\bЦОД\w*', 'дата центр', t); t = re.sub(r'(?i)БПЛА|дрон\w*', 'беспилотник', t)
     return {(w[:4] if re.match('[а-яё]', w) else w[:5]) for w in re.findall(r'[a-zа-яё0-9]{4,}', t.lower())}
 def norm(t): return re.sub(r'\W+', ' ', t.lower()).strip()[:70]
-def merge(db, found):
+def merge(db, found, ix=False):
     have = {norm(x.get('to') or x['t']) for x in db['items']}
     n = 0
     for x in found:
@@ -108,7 +120,7 @@ def merge(db, found):
         if x['d'][:10] >= cut: byday.setdefault(x['d'][:10], []).append(x)
     keep = []
     for day, a in byday.items():
-        a.sort(key=lambda x: (bool(x.get('sum')), score(x.get('to') or x['t'])), reverse=True)
+        a.sort(key=lambda x: (bool(x.get('sum')), score(x.get('to') or x['t'], ix)), reverse=True)
         pick = []   # до 5 разных сюжетов за день: почти одинаковые заголовки не дублируем
         for x in a:
             tk = toks(x.get('to') or x['t'])
@@ -124,6 +136,7 @@ for f, q, lang, thr, src in ENT:
     p = os.path.join(H, 'news-' + f + '.json')
     try: db = json.load(open(p))
     except Exception: db = {'items': [], 'qd': {}, 'rq': ''}
+    if f.startswith('ix-') and db.get('v') != 2: db['qd'] = {}; db['v'] = 2; changed.add(f)   # новая логика «причин»: перезапрашиваем дни индексов, новые дни — первыми
     dbs[f] = db
     try: ser = series(src)
     except Exception as e: print('series', f, e, file=sys.stderr); ser = []
@@ -141,7 +154,7 @@ for f, q, lang, thr, src in ENT:
     if db.get('rq') and (NOW - datetime.datetime.strptime(db['rq'], '%Y-%m-%dT%H:%MZ').replace(tzinfo=datetime.timezone.utc)).total_seconds() < 3 * 3600: continue
     found = gsearch(q + ' when:2d', lang); used += 1
     if found or not STOP['gn']:
-        merge(db, found); db['rq'] = NOW.strftime('%Y-%m-%dT%H:%MZ'); changed.add(f)
+        merge(db, found, f.startswith('ix-')); db['rq'] = NOW.strftime('%Y-%m-%dT%H:%MZ'); changed.add(f)
 # 2) дни с заметным движением цены — от новых к старым
 moves.sort(key=lambda m: (m[0], m[1]), reverse=True)
 for day, ar, f, q, lang in moves:
@@ -149,13 +162,15 @@ for day, ar, f, q, lang in moves:
     d = datetime.date.fromisoformat(day)
     found = gsearch('%s after:%s before:%s' % (q, iso(d - datetime.timedelta(days=2)), iso(d + datetime.timedelta(days=2))), lang); used += 1
     if STOP['gn']: break
+    if f.startswith('ix-') and f in IXQ2 and not STOP['gn'] and used < GN_BUDGET:   # отдельный запрос про причины: переговоры, санкции, ставка, нефть
+        found += gsearch('%s after:%s before:%s' % (IXQ2[f][0], iso(d - datetime.timedelta(days=2)), iso(d + datetime.timedelta(days=2))), IXQ2[f][1]); used += 1
     nxt = iso(d + datetime.timedelta(days=1))
     found = [x for x in found if iso(d - datetime.timedelta(days=1)) <= x['d'][:10] <= day or (x['d'][:10] == nxt and x['d'][11:13] < '06')]
     kk = f.split('-', 1)[1]
     if not found and kk in RU_EN and used < GN_BUDGET:   # по-русски ничего — пробуем международную прессу
         alt = gsearch('%s after:%s before:%s' % (RU_EN[kk], iso(d - datetime.timedelta(days=2)), iso(d + datetime.timedelta(days=2))), 'en'); used += 1
         found = [x for x in alt if iso(d - datetime.timedelta(days=1)) <= x['d'][:10] <= day or (x['d'][:10] == nxt and x['d'][11:13] < '06')]
-    merge(dbs[f], found); dbs[f]['qd'][day] = len(found); changed.add(f)
+    merge(dbs[f], found, f.startswith('ix-')); dbs[f]['qd'][day] = len(found); changed.add(f)
 print('google news queries', used, 'moves left', max(0, len(moves) - used), 'stopped' if STOP['gn'] else '')
 
 # 3) перевод англоязычных заголовков (пакетами)
@@ -178,7 +193,7 @@ print('translate batches', nb)
 
 # 4) пересказ главной новости каждого дня (сначала свежие); если у главной не вышло — берём следующую по важности
 LOWSRC = {'The Motley Fool', 'Motley Fool', 'Zacks', 'Zacks Investment Research', 'InvestorPlace', 'Simply Wall St', 'Simply Wall Street', 'MarketBeat', 'Benzinga', 'Stocktwits'}
-def rank(x): return score(x.get('to') or x['t']) - (3 if x.get('s') in LOWSRC else 0)
+def rank(x, ix=False): return score(x.get('to') or x['t'], ix) - (3 if x.get('s') in LOWSRC else 0)
 cand = []
 for f, db in dbs.items():
     byday = {}
@@ -186,7 +201,7 @@ for f, db in dbs.items():
     for day, a in byday.items():
         if any(x.get('sum') for x in a): continue
         a = [x for x in a if x.get('sf', 0) < 2]
-        if a: cand.append((day, f, max(a, key=rank)))
+        if a: cand.append((day, f, max(a, key=lambda x: rank(x, f.startswith('ix-')))))
 cand.sort(key=lambda c: c[0], reverse=True)
 cand = cand[:DEC_BUDGET]
 from concurrent.futures import ThreadPoolExecutor
