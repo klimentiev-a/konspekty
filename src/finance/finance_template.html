@@ -1762,7 +1762,7 @@ function vReader(id){
 }
 function vNews(){
   if(NEWSID)return vReader(NEWSID);
-  var n=M.news,h='<div class="sect"><h2>Лента новостей</h2>';h+='<div class="ssrch nsq"><input type="search" class="nq" placeholder="Найти новости и компании: Эконива, Сбер, ОФЗ, ставка…" aria-label="Поиск по новостям" value="'+esc(NQ)+'"></div><div id="nres"></div><div id="nmain">';if(NQ)setTimeout(nsRender,0);
+  var n=M.news,h='<div class="sect"><h2>Лента новостей</h2>';h+='<div class="ssrch nsq"><input type="search" class="nq" placeholder="Найти новости и компании: Эконива, Сбер, ОФЗ, ставка…" aria-label="Поиск по новостям" value="'+esc(NQ)+'"></div><div id="nres"></div><div id="nmain"><div id="bpl"></div>';setTimeout(function(){bplInit();if(NQ)nsRender()},0);
   if(n&&n.items&&n.items.length){
     var cats=[['all','Все'],['ru','Россия'],['comp','Компании'],['us','США и мир'],['crypto','Крипта'],['cbr','Ставки'],['bonds','Облигации'],['fx','Валюты']];
     h+='<nav class="sub" style="margin-top:0">'+cats.map(function(c){return '<button type="button" class="chip'+(NF===c[0]?' on':'')+'" data-nf="'+c[0]+'">'+c[1]+'</button>'}).join('')+'</nav>';
@@ -1796,6 +1796,7 @@ function nsRender(){
   if(!q){box.innerHTML='';return}
   var f=nsFind(q),h='',as=searchAssets(q,4);
   if(as.length)h+='<div class="sect"><h2>Компании и активы</h2><div class="tiles">'+as.map(function(a){return '<a class="tile" href="'+esc(a.h||'#markets/ru/'+a.k)+'"><div class="l">'+esc(a.s||'')+'</div><div class="v" style="font-size:18px">'+esc(a.n)+'</div><div class="s">'+esc(a.k)+'</div></a>'}).join('')+'</div></div>';
+  h+=bdbBlock(q);
   h+='<div class="sect"><h2>Новости: '+(f.items.length?'найдено '+f.items.length:'ничего не нашлось')+'</h2>';
   var shown=f.items.slice(0,80),day='';
   shown.forEach(function(x){var d=new Date(x.d).toLocaleDateString('ru-RU',{day:'numeric',month:'long',year:'numeric'});if(d!==day){day=d;h+='<div class="nday">'+d+'</div>'}h+=newsItem(x,(x.imp||0)>=IMP_MAIN?'':'mini')});
@@ -1819,6 +1820,31 @@ function nsWeb(q){
     var x=new DOMParser().parseFromString(t,'text/xml'),it=[].slice.call(x.querySelectorAll('item')).map(function(n){var g=function(k){var e=n.querySelector(k);return e?e.textContent:''};return {title:g('title'),link:g('link'),pubDate:g('pubDate'),author:g('source')}});
     if(!it.length&&!x.querySelector('rss'))throw 0;ok(nsWebItems(it))})})
   .catch(function(){if(NWEB.q===q){NWEB.st=3;nsRender()}});
+}
+
+/* база облигаций из «Финансов 2» (ветка fin2-data): размещения, выпуски, рейтинги — ищется вместе с новостями */
+var BDB={pc:null,ra:null,uni:null,st:{}};
+function bdbBase(){return /^(localhost|127\.0\.0\.1)$/.test(location.hostname)?'fin2/data/':'https://raw.githubusercontent.com/klimentiev-a/konspekty/fin2-data/data/'}
+function bdbLoad(k,f){if(BDB[k]!==null||BDB.st[k])return;BDB.st[k]=1;nsFetch(bdbBase()+f,25000).then(function(r){return r.json()}).then(function(j){BDB[k]=j;BDB.st[k]=2;bplDraw();if(NQ.trim())nsRender()}).catch(function(){BDB.st[k]=3;bplDraw();if(NQ.trim())nsRender()})}
+function bplInit(){bdbLoad('pc','placements_current.json');bplDraw()}
+function fD(d){var m=/^(\d{4})-(\d\d)-(\d\d)/.exec(d||'');return m?m[3]+'.'+m[2]+'.'+m[1]:''}
+var AGN={ACRA:'АКРА',EXPERT_RA:'Эксперт РА',NCR:'НКР',NRA:'НРА'};
+function plCard(r){return '<div class="nw"><div class="nm"><span class="ns">Размещение облигаций</span><span>'+(r.book_date?'сбор заявок '+fD(r.book_date)+' · ':'')+'размещение '+fD(r.place_date)+'</span></div><b class="nt">'+esc(r.issuer)+(r.is_floater?' · плавающий купон':'')+'</b><p class="nx">Объём: '+esc(r.volume_raw||'')+' · купон: '+esc(r.coupon_raw||'')+' · срок: '+esc(r.term||'')+(r.rating_raw?' · рейтинг: '+esc(r.rating_raw):'')+(r.note?'. '+esc(r.note):'')+'</p></div>'}
+function bplDraw(){var el=document.getElementById('bpl');if(!el)return;var rows=((BDB.pc&&BDB.pc.rows)||[]).filter(function(r){return r.upcoming}).sort(function(a,b){return String(a.place_date)<String(b.place_date)?-1:1}).slice(0,8);
+  el.innerHTML=rows.length?'<h3 class="evm">Ближайшие размещения облигаций</h3>'+rows.map(plCard).join('')+'<p class="note"><a href="fin2/index.html#placements">Все размещения и история →</a> · данные базы облигаций (corpbonds.ru, Мосбиржа), обновляются раз в час.</p>':''}
+function bdbBlock(q){
+  bdbLoad('pc','placements_current.json');bdbLoad('ra','rating_actions.json');bdbLoad('uni','universe.json');
+  var rxs=nsRx(q);if(!rxs.length)return '';var hit=function(t){return rxs.every(function(r){return r.test(t)})};
+  var h='',pl=((BDB.pc&&BDB.pc.rows)||[]).filter(function(r){return hit(r.issuer||'')}),
+      ra=((BDB.ra&&BDB.ra.actions)||[]).filter(function(a){return hit(a.issuer||'')}).sort(function(a,b){return String(a.date)<String(b.date)?1:-1}).slice(0,8),
+      is=BDB.uni?BDB.uni.rows.filter(function(r){return hit(r[3]+' '+(r[51]||'')+' '+(r[58]||''))}):[];
+  if(pl.length)h+=pl.map(plCard).join('');
+  if(is.length){var iss=(is[0][51]||is[0][58]||'');h+='<h3 class="evm">Выпуски в обращении: '+esc(iss)+'</h3>'+is.slice(0,12).map(function(r){return '<div class="nw mini"><span class="tm">'+(r[13]!=null?nf(r[13],2)+'%':'')+'</span><div><a class="nt" href="fin2/index.html#issue='+encodeURIComponent(r[0])+'">'+esc(r[3])+'</a><span class="ns2"> · '+(r[14]!=null?'доходность '+nf(r[14],2)+'%':r[7]==='floater'?'флоатер':'')+(r[9]?' · погашение '+fD(r[9]):'')+(r[47]?' · рейтинг '+esc(r[47]):'')+'</span></div></div>'}).join('')+(is.length>12?'<p class="note">И ещё выпусков: '+(is.length-12)+'.</p>':'')+'<p class="note"><a href="fin2/index.html#issuer='+encodeURIComponent(iss)+'">Карточка эмитента в «Финансы 2» →</a></p>'}
+  if(ra.length)h+='<h3 class="evm">Рейтинги</h3>'+ra.map(function(a){return '<div class="nw mini"><span class="tm">'+fD(a.date).slice(0,5)+'</span><div><b>'+esc(a.issuer)+'</b><span class="ns2"> · '+esc(AGN[a.agency]||a.agency)+' '+esc(a.rating)+(a.forecast?' · прогноз «'+esc(a.forecast)+'»':'')+(a.action?' · '+esc(a.action):'')+'</span></div></div>'}).join('');
+  var wait=(BDB.st.pc===1||BDB.st.uni===1||BDB.st.ra===1);
+  if(!h&&wait)return '<div class="sect"><h2>База облигаций</h2><p class="note">Загружаю базу облигаций…</p></div>';
+  if(!h)return '';
+  return '<div class="sect"><h2>База облигаций</h2>'+h+(wait?'<p class="note">Догружаю остальное…</p>':'')+'</div>';
 }
 view.addEventListener('input',function(e){var i=e.target;if(!i.classList||!i.classList.contains('nq'))return;NQ=i.value;clearTimeout(NQT);NQT=setTimeout(function(){nsRender();if(NQ.trim().length>1&&typeof loadTexts==='function'){loadTexts().then(function(){return loadTextsArch()}).then(function(){if(i.value===NQ)nsRender()})}},180);clearTimeout(NQW);NQW=setTimeout(function(){var q=NQ.trim();if(q.length>2&&NWEB.q!==q&&nsFind(q).items.length<3)nsWeb(q)},900)});
 view.addEventListener('click',function(e){var b=e.target.closest('[data-nweb]');if(b)nsWeb(NQ.trim())});
