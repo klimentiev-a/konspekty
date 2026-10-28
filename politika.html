@@ -796,6 +796,7 @@ mark.pulse{animation:mkpulse 1.2s ease-out 2}
 /* поиск акций */
 .ssrch{position:relative;margin-top:12px;max-width:560px}
 .ssrch .sq{width:100%;box-sizing:border-box;padding:11px 14px;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--fg);font:inherit;font-size:15px}
+.bpl{margin:10px 0 4px;border:1px solid var(--line);border-radius:12px;padding:0 14px;background:var(--surface)}.bpl summary{cursor:pointer;padding:11px 0;font:600 14px var(--sans);color:var(--fg)}.bpl[open] summary{border-bottom:1px solid var(--line2);margin-bottom:6px}
 .ssrch .nq{width:100%;box-sizing:border-box;padding:11px 14px;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--fg);font:inherit;font-size:15px}
 .ssrch .nq:focus{outline:2px solid var(--accent,#0A9466);outline-offset:1px}
 .ssrch .sq:focus{outline:2px solid var(--accent,#0A9466);outline-offset:1px}
@@ -1959,8 +1960,8 @@ function bplInit(){bdbLoad('pc','placements_current.json');bplDraw()}
 function fD(d){var m=/^(\d{4})-(\d\d)-(\d\d)/.exec(d||'');return m?m[3]+'.'+m[2]+'.'+m[1]:''}
 var AGN={ACRA:'АКРА',EXPERT_RA:'Эксперт РА',NCR:'НКР',NRA:'НРА'};
 function plCard(r){return '<div class="nw"><div class="nm"><span class="ns">Размещение облигаций</span><span>'+(r.book_date?'сбор заявок '+fD(r.book_date)+' · ':'')+'размещение '+fD(r.place_date)+'</span></div><b class="nt">'+esc(r.issuer)+(r.is_floater?' · плавающий купон':'')+'</b><p class="nx">Объём: '+esc(r.volume_raw||'')+' · купон: '+esc(r.coupon_raw||'')+' · срок: '+esc(r.term||'')+(r.rating_raw?' · рейтинг: '+esc(r.rating_raw):'')+(r.note?'. '+esc(r.note):'')+'</p></div>'}
-function bplDraw(){var el=document.getElementById('bpl');if(!el)return;var rows=((BDB.pc&&BDB.pc.rows)||[]).filter(function(r){return r.upcoming}).sort(function(a,b){return String(a.place_date)<String(b.place_date)?-1:1}).slice(0,8);
-  el.innerHTML=rows.length?'<h3 class="evm">Ближайшие размещения облигаций</h3>'+rows.map(plCard).join('')+'<p class="note"><a href="fin2/index.html#placements">Все размещения и история →</a> · данные базы облигаций (corpbonds.ru, Мосбиржа), обновляются раз в час.</p>':''}
+function bplDraw(){var el=document.getElementById('bpl');if(!el)return;var rows=((BDB.pc&&BDB.pc.rows)||[]).filter(function(r){return r.upcoming}).sort(function(a,b){return String(a.place_date)<String(b.place_date)?-1:1}).slice(0,8),op=el.querySelector('details')&&el.querySelector('details').open;
+  el.innerHTML=rows.length?'<details class="bpl"'+(op?' open':'')+'><summary>Ближайшие размещения облигаций ('+rows.length+')</summary>'+rows.map(plCard).join('')+'<p class="note"><a href="fin2/index.html#placements">Все размещения и история →</a> · база облигаций (corpbonds.ru, Мосбиржа), раз в час.</p></details>':''}
 function bdbBlock(q){
   bdbLoad('pc','placements_current.json');bdbLoad('ra','rating_actions.json');bdbLoad('uni','universe.json');
   var rxs=nsRx(q);if(!rxs.length)return '';var hit=function(t){return rxs.every(function(r){return r.test(t)})};
