@@ -76,7 +76,8 @@ FEEDS = [
 ]
 # поиск Google Новостей за последние сутки — сотни изданий, включая Reuters и Bloomberg
 FEEDS += [(None, 'ru', G(q)) for q in ['Мосбиржа акции', 'фондовый рынок России', 'ключевая ставка ЦБ', 'курс рубля', 'ОФЗ доходность',
-                                         'дивиденды совет директоров', 'нефть Brent', 'санкции банки', 'отчетность МСФО прибыль', 'атака дата-центр OR НПЗ']]
+                                         'дивиденды совет директоров', 'нефть Brent', 'санкции банки', 'отчетность МСФО прибыль', 'атака дата-центр OR НПЗ',
+                                         'размещение облигаций', 'сбор заявок облигации', 'корпоративные облигации выпуск', 'облигации ВДО', 'book building облигации', 'рейтинг АКРА эксперт РА', 'дефолт облигации']]
 FEEDS += [(None, 'world', G(q, 'en')) for q in ['stock market today', 'Wall Street stocks', 'Federal Reserve rates', 'earnings stock shares',
                                                  'site:reuters.com markets', 'site:bloomberg.com markets', 'oil prices', 'Treasury yields']]
 FEEDS += [(None, 'crypto', G('bitcoin price', 'en'))]
