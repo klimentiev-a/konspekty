@@ -673,6 +673,8 @@ mark.pulse{animation:mkpulse 1.2s ease-out 2}
 /* поиск акций */
 .ssrch{position:relative;margin-top:12px;max-width:560px}
 .ssrch .sq{width:100%;box-sizing:border-box;padding:11px 14px;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--fg);font:inherit;font-size:15px}
+.ssrch .nq{width:100%;box-sizing:border-box;padding:11px 14px;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--fg);font:inherit;font-size:15px}
+.ssrch .nq:focus{outline:2px solid var(--accent,#0A9466);outline-offset:1px}
 .ssrch .sq:focus{outline:2px solid var(--accent,#0A9466);outline-offset:1px}
 .ssrch .sres{position:absolute;left:0;right:0;top:calc(100% + 6px);z-index:30;background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:0 12px 32px rgba(0,0,0,.18);max-height:min(60vh,420px);overflow:auto}
 .ssrch .sres a{display:flex;flex-direction:column;gap:2px;padding:9px 14px;text-decoration:none;color:inherit;border-bottom:1px solid var(--line)}
@@ -1760,7 +1762,7 @@ function vReader(id){
 }
 function vNews(){
   if(NEWSID)return vReader(NEWSID);
-  var n=M.news,h='<div class="sect"><h2>Лента новостей</h2>';
+  var n=M.news,h='<div class="sect"><h2>Лента новостей</h2>';h+='<div class="ssrch nsq"><input type="search" class="nq" placeholder="Найти новости и компании: Эконива, Сбер, ОФЗ, ставка…" aria-label="Поиск по новостям" value="'+esc(NQ)+'"></div><div id="nres"></div><div id="nmain">';if(NQ)setTimeout(nsRender,0);
   if(n&&n.items&&n.items.length){
     var cats=[['all','Все'],['ru','Россия'],['comp','Компании'],['us','США и мир'],['crypto','Крипта'],['cbr','Ставки'],['bonds','Облигации'],['fx','Валюты']];
     h+='<nav class="sub" style="margin-top:0">'+cats.map(function(c){return '<button type="button" class="chip'+(NF===c[0]?' on':'')+'" data-nf="'+c[0]+'">'+c[1]+'</button>'}).join('')+'</nav>';
@@ -1773,10 +1775,51 @@ function vNews(){
     if(rest.length>shown.length)h+='<button type="button" class="chip" data-nlist style="margin-top:10px">Показать ещё ('+(rest.length-shown.length)+')</button>';
     h+='<p class="note">Источники: около 50 лент (Интерфакс, РБК, Ведомости, Коммерсантъ, ТАСС, РИА, ПРАЙМ, Известия, Forbes, Финам, БКС, Банк России; CNBC, WSJ, FT, MarketWatch, Yahoo Finance, BBC, NYT, Economist; ForkLog, CoinDesk, Cointelegraph) и поиск Google Новостей — в том числе Reuters и Bloomberg; англоязычные — с автопереводом. Обновляется автоматически каждый час (снимок от '+esc(n.updated||'')+'). Важность считается автоматически: сколько изданий написали о сюжете, насколько тема рыночная (ставки, крупные компании, атаки, сделки, отчёты) и насколько серьёзно издание. Одинаковые новости из разных изданий склеены в одну. Нажми на заголовок — откроется подробный пересказ.</p>';
   }else h+='<p class="empty">'+(M.err.news?'Лента появится после первого автоматического обновления на GitHub (раз в час).':'Загружаю…')+'</p>';
-  h+='</div><div class="sect"><h2>Что двигало рынок за год</h2><p class="note" style="margin-top:0">Ключевые события октябрь 2025 – октябрь 2026 с реакцией индекса и источником. По каждой компании — в её карточке («Россия» → нажми на компанию).</p>'+
+  h+='</div></div><div class="sect" id="nev"><h2>Что двигало рынок за год</h2><p class="note" style="margin-top:0">Ключевые события октябрь 2025 – октябрь 2026 с реакцией индекса и источником. По каждой компании — в её карточке («Россия» → нажми на компанию).</p>'+
     evFor('IMOEX').map(function(e){return evItem(e)}).join('')+'</div>';
   return h;
 }
+
+/* поиск по новостям: вся лента с хвостом тегированных за ~400 дней, тексты статей, компании; при нехватке — поиск в интернете */
+var NQ='',NQT=0,NWEB={q:'',st:0,items:[]};
+function nsMatch(x,rxs){var tx=TEXTS&&TEXTS[x.id],t=x.t+' '+(x.s||'')+' '+((x.sum||[]).join(' '))+' '+(tx&&tx.join?tx.join(' '):'');return rxs.every(function(r){return r.test(t)})}
+function nsRx(q){return lc(q).split(/[\s,;]+/).filter(function(t){return t.length>1}).map(function(t){return qrx(t,false)})}
+function nsFind(q){
+  var all=((M.news&&M.news.items)||[]).filter(function(x){return !x.dup}),r=[],used=q;
+  function run(qq){var rxs=nsRx(qq);return rxs.length?all.filter(function(x){return nsMatch(x,rxs)}):[]}
+  r=run(q);if(!r.length&&cyr(q)){var q2=layoutFix(q);if(/^[a-z0-9 ]{3,}$/.test(q2)){var r2=run(q2);if(r2.length){r=r2;used=q2}}}
+  r.sort(function(a,b){return a.d<b.d?1:-1});return {items:r,q:used};
+}
+function nsRender(){
+  var box=document.getElementById('nres'),main=document.getElementById('nmain'),ev=document.getElementById('nev');if(!box)return;
+  var q=NQ.trim();main.hidden=!!q;if(ev)ev.hidden=!!q;
+  if(!q){box.innerHTML='';return}
+  var f=nsFind(q),h='',as=searchAssets(q,4);
+  if(as.length)h+='<div class="sect"><h2>Компании и активы</h2><div class="tiles">'+as.map(function(a){return '<a class="tile" href="'+esc(a.h||'#markets/ru/'+a.k)+'"><div class="l">'+esc(a.s||'')+'</div><div class="v" style="font-size:18px">'+esc(a.n)+'</div><div class="s">'+esc(a.k)+'</div></a>'}).join('')+'</div></div>';
+  h+='<div class="sect"><h2>Новости: '+(f.items.length?'найдено '+f.items.length:'ничего не нашлось')+'</h2>';
+  var shown=f.items.slice(0,80),day='';
+  shown.forEach(function(x){var d=new Date(x.d).toLocaleDateString('ru-RU',{day:'numeric',month:'long',year:'numeric'});if(d!==day){day=d;h+='<div class="nday">'+d+'</div>'}h+=newsItem(x,(x.imp||0)>=IMP_MAIN?'':'mini')});
+  if(f.items.length>shown.length)h+='<p class="note">Показаны 80 самых свежих из '+f.items.length+'. Уточни запрос.</p>';
+  h+='<p class="note">Ищу по заголовкам, пересказам и текстам статей нашей ленты (свежие новости и важные за последний год). Новости старше или вне ленты можно поискать в интернете.</p>';
+  var web=NWEB.q===q?NWEB:null;
+  h+='<button type="button" class="chip" data-nweb>Искать «'+esc(q)+'» в интернете</button>';
+  if(web&&web.st===1)h+='<p class="note">Ищу в интернете…</p>';
+  if(web&&web.st===2)h+='<h3 class="evm">В интернете</h3>'+(web.items.length?web.items.map(function(x){return '<div class="nw mini"><span class="tm">'+esc(x.dt)+'</span><div><a class="nt" href="'+eu(x.u)+'" target="_blank" rel="noopener">'+esc(x.t)+'</a><span class="ns2"> · '+esc(x.s)+'</span></div></div>'}).join(''):'<p class="empty">Ничего не нашлось.</p>');
+  if(web&&web.st===3)h+='<p class="note">Не удалось загрузить поиск: проверь интернет. Можно открыть <a href="https://news.google.com/search?q='+encodeURIComponent(q)+'&hl=ru&gl=RU&ceid=RU:ru" target="_blank" rel="noopener">Google Новости ↗</a> или <a href="https://ya.ru/search/?text='+encodeURIComponent(q)+'&lr=213&tbm=nws" target="_blank" rel="noopener">Яндекс ↗</a>.</p>';
+  box.innerHTML=h+'</div>';
+}
+function nsWeb(q){
+  NWEB={q:q,st:1,items:[]};nsRender();
+  var rss='https://news.google.com/rss/search?q='+encodeURIComponent(q+' when:365d')+'&hl=ru&gl=RU&ceid=RU:ru';
+  var ctl=window.AbortController?new AbortController():null,tm=setTimeout(function(){if(ctl)ctl.abort()},12000);
+  fetch('https://api.rss2json.com/v1/api.json?rss_url='+encodeURIComponent(rss),ctl?{signal:ctl.signal}:{}).then(function(r){return r.json()}).then(function(j){
+    clearTimeout(tm);if(NWEB.q!==q)return;if(!j||j.status!=='ok')throw 0;
+    NWEB.items=(j.items||[]).slice(0,40).map(function(i){var m=String(i.title||'').match(/^(.*) - ([^-]+)$/);return {t:m?m[1]:i.title,s:m?m[2]:(i.author||''),u:i.link,dt:new Date(String(i.pubDate).replace(' ','T')+'Z').toLocaleDateString('ru-RU',{day:'numeric',month:'short'})}});
+    NWEB.st=2;nsRender();
+  }).catch(function(){clearTimeout(tm);if(NWEB.q===q){NWEB.st=3;nsRender()}});
+}
+view.addEventListener('input',function(e){var i=e.target;if(!i.classList||!i.classList.contains('nq'))return;NQ=i.value;clearTimeout(NQT);NQT=setTimeout(function(){nsRender();if(NQ.trim().length>1&&typeof loadTexts==='function'){loadTexts().then(function(){return loadTextsArch()}).then(function(){if(i.value===NQ)nsRender()})}},180)});
+view.addEventListener('click',function(e){var b=e.target.closest('[data-nweb]');if(b)nsWeb(NQ.trim())});
 view.addEventListener('click',function(e){if(e.target.closest('[data-nlist]')){NLIST+=150;drawMarkets(true);return}var b=e.target.closest('[data-nf]');if(b){NF=b.getAttribute('data-nf');drawMarkets(true)}var ns=e.target.closest('[data-nfset]');if(ns)NF=ns.getAttribute('data-nfset')});
 
 /* ---------------- интерактивный график цены ---------------- */
