@@ -796,7 +796,12 @@ mark.pulse{animation:mkpulse 1.2s ease-out 2}
 /* поиск акций */
 .ssrch{position:relative;margin-top:12px;max-width:560px}
 .ssrch .sq{width:100%;box-sizing:border-box;padding:11px 14px;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--fg);font:inherit;font-size:15px}
-.bpl{margin:10px 0 4px;border:1px solid var(--line);border-radius:12px;padding:0 14px;background:var(--surface)}.bpl summary{cursor:pointer;padding:11px 0;font:600 14px var(--sans);color:var(--fg)}.bpl[open] summary{border-bottom:1px solid var(--line2);margin-bottom:6px}
+.plg{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:10px;margin-top:8px}
+.plk{display:block;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--fg);text-decoration:none}
+a.plk:hover{border-color:var(--faint)}
+.plh{display:flex;justify-content:space-between;gap:10px;align-items:baseline}.plh b{font:600 15px/1.3 var(--sans)}.pld{flex:none;font:500 12.5px var(--sans);color:var(--accent)}
+.plt{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}.plt i{font:400 12.5px/1.3 var(--sans);font-style:normal;padding:3px 8px;border-radius:999px;background:var(--rail);color:var(--muted)}
+.pln{margin:8px 0 0;font:400 12.5px/1.45 var(--sans);color:var(--muted)}
 .ssrch .nq{width:100%;box-sizing:border-box;padding:11px 14px;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--fg);font:inherit;font-size:15px}
 .ssrch .nq:focus{outline:2px solid var(--accent,#0A9466);outline-offset:1px}
 .ssrch .sq:focus{outline:2px solid var(--accent,#0A9466);outline-offset:1px}
@@ -840,6 +845,7 @@ p.why{padding:11px 15px;border-radius:10px;background:var(--rail);border-left:3p
 .svp{display:flex;gap:12px;align-items:center;margin-top:8px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--surface);text-decoration:none;color:inherit}.svp[aria-current]{border-color:var(--accent)}.svp small{display:block;font:500 12px/1.3 var(--sans);color:var(--faint)}.svp b{font:600 15px/1.3 var(--serif)}
 
 .sub1{margin-top:14px;align-items:center;overflow:visible;flex-wrap:wrap}
+.sub1 .chip{flex:none}
 details.more{position:relative;flex:none}details.more>summary{list-style:none;cursor:pointer}details.more>summary::-webkit-details-marker{display:none}details.more>summary.dim{opacity:.7}
 .morep{position:absolute;left:0;top:calc(100% + 6px);z-index:40;min-width:240px;padding:6px;border:1px solid var(--line);border-radius:14px;background:var(--surface);box-shadow:0 12px 32px rgba(0,0,0,.18)}
 .morep a{display:flex;flex-direction:column;gap:1px;padding:9px 12px;border-radius:9px;text-decoration:none;color:var(--fg);font:500 14.5px/1.3 var(--sans)}.morep a small{font:400 12px/1.3 var(--sans);color:var(--faint)}.morep a:hover,.morep a.on{background:var(--rail)}
@@ -1323,14 +1329,13 @@ function loadCR(){
 function usdRub(){try{return M.fx.Valute.USD.Value}catch(e){return 83.9153}}
 
 /* ---------------- рынки: виды ---------------- */
-var SUBS=[['summary','Сводка'],['week','Итоги недели'],['ru','Россия'],['us','Мир'],['news','Новости'],['crypto','Крипта'],['bonds','Облигации'],['fx','Валюты'],['macro','Макро России'],['divs','Дивиденды'],['events','События'],['cal','Календарь']],cur='summary';
+var SUBS=[['summary','Сводка'],['week','Итоги недели'],['ru','Россия'],['us','Мир'],['news','Новости'],['crypto','Крипта'],['bonds','Облигации'],['plc','Размещения'],['fx','Валюты'],['macro','Макро России'],['divs','Дивиденды'],['events','События'],['cal','Календарь']],cur='summary';
 var SLBL={};SUBS.forEach(function(s){SLBL[s[0]]=s[1]});
 /* одна строка: 5 главных разделов + «Ещё» со всем остальным; открытый раздел из «Ещё» показывается отдельным чипом */
 var MAIN_SUBS=['summary','ru','us','news'],MORE_SUBS=SUBS.map(function(x){return x[0]}).filter(function(k){return MAIN_SUBS.indexOf(k)<0});
-function subnav(){var extra=MORE_SUBS.indexOf(cur)>=0?cur:null;
-  return '<nav class="sub sub1" aria-label="Разделы рынков">'+MAIN_SUBS.map(function(k){return '<a class="chip'+(k===cur?' on':'')+'" href="#markets/'+k+'">'+SLBL[k]+'</a>'}).join('')+
-  (extra?'<a class="chip on" href="#markets/'+extra+'">'+SLBL[extra]+'</a>':'')+
-  '<details class="more"><summary class="chip'+(extra?' dim':'')+'">Ещё ▾</summary><div class="morep">'+MORE_SUBS.map(function(k){return '<a href="#markets/'+k+'"'+(k===cur?' class="on"':'')+'>'+SLBL[k]+'<small>'+(MORE_HINT[k]||'')+'</small></a>'}).join('')+'</div></details></nav>'}
+function subnav(){
+  return '<nav class="sub sub1" aria-label="Разделы рынков">'+SUBS.map(function(x){return '<a class="chip'+(x[0]===cur?' on':'')+'" href="#markets/'+x[0]+'">'+x[1]+'</a>'}).join('')+'</nav>'}
+function subScroll(){var n=view.querySelector('.sub1'),a=n&&n.querySelector('.chip.on');if(a)n.scrollLeft=Math.max(0,a.offsetLeft-n.clientWidth/2+a.offsetWidth/2)}
 var MORE_HINT={week:'кто вырос и упал за 5 дней',crypto:'монеты, курс к рублю',bonds:'ОФЗ, кривая, калькулятор',fx:'курсы ЦБ и биржи',macro:'ставка, инфляция, КБД',divs:'даты отсечек',events:'что двигало рынок за год',cal:'ЦБ, ФРС, отчёты'};
 document.addEventListener('click',function(e){var m=document.querySelector('details.more[open]');if(m&&!e.target.closest('details.more'))m.open=false});
 function status(key,label){
@@ -1618,10 +1623,10 @@ function drawMarkets(full){
   if(full!==true){var sn=document.querySelector('[data-secnews]');if(sn&&M.news&&!sn.querySelector('.nw')){var q=sn.getAttribute('data-secnews').split('|');sn.outerHTML=secNews(q[0],q[1],+q[2])}}
   if(cur==='bonds'&&full!==true&&document.getElementById('bonds-root')){drawBondTable();var cv=document.getElementById('b-curve');if(cv)cv.innerHTML=kbdBox();return}
   if(ASSET.kind&&full!==true&&document.getElementById('card-root')){var ai=assetInfo(ASSET.kind,ASSET.id),cq=document.getElementById('card-price');if(ai&&cq&&ai.px){var t0=cq.querySelector('.tile'),ov0=t0.querySelector('.v').textContent;t0.querySelector('.v').innerHTML=nf(ai.px,ai.px<1?4:ai.px<10?3:2)+ai.unit;flashEl(t0.querySelector('.v'),ov0,t0.querySelector('.v').textContent);t0.querySelector('.s').innerHTML=(ai.ch!=null?pct(ai.ch)+' ':'')+esc(ai.chNote||'')+(ASSET.kind==='cr'?' · <span data-ago="'+Date.now()+'">только что</span>':'')}return}
-  var y=window.scrollY,fn=ASSET.kind?vAsset:{summary:vSummary,daily:vDaily,ru:CARD.tic?function(){return vCard(CARD.tic)}:vRU,us:vUS,crypto:vCrypto,bonds:vBonds,fx:vFX,cal:vCal,news:vNews,week:vWeek,macro:vMacro,divs:vDivs,events:vEvents}[cur];
+  var y=window.scrollY,fn=ASSET.kind?vAsset:{summary:vSummary,daily:vDaily,ru:CARD.tic?function(){return vCard(CARD.tic)}:vRU,us:vUS,crypto:vCrypto,bonds:vBonds,fx:vFX,cal:vCal,news:vNews,plc:vPlc,week:vWeek,macro:vMacro,divs:vDivs,events:vEvents}[cur];
   var html=subnav()+fn(),sig=html.replace(/data-ago="\d+">[^<]*</g,'');
   if(full!==true&&sig===LASTSIG){view.querySelectorAll('.stat [data-ago]').forEach(function(e){e.setAttribute('data-ago',Date.now())});return}   // данные не изменились — не трогаем страницу
-  LASTSIG=sig;if(full!==true)flashPrep();else FLPREV=null;view.innerHTML=html;flashApply();skel(view);if(cur==='bonds')drawBondTable();if((cur==='ru'&&CARD.tic)||ASSET.kind)drawPC();window.scrollTo(0,y);
+  LASTSIG=sig;if(full!==true)flashPrep();else FLPREV=null;view.innerHTML=html;subScroll();flashApply();skel(view);if(cur==='bonds')drawBondTable();if((cur==='ru'&&CARD.tic)||ASSET.kind)drawPC();window.scrollTo(0,y);
 }
 var LASTSIG='';window.__dm=drawMarkets;
 var loaders={summary:[loadIdx,loadFX,loadCR,loadSnap,loadNews,loadSvod],daily:[loadIdx,loadFX,loadCR,loadRU,loadSnap,loadNews,loadSvod],ru:[loadRU,loadNews],us:[loadSnap,loadNews],crypto:[loadFX,loadCR,loadNews],bonds:[loadKBD,function(){return loadBonds(BF.kind)},loadNews],fx:[loadFX,loadNews],cal:[],news:[loadNews],week:[loadSnap,loadDig,loadCal],macro:[loadIdx,loadFX,loadKBD,loadSnap],divs:[loadRU,loadCal,loadSnap],events:[loadSnap]};
@@ -1890,9 +1895,10 @@ function vReader(id){
   if(rel.length)h+='<h3 class="evm">Ещё по теме</h3>'+rel.map(function(x){return newsItem(x)}).join('');
   return h+'</div>';
 }
+function vPlc(){setTimeout(plcInit,0);return '<div class="sect"><h2>Размещения облигаций</h2><p class="note" style="margin-top:0">Ближайшие размещения и выпуски, которые начали обращаться за последний год.</p><div id="plc"></div></div>'}
 function vNews(){
   if(NEWSID)return vReader(NEWSID);
-  var n=M.news,h='<div class="sect"><h2>Лента новостей</h2>';h+='<div class="ssrch nsq"><input type="search" class="nq" placeholder="Найти новости и компании: Эконива, Сбер, ОФЗ, ставка…" aria-label="Поиск по новостям" value="'+esc(NQ)+'"></div><div id="nres"></div><div id="nmain"><div id="bpl"></div>';setTimeout(function(){bplInit();if(NQ)nsRender()},0);
+  var n=M.news,h='<div class="sect"><h2>Лента новостей</h2>';h+='<div class="ssrch nsq"><input type="search" class="nq" placeholder="Найти новости и компании: Эконива, Сбер, ОФЗ, ставка…" aria-label="Поиск по новостям" value="'+esc(NQ)+'"></div><div id="nres"></div><div id="nmain"><div id="bpl"></div>';if(NQ)setTimeout(nsRender,0);
   if(n&&n.items&&n.items.length){
     var cats=[['all','Все'],['ru','Россия'],['comp','Компании'],['us','США и мир'],['crypto','Крипта'],['cbr','Ставки'],['bonds','Облигации'],['fx','Валюты']];
     h+='<nav class="sub" style="margin-top:0">'+cats.map(function(c){return '<button type="button" class="chip'+(NF===c[0]?' on':'')+'" data-nf="'+c[0]+'">'+c[1]+'</button>'}).join('')+'</nav>';
@@ -1953,22 +1959,35 @@ function nsWeb(q){
 }
 
 /* база облигаций из «Финансов 2» (ветка fin2-data): размещения, выпуски, рейтинги — ищется вместе с новостями */
-var BDB={pc:null,ra:null,uni:null,st:{}};
+var BDB={pc:null,ra:null,uni:null,hist:null,st:{}};
 function bdbBase(){return /^(localhost|127\.0\.0\.1)$/.test(location.hostname)?'fin2/data/':'https://raw.githubusercontent.com/klimentiev-a/konspekty/fin2-data/data/'}
-function bdbLoad(k,f){if(BDB[k]!==null||BDB.st[k])return;BDB.st[k]=1;nsFetch(bdbBase()+f,25000).then(function(r){return r.json()}).then(function(j){BDB[k]=j;BDB.st[k]=2;bplDraw();if(NQ.trim())nsRender()}).catch(function(){BDB.st[k]=3;bplDraw();if(NQ.trim())nsRender()})}
-function bplInit(){bdbLoad('pc','placements_current.json');bplDraw()}
+function bdbLoad(k,f){if(BDB[k]!==null||BDB.st[k])return;BDB.st[k]=1;nsFetch(bdbBase()+f,25000).then(function(r){return r.json()}).then(function(j){BDB[k]=j;BDB.st[k]=2;plcDraw();if(NQ.trim())nsRender()}).catch(function(){BDB.st[k]=3;plcDraw();if(NQ.trim())nsRender()})}
 function fD(d){var m=/^(\d{4})-(\d\d)-(\d\d)/.exec(d||'');return m?m[3]+'.'+m[2]+'.'+m[1]:''}
 var AGN={ACRA:'АКРА',EXPERT_RA:'Эксперт РА',NCR:'НКР',NRA:'НРА'};
-function plCard(r){return '<div class="nw"><div class="nm"><span class="ns">Размещение облигаций</span><span>'+(r.book_date?'сбор заявок '+fD(r.book_date)+' · ':'')+'размещение '+fD(r.place_date)+'</span></div><b class="nt">'+esc(r.issuer)+(r.is_floater?' · плавающий купон':'')+'</b><p class="nx">Объём: '+esc(r.volume_raw||'')+' · купон: '+esc(r.coupon_raw||'')+' · срок: '+esc(r.term||'')+(r.rating_raw?' · рейтинг: '+esc(r.rating_raw):'')+(r.note?'. '+esc(r.note):'')+'</p></div>'}
-function bplDraw(){var el=document.getElementById('bpl');if(!el)return;var rows=((BDB.pc&&BDB.pc.rows)||[]).filter(function(r){return r.upcoming}).sort(function(a,b){return String(a.place_date)<String(b.place_date)?-1:1}).slice(0,8),op=el.querySelector('details')&&el.querySelector('details').open;
-  el.innerHTML=rows.length?'<details class="bpl"'+(op?' open':'')+'><summary>Ближайшие размещения облигаций ('+rows.length+')</summary>'+rows.map(plCard).join('')+'<p class="note"><a href="fin2/index.html#placements">Все размещения и история →</a> · база облигаций (corpbonds.ru, Мосбиржа), раз в час.</p></details>':''}
+function plChips(a){return '<div class="plt">'+a.filter(Boolean).map(function(x){return '<i>'+esc(x)+'</i>'}).join('')+'</div>'}
+function plCard(r){var cp=r.coupon_raw?r.coupon_raw.replace(/\s*\d+ дн[а-я]*$/,''):'',rt=(r.rating_raw||'').replace(/\s+/g,' ').replace(/ru ?([AB-D]\S*)/g,'ru$1').replace(/\s*\.ru\s*/g,' ');
+  return '<div class="plk"><div class="plh"><b>'+esc(r.issuer)+'</b><span class="pld">'+(r.book_date?fD(r.book_date).slice(0,5)+' → ':'')+fD(r.place_date).slice(0,5)+'</span></div>'+
+    plChips([cp?'купон '+cp:'',r.volume_raw?'объём '+r.volume_raw+' ₽':'',r.term?'срок '+r.term.replace(/^до /,''):'',rt?'рейтинг '+rt:''])+'<p class="pln">'+(r.book_date?'Сбор заявок '+fD(r.book_date)+', размещение '+fD(r.place_date)+'.':'Размещение '+fD(r.place_date)+'.')+(r.note?' '+esc(r.note)+'.':'')+'</p></div>'}
+function plPast(r){var kd=r.kind==='floater'?'флоатер':r.kind==='structured'?'структурная':r.kind==='fixed'?'фикс. купон':'';
+  return '<a class="plk" href="fin2/index.html#issue='+encodeURIComponent(r.isin)+'"><div class="plh"><b>'+esc(r.issuer||r.issuer_full||r.name)+'</b><span class="pld">'+fD(r.issue_date).slice(0,5)+'</span></div>'+
+    plChips([r.name,r.couponpercent!=null&&r.kind!=='floater'?'купон '+nf(r.couponpercent,2)+'%':kd,r.ytm!=null?'доходность '+nf(r.ytm,2)+'%':'',r.matdate?'погашение '+fD(r.matdate):'',r.rating?'рейтинг '+r.rating:''])+'</a>'}
+var PLN=40;
+function plcInit(){bdbLoad('pc','placements_current.json');bdbLoad('hist','placements_history.json');plcDraw()}
+function plcDraw(){var el=document.getElementById('plc');if(!el)return;
+  var up=((BDB.pc&&BDB.pc.rows)||[]).filter(function(r){return r.upcoming}).sort(function(a,b){return String(a.place_date)<String(b.place_date)?-1:1}),
+      past=((BDB.hist&&BDB.hist.rows)||[]).slice().sort(function(a,b){return String(a.issue_date)<String(b.issue_date)?1:-1}),h='';
+  h+='<h3 class="evm">Ближайшие'+(up.length?' · '+up.length:'')+'</h3>'+(up.length?'<div class="plg">'+up.map(plCard).join('')+'</div>':'<p class="empty">'+(BDB.st.pc===3?'Не удалось загрузить базу облигаций.':BDB.pc?'Ближайших размещений в базе нет.':'Загружаю…')+'</p>');
+  h+='<h3 class="evm">Прошедшие'+(past.length?' · '+past.length:'')+'</h3>'+(past.length?'<div class="plg">'+past.slice(0,PLN).map(plPast).join('')+'</div>'+(past.length>PLN?'<button type="button" class="chip" data-plmore style="margin-top:10px">Показать ещё ('+(past.length-PLN)+')</button>':''):'<p class="empty">'+(BDB.st.hist===3?'Не удалось загрузить историю.':BDB.hist?'Нет данных.':'Загружаю историю размещений…')+'</p>');
+  h+='<p class="note">Источники: corpbonds.ru и Мосбиржа, база «Финансов 2», обновляется раз в час. «Прошедшие» — выпуски, начавшие обращаться за последний год; нажми на карточку, чтобы открыть выпуск.</p>';
+  el.innerHTML=h}
+view.addEventListener('click',function(e){if(e.target.closest('[data-plmore]')){PLN+=60;plcDraw()}});
 function bdbBlock(q){
   bdbLoad('pc','placements_current.json');bdbLoad('ra','rating_actions.json');bdbLoad('uni','universe.json');
   var rxs=nsRx(q);if(!rxs.length)return '';var hit=function(t){return rxs.every(function(r){return r.test(t)})};
   var h='',pl=((BDB.pc&&BDB.pc.rows)||[]).filter(function(r){return hit(r.issuer||'')}),
       ra=((BDB.ra&&BDB.ra.actions)||[]).filter(function(a){return hit(a.issuer||'')}).sort(function(a,b){return String(a.date)<String(b.date)?1:-1}).slice(0,8),
       is=BDB.uni?BDB.uni.rows.filter(function(r){return hit(r[3]+' '+(r[51]||'')+' '+(r[58]||''))}):[];
-  if(pl.length)h+=pl.map(plCard).join('');
+  if(pl.length)h+='<div class="plg">'+pl.map(plCard).join('')+'</div>';
   if(is.length){var iss=(is[0][51]||is[0][58]||'');h+='<h3 class="evm">Выпуски в обращении: '+esc(iss)+'</h3>'+is.slice(0,12).map(function(r){return '<div class="nw mini"><span class="tm">'+(r[13]!=null?nf(r[13],2)+'%':'')+'</span><div><a class="nt" href="fin2/index.html#issue='+encodeURIComponent(r[0])+'">'+esc(r[3])+'</a><span class="ns2"> · '+(r[14]!=null?'доходность '+nf(r[14],2)+'%':r[7]==='floater'?'флоатер':'')+(r[9]?' · погашение '+fD(r[9]):'')+(r[47]?' · рейтинг '+esc(r[47]):'')+'</span></div></div>'}).join('')+(is.length>12?'<p class="note">И ещё выпусков: '+(is.length-12)+'.</p>':'')+'<p class="note"><a href="fin2/index.html#issuer='+encodeURIComponent(iss)+'">Карточка эмитента в «Финансы 2» →</a></p>'}
   if(ra.length)h+='<h3 class="evm">Рейтинги</h3>'+ra.map(function(a){return '<div class="nw mini"><span class="tm">'+fD(a.date).slice(0,5)+'</span><div><b>'+esc(a.issuer)+'</b><span class="ns2"> · '+esc(AGN[a.agency]||a.agency)+' '+esc(a.rating)+(a.forecast?' · прогноз «'+esc(a.forecast)+'»':'')+(a.action?' · '+esc(a.action):'')+'</span></div></div>'}).join('');
   var wait=(BDB.st.pc===1||BDB.st.uni===1||BDB.st.ra===1);
