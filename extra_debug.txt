@@ -1,4 +1,4 @@
-2026-10-30T22:56Z
+2026-10-30T23:02Z
 ответ без dividends: ['description', 'boards'] {'description': {'columns': ['name', 'title', 'value', 'type', 'sort_order', 'is_hidden', 'precision'], 'data': [['SECID', 'Код ценной бумаги', 'SBER', 'string', 1, 0, None], ['ISSUENAME', 'Наименование ценной бумаги', 'Акции обыкновенные', 'string', 2, 0, None], ['NAME', 'Полное наименование', 'Сбе
 div SBER 'dividends'
 div LKOH 'dividends'
