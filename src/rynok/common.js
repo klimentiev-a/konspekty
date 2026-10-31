@@ -51,3 +51,22 @@ var R = {
   }
 };
 D.sources.forEach(function (s) { R.src[s.id] = s; });
+/* Верхняя полоса: «Назад» к выбору вариантов + переключатель 1–5 (видна сразу, без прокрутки) */
+(function () {
+  function go() {
+    if (document.getElementById('rnav')) return;
+    var m = location.pathname.match(/rynok-(\d)\.html$/), cur = m ? +m[1] : 0;
+    var st = document.createElement('style');
+    st.textContent = '#rnav{display:flex;align-items:center;gap:8px;flex-wrap:wrap;max-width:1280px;margin:0 auto;padding:12px 18px 0;font:500 14px/1 "IBM Plex Sans",system-ui,sans-serif}' +
+      '#rnav a{display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:0 13px;border:1px solid var(--line);border-radius:999px;background:var(--surface);color:var(--fg);text-decoration:none}' +
+      '#rnav a:hover{border-color:var(--faint)}#rnav .bk{font-weight:600}#rnav .sp{flex:1}#rnav .lb{color:var(--muted);font-size:13px}' +
+      '#rnav .v{min-width:36px;justify-content:center;padding:0 10px;font-weight:600}#rnav .v.on{background:var(--fg);color:var(--bg);border-color:var(--fg)}' +
+      '@media(max-width:520px){#rnav .lb{display:none}}';
+    document.head.appendChild(st);
+    var n = document.createElement('nav'); n.id = 'rnav'; n.setAttribute('aria-label', 'Навигация');
+    var h = '<a class="bk" href="rynok.html" title="К выбору вариантов">← Назад</a><span class="sp"></span><span class="lb">Вариант</span>';
+    for (var i = 1; i <= 5; i++) h += '<a class="v' + (i === cur ? ' on' : '') + '" href="rynok-' + i + '.html"' + (i === cur ? ' aria-current="page"' : '') + '>' + i + '</a>';
+    n.innerHTML = h; document.body.insertBefore(n, document.body.firstChild);
+  }
+  if (document.body) go(); else document.addEventListener('DOMContentLoaded', go);
+})();
