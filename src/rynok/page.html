@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="ru"><head><meta charset="utf-8">
+<!--GATE-->
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,nofollow">
+<title>Рынок: что шарить</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Literata:opsz,wght@7..72,600..800&display=swap" media="print" onload="this.media='all'">
+<style>
+:root{--bg:#F4F1E8;--surface:#FBF9F3;--fg:#25221C;--muted:#665F52;--faint:#857E6E;--line:#D9D3C2;--accent:#1F6B57;--ru:#A93D28;--w:#2F5DA8;--up:#17804F;--dn:#C23A2B;--hl:color-mix(in srgb,var(--accent) 9%,var(--surface));color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#171611;--surface:#22211A;--fg:#E8E4D8;--muted:#A39D8E;--faint:#7A7466;--line:#33312A;--accent:#5FC2A3;--ru:#E8886B;--w:#7FA8F0;--up:#5ED39A;--dn:#FF8A78;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#171611;--surface:#22211A;--fg:#E8E4D8;--muted:#A39D8E;--faint:#7A7466;--line:#33312A;--accent:#5FC2A3;--ru:#E8886B;--w:#7FA8F0;--up:#5ED39A;--dn:#FF8A78;color-scheme:dark}
+*{box-sizing:border-box}html{-webkit-text-size-adjust:100%;scrollbar-color:var(--line) transparent}
+body{margin:0;background:var(--bg);color:var(--fg);font:400 15.5px/1.55 'IBM Plex Sans',system-ui,-apple-system,'Segoe UI',sans-serif;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+.wrap{max-width:1120px;margin:0 auto;padding:0 18px 90px}
+/* шапка */
+.hd{display:flex;align-items:center;gap:10px;padding:14px 0 6px}
+.pill{display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:0 14px;border:1px solid var(--line);border-radius:999px;background:var(--surface);color:var(--fg);text-decoration:none;font:600 14px/1 inherit;cursor:pointer}
+.pill:hover{border-color:var(--faint)}
+.hd .sp{flex:1}
+.tb{width:36px;padding:0;justify-content:center;font-size:15px}
+h1{margin:10px 0 2px;font:800 clamp(28px,4.4vw,40px)/1.1 'Literata',Georgia,serif;letter-spacing:-.02em}
+.meta{color:var(--muted);font-size:13.5px}
+/* вкладки */
+.tabs{position:sticky;top:0;z-index:20;display:flex;gap:4px;overflow-x:auto;margin:14px -18px 0;padding:8px 18px;background:color-mix(in srgb,var(--bg) 93%,transparent);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-bottom:1px solid var(--line);scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tabs a{flex:none;text-decoration:none;padding:0 14px;min-height:38px;display:inline-flex;align-items:center;border-radius:10px;font-weight:600;font-size:14.5px;color:var(--muted)}
+.tabs a:hover{color:var(--fg)}
+.tabs a.on{background:var(--fg);color:var(--bg)}
+#view{padding-top:20px;min-height:60vh}
+h2{font:700 21px/1.25 'Literata',Georgia,serif;margin:30px 0 10px}
+h2:first-child{margin-top:4px}
+h2 small{font:400 13.5px 'IBM Plex Sans',sans-serif;color:var(--muted);margin-left:8px}
+.hint{color:var(--muted);font-size:14px;margin:-4px 0 12px}
+.box{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px 18px}
+.up{color:var(--up)}.dn{color:var(--dn)}
+.more{display:inline-block;margin-top:10px;color:var(--accent);font-weight:600;font-size:14px;text-decoration:none;cursor:pointer;background:none;border:0;padding:0}
+.more:hover{text-decoration:underline}
+.srcl{font-size:12px;color:var(--faint);margin-right:9px;text-decoration:none;border-bottom:1px dotted var(--line)}
+/* главное */
+.pitch p{margin:0;padding:9px 0;border-bottom:1px dashed var(--line)}.pitch p:last-child{border-bottom:0}
+.kpis{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,200px),1fr));gap:10px}
+.k{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 14px;min-width:0}
+.k .l{font-size:13px;color:var(--muted)}.k .v{font:700 23px/1.2 'IBM Plex Sans',sans-serif;font-variant-numeric:tabular-nums;margin:2px 0}
+.k .d{font-size:12.5px;font-weight:600}.k .d.nt{color:var(--faint);font-weight:500}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:820px){.two{grid-template-columns:1fr}}
+/* таблицы */
+.sc{overflow-x:auto;border:1px solid var(--line);border-radius:14px;background:var(--surface)}
+table{width:100%;border-collapse:collapse;font-size:14.5px}
+th{text-align:left;font-weight:600;font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:var(--faint);padding:10px 12px;border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+tr:last-child td{border-bottom:0}
+td.n{white-space:nowrap;text-align:right;font-weight:600;font-variant-numeric:tabular-nums}
+th.n{text-align:right}
+td.x{color:var(--muted);font-size:13.5px;min-width:220px}
+td:first-child{font-weight:600;white-space:nowrap}
+td:first-child small{display:block;font-weight:400;color:var(--faint);font-size:12px}
+tr.go{cursor:pointer}tr.go:hover td{background:var(--hl)}
+/* темы */
+.toc{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
+.toc a{font-size:13.5px;text-decoration:none;padding:6px 11px;border:1px solid var(--line);border-radius:999px;background:var(--surface)}
+.toc a:hover{border-color:var(--faint)}
+.th{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--c);border-radius:16px;padding:16px 18px;margin-bottom:12px;scroll-margin-top:70px}
+.th .tg{font-size:11.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--c)}
+.th h3{margin:4px 0 8px;font:700 20px/1.3 'Literata',Georgia,serif}
+.th .ld{margin:0 0 10px}
+.th .why{margin:0;padding:10px 12px;border-radius:10px;background:var(--bg);font-size:14.5px}
+.th .why b,.th h4{color:var(--accent)}
+.th h4{margin:14px 0 6px;font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+.th ul{margin:0;padding-left:20px}.th li{margin:4px 0}
+.chain{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:13.5px}
+.chain span{padding:5px 10px;border-radius:8px;border:1px solid color-mix(in srgb,var(--c) 30%,var(--line));background:color-mix(in srgb,var(--c) 7%,var(--surface))}
+.chain i{font-style:normal;color:var(--c);font-weight:700}
+.say{border-left:3px solid var(--accent);padding:2px 0 2px 12px;font-style:italic}
+.qa{background:var(--hl);border-radius:10px;padding:10px 12px}.qa b{display:block;margin-bottom:3px;font-style:normal}
+.th .det[hidden]{display:none}
+/* компании */
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.chip{border:1px solid var(--line);background:var(--surface);color:var(--fg);border-radius:999px;padding:0 13px;min-height:34px;font:600 13.5px/1 inherit;cursor:pointer}
+.chip.on{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.co{background:var(--surface);border:1px solid var(--line);border-radius:14px;margin-bottom:8px;overflow:hidden}
+.co summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:12px;align-items:center;padding:12px 14px}
+.co summary::-webkit-details-marker{display:none}
+.co .nm b{font-size:15.5px}.co .nm code{font:600 11.5px/1 ui-monospace,monospace;color:var(--faint);margin-left:6px}
+.co .nm div{font-size:13.5px;color:var(--muted);margin-top:2px}
+.co .pr{text-align:right;font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}.co .pr small{display:block;font-size:12.5px;font-weight:600}
+.co summary::after{content:'›';font-size:22px;color:var(--faint);transition:transform .15s}
+.co[open] summary::after{transform:rotate(90deg)}
+.co .bd{padding:0 14px 14px;border-top:1px solid var(--line)}
+.co .bd p{margin:10px 0 6px}
+/* новости */
+.nw{display:block;text-decoration:none;padding:12px 0;border-bottom:1px solid var(--line)}
+.nw:last-child{border-bottom:0}
+.nw .t{font-weight:600;font-size:15.5px;line-height:1.4}
+.nw:hover .t{color:var(--accent)}
+.nw .m{font-size:12.5px;color:var(--faint);margin-top:3px}
+.nw .m b{font-weight:600;color:var(--muted)}
+.nw .s{font-size:14px;color:var(--muted);margin-top:4px}
+.nw .tg{display:inline-block;font:600 10.5px/1 ui-monospace,monospace;padding:2px 5px;border:1px solid var(--line);border-radius:4px;margin-left:4px;color:var(--muted)}
+.top5{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:10px}
+.top5 a{display:flex;flex-direction:column;gap:6px;text-decoration:none;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 14px}
+.top5 a:hover{border-color:var(--faint)}.top5 b{font-size:15px;line-height:1.35}.top5 small{color:var(--faint);font-size:12.5px}
+/* календарь */
+.cal{list-style:none;margin:0;padding:0}
+.cal li{display:grid;grid-template-columns:110px 1fr;gap:12px;padding:11px 0;border-bottom:1px solid var(--line)}
+.cal li:last-child{border-bottom:0}
+.cal .dt b{display:block}.cal .dt small{color:var(--faint);font-size:12.5px}
+.cal .rg{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--c)}
+.cal p{margin:2px 0 0;color:var(--muted);font-size:14px}
+.phr{margin:0;padding-left:20px}.phr li{margin:7px 0}
+.empty{color:var(--muted);padding:12px 0}
+.foot{margin-top:40px;font-size:12.5px;color:var(--faint)}.foot ol{padding-left:18px;columns:2 320px}.foot li{break-inside:avoid;margin:3px 0}.foot a{color:var(--faint)}
+</style>
+<!--ZOOM-->
+</head><body>
+<div class="wrap">
+  <div class="hd"><a class="pill" href="artem.html#fin">← Финансы</a><span class="sp"></span><button class="pill tb" id="tb" type="button" aria-label="Тема"></button></div>
+  <h1>Рынок: что шарить</h1>
+  <div class="meta" id="meta"></div>
+  <nav class="tabs" id="tabs">
+    <a href="#main" data-t="main">Главное</a><a href="#prices" data-t="prices">Цены</a><a href="#ru" data-t="ru">Россия</a><a href="#world" data-t="world">Мир</a><a href="#co" data-t="co">Компании</a><a href="#news" data-t="news">Новости</a><a href="#cal" data-t="cal">Календарь</a>
+  </nav>
+  <main id="view"></main>
+  <footer class="foot"><b>Источники</b><ol id="srcs"></ol></footer>
+</div>
+<!--COMMON-->
+<script>
+(function(){
+var $=function(i){return document.getElementById(i)},E=R.esc,M=null,N=null,TAB='main',NF='all',CF='all',NLIM=40;
+R.themeBtn($('tb'));
+function meta(){$('meta').textContent='Разбор на '+D.asof+(M&&M.updated?' · цены '+M.updated:'')+(N&&N.updated?' · новости '+N.updated:'')}
+meta();
+var USN={NVDA:'Nvidia',AAPL:'Apple',MSFT:'Microsoft',GOOGL:'Alphabet',AMZN:'Amazon',META:'Meta',AVGO:'Broadcom',TSLA:'Tesla',ORCL:'Oracle',AMD:'AMD',INTC:'Intel',NFLX:'Netflix',JPM:'JPMorgan',XOM:'Exxon Mobil',CVX:'Chevron',WMT:'Walmart',LLY:'Eli Lilly',KO:'Coca-Cola',V:'Visa',MA:'Mastercard',BAC:'Bank of America','BRK-B':'Berkshire Hathaway',JNJ:'Johnson & Johnson',GS:'Goldman Sachs',MS:'Morgan Stanley',PLTR:'Palantir',COIN:'Coinbase',MU:'Micron',QCOM:'Qualcomm',TSM:'TSMC',UNH:'UnitedHealth',BA:'Boeing',DIS:'Disney'};
+function lv(l,k){var x=M&&R.get(M,l);return x}
+/* ---------- Главное ---------- */
+function kpis(){return '<div class="kpis">'+D.kpi.map(function(k){var l=k.live&&lv(k.live);var d=l&&l.ch!=null?'<div class="d '+R.cls(l.ch)+'">'+R.pct(l.ch)+' за день</div>':'<div class="d nt">'+E(k.delta)+'</div>';
+  return '<div class="k" title="'+E(k.why)+'"><div class="l">'+E(k.label)+'</div><div class="v">'+E(l?l.txt:k.value)+'</div>'+d+'</div>'}).join('')+'</div>'}
+function topNews(n){if(!N)return '<p class="empty">Новости загружаются…</p>';var since=Date.now()-36*36e5;
+  var a=N.items.filter(function(x){return new Date(x.d)>since&&(+x.imp||0)>=8}).sort(function(a,b){return (+b.imp||0)-(+a.imp||0)}).slice(0,n);
+  if(!a.length)return '<p class="empty">Свежих важных новостей нет.</p>';
+  return '<div class="top5">'+a.map(function(x){return '<a href="finance.html#markets/news/'+E(x.id)+'"><b>'+E(x.t)+'</b><small>'+E(x.s)+' · '+R.ago(x.d)+'</small></a>'}).join('')+'</div>'}
+function nextEv(n){return '<ul class="cal">'+D.calendar.filter(function(c){return R.days(c.date)>=0}).slice(0,n).map(calLi).join('')+'</ul>'}
+function vMain(){return '<h2>Коротко: что сейчас на рынке<small>можно рассказать за минуту</small></h2><div class="box pitch">'+D.pitch.map(function(p){return '<p>'+E(p)+'</p>'}).join('')+'</div>'+
+ '<h2>Ключевые цифры</h2>'+kpis()+'<a class="more" href="#prices">Все цены →</a>'+
+ '<h2>Главные новости</h2>'+topNews(6)+'<a class="more" href="#news">Вся лента →</a>'+
+ '<div class="two"><div><h2>Что впереди</h2><div class="box">'+nextEv(5)+'</div><a class="more" href="#cal">Весь календарь →</a></div>'+
+ '<div><h2>Фразы для собеседования</h2><div class="box"><ol class="phr">'+D.phrases.map(function(p){return '<li>'+E(p)+'</li>'}).join('')+'</ol></div></div></div>'}
+/* ---------- Цены ---------- */
+var PR=[
+ ['Россия: ставки и индексы',[
+  ['Ключевая ставка ЦБ','Key rate',null,'14,00%','Решение 23.10, следующее 18.12'],
+  ['Инфляция','CPI г/г',null,'7,11%','на 26.10, цель ЦБ 4%'],
+  ['Индекс Мосбиржи','IMOEX',['idx','IMOEX'],'','Главный индекс акций РФ в рублях'],
+  ['Индекс РТС','RTSI',['idx','RTSI'],'','Те же акции в долларах'],
+  ['Индекс гособлигаций','RGBI',['idx','RGBI'],'','Растёт, когда доходности ОФЗ падают'],
+  ['Нефть и газ','MOEXOG',['idx','MOEXOG'],'','Отраслевой индекс'],
+  ['Финансы','MOEXFN',['idx','MOEXFN'],'','Банки, биржа, страховщики'],
+  ['IT','MOEXIT',['idx','MOEXIT'],'','Яндекс, Ozon, Т-Технологии и др.']]],
+ ['Россия: валюта и ОФЗ',[
+  ['Доллар','USD/RUB, ЦБ',['fx','USD'],'',''],['Евро','EUR/RUB, ЦБ',['fx','EUR'],'',''],['Юань','CNY/RUB, ЦБ',['fx','CNY'],'','Главная валюта расчётов с Китаем'],
+  ['ОФЗ 1 год','КБД',['kbd',1],'','Близко к ключевой ставке'],['ОФЗ 2 года','КБД',['kbd',2],'',''],['ОФЗ 5 лет','КБД',['kbd',5],'',''],['ОФЗ 10 лет','КБД',['kbd',10],'','Премия за инфляцию и дефицит бюджета']]],
+ ['Мир: акции',[
+  ['S&P 500','США',['us','^GSPC'],'','500 крупнейших компаний США'],['Nasdaq','США',['us','^IXIC'],'','Технологический индекс'],['Dow Jones','США',['us','^DJI'],'',''],
+  ['Euro Stoxx 50','Еврозона',['us','^STOXX50E'],'',''],['DAX','Германия',['us','^GDAXI'],'',''],['FTSE 100','Великобритания',['us','^FTSE'],'',''],
+  ['Nikkei 225','Япония',['us','^N225'],'',''],['Hang Seng','Гонконг',['us','^HSI'],'','Китайские компании'],['Sensex','Индия',['us','^BSESN'],'','']]],
+ ['Мир: ставки, сырьё, крипта',[
+  ['Ставка ФРС','Fed funds',null,'3,75–4,00%','Повышение 16.09, решение 9.12'],['UST 10 лет','10Y Treasury',null,'5,05%','на 28.10; максимум с 2007 — 5,11%'],
+  ['Brent','$/барр.',['energy','BZ=F'],'','Эталон для нефти'],['WTI','$/барр.',['energy','CL=F'],'','Американская нефть'],['Газ TTF','Европа',['energy','TTF=F'],'',''],['Газ Henry Hub','США',['energy','NG=F'],'',''],
+  ['Биткоин','BTC',['crypto','BTC'],'',''],['Ethereum','ETH',['crypto','ETH'],'','']]]];
+function vPrices(){return PR.map(function(g){return '<h2>'+E(g[0])+'</h2><div class="sc"><table><tr><th>Инструмент</th><th class="n">Цена</th><th class="n">За день</th><th>Что это</th></tr>'+g[1].map(function(r){var l=r[2]&&lv(r[2]);
+  return '<tr><td>'+E(r[0])+'<small>'+E(r[1])+'</small></td><td class="n">'+(l?E(l.txt):r[3]?E(r[3]):'<span style="color:var(--faint)">—</span>')+'</td><td class="n '+(l?R.cls(l.ch):'')+'">'+(l&&l.ch!=null?R.pct(l.ch):'')+'</td><td class="x">'+E(r[4])+'</td></tr>'}).join('')+'</table></div>'}).join('')+
+ '<p class="hint" style="margin-top:12px">'+(M?'Цены: '+E(M.updated)+'. Обновляются раз в час.':'Цены не загрузились — показаны значения из разбора.')+' Подробные графики — в <a href="finance.html#markets">Финансах → Рынки</a>.</p>'}
+/* ---------- Россия / Мир ---------- */
+function theme(t){var c=t.region==='ru'?'var(--ru)':'var(--w)';return '<section class="th" id="t-'+t.id+'" style="--c:'+c+'"><div class="tg">'+E(t.tag)+'</div><h3>'+E(t.title)+'</h3><p class="ld">'+E(t.lead)+'</p><p class="why"><b>Почему важно.</b> '+E(t.so)+'</p>'+
+ '<div class="det" hidden><h4>Цифры и факты</h4><ul>'+t.facts.map(function(f){return '<li>'+E(f)+'</li>'}).join('')+'</ul><h4>Цепочка</h4><div class="chain">'+t.chain.map(function(s){return '<span>'+E(s)+'</span>'}).join('<i>→</i>')+'</div>'+
+ '<h4>Как сказать на собеседовании</h4><p class="say">'+E(t.say)+'</p><h4>Могут спросить</h4><div class="qa"><b>'+E(t.q)+'</b>'+E(t.a)+'</div><div style="margin-top:10px">'+R.links(t.src)+'</div></div>'+
+ '<button class="more" type="button" data-x>Подробнее: цифры, вопрос и ответ ↓</button></section>'}
+function vThemes(r){var a=D.themes.filter(function(t){return t.region===r});return '<h2>'+(r==='ru'?'Россия':'Мир')+'<small>'+a.length+' тем</small></h2><div class="toc">'+a.map(function(t){return '<a href="#'+r+'/'+t.id+'">'+E(t.tag)+'</a>'}).join('')+'</div>'+a.map(theme).join('')}
+/* ---------- Компании ---------- */
+function coList(){var seen={},out=[];
+  D.companies.forEach(function(c){seen[c.tic]=1;out.push({tic:c.tic,name:c.name,fact:c.fact,note:c.note,src:c.src,mk:M&&M.ru&&M.ru[c.tic]?'ru':M&&M.us&&M.us[c.tic]?'us':(['INTC','AAPL','ANT'].indexOf(c.tic)>=0?'us':'ru')})});
+  if(N){var since=Date.now()-72*36e5,cnt={};N.items.forEach(function(x){if(new Date(x.d)<since)return;var tg=x.tags;if(typeof tg==='string'){try{tg=JSON.parse(tg.replace(/'/g,'"'))}catch(e){tg=[]}}(tg||[]).forEach(function(t){cnt[t]=(cnt[t]||0)+1})});
+    Object.keys(cnt).filter(function(t){return !seen[t]&&!/^\^/.test(t)&&M&&((M.ru&&M.ru[t])||(M.us&&M.us[t]))}).sort(function(a,b){return cnt[b]-cnt[a]}).slice(0,14).forEach(function(t){var ru=M.ru[t];out.push({tic:t,name:ru?ru.n:(USN[t]||t),fact:'',note:cnt[t]+' новост'+(cnt[t]%10===1&&cnt[t]%100!==11?'ь':cnt[t]%10>=2&&cnt[t]%10<=4&&(cnt[t]%100<10||cnt[t]%100>=20)?'и':'ей')+' за 3 дня',mk:ru?'ru':'us'})})}
+  return out}
+function tagsOf(x){var tg=x.tags;if(typeof tg==='string'){try{tg=JSON.parse(tg.replace(/'/g,'"'))}catch(e){tg=[]}}return tg||[]}
+function coNews(t){if(!N)return '';var a=N.items.filter(function(x){return tagsOf(x).indexOf(t)>=0}).sort(function(a,b){return new Date(b.d)-new Date(a.d)}).slice(0,4);
+  return a.length?a.map(function(x){return '<a class="nw" href="finance.html#markets/news/'+E(x.id)+'"><div class="t">'+E(x.t)+'</div><div class="m"><b>'+E(x.s)+'</b> · '+R.ago(x.d)+'</div></a>'}).join(''):'<p class="empty">Новостей по компании в ленте нет.</p>'}
+function vCo(){var L=coList().filter(function(c){return CF==='all'||c.mk===CF});
+ return '<h2>Компании<small>цена, что случилось, новости</small></h2><div class="chips" id="cf"><button class="chip'+(CF==='all'?' on':'')+'" data-f="all">Все</button><button class="chip'+(CF==='ru'?' on':'')+'" data-f="ru">Россия</button><button class="chip'+(CF==='us'?' on':'')+'" data-f="us">США</button></div>'+
+ L.map(function(c){var l=lv([c.mk,c.tic]);return '<details class="co"><summary><div class="nm"><b>'+E(c.name)+'</b><code>'+E(c.tic)+'</code><div>'+E(c.fact||c.note)+'</div></div><div class="pr">'+(l?E(l.txt)+'<small class="'+R.cls(l.ch)+'">'+R.pct(l.ch)+'</small>':'<small style="color:var(--faint)">нет цены</small>')+'</div></summary>'+
+  '<div class="bd">'+(c.fact?'<p><b>'+E(c.fact)+'.</b> '+E(c.note)+'. '+R.links([c.src])+'</p>':'')+'<h4 style="margin:12px 0 2px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)">Последние новости</h4>'+coNews(c.tic)+
+  (l?'<a class="more" href="finance.html#markets/'+c.mk+'/'+encodeURIComponent(c.tic)+'">График и карточка компании →</a>':'')+'</div></details>'}).join('')}
+/* ---------- Новости ---------- */
+function nCat(x){return x.cat==='ru'||x.cat==='cbr'?'ru':x.cat==='crypto'?'crypto':'world'}
+function vNews(){if(!N)return '<h2>Новости</h2><p class="empty">Лента загружается…</p>';
+ var since=Date.now()-72*36e5,a=N.items.filter(function(x){return new Date(x.d)>since&&(NF==='all'||nCat(x)===NF)&&(+x.imp||0)>=4}).sort(function(a,b){return new Date(b.d)-new Date(a.d)});
+ return '<h2>Новости<small>за 3 дня, важные</small></h2><div class="chips" id="nf">'+[['all','Все'],['ru','Россия'],['world','США и мир'],['crypto','Крипта']].map(function(f){return '<button class="chip'+(NF===f[0]?' on':'')+'" data-f="'+f[0]+'">'+f[1]+'</button>'}).join('')+'</div>'+
+ '<div class="box" style="padding-top:2px;padding-bottom:2px">'+(a.length?a.slice(0,NLIM).map(function(x){var s=x.sum;if(typeof s==='string'){try{s=JSON.parse(s)}catch(e){s=[s]}}s=(s&&s[0])||'';if(s.length>220)s=s.slice(0,217).replace(/\s\S*$/,'')+'…';
+  var tg=tagsOf(x).filter(function(t){return !/^\^/.test(t)}).slice(0,3);
+  return '<a class="nw" href="finance.html#markets/news/'+E(x.id)+'"><div class="t">'+E(x.t)+'</div><div class="m"><b>'+E(x.s)+'</b> · '+R.ago(x.d)+tg.map(function(t){return '<span class="tg">'+E(t)+'</span>'}).join('')+'</div>'+(s?'<div class="s">'+E(s)+'</div>':'')+'</a>'}).join(''):'<p class="empty">Нет новостей.</p>')+'</div>'+
+ (a.length>NLIM?'<button class="more" type="button" id="nmore">Показать ещё ('+(a.length-NLIM)+')</button>':'')+'<p class="hint" style="margin-top:12px">Нажмите на новость — откроется пересказ в Финансах. Лента обновляется каждый час.</p>'}
+/* ---------- Календарь ---------- */
+function calLi(c){var d=R.days(c.date),col=c.region==='ru'?'var(--ru)':'var(--w)';return '<li style="--c:'+col+'"><div class="dt"><b>'+(c.approx?E(c.approx):R.dateRu(c.date))+'</b><small>'+(d>0?'через '+d+' дн.':d===0?'сегодня':'прошло')+'</small></div><div><span class="rg">'+R.region(c.region)+'</span><div>'+E(c.title)+'</div><p>'+E(c.why)+'</p></div></li>'}
+function vCal(){return '<h2>Календарь<small>до конца года</small></h2><div class="box"><ul class="cal">'+D.calendar.map(calLi).join('')+'</ul></div>'}
+/* ---------- роутинг ---------- */
+function draw(keep){var h=(location.hash||'#main').slice(1).split('/'),t=h[0];if(!/^(main|prices|ru|world|co|news|cal)$/.test(t))t='main';
+ var ch=t!==TAB;TAB=t;[].forEach.call($('tabs').children,function(a){a.classList.toggle('on',a.dataset.t===t)});
+ $('view').innerHTML=t==='main'?vMain():t==='prices'?vPrices():t==='ru'||t==='world'?vThemes(t):t==='co'?vCo():t==='news'?vNews():vCal();
+ if(h[1]&&(t==='ru'||t==='world')){var el=$('t-'+h[1]);if(el){var d=el.querySelector('.det'),b=el.querySelector('[data-x]');d.hidden=false;b.textContent='Свернуть ↑';if(!keep)setTimeout(function(){el.scrollIntoView({block:'start'})},0)}}
+ else if(ch&&!keep)window.scrollTo(0,0);
+ var a=$('tabs').querySelector('.on');if(a&&a.scrollIntoView&&ch)try{a.scrollIntoView({inline:'center',block:'nearest'})}catch(e){}}
+window.addEventListener('hashchange',function(){draw(false)});
+$('view').addEventListener('click',function(e){var b=e.target.closest('[data-x]');if(b){var d=b.parentNode.querySelector('.det');d.hidden=!d.hidden;b.textContent=d.hidden?'Подробнее: цифры, вопрос и ответ ↓':'Свернуть ↑';return}
+ var c=e.target.closest('#nf .chip');if(c){NF=c.dataset.f;NLIM=40;draw(true);return}
+ c=e.target.closest('#cf .chip');if(c){CF=c.dataset.f;draw(true);return}
+ if(e.target.id==='nmore'){NLIM+=40;draw(true)}});
+draw(false);
+$('srcs').innerHTML=D.sources.map(function(s){return '<li><a href="'+E(s.u)+'" target="_blank" rel="noopener">'+E(s.t)+'</a></li>'}).join('');
+function redraw(){if(document.querySelector('.co[open]'))return;var y=window.pageYOffset;draw(true);window.scrollTo(0,y);meta()}
+R.getJSON('markets.json').then(function(m){M=m;redraw()}).catch(function(){});
+R.getJSON('news.json',9000).then(function(n){N=n;redraw()}).catch(function(){N={items:[]};redraw()});
+})();
+</script>
+</body></html>

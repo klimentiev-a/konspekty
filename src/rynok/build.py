@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-"""Страница «Рынок: что шарить» — 5 вариантов оформления одного содержания.
-src/rynok/content.json (факты, источники) + common.js + vN.html → rynok-N.html, index.html → rynok.html.
+"""Страница «Рынок: что шарить» (rynok.html): вкладки Главное · Цены · Россия · Мир · Компании · Новости · Календарь.
+src/rynok/content.json (разбор и источники) + common.js + page.html → rynok.html. Цены и новости — живьём из markets.json и news.json.
 Вставляет замок Артёма (gate_artem.html) и zoom.js (масштаб, «Наверх», «Назад», service worker)."""
 import json
 import os
@@ -18,7 +18,7 @@ zoom = "<script>" + rd(ROOT, "src", "finance", "zoom.js") + "</script>"
 data = json.loads(rd(SRC, "content.json"))
 common = "<script>" + rd(SRC, "common.js").replace(
     "/*DATA*/", json.dumps(data, ensure_ascii=False).replace("</", "<\\/")) + "</script>"
-pages = [("index.html", "rynok.html")] + [("v%d.html" % i, "rynok-%d.html" % i) for i in range(1, 6)]
+pages = [("page.html", "rynok.html")]
 for src, out in pages:
     s = rd(SRC, src)
     for tag in ("<!--GATE-->", "<!--ZOOM-->"):
