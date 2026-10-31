@@ -97,7 +97,8 @@ document.addEventListener('DOMContentLoaded',function(){var v=g();document.query
     tb.innerHTML='<svg viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg>';document.body.appendChild(tb);
     var home=/(^|\/)(index|artem|nastya)?(\.html)?$/.test(location.pathname)&&!/\/(fin2|games|docs)\//.test(location.pathname)&&/(^|\/)(index|artem|nastya)\.html$|\/$/.test(location.pathname);
     var bk=null;
-    if(!home){bk=document.createElement('button');bk.type='button';bk.className='zback';bk.setAttribute('aria-label','Назад');bk.title='Назад';
+    var hb=document.getElementById('b-back');   // своя кнопка «Назад» в закреплённой шапке — вторую поверх неё не ставим
+    if(!home&&!hb){bk=document.createElement('button');bk.type='button';bk.className='zback';bk.setAttribute('aria-label','Назад');bk.title='Назад';
       bk.innerHTML='<svg viewBox="0 0 24 24"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>';document.body.appendChild(bk);
       bk.addEventListener('click',function(){var same=false;try{same=document.referrer&&new URL(document.referrer).origin===location.origin}catch(e){}
         if(history.length>1&&same)history.back();else location.href=(/\/fin2\//.test(location.pathname)?'../':'')+'index.html'})}

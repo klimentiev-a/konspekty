@@ -13,7 +13,7 @@ RU = ['SBER','LKOH','ROSN','NVTK','SIBN','GAZP','GMKN','TATN','PLZL','YDEX','TRN
       'CHMF','X5','NLMK','RUAL','MOEX','MTSS','IRAO','MGNT','ALRS','HEAD','AFLT','POSI']
 # весь мир: справочник src/finance/universe.py (≈330 бумаг) + индексы США/мира
 WORLD = [w[0] for w in UNI.WORLD]
-US = WORLD + ['^GSPC','^IXIC','^DJI','^STOXX50E','^FTSE','^GDAXI','^N225','^HSI','000001.SS','^BSESN','^KS11','000688.SS','^HSTECH','000300.SS','399006.SZ','^HSCE','^TWII']
+US = WORLD + ['^GSPC','^IXIC','^DJI','^STOXX50E','^FTSE','^GDAXI','^N225','^HSI','000001.SS','^BSESN','^KS11','000688.SS','HSTECH.HK','000300.SS','399006.SZ','^HSCE','^TWII']
 
 def get(url, t=20):
     r = urllib.request.urlopen(urllib.request.Request(url, headers=UA), timeout=t)

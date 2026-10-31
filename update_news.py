@@ -100,7 +100,7 @@ NAMES_RX = {'AAPL': r'Apple|Эппл', 'MSFT': r'Microsoft|Майкрософт'
     'DOGE': r'Dogecoin|DOGE', 'BNB': r'BNB|Binance Coin', 'USDT': r'Tether|USDT',
     '^GSPC': r'S&P 500|S&P|Wall Street|Уолл-стрит|американск[а-я]+ (?:рын|бирж|акци)', '^IXIC': r'Nasdaq|Насдак', '^DJI': r'Dow Jones|Dow(?= )|Доу-Джонс',
     '000688.SS': r'STAR Market|STAR 50|Star Market|Star 50|科创板|Научно-технологическ\w+ инновацион\w+ бирж\w+|Star-?market|китайск\w+ чип\w+|Cambricon|SMIC|Cambricon|Камбрикон',
-    '^HSTECH': r'Hang Seng Tech|Hang Seng TECH|Hang Seng Technology|HSTECH',
+    'HSTECH.HK': r'Hang Seng Tech|Hang Seng TECH|Hang Seng Technology|HSTECH',
     '000300.SS': r'CSI 300|CSI300|Shanghai[- ]Shenzhen 300|沪深300',
     '399006.SZ': r'ChiNext|Chinext|创业板|Shenzhen Component|Shenzhen Composite',
     '^HSCE': r'Hang Seng China Enterprises|HSCEI|H-share|H-shares',

@@ -66,7 +66,8 @@ def series(src):
 KEYW = re.compile(r'акци|дивиденд|прибыл|выручк|отч[её]т|МСФО|РСБУ|санкц|упал|рост|вырос|подешев|подорож|рекоменд|совет директоров|байбэк|выкуп|SPO|IPO|прогноз|снизил|повысил|рекорд|обвал|ралли|котировк|капитализац|'
                   r'shares|stock|fell|falls|rose|rises|drop|jump|slide|slump|surge|soar|plunge|tumble|rall|earnings|revenue|guidance|downgrade|upgrade|price target|sell-?off|record|outlook|forecast|lawsuit|deal|acquir|ETF|liquidat|SEC\b', re.I)
 NOISE = re.compile(r'\b(?:\d+ (?:best|top)|should you buy|is it time to|motley fool|prediction:|here.s why|zacks rank)\b', re.I)
-DRIVER = [(re.compile(r'переговор|перемири|мирн|урегулир|\bСВО\b|Украин|Трамп|Путин|Зеленск|Песков|саммит|Уиткофф|ceasefire|peace|truce|Ukraine|Trump|Putin|Witkoff', re.I), 6),
+DRIVER = [(re.compile(r'переговор|перемири|мирн\w* (?:план|процесс|соглаш|договор|урегулир)|урегулир|\bСВО\b|ceasefire|peace|truce', re.I), 7),
+          (re.compile(r'Украин|Трамп|Путин|Зеленск|Песков|саммит|Уиткофф|Ukraine|Trump|Putin|Witkoff', re.I), 3),
           (re.compile(r'санкц|пошлин|тариф|sanction|tariff', re.I), 4),
           (re.compile(r'ключев\w* ставк|ставк\w* ЦБ|Банк\w* России|\bФРС\b|\bFed\b|rate (?:cut|hike)|инфляц|inflation', re.I), 4),
           (re.compile(r'нефт|Brent|ОПЕК|OPEC|\boil\b', re.I), 3), (re.compile(r'рубл|юан|ruble', re.I), 2)]

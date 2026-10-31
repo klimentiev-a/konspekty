@@ -11,7 +11,7 @@ OUT = sys.argv[1] if len(sys.argv) > 1 else 'hist_out'
 os.makedirs(os.path.join(OUT, 'hist'), exist_ok=True)
 UA = {'User-Agent': 'Mozilla/5.0 (konspekty history)'}
 # весь мир (universe.py) + индексы; за один прогон обновляем не больше BUDGET самых старых файлов, остальные — в следующий час
-US = ['^GSPC', '^IXIC', '^DJI', '^STOXX50E', '^FTSE', '^GDAXI', '^N225', '^HSI', '000001.SS', '^BSESN', '^KS11', '000688.SS', '^HSTECH', '000300.SS', '399006.SZ', '^HSCE', '^TWII'] + [w[0] for w in UNI.WORLD]
+US = ['^GSPC', '^IXIC', '^DJI', '^STOXX50E', '^FTSE', '^GDAXI', '^N225', '^HSI', '000001.SS', '^BSESN', '^KS11', '000688.SS', 'HSTECH.HK', '000300.SS', '399006.SZ', '^HSCE', '^TWII'] + [w[0] for w in UNI.WORLD]
 BUDGET = int(os.environ.get('HIST_BUDGET', '140'))
 CR = {'BTC': 'bitcoin', 'ETH': 'ethereum', 'SOL': 'solana', 'XRP': 'ripple', 'BNB': 'binancecoin', 'DOGE': 'dogecoin',
       'TON': 'the-open-network', 'ADA': 'cardano', 'TRX': 'tron', 'USDT': 'tether'}
