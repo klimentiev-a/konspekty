@@ -16,4 +16,3 @@ DBnomics LUR 117 стран
 DBnomics GGXWDG_NGDP 194 стран
 DBnomics BCA_NGDPD 195 стран
 DBnomics LP 196 стран
-WB NV.SRV.TOTL.ZS The read operation timed out
