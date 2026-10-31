@@ -179,13 +179,13 @@ def _card(href): return _cards[href]
 _fin1 = _card('finance.html').replace('<b>Финансы</b>', '<b>Финансы 1</b>', 1).replace('aria-label="Финансы"', 'aria-label="Финансы 1"', 1)
 _main = ('<div class="cards" data-group="">\n' + _card('ucheba.html') + '\n'
          '    <div class="card f"><a class="cover" href="#fin" aria-label="Финансы"></a>\n'
-         '      <div class="ic">₽</div><b>Финансы</b><span>Финансы 1: обучение, рынки, мир. Финансы 2: облигации и акции РФ</span>\n'
-         '      <div class="links"><a href="finance.html">Финансы 1</a><a href="fin2/index.html#screener">Финансы 2</a></div>\n    </div>\n'
+         '      <div class="ic">₽</div><b>Финансы</b><span>Финансы 1: обучение, рынки, мир. Финансы 2: облигации и акции РФ. Рынок: что шарить</span>\n'
+         '      <div class="links"><a href="finance.html">Финансы 1</a><a href="fin2/index.html#screener">Финансы 2</a><a href="rynok.html">Рынок</a></div>\n    </div>\n'
          '    <div class="card e"><a class="cover" href="#other" aria-label="Другое"></a>\n'
          '      <div class="ic">⋯</div><b>Другое</b><span>Политика, английский, нефть и газ</span>\n'
          '      <div class="links"><a href="politika.html">Политика</a><a href="fin-english.html">Английский</a><a href="energy.html">Нефть и газ</a></div>\n    </div>\n  </div>')
-_fin = '<div class="cards" data-group="fin" hidden>\n' + _fin1 + '\n' + _card('fin2/index.html') + '\n  </div>'
-_oth = ('<div class="cards" data-group="other" hidden>\n' + '\n'.join(c for h, c in _cards.items() if h not in ('ucheba.html', 'finance.html', 'fin2/index.html')) + '\n  </div>')
+_fin = '<div class="cards" data-group="fin" hidden>\n' + _fin1 + '\n' + _card('fin2/index.html') + '\n' + _card('rynok.html') + '\n  </div>'
+_oth = ('<div class="cards" data-group="other" hidden>\n' + '\n'.join(c for h, c in _cards.items() if h not in ('ucheba.html', 'finance.html', 'fin2/index.html', 'rynok.html')) + '\n  </div>')
 cards_artem = _main + '\n  ' + _fin + '\n  ' + _oth + r"""
   <script>
   (function(){var N={fin:'Финансы',other:'Другое'};
