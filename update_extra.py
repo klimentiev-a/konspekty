@@ -144,22 +144,27 @@ TYPES = ['TotalRevenue', 'GrossProfit', 'OperatingIncome', 'EBITDA', 'NetIncome'
 def fin():
     if not S: return
     old = load('fin.json', {})
-    if old.get('updated') and (NOW - datetime.datetime.strptime(old['updated'], '%Y-%m-%dT%H:%MZ')).days < 6: print('fin: свежий, пропуск'); return
+    if old.get('updated') and (NOW - datetime.datetime.strptime(old['updated'], '%Y-%m-%dT%H:%MZ')).days < 6 and len(old.get('us', {})) >= 100: print('fin: свежий, пропуск'); return
     out = {}; p1 = int(datetime.datetime(NOW.year - 6, 1, 1).timestamp()); p2 = int(NOW.timestamp())
-    for r in S.US:
-        t = r[0]
+    try:
+        import universe as _U
+        tick = [r[0] for r in S.US] + [w[0] for w in _U.WORLD if w[0] not in {r[0] for r in S.US}]   # все бумаги справочника, а не только 25 американских
+    except Exception as e:
+        print('fin: universe', e); tick = [r[0] for r in S.US]
+    for t in tick:
         try:
             url = ('https://query1.finance.yahoo.com/ws/fundamentals-timeseries/v1/finance/timeseries/%s?symbol=%s&type=%s&merge=false&period1=%d&period2=%d'
                    % (urllib.parse.quote(t), urllib.parse.quote(t), ','.join('annual' + x for x in TYPES), p1, p2))
-            j = get(url, 20); rows = {}
+            j = get(url, 20); rows = {}; cur = 'USD'
             for res in j['timeseries']['result']:
                 ty = res['meta']['type'][0]
                 for pt in res.get(ty) or []:
                     if pt and pt.get('reportedValue') is not None:
                         rows.setdefault(ty[6:], {})[pt['asOfDate'][:4]] = pt['reportedValue']['raw']
+                        if pt.get('currencyCode'): cur = pt['currencyCode']
             ys = sorted({y for v in rows.values() for y in v})[-5:]
             if ys:
-                out[t] = {'y': [int(y) for y in ys]}
+                out[t] = {'y': [int(y) for y in ys], 'cur': cur}
                 for k, v in rows.items(): out[t][k] = [v.get(y) for y in ys]
         except Exception as e:
             print('fin', t, e)

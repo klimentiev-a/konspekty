@@ -29,6 +29,10 @@ IX = {'IMOEX': ('индекс Мосбиржи', 'ru'), 'RGBI': ('ОФЗ дох�
 CR = {'BTC': 'Bitcoin price', 'ETH': 'Ethereum price', 'SOL': 'Solana price', 'XRP': 'XRP price', 'BNB': 'BNB price', 'DOGE': 'Dogecoin price',
       'TON': 'Toncoin', 'ADA': 'Cardano price', 'TRX': 'TRON TRX price'}
 
+IX.update({'^STOXX50E': ('Euro Stoxx 50 stocks', 'en'), '^FTSE': ('FTSE 100 stocks', 'en'), '^GDAXI': ('DAX stocks', 'en'), '^N225': ('Nikkei 225 stocks', 'en'),
+           '^HSI': ('Hang Seng index stocks', 'en'), '000001.SS': ('Shanghai Composite stocks', 'en'), '^BSESN': ('Sensex stocks', 'en'), '^KS11': ('KOSPI stocks', 'en'),
+           '000688.SS': ('STAR Market 50 stocks', 'en'), 'HSTECH.HK': ('Hang Seng Tech stocks', 'en'), '000300.SS': ('CSI 300 stocks', 'en'),
+           '399006.SZ': ('ChiNext stocks', 'en'), '^HSCE': ('Hang Seng China Enterprises stocks', 'en'), '^TWII': ('Taiwan Taiex stocks', 'en')})
 IXQ2 = {'ix-IMOEX': ('рынок акций России на фоне переговоры OR санкции OR ставка OR нефть', 'ru'), 'ix-RGBI': ('ОФЗ на фоне ставка OR ЦБ OR инфляция', 'ru'),
         'ix-_GSPC': ('Wall Street stocks amid Fed OR tariffs OR Trump OR Ukraine', 'en'), 'ix-_IXIC': ('Nasdaq amid Fed OR tariffs OR AI', 'en'), 'ix-_DJI': ('Dow Jones amid Fed OR tariffs OR Trump', 'en')}
 RU_EN = {'SBER': 'Sberbank', 'LKOH': 'Lukoil', 'ROSN': 'Rosneft', 'NVTK': 'Novatek', 'SIBN': 'Gazprom Neft', 'GAZP': 'Gazprom', 'GMKN': 'Nornickel OR "Norilsk Nickel"',
@@ -40,6 +44,20 @@ for k, q in RU.items(): ENT.append(('ru-' + k, q, 'ru', 0.01, ('iss', 'shares', 
 for k, (q, l) in IX.items(): ENT.append(('ix-' + k.replace('^', '_'), q, l, 0.008, ('iss', 'index', k) if l == 'ru' else ('hist', 'us-' + k.replace('^', '_'))))
 for k, q in US.items(): ENT.append(('us-' + k, q, 'en', 0.01, ('hist', 'us-' + k)))
 for k, q in CR.items(): ENT.append(('cr-' + k, q, 'en', 0.02, ('hist', 'cr-' + k)))
+# ВСЕ остальные бумаги справочника (src/finance/universe.py): у каждого графика должны быть новости и причины движений.
+# Порог выше (3% для акций США и мира, 2,5% для российских вне ручного списка), обновление свежих — раз в 12 часов, чтобы уложиться в бюджет запросов.
+EXTRA = set()
+try:
+    sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), 'src', 'finance'))
+    import universe as UNI
+    for k, v in UNI.RU.items():
+        if k not in RU:
+            ENT.append(('ru-' + k, '"%s" акции' % v[0], 'ru', 0.025, ('iss', 'shares', k))); EXTRA.add('ru-' + k)
+    for w in UNI.WORLD:
+        if w[0] not in US:
+            ENT.append(('us-' + w[0], '"%s" shares' % re.sub(r'\s*\(.*?\)', '', w[1]), 'en', 0.03, ('hist', 'us-' + w[0]))); EXTRA.add('us-' + w[0])
+except Exception as e:
+    print('universe', e, file=sys.stderr)
 
 def get(url, t=20, data=None):
     return urllib.request.urlopen(urllib.request.Request(url, headers=UA, data=data), timeout=t).read()
@@ -152,7 +170,7 @@ used = 0
 for f, q, lang, thr, src in ENT:
     db = dbs[f]
     if used >= GN_BUDGET or STOP['gn']: break
-    if db.get('rq') and (NOW - datetime.datetime.strptime(db['rq'], '%Y-%m-%dT%H:%MZ').replace(tzinfo=datetime.timezone.utc)).total_seconds() < 3 * 3600: continue
+    if db.get('rq') and (NOW - datetime.datetime.strptime(db['rq'], '%Y-%m-%dT%H:%MZ').replace(tzinfo=datetime.timezone.utc)).total_seconds() < (12 if f in EXTRA else 3) * 3600: continue
     found = gsearch(q + ' when:2d', lang); used += 1
     if found or not STOP['gn']:
         merge(db, found, f.startswith('ix-')); db['rq'] = NOW.strftime('%Y-%m-%dT%H:%MZ'); changed.add(f)

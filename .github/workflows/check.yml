@@ -20,9 +20,9 @@ jobs:
       - name: Собрать страницы
         run: |
           bash scripts/build_all.sh
-          if [ -n "$(git status --porcelain -- '*.html' src/finance/gate_artem.html)" ]; then
+          if [ -n "$(git status --porcelain -- '*.html' learn src/finance/gate_artem.html)" ]; then
             git config user.name "hub-bot"; git config user.email "hub-bot@users.noreply.github.com"
-            git add -- '*.html' src/finance/gate_artem.html
+            git add -- '*.html' learn src/finance/gate_artem.html
             git commit -m "Сборка страниц"
             for i in 1 2 3; do git pull -q --rebase origin main && git push -q && break; sleep 5; done
           fi

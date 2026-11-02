@@ -254,7 +254,15 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 .sw{display:flex;gap:4px;max-width:1180px;margin:0 auto;padding:4px var(--gut) 0}
 .sw a{position:relative;padding:10px 12px 12px;text-decoration:none;color:var(--muted);font:600 15px/1 var(--sans)}
 .sw a.on{color:var(--fg)}
-.sw a.out{margin-left:auto;color:var(--accent2);white-space:nowrap}
+.sw a.out{color:var(--accent2);white-space:nowrap}.sw a.out:first-of-type{margin-left:auto}
+/* «Сегодня»: разбор месяца, темы, фразы */
+.brief h2 small{font:400 13px/1 var(--sans);color:var(--faint);margin-left:8px;white-space:nowrap}
+.pitch p{margin:0 0 8px;font-size:15px;line-height:1.5;max-width:76ch}.pitch p::before{content:'—';color:var(--accent);margin-right:8px}
+.themes{display:grid;gap:4px}.btm{border-top:1px solid var(--line2)}.btm summary{display:flex;gap:10px;align-items:baseline;padding:9px 0;cursor:pointer;list-style:none}.btm summary::-webkit-details-marker{display:none}
+.btm summary .tag{flex:none;font:600 10.5px/1.2 var(--sans);letter-spacing:.06em;text-transform:uppercase;color:var(--accent);padding:3px 7px;border:1px solid color-mix(in srgb,var(--accent) 40%,transparent);border-radius:999px}.btm summary b{font:600 15px/1.35 var(--sans)}
+.btm p,.btm ul{margin:4px 0 10px;font-size:14px;line-height:1.5;color:var(--muted);max-width:76ch}.btm ul{padding-left:18px}.btm li{margin:3px 0}
+.phr{margin:0;padding-left:18px;max-width:76ch;font-size:14.5px;line-height:1.5}.phr li{margin:6px 0}
+
 @media (max-width:520px){.sw{gap:0;padding-left:8px;padding-right:8px}.sw a{padding:10px 8px 12px;font-size:14px}}
 .sw{overflow-x:auto;scrollbar-width:none}.sw::-webkit-scrollbar{display:none}.sw a{flex:none}
 .sw a.on::after{content:"";position:absolute;left:10px;right:10px;bottom:-1px;height:2px;border-radius:2px;background:var(--accent)}

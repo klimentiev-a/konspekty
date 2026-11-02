@@ -111,6 +111,40 @@ NAMES_RX = {'AAPL': r'Apple|Эппл', 'MSFT': r'Microsoft|Майкрософт'
     '^GDAXI': r'\bDAX\b|Франкфуртск\w+ бирж',
     '^FTSE': r'FTSE 100|FTSE|Лондонск\w+ бирж',
     '^KS11': r'KOSPI|Kospi'}
+# --- автопривязка новостей ко ВСЕМ бумагам справочника (src/finance/universe.py): иначе у компаний вне ручного списка нет ни новостей, ни меток на графике ---
+try:
+    sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), 'src', 'finance'))
+    import universe as _UNI
+except Exception as _e:
+    _UNI = None; print('universe недоступен, автопривязка выключена:', _e, file=sys.stderr)
+# слишком общие слова: их по названию не ищем (остаются тикер в скобках и «NASDAQ: XXX»)
+_AMBIG = {'Arm', 'Target', 'Booking', 'Progressive', 'Strategy (MicroStrategy)', 'Dow', 'Sea Ltd', 'Grab', 'NICE', 'Shell', 'Ford', 'Block', 'Recruit', 'Investor AB', 'Check Point', 'Prosus', 'Dell'}
+_NAME_FIX = {'MSTR': 'MicroStrategy', 'F': 'Ford Motor|Ford(?= shares| stock| earnings)', 'SHEL.L': 'Shell plc|Royal Dutch Shell', 'DELL': 'Dell Technologies|Dell stock|Dell shares', 'ARM': 'Arm Holdings',
+             'TGT': 'Target Corp', 'SE': 'Sea Limited', 'DOW': 'Dow Inc', 'GRAB': 'Grab Holdings', 'CHKP': 'Check Point Software', 'NOW': 'ServiceNow', 'GM': 'General Motors',
+             'INTC': 'Intel|Интел', 'AAPL': 'Apple|Эппл', 'TSM': 'TSMC|Taiwan Semiconductor', 'BABA': 'Alibaba|Алибаба', '9988.HK': 'Alibaba|Алибаба', 'ASML.AS': 'ASML',
+             'MC.PA': 'LVMH', 'RIO': 'Rio Tinto', 'RIO.L': 'Rio Tinto', 'SAN.PA': 'Sanofi', 'SAN.MC': 'Santander', 'SU': 'Suncor', 'SU.PA': 'Schneider Electric', 'BA': 'Boeing', 'BA.L': 'BAE Systems'}
+def _auto_rx():
+    out = {}
+    if not _UNI: return out
+    taken = set(NAMES) | set(NAMES_RX)
+    for w in _UNI.WORLD:
+        t, nm = w[0], w[1]
+        if t in taken: continue
+        alts = []
+        if t in _NAME_FIX: alts += _NAME_FIX[t].split('|')
+        elif nm not in _AMBIG:
+            for part in re.split(r'\s*[()]\s*', nm):
+                part = part.strip()
+                if part and re.match(r'[A-Za-zÀ-ÿØø’\'&.\- 0-9]+$', part) and part not in ('HK', 'ADR'): alts.append(part)
+        pats = []
+        for a_ in alts:
+            q = re.sub(r"[’']", "@@", re.escape(a_)).replace('\\ ', r'\s').replace('@@', "[’']")
+            pats.append(q)
+        base = t.split('.')[0]
+        if re.fullmatch(r'[A-Z]{3,5}', base): pats.append(r'(?:NASDAQ|NYSE|Nasdaq)[:\s]+' + base + r'\b|\(' + base + r'\)')
+        if pats: out[t] = '|'.join(pats)
+    return out
+NAMES_RX.update(_auto_rx())
 NAMES_RX = {k: re.compile(r'(?<![A-Za-zА-Яа-яЁё])(?:' + v + r')(?![a-zа-яё])') for k, v in NAMES_RX.items()}
 MOEX_CO = re.compile(r'(?i)акци[яиюй]\s+(?:«)?Мос[Бб]ирж|Мос[Бб]ирж[аеиу]\S*\s+(?:увелич|сократ|отчит|выплат|направ|рекоменд|получ|заработ|снизил|нарастил)|дивиденд|прибыл|выручк|МСФО|РСБУ|комисси[ия] биржи|Moscow Exchange (?:profit|revenue|dividend)')
 def tags_of(title):

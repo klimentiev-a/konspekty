@@ -40,25 +40,19 @@ for f in sorted(glob.glob(os.path.join(HERE, 'sectors', '*.md'))):
     title = t[0].lstrip('# ').strip(); short = t[1][6:].strip() if len(t) > 1 and t[1].startswith('short:') else ''
     sid = re.sub(r'^\d+_', '', os.path.splitext(os.path.basename(f))[0])
     for h, x in sections('\n'.join(t[2:])):
-        out.append(['sec', title, (short + '. ' + x).strip() if not h else x, 'finance.html#world/sectors/' + sid, h])
+        out.append(['sec', title, (short + '. ' + x).strip() if not h else x, 'finance.html#learn/sektor/' + sid, h])
+def _thead(t): return re.split(r'\s+[—(]', t)[0].strip()
 for tt in T.RICH:
-    out.append(['term', tt[1], tt[2], 'finance.html#learn/glossariy'])
+    out.append(['term', tt[1], tt[2], 'finance.html#learn/glossariy/' + _thead(tt[1])])
 for tt in T.EXTRA:
-    out.append(['term', tt[1], tt[2], 'finance.html#learn/glossariy'])
+    out.append(['term', tt[1], tt[2], 'finance.html#learn/glossariy/' + _thead(tt[1])])
 for x in S.RU: out.append(['co', x[1] + ' · ' + x[0], x[2] + ' · акции Мосбиржи', 'finance.html#markets/ru/' + x[0]])
 for x in S.US: out.append(['co', x[1] + ' · ' + x[0], x[2] + ' · акции США', 'finance.html#markets/us/' + x[0]])
-# компании из слоёв карты (штаб-квартира → регион)
-ix = json.load(open(os.path.join(ROOT, 'world', 'regions', 'index.json'), encoding='utf-8'))
-for l in ix['layers']:
-    if not l.get('companies'): continue
-    c = json.load(open(os.path.join(ROOT, 'world', 'companies', l['companies'] + '.json'), encoding='utf-8'))
-    det = {}
-    dp = os.path.join(ROOT, 'world', 'companies', l['companies'] + '-detail.json')
-    if os.path.exists(dp): det = json.load(open(dp, encoding='utf-8')).get('items', {})
-    for it in c['items']:
-        d = det.get(it['name']) or {}
-        txt = ' · '.join(x for x in [it.get('region', ''), d.get('what', ''), (d.get('ceo') or {}).get('n', ''), it.get('ticker', '')] if x)
-        out.append(['co', it['name'], txt, 'finance.html#world/' + l['id'] + '/' + it.get('region', '')])
+# компании мира из справочника сайта (карточка с графиком и новостями)
+import universe as UNI
+for w in UNI.WORLD:
+    if w[0] not in {x[0] for x in S.US}:
+        out.append(['co', w[1] + ' · ' + w[0], w[3] + ' · ' + (UNI.COUNTRY.get(w[2], w[2])), 'finance.html#markets/us/' + w[0]])
 # финансы по-английски (fin-english.html)
 for f in sorted(glob.glob(os.path.join(ROOT, 'src', 'finenglish', 'lessons', '[0-9]*.md'))):
     t = open(f, encoding='utf-8').read().strip().split('\n')

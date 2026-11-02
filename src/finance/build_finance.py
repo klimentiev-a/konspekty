@@ -74,7 +74,24 @@ for x in TERMS:
 static = {'ru': S.RU, 'ru_asof': S.RU_ASOF, 'ru_sect': S.RU_SECT, 'ru_sect_asof': S.RU_SECT_ASOF,
           'us': S.US, 'us_asof': S.US_ASOF, 'us_sect': S.US_SECT, 'us_sect_asof': S.US_SECT_ASOF,
           'uni': {'ru': UNI.RU, 'world': UNI.world_json(), 'region': UNI.REGION, 'country': UNI.COUNTRY}, 'macro': S.MACRO, 'kbd': S.KBD, 'keyrate': S.KEYRATE, 'cal': S.CAL, 'events': json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'events.json'), encoding='utf-8'))}
-data = json.dumps({'chapters': chs, 'sectors': secs, 'static': static, 'terms': TERMS}, ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/')
+# разбор рынка (src/rynok/content.json): «Коротко», темы месяца, фразы для собеседования — блок «Сегодня» в «Рынке»
+try:
+    _ry = json.load(open(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'rynok', 'content.json'), encoding='utf-8'))
+    static['brief'] = {'asof': _ry.get('asof', ''), 'pitch': _ry.get('pitch', []), 'phrases': _ry.get('phrases', []),
+                       'themes': [{'tag': t.get('tag', ''), 'title': t.get('title', ''), 'lead': t.get('lead', ''), 'facts': t.get('facts', [])} for t in _ry.get('themes', [])]}
+except Exception as e:
+    print('brief:', e); static['brief'] = None
+# главы и сектора — отдельными файлами learn/<id>.json (страница грузит только открытую главу), learn/all.json — для поиска
+_ldir = os.path.join(os.path.dirname(out) or '.', 'learn'); os.makedirs(_ldir, exist_ok=True)
+_all = {}
+for c in chs + secs:
+    json.dump({'md': c['md']}, open(os.path.join(_ldir, c['id'] + '.json'), 'w', encoding='utf-8'), ensure_ascii=False, separators=(',', ':'))
+    _all[c['id']] = c['md']
+json.dump(_all, open(os.path.join(_ldir, 'all.json'), 'w', encoding='utf-8'), ensure_ascii=False, separators=(',', ':'))
+for _f in os.listdir(_ldir):
+    if _f.endswith('.json') and _f[:-5] not in _all and _f != 'all.json': os.remove(os.path.join(_ldir, _f))
+_light = lambda a: [{'id': c['id'], 'title': c['title'], 'short': c['short'], 'len': len(c['md'])} for c in a]
+data = json.dumps({'chapters': _light(chs), 'sectors': _light(secs), 'static': static, 'terms': TERMS}, ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/')
 tpl = open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'finance_template.html'), encoding='utf-8').read()
 assert '<!--DATA-->' in tpl and '<!--MARKED-->' in tpl
 tpl = tpl.replace('<!--ZOOM-->', '<script>' + open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'zoom.js'), encoding='utf-8').read() + '</script>')
@@ -84,9 +101,4 @@ _g = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'gate_artem.html')
 if os.path.exists(_g):   # замок профиля «Артем»
     html = html.replace('<meta charset="utf-8">', '<meta charset="utf-8">' + open(_g, encoding='utf-8').read(), 1)
 open(out, 'w', encoding='utf-8').write(html)
-# politika.html — та же сборка, только политическая карта (JS смотрит на data-app="pol")
-pol = html.replace('<html lang="ru">', '<html lang="ru" data-app="pol">', 1).replace('<title>Финансы</title>', '<title>Политика</title>', 1)
-_pd = json.loads(data); _pd['chapters'] = []; _pd['sectors'] = []; _pd['terms'] = []   # главы и сектора «Политике» не нужны — файл в десятки раз легче
-pol = pol.replace('<script type="application/json" id="fdata">' + data + '</script>', '<script type="application/json" id="fdata">' + json.dumps(_pd, ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/') + '</script>')
-open(os.path.join(os.path.dirname(out) or '.', 'politika.html'), 'w', encoding='utf-8').write(pol)
 print('ok', len(chs), 'chapters', len(secs), 'sectors', len(TERMS), 'terms', len(html.encode()), 'bytes')

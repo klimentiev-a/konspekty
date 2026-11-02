@@ -172,75 +172,13 @@ index_html = page('Hub', index_body)
 
 # ---------------- artem.html ----------------
 cards_artem = re.search(r'<div class="cards">.*?\n  </div>', TPL, re.S).group(0)
-# Главная Артёма: Учёба · Финансы (→ Финансы 1, Финансы 2) · Другое (всё остальное). Подразделы — в той же
-# странице по адресу artem.html#fin и #other, кнопка «Назад» телефона возвращает к трём карточкам.
-_cards = {re.search(r'href="([^"]+)"', c).group(1): c for c in re.findall(r'    <div class="card[^"]*">.*?\n    </div>', cards_artem, re.S)}
-def _card(href): return _cards[href]
-_fin1 = _card('finance.html').replace('<b>Финансы</b>', '<b>Финансы 1</b>', 1).replace('aria-label="Финансы"', 'aria-label="Финансы 1"', 1)
-_main = ('<div class="cards" data-group="">\n' + _card('ucheba.html') + '\n'
-         '    <div class="card f"><a class="cover" href="#fin" aria-label="Финансы"></a>\n'
-         '      <div class="ic">₽</div><b>Финансы</b><span>Финансы 1: обучение, рынки, мир. Финансы 2: облигации и акции РФ. Рынок: что шарить</span>\n'
-         '      <div class="links"><a href="finance.html">Финансы 1</a><a href="fin2/index.html#screener">Финансы 2</a><a href="rynok.html">Рынок</a></div>\n    </div>\n'
-         '    <div class="card e"><a class="cover" href="#other" aria-label="Другое"></a>\n'
-         '      <div class="ic">⋯</div><b>Другое</b><span>Политика, английский, нефть и газ</span>\n'
-         '      <div class="links"><a href="politika.html">Политика</a><a href="fin-english.html">Английский</a><a href="energy.html">Нефть и газ</a></div>\n    </div>\n  </div>')
-_fin = '<div class="cards" data-group="fin" hidden>\n' + _fin1 + '\n' + _card('fin2/index.html') + '\n' + _card('rynok.html') + '\n  </div>'
-_oth = ('<div class="cards" data-group="other" hidden>\n' + '\n'.join(c for h, c in _cards.items() if h not in ('ucheba.html', 'finance.html', 'fin2/index.html', 'rynok.html')) + '\n  </div>')
-cards_artem = _main + '\n  ' + _fin + '\n  ' + _oth + r"""
-  <script>
-  (function(){var N={fin:'Финансы',other:'Другое'};
-  function v(){var g=location.hash.slice(1);if(!N[g])g='';
-    document.querySelectorAll('[data-group]').forEach(function(e){e.hidden=e.getAttribute('data-group')!==g});
-    var h=document.getElementById('hh');if(h)h.textContent=N[g]||'Артем';var b=document.getElementById('hback');if(b)b.hidden=!g}
-  window.addEventListener('hashchange',v);v()})();
-  </script>"""
-TODAY = ('<div class="today">'
-         '<a class="tb" id="t-sched" href="ucheba.html#schedule"><h3>Пары</h3><div class="sk"></div><div class="sk" style="width:70%"></div></a>'
-         '<a class="tb" id="t-mkt" href="finance.html#markets"><h3>Рынок сейчас</h3><div class="sk"></div><div class="sk" style="width:60%"></div></a>'
-         '<a class="tb" id="t-news" href="finance.html#markets/news"><h3>Главная новость</h3><div class="sk"></div><div class="sk" style="width:80%"></div></a></div>')
-TODAY_JS = r'''<script>
-/* сводка «Сегодня»: ближайшие пары, рынок, главная новость — из тех же файлов, что и разделы (берутся из кэша мгновенно) */
-(function(){
-function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
-function J(u){return fetch(u).then(function(r){if(!r.ok)throw 0;return r.json()})}
-function nf(v,d){return Number(v).toLocaleString('ru-RU',{minimumFractionDigits:d,maximumFractionDigits:d})}
-function pc(v){if(v==null||isNaN(v))return '';return '<span class="'+(v>=0?'up':'dn')+'">'+(v>0?'+':'')+nf(v,2)+'%</span>'}
-function ymd(d){return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2)}
-var now=new Date(),today=ymd(now),hm=('0'+now.getHours()).slice(-2)+':'+('0'+now.getMinutes()).slice(-2);
-J('schedule.json?t='+Date.now()).then(function(j){
-  var L=(j.list||j||[]).slice().sort(function(a,b){return (a.d+a.b)<(b.d+b.b)?-1:1});
-  var rest=L.filter(function(x){return x.d===today&&x.e>hm}),head='Сегодня',day=today;
-  if(!rest.length){var nx=L.filter(function(x){return x.d>today})[0];if(nx){day=nx.d;rest=L.filter(function(x){return x.d===day});
-    var dd=new Date(day+'T12:00:00'),diff=Math.round((new Date(day+'T00:00:00')-new Date(today+'T00:00:00'))/864e5);
-    head=diff===1?'Завтра':dd.toLocaleDateString('ru-RU',{weekday:'long',day:'numeric',month:'long'})}}
-  var h='<h3>Пары · '+esc(head)+'</h3>';
-  if(!rest.length)h+='<p class="mut">В расписании ближайших пар нет.</p>';
-  rest.slice(0,3).forEach(function(x){var on=x.d===today&&x.b<=hm&&x.e>hm;
-    h+='<div class="row'+(on?' now':'')+'"><b>'+esc(x.b)+'</b><span>'+esc(x.n)+'<small>'+esc([x.k,x.r?'ауд. '+x.r:''].filter(Boolean).join(' · '))+(on?' · идёт сейчас':'')+'</small></span></div>'});
-  if(rest.length>3)h+='<p class="mut">и ещё '+(rest.length-3)+'</p>';
-  document.getElementById('t-sched').innerHTML=h;
-}).catch(function(){document.getElementById('t-sched').innerHTML='<h3>Пары</h3><p class="mut">Расписание откроется в разделе Учёба.</p>'});
-J('markets.json').then(function(m){
-  var h='<h3>Рынок · '+esc((m.updated||'').replace(/^\d\d\.\d\d\.\d{4}\s*/,''))+'</h3>',ix=(m.idx||{}).IMOEX,us=m.fx&&m.fx.Valute&&m.fx.Valute.USD,btc=(m.crypto||[]).filter(function(x){return x.s==='BTC'})[0],sp=(m.us||{})['^GSPC'];
-  if(ix)h+='<div class="mk"><span>Индекс Мосбиржи</span><span>'+nf(ix.v,0)+' '+pc(ix.ch)+'</span></div>';
-  if(us)h+='<div class="mk"><span>Доллар (ЦБ)</span><span>'+nf(us.Value,2)+' ₽ '+pc((us.Value/us.Previous-1)*100)+'</span></div>';
-  if(btc)h+='<div class="mk"><span>Bitcoin</span><span>$'+nf(btc.p,0)+' '+pc(btc.c24)+'</span></div>';
-  if(sp&&sp.p)h+='<div class="mk"><span>S&amp;P 500</span><span>'+nf(sp.p,0)+' '+pc(sp.ch)+'</span></div>';
-  document.getElementById('t-mkt').innerHTML=h;
-}).catch(function(){document.getElementById('t-mkt').innerHTML='<h3>Рынок</h3><p class="mut">Открой «Финансы → Рынки».</p>'});
-J('news.json').then(function(n){
-  var lim=new Date(Date.now()-30*36e5).toISOString(),a=(n.items||[]).filter(function(x){return !x.dup&&x.d>=lim}).sort(function(x,y){return (y.imp||0)-(x.imp||0)});
-  var x=a[0];if(!x)throw 0;var el=document.getElementById('t-news');el.href='finance.html#markets/news/'+x.id;
-  el.innerHTML='<h3>Главная новость'+(x.cl>1?' · '+x.cl+' изд.':'')+'</h3><div class="nt">'+esc(x.t)+'</div>'+(x.sum&&x.sum[0]?'<div class="nx">'+esc(x.sum[0])+'</div>':'');
-}).catch(function(){document.getElementById('t-news').innerHTML='<h3>Новости</h3><p class="mut">Лента — в «Финансы → Новости».</p>'});
-})();
-</script>'''
-
-artem_body = ('<div class="w">\n  ' + topbar('index.html', 'Профили', 'artem') + '\n  <a id="hback" class="hback" href="#" hidden>← Артем</a>\n  <h1 id="hh">Артем</h1>\n  '
+# Главная Артёма: пять входов (Учёба, Учебник финансов, Рынок, Облигации и акции, Английский) и одна строка поиска по всему сайту.
+HUBSEARCH = ('<form class="hsrch" action="search.html" method="get" role="search"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>'
+             '<input type="search" name="q" placeholder="Найти по сайту: WACC, ОФЗ, сделки, юридические лица…" autocomplete="off" enterkeyhint="search" aria-label="Поиск по сайту"></form>')
+artem_body = ('<div class="w">\n  ' + topbar('index.html', 'Профили', 'artem') + '\n  <h1 id="hh">Артем</h1>\n  ' + HUBSEARCH + '\n  '
               + cards_artem + '\n  ' + foot + '\n</div>\n' + LOGOUT_JS)
 SEARCH_BTN = '<a class="sbtn" href="search.html" aria-label="Поиск по сайту"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>Поиск</a>'
-SLOVAR_BTN = '<a class="sbtn" href="slovar.html" aria-label="Словарь терминов">Словарь</a>'
-artem_body = artem_body.replace('<div class="tr">', '<div class="tr">' + SLOVAR_BTN + SEARCH_BTN, 1)
+artem_body = artem_body.replace('<div class="tr">', '<div class="tr">' + SEARCH_BTN, 1)
 artem_html = page('Hub · Артем', artem_body, 'artem')   # просто: Артем → Учёба, Финансы (сводку «Сегодня» убрали)
 
 # ---------------- nastya.html ----------------
@@ -394,7 +332,7 @@ function run(){if(!IDX)return;var q=Q.trim();
 var tm=null;inp.addEventListener('input',function(){Q=inp.value;clearTimeout(tm);tm=setTimeout(function(){run();try{history.replaceState(null,'',Q?'?q='+encodeURIComponent(Q):location.pathname)}catch(e){}},120)});
 tabs.addEventListener('click',function(e){var b=e.target.closest('[data-t]');if(!b)return;tab=b.getAttribute('data-t');run()});
 box.addEventListener('click',function(e){var a=e.target.closest('a[data-q]');if(!a)return;var u=a.getAttribute('href'),m=u.match(/^(finance|ucheba)\.html#(.+)$/);if(!m)return;
-  var id=m[2].replace(/^(learn|world\/sectors)\//,'');try{sessionStorage.setItem(m[1]==='finance'?'fin:hl':'uch:hl',JSON.stringify({id:id,q:a.getAttribute('data-q'),hs:a.getAttribute('data-hs')||''}))}catch(x){}});
+  var id=m[2].replace(/^(learn\/sektor|learn|world\/sectors)\//,'').replace(/^glossariy\/.*/,'glossariy');try{sessionStorage.setItem(m[1]==='finance'?'fin:hl':'uch:hl',JSON.stringify({id:id,q:a.getAttribute('data-q'),hs:a.getAttribute('data-hs')||''}))}catch(x){}});
 inp.addEventListener('keydown',function(e){var as=box.querySelectorAll('a');if(!as.length)return;
   if(e.key==='ArrowDown'||e.key==='ArrowUp'){e.preventDefault();kb=Math.max(0,Math.min(as.length-1,kb+(e.key==='ArrowDown'?1:-1)));as.forEach(function(a,i){a.classList.toggle('kb',i===kb)});as[kb].scrollIntoView({block:'nearest'})}
   if(e.key==='Enter'){var a=as[Math.max(0,kb)];if(a)a.click()}});
@@ -410,184 +348,8 @@ search_body = ('<div class="w">\n  ' + topbar('artem.html', 'Артем') + '\n 
 search_html = page('Hub · Поиск', search_body, 'artem').replace('</head>', SEARCH_CSS + '</head>', 1).replace('</body>', SEARCH_JS + BACK_JS + '</body>', 1)
 
 
-# ---------------- slovar.html: «Словарь» — термин на русском или английском → расшифровка, перевод, суть, формула ----------------
-import json as _json
-sys.path.insert(0, os.path.join(ROOT, 'src', 'finance'))
-import urllib.parse
-import terms as _T
-def _lesson_index():
-    import ast, glob
-    src = open(os.path.join(ROOT, 'src', 'finance', 'build_finance.py'), encoding='utf-8').read()
-    m = re.search(r'IDS = (\{.*?\})', src, re.S); ids = ast.literal_eval(m.group(1))
-    L = []
-    for f in sorted(glob.glob(os.path.join(ROOT, 'src', 'finance', 'content', '*.md'))):
-        nm = os.path.basename(f); nn = nm[:2]
-        if nn in ('98', '99', '35', '69'): continue
-        fid = ids.get(nn) or re.sub(r'\.md$', '', nm[3:])
-        lines = open(f, encoding='utf-8').read().split('\n')
-        title = next((x.lstrip('# ').strip() for x in lines if x.strip()), fid)
-        L.append((fid, title, lines, fid.startswith('shpargalka-')))
-    return L
-_LESS = _lesson_index()
-_WEAK = ('sobesedovanie', 'stazhirovka', 'praktikum', 'keysy', 'karera', 'project-black', 'interesnoe')
-def _find_lesson(names):
-    best = None
-    for ni, n in enumerate(names):
-        n = n.strip()
-        if len(n) < 3: continue
-        if re.search(r'[A-Z]{2,}', n) or (' ' not in n and n.isascii()):
-            rx = re.compile(r'(?<![A-Za-zА-Яа-яЁё0-9])' + re.escape(n).replace('\\/', r'\s*/\s*') + r'(?![A-Za-zА-Яа-яЁё0-9])', re.I)
-        else:
-            rx = re.compile(re.escape(n[:-1] if len(n) > 6 else n), re.I)
-        wn = 1.0 if ni == 0 else .5
-        for fid, title, lines, sh in _LESS:
-            tot = 0; top = (0, '')
-            hd = ''
-            for ln in lines:
-                ishd = ln.startswith('#')
-                if ishd: hd = ln.lstrip('# ').strip()
-                if not rx.search(ln): continue
-                if re.match(r'(Проверь себя|Вопросы|Частые)', hd) and not ishd: ls = .3
-                elif ishd: ls = 25
-                elif '**' in ln and any(rx.search(x) for x in re.findall(r'\*\*([^*]+)\*\*', ln)): ls = 6
-                else: ls = 1
-                tot += ls
-                if ls > top[0]: top = (ls, hd)
-            if not tot: continue
-            sc = min(tot, 45) * wn
-            if rx.search(title): sc += 20 * wn
-            if sh: sc *= .3
-            if fid in _WEAK: sc *= .35
-            if best is None or sc > best[0]: best = (sc, fid, title, top[1], n)
-    return best
-_ALIAS = {'Модель Гордона': ['Гордон'], 'Gordon growth model': ['Гордон'], 'EBITDA margin': ['маржа EBITDA', 'рентабельность по EBITDA']}
-def _slovar_data():
-    out = []; seen = set()
-    def lesson(head, full):
-        names = [head] + [x for x in re.split(r'\s*[/,;]\s*', full or '') if x]
-        names += re.findall(r'\(([^)]{3,40})\)', head + ' ' + (full or ''))
-        names += [re.sub(r'\s*\(.*?\)', '', x) for x in names]
-        names += _ALIAS.get(head, [])
-        b = _find_lesson([x for x in dict.fromkeys(names)])
-        if not b or b[0] < 3: return None
-        return b
-    def entry(t, full, d, f, gl):
-        head = re.split(r'\s[—-]\s', t)[0].strip()
-        e = {'t': t, 'f': full, 'd': d, 'x': f, 'u': gl, 'g': gl}
-        b = lesson(head, full)
-        if b:
-            e['u'] = 'finance.html#learn/' + b[1]; e['ut'] = b[2]; e['hq'] = b[4]; e['hs'] = b[3]
-        return e
-    for l in open(os.path.join(ROOT, 'src', 'finance', 'content', '98_glossary.md'), encoding='utf-8'):
-        m = re.match(r'^\| \*\*(.+?)\*\* \|(.*?)\|(.*?)\|(.*)\|\s*$', l)
-        if not m: continue
-        t, full, d, f = [x.strip() for x in m.groups()]
-        out.append(entry(t, full, d, f, 'finance.html#learn/glossariy/' + urllib.parse.quote(re.sub(r'\s+', ' ', t), safe=''))); seen.add(t.lower())
-    for pats, title, d in list(_T.RICH) + list(_T.EXTRA):
-        head = re.split(r'\s[—-]\s', title)[0].strip()
-        if head.lower() in seen: continue
-        seen.add(head.lower())
-        out.append(entry(title, '', d, '', 'finance.html#learn/glossariy'))
-    return out
-SLOVAR_DATA = _json.dumps(_slovar_data(), ensure_ascii=False).replace('</', '<\\/')
-SLOVAR_CSS = """<style>
-.sq{position:relative;margin:6px 0 12px}.sq input{width:100%;font:500 17px/1.2 system-ui,sans-serif;padding:14px 16px;border:1px solid var(--line);border-radius:14px;background:var(--surface);color:var(--fg);outline:none}
-.sq input:focus{border-color:var(--a2,#1F6B57);box-shadow:0 0 0 3px color-mix(in srgb,var(--a2,#1F6B57) 18%,transparent)}
-.tk{border:1px solid var(--line);background:var(--surface);border-radius:14px;padding:14px 16px;margin:0 0 12px}
-.tk h2{margin:0 0 2px;font:700 19px/1.3 system-ui,sans-serif}.tk .en{color:var(--muted);font:500 13.5px/1.4 system-ui,sans-serif;margin:0 0 8px}
-.tk .lb{color:var(--faint);font:600 11px/1 system-ui,sans-serif;letter-spacing:.06em;text-transform:uppercase;margin:10px 0 3px}
-.tk p{margin:0;font:400 15px/1.5 system-ui,sans-serif}.tk code{display:block;margin-top:2px;padding:8px 10px;background:color-mix(in srgb,var(--fg) 6%,transparent);border-radius:8px;font:500 14px/1.45 ui-monospace,Menlo,monospace;white-space:normal}
-.tk .fx{display:block;color:var(--muted);font:400 13px/1.45 system-ui,sans-serif;margin-top:4px}
-.tk a{color:var(--a2,#1F6B57);font:500 13.5px/1 system-ui,sans-serif;text-decoration:none;display:inline-block;margin-top:10px}
-.tk .gl{display:block;margin-top:8px;color:var(--faint);font-weight:400}.tk .ls{display:block}.tk.web{border-style:dashed}.tk.web .src{color:var(--faint);font:400 12px/1.4 system-ui,sans-serif;margin-top:6px}
-.sh{margin:18px 0 8px;color:var(--faint);font:600 12px/1 system-ui,sans-serif;letter-spacing:.06em;text-transform:uppercase}
-.sm{color:var(--muted);font:400 14px/1.5 system-ui,sans-serif;padding:8px 0}
-.wbtn{display:block;width:100%;min-height:48px;margin:18px 0 4px;padding:0 16px;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--fg);font:600 15px system-ui,sans-serif;cursor:pointer}
-</style>"""
-SLOVAR_JS = r"""<script>
-(function(){
-var D=__DATA__;
-var RU='йцукенгшщзхъфывапролджэячсмитьбю',EN="qwertyuiop[]asdfghjkl;'zxcvbnm,.";
-var TR={а:'a',б:'b',в:'[wv]',г:'g',д:'d',е:'[ei]',ё:'e',ж:'(?:zh|j)',з:'z',и:'[ie]',й:'[yji]',к:'[kc]',л:'l',м:'m',н:'n',о:'o',п:'p',р:'r',с:'[sc]',т:'t',у:'[uy]',ф:'(?:f|ph)',х:'[hx]',ц:'c',ч:'(?:ch|c)',ш:'(?:sh|s)',щ:'(?:sh|s)',ы:'[yi]',э:'e',ю:'(?:yu|u)',я:'(?:ya|a)',ь:'',ъ:''};
-function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
-function lc(x){return String(x||'').toLowerCase().replace(/ё/g,'е')}
-function plain(h){return String(h||'').replace(/<[^>]+>/g,'')}
-function escRe(x){return x.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')}
-function isCyr(q){return /[а-яё]/i.test(q)&&!/[a-z]/i.test(q)}
-function layout(q){return Array.from(q.toLowerCase()).map(function(c){var k=RU.indexOf(c);return k>=0?EN[k]:c}).join('').replace(/[\[\];',.]/g,'')}
-function tsrc(q){var pv='';return '\\b'+Array.from(lc(q).replace(/\s+/g,'')).map(function(c){var r=TR[c]!=null?TR[c]:escRe(c);if(c===pv&&r)r=r+'?';pv=c;return r}).join('')}
-D.forEach(function(e){var h=e.t.split(/\s[—-]\s/)[0];e.head=lc(h);e.all=lc(e.t+' '+e.f);e.words=e.all.split(/[^a-zа-я0-9&]+/).filter(Boolean)});
-function local(q){
-  var ql=lc(q.trim()),out=[];if(ql.length<2)return out;
-  var rxs=[new RegExp('^'+escRe(ql))];
-  var alts=[ql];
-  if(isCyr(q)){var lf=layout(q);if(/^[a-z0-9 ]{2,}$/.test(lf))alts.push(lf);}
-  D.forEach(function(e){
-    var sc=0;
-    alts.forEach(function(a){
-      if(e.head===a)sc=Math.max(sc,100);
-      else if(e.head.indexOf(a)===0&&a.length>=2)sc=Math.max(sc,70-Math.min(30,e.head.length-a.length));
-      else if(e.words.indexOf(a)>=0)sc=Math.max(sc,60);
-      else if(a.length>=4&&e.all.indexOf(a)>=0)sc=Math.max(sc,35)});
-    if(!sc&&isCyr(q)&&ql.replace(/\s+/g,'').length>=3){var rx=new RegExp(tsrc(q),'i');if(rx.test(e.head)&&e.head.length<=Math.max(8,ql.length*2+2))sc=90-Math.abs(e.head.length-ql.replace(/\s+/g,'').length)*4;else if(e.words.some(function(w){return rx.test(w)&&w.length<=ql.length*2+2}))sc=45}
-    if(!sc&&ql.length>=4){var st=ql.length>5?ql.slice(0,-2):ql;if(e.all.indexOf(st)>=0)sc=25}
-    if(sc)out.push({e:e,sc:sc})});
-  out.sort(function(a,b){return b.sc-a.sc});return out.slice(0,5);
-}
-function card(e){
-  var h='<div class="tk"><h2>'+esc(e.t.split(/\s[—-]\s/)[0])+'</h2>';
-  if(e.f)h+='<div class="en">'+esc(e.f)+'</div>';
-  else if(e.t.indexOf(' — ')>0)h+='<div class="en">'+esc(e.t.split(' — ').slice(1).join(' — '))+'</div>';
-  h+='<div class="lb">Суть</div><p>'+esc(e.d)+'</p>';
-  if(e.x)h+='<div class="lb">Формула</div>'+e.x.replace(/<code>/g,'<code>').replace(/<span class="fx">/g,'<span class="fx">');
-  if(e.ut)h+='<a class="ls" href="'+esc(e.u)+'" data-hq="'+esc(e.hq||'')+'" data-hs="'+esc(e.hs||'')+'" data-lid="'+esc(e.u.split('#learn/')[1])+'">Разобрано в уроке: '+esc(e.ut)+' →</a><a class="gl" href="'+esc(e.g)+'">Вариант в глоссарии</a>';
-  else h+='<a class="ls" href="'+esc(e.g)+'">Разобрано в курсе →</a>';
-  return h+'</div>'}
-document.addEventListener('click',function(ev){var a=ev.target.closest&&ev.target.closest('a[data-lid]');if(a)try{sessionStorage.setItem('fin:hl',JSON.stringify({id:a.getAttribute('data-lid'),q:a.getAttribute('data-hq'),hs:a.getAttribute('data-hs')}))}catch(x){}});
-var box=document.getElementById('sr'),web=document.getElementById('web'),inp=document.getElementById('q'),tmr=null,seq=0;
-var FIN=/финанс|эконом|бухгалтер|учёт|учет|аудит|инвест|банк|акци[июя]|облигац|кредит|займ|налог|рынок|рынк|бирж|капитал|прибыл|выруч|доход|стоимост|валют|страхов|торгов|бизнес|компани|предприят|производств|логистик|цепочк|автомобил|сборк|таможн|пошлин|товар|актив|долг|процент|ставк|менеджмент|маркетинг|контракт|финтех|криптовалют|\b(financ|econom|account|audit|invest|bank|stock|share|bond|credit|loan|debt|tax|market|exchange|capital|profit|revenue|income|valuation|currency|insurance|trading|trade|business|company|corporat|manufactur|supply chain|logistic|asset|equity|interest rate|management|marketing|customs|tariff|assembl|automotive|vehicle)/i;
-function nrm(x){return String(x||'').toLowerCase().replace(/[^a-zа-яё0-9]+/g,'')}
-function wapi(lang,qs){return fetch('https://'+lang+'.wikipedia.org/w/api.php?action=query&format=json&origin=*&'+qs).then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(j){var p=j.query&&j.query.pages?j.query.pages:{};return Object.keys(p).map(function(k){return p[k]})})}
-function wiki(q){
-  var my=++seq,cy=isCyr(q),lang=cy?'ru':'en',other=cy?'en':'ru',nq=nrm(q),H='<div class="sh">Из интернета (Википедия)</div>';
-  web.innerHTML=H+'<p class="sm">Ищу…</p>';
-  var X='&prop=extracts|langlinks|info&exintro=1&explaintext=1&exchars=700&lllang='+other+'&lllimit=1&inprop=url';
-  Promise.all([wapi(lang,'titles='+encodeURIComponent(q)+'&redirects=1'+X).catch(function(){return[]}),wapi(lang,'generator=search&gsrlimit=15&gsrsearch='+encodeURIComponent('intitle:'+q)+X).catch(function(){return null})]).then(function(rs){
-    if(my!==seq)return;
-    if(rs[1]===null&&!rs[0].length)throw 0;
-    var ex=rs[0].filter(function(p){return p.missing===undefined&&p.extract});
-    var se=(rs[1]||[]).sort(function(a,b){return a.index-b.index}).filter(function(p){return nrm(p.title).indexOf(nq)>=0}).sort(function(a,b){return nrm(a.title).length-nrm(b.title).length});
-    var seen={},pg=ex.concat(se).filter(function(p){var k=nrm(p.title);if(seen[k])return false;seen[k]=1;return FIN.test(p.title+' '+(p.extract||''))&&!/значения\)|disambiguation/i.test(p.title)}).slice(0,3);
-    if(!pg.length){web.innerHTML=H+'<p class="sm">Подходящей статьи Википедии про финансы не нашлось (искал по названию «'+esc(q)+'»). Попробуй полное название или другой язык.</p>';return}
-    var need=!cy?pg.filter(function(p){return p.langlinks&&p.langlinks[0]}):[];
-    var ru={};
-    var step=need.length?wapi('ru','titles='+encodeURIComponent(need.map(function(p){return p.langlinks[0]['*']}).join('|'))+'&prop=extracts&exintro=1&explaintext=1&exchars=700&redirects=1').then(function(rp){rp.forEach(function(r){ru[nrm(r.title)]=r.extract||''})}).catch(function(){}):Promise.resolve();
-    return step.then(function(){
-      if(my!==seq)return;
-      web.innerHTML=H+pg.map(function(p){
-        var ll=p.langlinks&&p.langlinks[0]?p.langlinks[0]['*']:'';
-        var ex=(!cy&&ll&&ru[nrm(ll)])||p.extract||'';var inRu=cy||(ll&&ru[nrm(ll)]);
-        var ttl=inRu&&!cy&&ll?ll:p.title;
-        return '<div class="tk web"><h2>'+esc(ttl)+'</h2>'+(ll?'<div class="en">'+(cy?'По-английски':'English')+': '+esc(cy?ll:p.title)+'</div>':'')+'<div class="lb">Суть</div><p>'+esc(ex)+'</p><div class="src">Википедия'+(inRu||cy?'':' (по-английски: русской статьи нет)')+', не проверено по курсу. Формул здесь нет — их смотри в карточках выше.</div><a href="'+esc(p.fullurl)+'" target="_blank" rel="noopener">Открыть статью →</a></div>'}).join('')});
-  }).catch(function(){if(my!==seq)return;web.innerHTML=H+'<p class="sm">Не получилось достучаться до Википедии. Проверь интернет.</p>'});
-}
-function run(){
-  var q=inp.value.trim();
-  if(q.length<2){box.innerHTML='<p class="sm">Напиши термин по-русски или по-английски: «WACC», «вакк», «чистый долг», «accretion», «ebitda». Покажу расшифровку, перевод, суть и формулу из курса, а если в курсе нет — можно поискать в Википедии кнопкой.</p>';web.innerHTML='';seq++;return}
-  var r=local(q);
-  box.innerHTML=r.length?'<div class="sh">Из курса</div>'+r.map(function(x){return card(x.e)}).join(''):'<div class="sh">Из курса</div><p class="sm">В курсе такого термина нет. Напиши мне в чат — добавлю.</p>';
-  clearTimeout(tmr);seq++;web.innerHTML='<button type="button" class="wbtn" id="wbtn">Поискать «'+esc(q)+'» в интернете</button><p class="sm">Покажу только статьи Википедии про финансы и смежные темы.</p>';document.getElementById('wbtn').onclick=function(){wiki(q)};
-}
-inp.addEventListener('input',run);
-var q0=new URLSearchParams(location.search).get('q');if(q0)inp.value=q0;run();inp.focus();
-})();
-</script>"""
-slovar_body = ('<div class="w">\n  ' + topbar('artem.html', 'Артем') + '\n  <h1>Словарь</h1>\n'
-               '  <div class="sq"><input id="q" type="search" placeholder="Любой финансовый термин: WACC, вакк, чистый долг…" autocomplete="off" enterkeyhint="search" aria-label="Термин"></div>\n'
-               '  <div id="sr"></div><div id="web"></div>\n</div>\n')
-slovar_html = page('Hub · Словарь', slovar_body, 'artem').replace('</head>', SLOVAR_CSS + '</head>', 1).replace('</body>', SLOVAR_JS.replace('__DATA__', SLOVAR_DATA) + BACK_JS + '</body>', 1)
-open(os.path.join(ROOT, 'slovar.html'), 'w', encoding='utf-8').write(slovar_html)
-print('ok slovar.html', len(slovar_html))
+# slovar.html больше не собирается: словарь слит с общим поиском (search.html), старый адрес — переадресация (scripts/build_all.sh)
+
 
 # замок для страниц Артема (ucheba.html, finance.html) — его вставляют make_ucheba.py и build_finance.py
 open(os.path.join(ROOT, 'src', 'finance', 'gate_artem.html'), 'w', encoding='utf-8').write(gate('artem'))

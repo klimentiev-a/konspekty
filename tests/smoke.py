@@ -20,11 +20,14 @@ AUTH = ';'.join("localStorage.setItem('hub:auth:%s','%s')" % (p, tok(p, pw)) for
 
 PAGES = ['index.html', 'artem.html', 'nastya.html', 'nastya-ucheba.html',
          'ucheba.html', 'ucheba.html#schedule', 'ucheba.html#tickets', 'ucheba.html#credits', 'ucheba.html#about',
-         'finance.html', 'finance.html#home', 'finance.html#learn', 'finance.html#calc/npv', 'finance.html#calc/dcf', 'finance.html#calc/lbo',
+         'finance.html', 'finance.html#learn', 'finance.html#learn/sektor', 'finance.html#learn/sektor/neft-gaz', 'finance.html#learn/glossariy',
          'finance.html#markets', 'finance.html#markets/news', 'finance.html#markets/ru', 'finance.html#markets/us',
-         'finance.html#markets/crypto', 'finance.html#markets/bonds', 'finance.html#markets/fx', 'finance.html#markets/cal',
-         'finance.html#markets/ru/SBER', 'finance.html#markets/us/NVDA', 'finance.html#markets/crypto/BTC', 'finance.html#markets/idx/IMOEX', 'finance.html#markets/daily', 'finance.html#markets/week', 'finance.html#markets/macro', 'finance.html#markets/divs', 'finance.html#markets/events', 'finance.html#markets/ru/VKCO', 'finance.html#markets/us/ASML.AS', 'finance.html#markets/us/7203.T', 'finance.html#markets/idx/^N225', 'energy.html', 'search.html',
-         'finance.html#world', 'english.html', 'english.html#words', 'english.html#words/list', 'english.html#ref', 'english.html#ref/vremena', 'finance.html#world/compare', 'finance.html#world/ranking', 'finance.html#world/life', 'finance.html#world/fav', 'finance.html#world/country/DEU', 'finance.html#world/companies', 'finance.html#world/ru-regions/Москва', 'finance.html#markets/week', 'finance.html#markets/macro', 'finance.html#markets/divs', 'finance.html#markets/events', 'finance.html#calc/yield', 'search.html', 'search.html?q=wacc', 'finance.html#world/sectors', 'finance.html#world/sectors/neft-gaz', 'finance.html#learn/marshrut', 'finance.html#learn/model-3-otchetov']
+         'finance.html#markets/crypto', 'finance.html#markets/bonds', 'finance.html#markets/cal',
+         'finance.html#markets/ru/SBER', 'finance.html#markets/us/NVDA', 'finance.html#markets/crypto/BTC', 'finance.html#markets/idx/IMOEX',
+         'finance.html#markets/ru/VKCO', 'finance.html#markets/us/ASML.AS', 'finance.html#markets/us/7203.T', 'finance.html#markets/us/INTC',
+         'finance.html#markets/week', 'finance.html#world/sectors/banki-finansy', 'finance.html#calc', 'finance.html#home',
+         'english.html', 'english.html#words', 'english.html#words/list', 'english.html#ref', 'english.html#ref/vremena',
+         'fin-english.html', 'fin-english.html#glossary', 'search.html', 'search.html?q=wacc', 'fin2/index.html', 'fin2/akcii.html']
 IGNORE = re.compile(r'Failed to fetch|NetworkError|Load failed|ResizeObserver')
 
 problems = []
