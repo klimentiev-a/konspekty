@@ -14,5 +14,4 @@ DBnomics NGDP_RPCH 196 стран
 DBnomics PCPIPCH 196 стран
 DBnomics LUR 117 стран
 DBnomics GGXWDG_NGDP 194 стран
-DBnomics BCA_NGDPD 195 стран
-DBnomics LP 196 стран
+DBnomics: The read operation timed out
