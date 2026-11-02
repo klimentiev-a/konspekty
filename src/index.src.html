@@ -33,7 +33,7 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 .dot{width:9px;height:9px;border-radius:50%;flex:none;background:var(--accent);background:oklch(var(--cl) var(--ch) var(--h))}
 
 /* ---------- каркас ---------- */
-.app{display:grid;grid-template-columns:minmax(0,1fr);min-height:100vh}
+.app{display:grid;align-content:start;grid-template-columns:minmax(0,1fr);min-height:100vh}
 .rail{position:sticky;top:env(safe-area-inset-top,0px);z-index:30;background:var(--bg);border-bottom:1px solid var(--line);transition:transform .28s ease}
 .rail.hide{transform:translateY(-100%)}
 .brandrow{display:flex;align-items:center;gap:4px;padding:8px 8px 4px var(--gut);min-height:52px}
