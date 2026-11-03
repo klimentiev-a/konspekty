@@ -71,3 +71,11 @@ jobs:
           git -c user.name=hub-bot -c user.email=hub-bot@users.noreply.github.com commit -qm "Финансы 2: снимок данных $(date '+%d.%m.%Y %H:%M')"
           git push -q -f "$REPO_URL" fin2-data
           echo "размер: $(du -sh . | cut -f1)"
+          # указатель на свежий снимок для CDN (fin2/data-ref.txt в main): страница берёт данные с jsDelivr по этому коммиту
+          SHA=$(git rev-parse HEAD); cd ..
+          for i in 1 2 3; do
+            git pull -q --rebase origin main 2>/dev/null; echo "$SHA" > fin2/data-ref.txt
+            git -c user.name=hub-bot -c user.email=hub-bot@users.noreply.github.com add fin2/data-ref.txt
+            git -c user.name=hub-bot -c user.email=hub-bot@users.noreply.github.com commit -qm "Финансы 2: указатель данных" || true
+            git push -q "$REPO_URL" HEAD:main && break; sleep 5
+          done

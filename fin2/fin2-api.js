@@ -132,6 +132,8 @@
 
   F2.reloadUniverse = async function () {
     F2.freshUntil = Date.now() + 30000;          // 30 с грузим мимо кэша браузера и service worker
+    F2.DATA_BASE = F2.DATA_BASE.indexOf("jsdelivr") >= 0 ? "https://raw.githubusercontent.com/klimentiev-a/konspekty/fin2-data/data/" : F2.DATA_BASE;
+    await F2.rebase();                           // свежий указатель на новый снимок
     F2.clearCache && F2.clearCache();
     return F2.universe();
   };

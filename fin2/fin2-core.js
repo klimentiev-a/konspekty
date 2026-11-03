@@ -7,8 +7,20 @@
   const F2 = window.FIN2 = window.FIN2 || {};
   const Q = new URLSearchParams(location.search);
   // источник данных: ветка fin2-data на GitHub; для локальной проверки — ?data=./data/
-  F2.DATA_BASE = Q.get("data") || (location.hostname === "localhost" || location.hostname === "127.0.0.1"
-    ? "./data/" : "https://raw.githubusercontent.com/klimentiev-a/konspekty/fin2-data/data/");
+  const RAW = "https://raw.githubusercontent.com/klimentiev-a/konspekty/fin2-data/data/";
+  F2.DATA_BASE = Q.get("data") || (location.hostname === "localhost" || location.hostname === "127.0.0.1" ? "./data/" : RAW);
+  // Быстрый источник: jsDelivr (CDN, сжатие, доступен из России) с данными, закреплёнными за коммитом ветки fin2-data.
+  // Какой коммит актуален, говорит крошечный файл fin2/data-ref.txt в самом репозитории (его пишет workflow fin2.yml).
+  // Если указатель или CDN недоступны — raw.githubusercontent.com, как раньше.
+  F2.rebase = async function () {
+    if (F2.DATA_BASE !== RAW) return;
+    try {
+      const r = await fetch("data-ref.txt?t=" + Date.now(), { cache: "no-store" });
+      const sha = (await r.text()).trim();
+      if (/^[0-9a-f]{40}$/.test(sha)) F2.DATA_BASE = "https://cdn.jsdelivr.net/gh/klimentiev-a/konspekty@" + sha + "/data/";
+    } catch (e) {}
+  };
+  const baseReady = F2.rebase();
   F2.OWN_BASE = "./";                       // статические файлы StockAI в самом репозитории
   const cache = new Map();                  // url → Promise(json)
   const today = () => new Date(Date.now() - new Date().getTimezoneOffset() * 6e4).toISOString().slice(0, 10);
@@ -16,14 +28,19 @@
 
   F2.load = function (name, opt) {
     opt = opt || {};
-    const url = (opt.base || F2.DATA_BASE) + name;
-    if (!opt.fresh && cache.has(url)) return cache.get(url);
-    const p = fetch(url, { cache: (opt.noStore || Date.now() < (F2.freshUntil || 0)) ? "no-store" : "default" }).then(r => {
+    const key = (opt.base || "@") + name;
+    if (!opt.fresh && cache.has(key)) return cache.get(key);
+    const get = base => { const ctl = base !== RAW && window.AbortController ? new AbortController() : null, tm = ctl && setTimeout(() => ctl.abort(), 12000);
+      return fetch(base + name, { cache: (opt.noStore || Date.now() < (F2.freshUntil || 0)) ? "no-store" : "default", signal: ctl ? ctl.signal : undefined }).finally(() => tm && clearTimeout(tm)).then(r => {
       if (!r.ok) throw new Error("HTTP " + r.status + " " + name);
       return r.json();
+    }) };
+    const p = baseReady.then(() => {
+      const base = opt.base || F2.DATA_BASE;
+      return get(base).catch(e => (!opt.base && base !== RAW) ? get(RAW) : Promise.reject(e));   // CDN не ответил — старый путь
     });
-    cache.set(url, p);
-    p.catch(() => cache.delete(url));
+    cache.set(key, p);
+    p.catch(() => cache.delete(key));
     return p;
   };
   F2.tryLoad = (name, opt) => F2.load(name, opt).catch(() => null);

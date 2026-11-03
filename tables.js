@@ -1,7 +1,7 @@
 /* Таблицы на узком экране: строки превращаются в карточки, без горизонтальной прокрутки */
 (function(){
   var css='@media (max-width:640px){'+
-  '.tablewrap{overflow:visible!important;border:0!important}'+
+  '.tablewrap:has(>table.cards){overflow:visible!important;border:0!important}'+
   'table.cards{display:block;width:100%!important;border:0}'+
   'table.cards thead{display:none}'+
   'table.cards tbody{display:block}'+
