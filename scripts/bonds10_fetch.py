@@ -26,19 +26,30 @@ for q in ('RUCB', 'RGBI', 'MICEXCB', 'RUMB', 'RUFL'):
 json.dump(found, open(os.path.join(OUT, '_list.json'), 'w'), ensure_ascii=False, indent=0)
 print('индексов найдено', len(found))
 summary = {}
-for code in CODES:
+todo = list(CODES) + sorted(k for k in found if (k.startswith('RUCB') and ('TR' in k)) and k not in CODES)
+for code in todo:
     rows, cols, start = [], None, 0
-    try:
-        while True:
-            j = get('https://iss.moex.com/iss/history/engines/stock/markets/index/boards/SNDX/securities/%s.json?iss.meta=off&from=2010-01-01&start=%d' % (code, start))
-            h = j['history']; cols = h['columns']; d = h['data']
-            if not d: break
-            rows += d; start += len(d)
-            if len(d) < 100: break
-    except Exception as e:
-        print(code, 'ошибка', e)
+    urls = ['https://iss.moex.com/iss/history/engines/stock/markets/index/securities/%s.json' % code,
+            'https://iss.moex.com/iss/history/engines/stock/markets/index/boards/SNDX/securities/%s.json' % code]
+    for base in urls:
+        rows, cols, start = [], None, 0
+        try:
+            while True:
+                j = get(base + '?iss.meta=off&from=2010-01-01&start=%d' % start)
+                h = j['history']; cols = h['columns']; d = h['data']
+                if not d: break
+                rows += d; start += len(d)
+                if len(d) < 100: break
+        except Exception as e:
+            print(code, 'ошибка', e)
+        if rows: break
     if rows:
         json.dump({'code': code, 'cols': cols, 'rows': rows}, open(os.path.join(OUT, code + '.json'), 'w'), ensure_ascii=False, separators=(',', ':'))
     summary[code] = (rows[0][cols.index('TRADEDATE')], rows[-1][cols.index('TRADEDATE')], len(rows)) if rows else None
     print(code, summary[code])
+    if not rows:
+        try:
+            print('  бумага:', json.dumps(get('https://iss.moex.com/iss/securities/%s.json?iss.meta=off&iss.only=boards' % code).get('boards', {}).get('data'), ensure_ascii=False)[:300])
+        except Exception as e:
+            print('  бумага: ошибка', e)
 json.dump(summary, open(os.path.join(OUT, '_summary.json'), 'w'), ensure_ascii=False)
