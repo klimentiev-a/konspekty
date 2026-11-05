@@ -475,8 +475,9 @@ tr[data-bond],table[data-t="ru"] tbody tr,table[data-t="us"] tbody tr,table[data
 .rkt5{width:100%;border-collapse:collapse;font:500 14px/1.3 var(--sans);background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden}
 .rkt5 th{padding:10px 8px;text-align:right;font:600 11.5px/1.25 var(--sans);letter-spacing:.03em;color:var(--muted);background:var(--rail);border-bottom:1px solid var(--line)}.rkt5 th:first-child,.rkt5 td:first-child{text-align:left}
 .rkt5 td{padding:10px 8px;text-align:right;border-bottom:1px solid var(--line2);font-variant-numeric:tabular-nums}.rkt5 tr:last-child td{border-bottom:0}.rkt5 td small{font:400 11px/1.3 var(--sans);color:var(--faint)}
+.rkt5 td.rk-bad{color:var(--down)}
 .rkt5 td.rk-top{font-weight:700;color:var(--up);background:color-mix(in srgb,var(--up) 10%,transparent)}
-@media (max-width:520px){.rkt5 th,.rkt5 td{padding:9px 5px;font-size:13px}.rkt5 th{font-size:10.5px;letter-spacing:0}}
+@media (max-width:520px){.rkt5 th,.rkt5 td{padding:9px 3px;font-size:12.5px}.rkt5 th:first-child,.rkt5 td:first-child{padding-left:8px}.rkt5 th{font-size:10.5px;letter-spacing:0}}
 .rk-ul{margin:0;padding-left:18px;font:400 14.5px/1.55 var(--sans)}.rk-ul li{margin:6px 0}.rk-src{margin:10px 0 0;padding-left:18px;font:400 13px/1.5 var(--sans)}.rk-src li{margin:3px 0;overflow-wrap:anywhere}
 .rkb{display:grid;grid-template-columns:minmax(0,120px) minmax(0,1fr) 58px;gap:8px;align-items:center;margin:7px 0;font:500 13px/1.25 var(--sans)}.rkb b{text-align:right;font-variant-numeric:tabular-nums}
 .rkt{display:block;height:14px;background:var(--line2);border-radius:3px;overflow:hidden}.rkt i{display:block;height:100%;border-radius:3px;background:var(--accent)}
@@ -1401,6 +1402,17 @@ function vRisk(){
   var best=function(fn,keys){var b=null,bv=-1e9;keys.forEach(function(k){var v=fn(k);if(v>bv){bv=v;b=k}});return b};
   var h='<div class="sect"><h2 style="margin:0">Куда выгоднее вложить 100 ₽: по рейтингам облигаций</h2>'+
    '<p class="note">Факт — реальные индексы Мосбиржи (полная доходность: купоны плюс цена, дефолты частично уже внутри). Прогноз — расчёт на 10 лет вперёд с учётом дефолтов и ставок. Опираемся на рынок из '+nf(R.mkt.total,0)+' выпусков ('+nf(R.mkt.rub,0)+' в рублях) '+R.mkt.iss+' эмитентов на '+esc(R.mkt.asof)+'. Не инвестсовет.</p></div>';
+  /* матожидание: средний годовой доход с учётом дефолтов + зависимость от частоты дефолтов */
+  var pdMulK=RKS.pd==='2'?2:RKS.pd==='3'?3:RKS.pd==='5'?5:1,pdSrc=RKS.pd==='26'?R.pdy26:R.pdy,pdOf=function(k){return Math.min(100,pdSrc[k]*pdMulK)};
+  var yOf=function(k){return k==='OFZ'?NW.ofz2:NW[k].y2},eOf=function(k,p){return (1-p/100)*yOf(k)-p/100*RKS.lgd};
+  var eO=yOf('OFZ'),cg=function(k){return fr(k).cagr};
+  var ra=['OFZ'].concat(RT).map(function(k){var p=k==='OFZ'?0:pdOf(k),e=eOf(k,p);return '<tr><td><b>'+(k==='OFZ'?'ОФЗ':k)+'</b></td><td>'+nf(yOf(k),1)+'%</td><td>'+(k==='OFZ'?'0%':nf(p,2)+'%')+'</td><td class="'+(k!=='OFZ'&&e>eO?'rk-top':'')+'">'+nf(e,1)+'%</td><td>'+(k==='OFZ'?'—':'<span class="'+(e>eO?'up':'down')+'">'+(e>eO?'+':'')+nf(e-eO,1)+'</span>')+'</td><td>'+nf(cg(k),1)+'%</td></tr>'}).join('');
+  h+='<div class="sect"><h2>Матожидание: средний доход в год с учётом дефолтов</h2><div class="tablewrap"><table class="rkt5" data-cz="1"><thead><tr><th>Рейтинг</th><th>Доходность бумаг сейчас</th><th>Дефолтов в год</th><th>Ожидаемо с дефолтами</th><th>Против ОФЗ, п.п.</th><th>Факт 10 лет, в год</th></tr></thead><tbody>'+ra+'</tbody></table></div>'+
+   '<p class="note">Ожидаемо = (1 − вероятность дефолта) × доходность − вероятность дефолта × потеря ('+RKS.lgd+'% номинала). Доходность — бумаги со сроком около 2 лет по текущему рынку. Зелёным выделено то, что в среднем обгоняет ОФЗ. «Факт» — среднегодовая доходность индексов Мосбиржи за 2016–2025 (там ставки были ниже, поэтому цифры меньше). Частоту дефолтов и потерю меняют переключатели под таблицей «100 ₽».</p></div>';
+  var MU=[1,2,3,5,10],gh=MU.map(function(m){return '<th>'+(m===1?'история':'×'+m)+'</th>'}).join('');
+  var gb=RT.map(function(k){var base=R.pdy[k],bk=rkBE(k);return '<tr><td><b>'+k+'</b><br><small>'+nf(base,2)+'%</small></td>'+MU.map(function(m){var e=eOf(k,Math.min(100,base*m));return '<td class="'+(e>=eO?'rk-top':'rk-bad')+'">'+nf(e,1)+'%</td>'}).join('')+'<td>'+(bk/base>=10?'>10':nf(bk/base,1))+'×</td></tr>'}).join('');
+  h+='<div class="sect"><h2>Зависимость: что выгоднее при разной частоте дефолтов</h2><div class="tablewrap"><table class="rkt5" data-cz="1"><thead><tr><th>Рейтинг, дефолтов в год</th>'+gh+'<th>Запас (раз)</th></tr></thead><tbody>'+gb+'<tr><td><b>ОФЗ</b></td><td colspan="'+MU.length+'">'+nf(eO,1)+'% без дефолтов</td><td>—</td></tr></tbody></table></div>'+
+   '<p class="note">Ожидаемая доходность в год с учётом дефолтов, если они случаются чаще, чем в истории (потеря '+RKS.lgd+'%). Зелёный — не хуже ОФЗ ('+nf(eO,1)+'%), красный — хуже. «Запас» — во сколько раз дефолтов может стать больше исторического, пока рейтинг ещё не проигрывает ОФЗ. Чем ниже рейтинг, тем выше доходность, но тем быстрее её съедают дефолты: у B запас всего около '+nf(rkBE('B')/R.pdy.B,1)+' раза, у AAA запаса нет.</p></div>';
   var fx={};RT.concat(['OFZ','CORP']).forEach(function(k){fx[k]=fr(k).x*100});
   var fcs=function(k,sh){return rkFc(k,sh,RKS)};
   var bF=best(function(k){return fx[k]},RT),wF=RT.slice().sort(function(a,b){return fx[a]-fx[b]})[0];
