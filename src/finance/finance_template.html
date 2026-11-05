@@ -348,6 +348,11 @@ mark{background:var(--mark);color:inherit;border-radius:3px;padding:0 1px}
 tr[data-bond],table[data-t="ru"] tbody tr,table[data-t="us"] tbody tr,table[data-t="cr"] tbody tr{cursor:pointer}
 .stat button{padding:4px 10px;border:1px solid var(--line);border-radius:999px;font:500 12.5px/1.2 var(--sans);color:var(--fg)}
 .sect{margin-top:30px}
+.rkt5{width:100%;border-collapse:collapse;font:500 14px/1.3 var(--sans);background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.rkt5 th{padding:10px 8px;text-align:right;font:600 11.5px/1.25 var(--sans);letter-spacing:.03em;color:var(--muted);background:var(--rail);border-bottom:1px solid var(--line)}.rkt5 th:first-child,.rkt5 td:first-child{text-align:left}
+.rkt5 td{padding:10px 8px;text-align:right;border-bottom:1px solid var(--line2);font-variant-numeric:tabular-nums}.rkt5 tr:last-child td{border-bottom:0}.rkt5 td small{font:400 11px/1.3 var(--sans);color:var(--faint)}
+.rkt5 td.rk-top{font-weight:700;color:var(--up);background:color-mix(in srgb,var(--up) 10%,transparent)}
+@media (max-width:520px){.rkt5 th,.rkt5 td{padding:9px 5px;font-size:13px}.rkt5 th{font-size:10.5px;letter-spacing:0}}
 .rk-ul{margin:0;padding-left:18px;font:400 14.5px/1.55 var(--sans)}.rk-ul li{margin:6px 0}.rk-src{margin:10px 0 0;padding-left:18px;font:400 13px/1.5 var(--sans)}.rk-src li{margin:3px 0;overflow-wrap:anywhere}
 .rkb{display:grid;grid-template-columns:minmax(0,120px) minmax(0,1fr) 58px;gap:8px;align-items:center;margin:7px 0;font:500 13px/1.25 var(--sans)}.rkb b{text-align:right;font-variant-numeric:tabular-nums}
 .rkt{display:block;height:14px;background:var(--line2);border-radius:3px;overflow:hidden}.rkt i{display:block;height:100%;border-radius:3px;background:var(--accent)}
@@ -1229,6 +1234,13 @@ function vBonds(){
   return h+secNews('bonds','Новости об облигациях и ставках',8);
 }
 /* ---- «Риск и доходность»: аналитика рублёвых облигаций за 10 лет (данные: S.risk, src/rynok/bonds10.json) ---- */
+var RKS={lgd:80,pd:'1'},RK_SH=[0,-4,-8];
+function rkCum(p){return (1-Math.pow(1-p/100,10))*100}
+function rkBE(k){var R=S.risk,s=R.now[k].y2-R.now.ofz2;return s/(s+R.now.ofz2+RKS.lgd)*100}
+function rkFix(){return 100*Math.pow(1+S.risk.ofzcurve['10']/100,10)}
+function rkFc(k,sh,s){var R=S.risk,y=(k==='OFZ'?R.now.ofz2:R.now[k].y2)+sh;if(y<1)y=1;var pd=0;
+  if(k!=='OFZ'){pd=(s.pd==='26'?R.pdy26:R.pdy)[k]*(s.pd==='2'?2:s.pd==='3'?3:s.pd==='5'?5:1);if(pd>100)pd=100}
+  var p=pd/100,m=(1-p)*(1+y/100)+p*(1-s.lgd/100);return 100*Math.pow(m,10)}
 var RK={yo:17.41,s:9.14,pd:1.87,lgd:80,n:30};
 function rn(v){var x=parseFloat(String(v).replace(/\s/g,'').replace(',','.'));return isNaN(x)?NaN:x}
 function pp(x){if(x==null||isNaN(x))return '<span>—</span>';return '<span class="'+(x>0.005?'up':x<-0.005?'down':'')+'">'+(x>0?'+':'')+nf(x,2)+' п.п.</span>'}
@@ -1254,34 +1266,54 @@ function vRisk(){
   var R=S.risk;if(!R)return '<p class="note">Данные недоступны.</p>';
   var c10=R.cum['10'].r,c5=R.cum['5'].r,r0=function(x){return nf(x*100,0)};
   var pos=0,tot=0;R.snaps.forEach(function(x){tot++;if(x.ex['80']>0)pos++});
-  var h='<div class="sect"><h2 style="margin:0">Во что выгоднее было вкладываться: рублёвые облигации за 10 лет</h2>'+
-   '<p class="note">Данные на '+esc(R.asof)+'. Сравниваем ОФЗ (государство), корпоративные облигации по рейтингам и ВДО (высокодоходные облигации, рейтинг ниже BBB или без него) с учётом дефолтов. Это разбор прошлого, а не рекомендация.</p></div>';
-  h+='<div class="sect"><div class="box"><h2 style="margin:0 0 8px">Выводы</h2><ul class="rk-ul">'+
-   '<li><b>10 лет (2016–2025).</b> 100 ₽ в корпоративных облигациях стали '+r0(c10.corp.x)+' ₽, в ОФЗ — '+r0(c10.ofz.x)+' ₽, инфляция — '+r0(c10.infl.x)+' ₽. Ключевая ставка ЦБ как ориентир «денег на вкладе» дала '+r0(c10.key.x)+' ₽: в эти годы хватило бы и её.</li>'+
-   '<li><b>5 лет (2021–2025), здесь есть ВДО.</b> 100 ₽ → ВДО '+r0(c5.vdo.x)+' ₽, корпоративные '+r0(c5.corp.x)+' ₽, ОФЗ '+r0(c5.ofz.x)+' ₽, ключевая ставка '+r0(c5.key.x)+' ₽, инфляция '+r0(c5.infl.x)+' ₽. ВДО обогнали ОФЗ в 4 годах из 5 (хуже были только в 2022), но ключевую ставку не обогнали.</li>'+
-   '<li><b>Риск окупался не всегда.</b> В '+pos+' из '+tot+' снимков рынка избыток над ОФЗ с учётом дефолтов был положительным (потеря при дефолте 80%). Не окупался в 2017 (спред над ОФЗ около 1 п.п. при любом рейтинге), в конце 2021 и конце 2023 для ВДО.</li>'+
-   '<li><b>Правило по данным.</b> Высокодоходные бумаги выгодны при широком спреде (окт. 2022, конец 2024: 9–12 п.п.) и невыгодны при узком (2017, 2021, 2023: 1–4,5 п.п.). Допустимая вероятность дефолта = спред / (спред + доходность ОФЗ + потеря при дефолте).</li>'+
-   '<li><b>Корзина против ОФЗ.</b> При ОФЗ 17,41% и спреде 9,14 п.п. (конец 2024) корзина из многих выпусков обыгрывала ОФЗ, пока дефолтила менее 8,6% выпусков (при потере 80%). Калькулятор ниже показывает шанс этого.</li>'+
-   '<li><b>Что тревожно.</b> Дефолтов стало больше: по данным ЦБ в 2025 году в дефолт впервые ушли 28 эмитентов (5,4% от числа эмитентов), а возврат по дефолтным выпускам 2025–2026 по рыночной цене около 9% номинала (выборка 8 выпусков). Значит, потеря 80–94% реалистичнее, чем 50%.</li></ul></div></div>';
-  /* накопленная доходность */
-  var mk=function(win,keys,labels,title){var r=win.r,mx=0;keys.forEach(function(k){if(r[k]&&r[k].x>mx)mx=r[k].x});
-    return '<div class="box"><h2 style="margin:0 0 4px">'+title+'</h2>'+keys.filter(function(k){return r[k]}).map(function(k){return '<div class="rkb"><span>'+labels[k]+'</span><span class="rkt"><i class="k-'+k+'" style="width:'+(r[k].x/mx*100).toFixed(1)+'%"></i></span><b>'+nf(r[k].x*100,0)+' ₽</b></div>'}).join('')+
-     '<p class="note">Реально (с поправкой на инфляцию): '+keys.filter(function(k){return r[k]&&k!=='infl'}).map(function(k){return labels[k].toLowerCase()+' '+(r[k].real>=1?'+':'')+nf((r[k].real-1)*100,0)+'%'}).join(', ')+'.</p></div>'};
-  var LB={ofz:'ОФЗ',corp:'Корпоративные',vdo:'ВДО',key:'Ключевая ставка',infl:'Инфляция'};
-  h+='<div class="sect"><h2>Что реально заработали: 100 ₽, вложенные в начало периода</h2><div class="grid2">'+mk(R.cum['10'],['key','corp','ofz','infl'],LB,'2016–2025 (10 лет)')+mk(R.cum['5'],['key','vdo','corp','ofz','infl'],LB,'2021–2025 (5 лет, с ВДО)')+'</div>'+
-   '<p class="note">Полная доходность за год (купоны плюс изменение цены), реинвестирование, до налогов. ОФЗ — индекс RGBITR (Мосбиржа), корпоративные — индекс корпоративных облигаций полной доходности Мосбиржи (RUCBITR, с 2019 года RUCBTRNS: только рейтинг не ниже A-, поэтому ВДО в нём нет), ВДО — по данным БК «РЕГИОН» и индекса ВДО (ПИР) Мосбиржи (сверить). Ключевая ставка — среднее за год. Годовые значения 2016–2020 по корпоративным склеены из нескольких источников (сверить).</p></div>';
-  var yc=[{k:'y',t:'Год',f:function(r){return '<b>'+r.y+'</b>'}},
-    {k:'ofz',t:'ОФЗ',num:1,f:function(r){return pct(r.ofz,1)}},{k:'corp',t:'Корп.',num:1,f:function(r){return pct(r.corp,1)}},{k:'vdo',t:'ВДО',num:1,f:function(r){return r.vdo==null?'—':pct(r.vdo,1)}},
-    {k:'key',t:'Ставка ЦБ',num:1,f:function(r){return nf(r.key,1)+'%'}},{k:'infl',t:'Инфл.',num:1,f:function(r){return nf(r.infl,1)+'%'}}];
-  h+='<div class="sect">'+fold('rk-years','Доходность по годам',table('rk-years',yc,R.years.slice().reverse())+
-   '<p class="note">По рейтингам, 2023–2025, полная доходность за год: '+['2023','2024','2025'].map(function(y){var b=R.byRating.years[y];return y+': AAA '+nf(b.AAA,1)+'%, AA '+nf(b.AA,1)+'%, A '+nf(b.A,1)+'%, BBB '+nf(b.BBB,1)+'%, ВДО '+nf(b.VDO,1)+'%'}).join('; ')+'. Первое полугодие 2026: AAA '+nf(R.byRating.years.h1_2026.AAA,1)+'%, BBB '+nf(R.byRating.years.h1_2026.BBB,1)+'%, ВДО '+nf(R.byRating.years.h1_2026.VDO,1)+'%, ОФЗ '+nf(R.byRating.years.h1_2026.OFZ,1)+'%. За три года (2023–2025) накопленно: '+['AAA','AA','A','BBB','VDO','OFZ'].map(function(k){var x=R.byRating.cum3[k];return (k==='VDO'?'ВДО':k==='OFZ'?'ОФЗ':k)+' '+nf(x.x*100,0)+' ₽'}).join(', ')+'.</p>')+'</div>';
+  var F=R.fact.rows,NW=R.now,RT=['AAA','AA','A','BBB','BB','B'];
+  var fr=function(k){return F.filter(function(x){return x.k===k})[0]};
+  var best=function(fn,keys){var b=null,bv=-1e9;keys.forEach(function(k){var v=fn(k);if(v>bv){bv=v;b=k}});return b};
+  var h='<div class="sect"><h2 style="margin:0">Куда выгоднее вложить 100 ₽: по рейтингам облигаций</h2>'+
+   '<p class="note">Факт — реальные индексы Мосбиржи (полная доходность: купоны плюс цена, дефолты частично уже внутри). Прогноз — расчёт на 10 лет вперёд с учётом дефолтов и ставок. Опираемся на рынок из '+nf(R.mkt.total,0)+' выпусков ('+nf(R.mkt.rub,0)+' в рублях) '+R.mkt.iss+' эмитентов на '+esc(R.mkt.asof)+'. Не инвестсовет.</p></div>';
+  var fx={};RT.concat(['OFZ','CORP']).forEach(function(k){fx[k]=fr(k).x*100});
+  var fcs=function(k,sh){return rkFc(k,sh,RKS)};
+  var bF=best(function(k){return fx[k]},RT),wF=RT.slice().sort(function(a,b){return fx[a]-fx[b]})[0];
+  var bA=best(function(k){return fcs(k,0)},RT),bC=best(function(k){return fcs(k,-8)},RT),o10=rkFix();
+  h+='<div class="sect"><div class="box"><h2 style="margin:0 0 8px">Что показывают цифры</h2><ul class="rk-ul">'+
+   '<li><b>Факт, 10 лет (2016–2025).</b> 100 ₽ стали: ОФЗ '+r0(fx.OFZ/100)+' ₽, корпоративные '+r0(fx.CORP/100)+' ₽, по рейтингам от '+r0(fx[wF]/100)+' ₽ ('+wF+') до '+r0(fx[bF]/100)+' ₽ ('+bF+'); инфляция '+r0(c10.infl.x)+' ₽, ключевая ставка ЦБ '+r0(c10.key.x)+' ₽. Любой корпоративный рейтинг обогнал ОФЗ и инфляцию, но разница между A, BBB, BB и B небольшая, а AAA отстал.</li>'+
+   '<li><b>Риск.</b> Чем ниже рейтинг, тем выше шанс дефолта эмитента за 10 лет: AAA около '+nf(rkCum(0.12),0)+'%, A '+nf(rkCum(R.pdy.A),0)+'%, BBB '+nf(rkCum(R.pdy.BBB),0)+'%, BB '+nf(rkCum(R.pdy.BB),0)+'%, B '+nf(rkCum(R.pdy.B),0)+'%. Широкая корзина сглаживает это: худший год индекса B — '+nf(fr('B').worst,1)+'%, остальных — не ниже '+nf(Math.min.apply(null,['AAA','AA','A','BBB','BB'].map(function(k){return fr(k).worst})),1)+'%.</li>'+
+   '<li><b>Прогноз, ставки как сейчас.</b> Расчёт ставит первым '+bA+' ('+nf(fcs(bA,0),0)+' ₽ из 100) даже с дефолтами как в истории и потерей '+RKS.lgd+'% при дефолте, но это потолок: он предполагает, что нынешнюю высокую доходность ('+nf(NW[bA].y2,0)+'% годовых) удастся сохранять 10 лет подряд.</li>'+
+   '<li><b>Запас прочности.</b> Бумаги BB выигрывают у ОФЗ, пока дефолтит не больше '+nf(rkBE('BB'),0)+'% выпусков в год (исторически около '+nf(R.pdy.BB,1)+'%), B — не больше '+nf(rkBE('B'),0)+'% (исторически '+nf(R.pdy.B,1)+'%), BBB — '+nf(rkBE('BBB'),0)+'% (исторически '+nf(R.pdy.BBB,1)+'%). У AAA запаса нет: его доходность почти равна ОФЗ ('+nf(NW.AAA.y2-NW.ofz2,1)+' п.п.), поэтому он нужен ради надёжности, а не доходности. В 2025 году по данным ЦБ в дефолт впервые ушли 5,4% всех эмитентов — у низких рейтингов доля выше.</li>'+
+   '<li><b>Если ставки упадут.</b> При снижении на 8 п.п. лучшим из корпоративных остаётся '+bC+' ('+nf(fcs(bC,-8),0)+' ₽), но ОФЗ, купленная сейчас на 10 лет, даст '+nf(o10,0)+' ₽ без риска дефолта и без перекладывания (десятилетняя ОФЗ даёт '+nf(R.ofzcurve['10'],1)+'%); она обгоняет все рейтинги до A включительно.</li></ul></div></div>';
+  /* главная таблица */
+  var rows=[{k:'o10',lab:'<b>ОФЗ на 10 лет</b><br><small>купить сейчас и держать</small>',f:null,fc:function(sh){return o10}},
+   {k:'OFZ',lab:'<b>ОФЗ короткие</b><br><small>перекладывать</small>',f:fx.OFZ,fc:function(sh){return rkFc('OFZ',sh,RKS)}}].concat(RT.map(function(k){return {k:k,lab:'<b>'+k+'</b><br><small>'+NW[k].n+' вып., '+NW[k].iss+' эмит.</small>',f:fx[k],fc:function(sh){return rkFc(k,sh,RKS)}}}));
+  var mxF=Math.max.apply(null,rows.map(function(r){return r.f||0})),mx=RK_SH.map(function(sh){return Math.max.apply(null,rows.map(function(r){return r.fc(sh)}))});
+  var cl=function(v,m){return v>=m-1e-9?' class="rk-top"':''};
+  h+='<div class="sect"><div class="tablewrap"><table class="rkt5" data-cz="1"><thead><tr><th>Рейтинг</th><th>Факт<br>2016–2025</th>'+RK_SH.map(function(sh){return '<th>Прогноз 10 лет:<br>'+(sh?'ставки '+String(sh).replace('-','−')+' п.п.':'ставки как сейчас')+'</th>'}).join('')+'</tr></thead><tbody>'+
+   rows.map(function(r){return '<tr><td>'+r.lab+'</td><td'+(r.f==null?'':cl(r.f,mxF))+'>'+(r.f==null?'—':nf(r.f,0))+'</td>'+RK_SH.map(function(sh,i){var v=r.fc(sh);return '<td'+cl(v,mx[i])+'>'+nf(v,0)+'</td>'}).join('')+'</tr>'}).join('')+'</tbody></table></div>'+
+   '<p class="note">Сколько рублей получится из 100 ₽ через 10 лет. Выделен лучший в столбце. «Факт» — индексы Мосбиржи (AAA, AA, A, BBB — с 2019 года, раньше такого деления нет и взят индекс бумаг с рейтингом не ниже BBB-; BB и B — старые индексы Мосбиржи до 2022 года, дальше индекс ВДО; ОФЗ и корпоративные — по всем 10 годам; реальных лет у большинства 7 из 10). «Прогноз» — модель: перекладываем бумаги со сроком около 2 лет под текущую доходность (AAA '+nf(NW.AAA.y2,1)+'%, A '+nf(NW.A.y2,1)+'%, BBB '+nf(NW.BBB.y2,1)+'%, BB '+nf(NW.BB.y2,1)+'%, B '+nf(NW.B.y2,1)+'%, ОФЗ '+nf(NW.ofz2,1)+'%); ставки падают сразу на столько пунктов у всех, спред к ОФЗ не меняется; дефолты независимы; налоги и комиссии не учтены.</p>'+
+   '<div class="bf" style="margin-top:8px"><label>Дефолтов<select data-rks="pd"><option value="1"'+(RKS.pd==='1'?' selected':'')+'>как в истории (Эксперт РА)</option><option value="26"'+(RKS.pd==='26'?' selected':'')+'>по матрице января 2026</option><option value="2"'+(RKS.pd==='2'?' selected':'')+'>вдвое больше</option><option value="3"'+(RKS.pd==='3'?' selected':'')+'>втрое больше</option><option value="5"'+(RKS.pd==='5'?' selected':'')+'>впятеро больше</option></select></label>'+
+   '<label>Потеря при дефолте<select data-rks="lgd"><option value="50"'+(RKS.lgd==50?' selected':'')+'>50% номинала</option><option value="80"'+(RKS.lgd==80?' selected':'')+'>80%</option><option value="94"'+(RKS.lgd==94?' selected':'')+'>94% (как в 2025–2026)</option></select></label></div></div>';
+  /* столбики факта */
+  var bars=[['key','Ключевая ставка ЦБ',c10.key.x*100,'k-key'],['infl','Инфляция',c10.infl.x*100,'k-infl']].concat(['OFZ','CORP'].concat(RT).map(function(k){return [k,k==='OFZ'?'ОФЗ':k==='CORP'?'Все корпоративные':k,fx[k],k==='OFZ'?'k-ofz':'k-corp']}));
+  var bmx=Math.max.apply(null,bars.map(function(b){return b[2]}));
+  h+='<div class="sect"><div class="box"><h2 style="margin:0 0 4px">Факт: 100 ₽ в начале 2016 года</h2>'+bars.map(function(b){return '<div class="rkb"><span>'+b[1]+'</span><span class="rkt"><i class="'+b[3]+'" style="width:'+(b[2]/bmx*100).toFixed(1)+'%"></i></span><b>'+nf(b[2],0)+' ₽</b></div>'}).join('')+'<p class="note">Ключевая ставка — среднее за год (ориентир вклада), до налогов.</p></div></div>';
+  /* таблица риска */
+  var kr=RT.map(function(k){var f=fr(k);return {k:k,pd1:R.pdy[k],be:rkBE(k),pd10:rkCum(R.pdy[k]),worst:f.worst,neg:f.neg,n:NW[k].n,iss:NW[k].iss,y2:NW[k].y2,sp:NW[k].y2-NW.ofz2,real:f.real}});
+  var rc2=[{k:'k',t:'Рейтинг',f:function(r){return '<b>'+r.k+'</b>'}},{k:'pd1',t:'Дефолт в год',num:1,f:function(r){return nf(r.pd1,2)+'%'}},{k:'be',t:'Допустимо в год',num:1,f:function(r){return nf(r.be,2)+'%'}},{k:'pd10',t:'Дефолт за 10 лет',num:1,f:function(r){return nf(r.pd10,1)+'%'}},
+   {k:'worst',t:'Худший год индекса',num:1,f:function(r){return pct(r.worst,1)}},{k:'neg',t:'Лет в минусе из 10',num:1,f:function(r){return r.neg}},
+   {k:'y2',t:'Доходность сейчас',num:1,f:function(r){return nf(r.y2,1)+'%'}},{k:'sp',t:'Спред к ОФЗ',num:1,f:function(r){return nf(r.sp,1)+' п.п.'}},
+   {k:'n',t:'Выпусков / эмитентов',num:1,f:function(r){return nf(r.n,0)+' / '+r.iss}},{k:'real',t:'Лет по реальному индексу',num:1,f:function(r){return r.real+' из 10'}}];
+  h+='<div class="sect"><h2>Риск по рейтингам</h2>'+table('rk-risk',rc2,kr,1)+'<p class="note">Дефолт — вероятность, что эмитент с таким рейтингом не выплатит долг: за год по матрицам «Эксперт РА» 2001/02–2021/22 (AAA — оценка НКР 0,12%), за 10 лет пересчитано. «Дефолт в год» — историческая частота. «Доходность сейчас» — для бумаг со сроком около 2 лет. «Допустимо в год» — доля дефолтов, при которой рейтинг по доходности сравнивается с ОФЗ (при выбранной потере выше; спред берётся по текущему рынку). Не равно потерям корзины: у широкой корзины дефолтит доля бумаг, а часть денег возвращается. В базе также '+R.mkt.default_issues+' выпусков с рейтингом CCC, CC или D и '+R.mkt.unrated+' без рейтинга. На телефоне нажмите на строку, чтобы увидеть остальные столбцы.</p></div>';
+  /* доходность по годам и рейтингам */
+  var gk=['AAA','AA','A','BBB','BB','B','OFZ','CORP'],gl={OFZ:'ОФЗ',CORP:'Корп.'};
+  var gr=R.years.slice().reverse().map(function(y){var o={y:y.y,vdo:y.vdo,key:y.key,infl:y.infl};gk.forEach(function(k){var c=fr(k).y[String(y.y)];o[k]=c.v;o['_'+k]=c.s==='e'});return o});
+  var gc=[{k:'y',t:'Год',f:function(r){return '<b>'+r.y+'</b>'}}].concat(gk.map(function(k){return {k:k,t:gl[k]||k,num:1,f:function(r){return r['_'+k]?'<i>'+pct(r[k],1)+'*</i>':pct(r[k],1)}}})).concat([{k:'vdo',t:'ВДО',num:1,f:function(r){return r.vdo==null?'—':pct(r.vdo,1)}},{k:'key',t:'Ставка ЦБ',num:1,f:function(r){return nf(r.key,1)+'%'}},{k:'infl',t:'Инфл.',num:1,f:function(r){return nf(r.infl,1)+'%'}}]);
+  h+='<div class="sect">'+fold('rk-grid','Доходность по годам и рейтингам (факт)',table('rk-grid',gc,gr)+'<p class="note">Полная доходность за год, %. * (курсив) — оценка, а не индекс этого рейтинга: AAA, AA, A, BBB до 2019 года — индекс бумаг с рейтингом не ниже BBB-; BB и B после 2022 года — индекс ВДО. ВДО — индекс высокодоходных облигаций (с 26 марта 2021 года, поэтому 2021 год неполный). Источник: ISS Мосбиржи.</p>')+'</div>';
   /* PD */
   var pc=[{k:'c',t:'Рейтинг',f:function(r){return '<b>'+r.c+'</b>'}},
     {k:'f1',t:'1 г., факт',num:1,f:function(r){return nf(r.f1,2)+'%'}},{k:'f3',t:'3 г., факт',num:1,f:function(r){return nf(r.f3,2)+'%'}},
     {k:'m3',t:'3 г., модель',num:1,f:function(r){return nf(r.m3,2)+'%'}},{k:'n1',t:'1 г., НКР',num:1,f:function(r){return nf(r.n1,2)+'%'}},
     {k:'f26',t:'1 г., 2026',num:1,f:function(r){return r.f26==null?'—':nf(r.f26,2)+'%'}}];
-  h+='<div class="sect"><h2>Вероятность дефолта по рейтингу (PD, Probability of Default)</h2>'+table('rk-pd',pc,R.pd)+
-   '<p class="note">«Факт» — доля эмитентов, ушедших в дефолт, по матрицам «Эксперт РА» за 2001/02–2021/22 (годовая и трёхлетняя). «Модель» — теоретические средние «Эксперт РА» на 3 года. «НКР» — ожидаемая частота дефолта по методологии НКР (Национальное рейтинговое агентство). «Янв. 2026» — матрица «Эксперт РА». Рейтинги национальной шкалы (ruAAA и т. д.). Для ВДО без рейтинга своей вероятности дефолта в открытых источниках нет — в расчёте взяты значения B/BB (допущение).</p></div>';
+  h+='<div class="sect">'+fold('rk-pd0','Вероятность дефолта по данным агентств (PD, Probability of Default)',table('rk-pd',pc,R.pd)+
+   '<p class="note">«Факт» — доля эмитентов, ушедших в дефолт, по матрицам «Эксперт РА» за 2001/02–2021/22 (годовая и трёхлетняя). «Модель» — теоретические средние «Эксперт РА» на 3 года. «НКР» — ожидаемая частота дефолта по методологии НКР (Национальное рейтинговое агентство). «Янв. 2026» — матрица «Эксперт РА». Рейтинги национальной шкалы (ruAAA и т. д.). Для ВДО без рейтинга своей вероятности дефолта в открытых источниках нет — в расчёте взяты значения B/BB (допущение).</p>')+'</div>';
   /* окупался ли спред */
   var sc=[{k:'tier',t:'Группа',f:function(r){return '<b>'+esc(r.tier)+'</b><br><small>'+esc(r.d)+'</small>'}},
     {k:'s',t:'Спред',num:1,f:function(r){return nf(r.s,2)+' п.п.'}},
@@ -1290,14 +1322,14 @@ function vRisk(){
     {k:'be',t:'Допустимая PD',num:1,f:function(r){return nf(r.be,2)+'%'}},
     {k:'e50',t:'Избыток (потеря 50%)',num:1,f:function(r){return pp(r.ex['50'])}},{k:'e94',t:'Избыток (потеря 94%)',num:1,f:function(r){return pp(r.ex['94'])}}];
   var snr=R.snaps.map(function(x){return {tier:x.tier.replace(' (ruAA- и выше)','').replace(' (ruBBB…ruA+)','').replace(' (1-й эшелон)',''),d:x.d,s:x.s,pd:x.pd,be:x.be,e50:x.ex['50'],e80:x.ex['80'],e94:x.ex['94'],ex:x.ex}});
-  h+='<div class="sect"><h2>Хватало ли спреда на дефолты</h2>'+table('rk-snaps',sc,snr,1)+
-   '<p class="note">1-й эшелон — рейтинг ruAA- и выше, 2-й эшелон — от ruBBB до ruA+, High Yield (высокая доходность) — ниже. Избыток = ожидаемая доходность за год минус доходность ОФЗ: (1 − PD) × спред − PD × (доходность ОФЗ + потеря при дефолте). Горизонт один год, бумагу держим, цена не меняется, налоги не учтены. Допустимая PD — вероятность дефолта, при которой избыток равен нулю. Потеря 94% — рыночная цена после дефолта около 6% номинала (так было в 2025–2026), 50% — исторический ориентир 2002–2011. PD для «эшелонов» и High Yield — допущение между соседними рейтинговыми классами (сверить). Спреды: Мосбиржа, Cbonds-CBI, БК «РЕГИОН», «Эксперт РА». На телефоне нажмите на строку, чтобы увидеть остальные столбцы.</p></div>';
+  h+='<div class="sect">'+fold('rk-snp','Хватало ли спреда на дефолты (14 снимков рынка 2017–2026)',table('rk-snaps',sc,snr,1)+
+   '<p class="note">1-й эшелон — рейтинг ruAA- и выше, 2-й эшелон — от ruBBB до ruA+, High Yield (высокая доходность) — ниже. Избыток = ожидаемая доходность за год минус доходность ОФЗ: (1 − PD) × спред − PD × (доходность ОФЗ + потеря при дефолте). Горизонт один год, бумагу держим, цена не меняется, налоги не учтены. Допустимая PD — вероятность дефолта, при которой избыток равен нулю. Потеря 94% — рыночная цена после дефолта около 6% номинала (так было в 2025–2026), 50% — исторический ориентир 2002–2011. PD для «эшелонов» и High Yield — допущение между соседними рейтинговыми классами (сверить). Спреды: Мосбиржа, Cbonds-CBI, БК «РЕГИОН», «Эксперт РА». На телефоне нажмите на строку, чтобы увидеть остальные столбцы.</p>')+'</div>';
   /* калькулятор */
-  h+='<div class="sect"><div class="box calc" id="rk-calc"><h2 style="margin:0">Калькулятор: корзина из многих высокодоходных выпусков</h2>'+
+  h+='<div class="sect">'+fold('rk-cc','Калькулятор: корзина из многих высокодоходных выпусков','<div class="calc" id="rk-calc">'+
    '<p class="note">Покупаем N выпусков поровну; часть уходит в дефолт, остальные платят. Дефолты считаем независимыми (в кризис это не так, поэтому реальный риск выше).</p>'+
    '<div class="bf" style="margin-top:10px"><label>Взять из таблицы<select data-rkp="1"><option value="">— своё —</option>'+R.snaps.map(function(x,i){return '<option value="'+i+'">'+esc(x.d+' · '+x.tier)+'</option>'}).join('')+'</select></label>'+
    '<label>ОФЗ, % год.<input data-rk="yo" inputmode="decimal" value="'+RK.yo+'"></label><label>Спред, п.п.<input data-rk="s" inputmode="decimal" value="'+RK.s+'"></label><label>PD, % в год<input data-rk="pd" inputmode="decimal" value="'+RK.pd+'"></label><label>Потеря при дефолте, %<input data-rk="lgd" inputmode="decimal" value="'+RK.lgd+'"></label><label>Выпусков в корзине<input data-rk="n" inputmode="numeric" value="'+RK.n+'"></label></div>'+
-   '<div id="rk-out">'+rkCalc()+'</div></div></div>';
+   '<div id="rk-out">'+rkCalc()+'</div></div>')+'</div>';
   /* справочники */
   var ar=function(a){return a.map(function(x){return {a:x[0],b:x[1],c:x[2],d:x[3]}})};
   var ac=[{k:'a',t:'Период',f:function(r){return '<b>'+esc(r.a)+'</b><br><small>'+esc(r.d)+'</small>'}},{k:'b',t:'Эмитентов / выпусков',cls:'rk-w',f:function(r){return esc(r.b)}},{k:'c',t:'Объём',cls:'rk-w',f:function(r){return esc(r.c)}}];
@@ -1307,11 +1339,11 @@ function vRisk(){
   var fc=[{k:'n',t:'Фонд',f:function(r){return '<b>'+esc(r.n)+'</b>'}},{k:'y1',t:'1 год',num:1,f:function(r){return r.y1==null?'—':nf(r.y1,1)+'%'}},{k:'y3',t:'3 года',num:1,f:function(r){return r.y3==null?'—':nf(r.y3,1)+'%'}},{k:'y5',t:'5 лет',num:1,f:function(r){return r.y5==null?'—':nf(r.y5,1)+'%'}}];
   h+='<div class="sect">'+fold('rk-funds','Облигационные фонды против ОФЗ (накопленно)',table('rk-funds',fc,R.funds.map(function(x){return {n:x[0],y1:x[1],y3:x[2],y5:x[3]}}))+'<p class="note">Доходность пая накопленно за период, не годовая, по страницам investfunds.ru на 2 ноября 2026 (сверить). Для ОФЗ в строке — индекс RGBITR. Фонды берут комиссии, поэтому это уже «чистая» доходность. Фонды, держащие корпоративные и высокодоходные бумаги, за 3 и 5 лет обогнали индекс ОФЗ.</p>')+'</div>';
   h+='<div class="sect">'+fold('rk-src','Оговорки и источники',
-   '<ul class="rk-ul"><li>Прямого доступа к данным Мосбиржи (ISS) и Cbonds не было: числа взяты из открытых страниц и отчётов, часть пересказана автоматически — помечено «(сверить)».</li>'+
-   '<li>Прочитано около '+R.notes.pages+' открытых страниц (отчёты агентств, Мосбиржа, ЦБ, пресса, брокеры, УК); это не 1000 источников. Ниже — главные.</li>'+
-   '<li>Смещение выживших: индекс RUCBTRNS отбирает эмитентов с рейтингом не ниже A-, поэтому «корпоративные» в нём надёжнее рынка в целом.</li>'+
+   '<ul class="rk-ul"><li>История индексов (факт по рейтингам и ОФЗ) — реальные данные ISS Мосбиржи; текущие доходности, спреды и число выпусков — снимок рынка из раздела «Облигации и акции». Вероятности дефолта, дефолты по годам, возвраты и фонды — из открытых страниц и отчётов (часть пересказана автоматически, помечено «(сверить)»).</li>'+
+   '<li>Прочитано около '+R.notes.pages+' открытых страниц (отчёты агентств, Мосбиржа, ЦБ, пресса, брокеры, УК); ниже — главные источники.</li>'+
+   '<li>Индексы занижают риск: бумага, у которой упал рейтинг или случился дефолт, выбывает из индекса, а RUCBTRNS берёт только рейтинг не ниже A-. Реальный инвестор с одной проблемной бумагой потеряет больше, чем показывает индекс.</li>'+
    '<li>Не учтены налог на купоны, комиссии, налог с дохода от курсовой разницы, ликвидность (ВДО часто нельзя быстро продать) и реинвестирование по другой ставке.</li>'+
-   '<li>PD для ВДО без рейтинга нет; дефолты считаются независимыми; потеря при дефолте 80% — допущение. Выводы — по снимкам рынка (14 точек), а не по непрерывным рядам.</li></ul>'+
+   '<li>PD для ВДО без рейтинга нет; дефолты считаются независимыми; потеря при дефолте 80% — допущение. Прогноз — расчёт при указанных допущениях, а не предсказание: ставки и спреды могут вести себя иначе.</li></ul>'+
    '<ul class="rk-src">'+R.sources.map(function(x){return '<li><a href="'+esc(x[1])+'" target="_blank" rel="noopener">'+esc(x[0])+'</a></li>'}).join('')+'</ul>'+
    '<p class="note">Полные заметки со всеми найденными источниками: <a href="bonds10/A_defaults_by_rating.md">дефолты по рейтингам</a>, <a href="bonds10/B_yields_history.md">доходности и спреды</a>, <a href="bonds10/C_defaults_list.md">список дефолтов</a>, <a href="bonds10/D_benchmarks.md">индексы и фонды</a>.</p>')+'</div>';
   return h+secNews('bonds','Новости об облигациях и ставках',6);
@@ -1358,6 +1390,7 @@ view.addEventListener('input',function(e){
   var rk=e.target.getAttribute('data-rk');if(rk){RK[rk]=e.target.value;var ro=document.getElementById('rk-out');if(ro)ro.innerHTML=rkCalc()}
 });
 view.addEventListener('change',function(e){
+  var rs=e.target.getAttribute('data-rks');if(rs){RKS[rs]=rs==='lgd'?+e.target.value:e.target.value;drawMarkets(true);return}
   if(e.target.getAttribute('data-rkp')==null)return;var x=S.risk&&S.risk.snaps[+e.target.value];if(!x||e.target.value==='')return;
   RK.yo=x.ofz;RK.s=x.s;RK.pd=x.pd;RK.lgd=80;document.querySelectorAll('[data-rk]').forEach(function(i){i.value=RK[i.getAttribute('data-rk')]});document.getElementById('rk-out').innerHTML=rkCalc()});
 view.addEventListener('click',function(e){
