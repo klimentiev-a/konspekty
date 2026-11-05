@@ -477,6 +477,7 @@ tr[data-bond],table[data-t="ru"] tbody tr,table[data-t="us"] tbody tr,table[data
 .rkt5 td{padding:10px 8px;text-align:right;border-bottom:1px solid var(--line2);font-variant-numeric:tabular-nums}.rkt5 tr:last-child td{border-bottom:0}.rkt5 td small{font:400 11px/1.3 var(--sans);color:var(--faint)}
 .mz-chips{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}.mz-chips .chip{cursor:pointer;font:inherit}
 .rkt5.mz td{text-align:center;padding:9px 4px}.rkt5.mz td:first-child{text-align:left;padding-left:10px}.rkt5.mz td small{display:block;font:400 10px/1.2 var(--sans);color:var(--faint)}
+.sc-dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:-1px}.sc-ch small{color:var(--faint)}.sc-ch:not(.on){opacity:.45}.chart.sc .sp{cursor:pointer;stroke:none}.chart.sc .sp:hover,.chart.sc .sp.on{stroke:var(--fg);stroke-width:1.6;fill-opacity:1}.hvtip-static{min-height:44px;margin:8px 0;padding:8px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface);font:500 13.5px/1.35 var(--sans)}.hvtip-static b{display:block}.hvtip-static span{color:var(--muted);font-size:12.5px}
 .rkt5.mz td.mz-c{background:color-mix(in srgb,var(--accent2) var(--h),transparent);font-weight:600}.rkt5.mz td.mz-e{color:var(--faint)}.rkt5.mz tr.mz-o td{background:var(--rail);font-weight:600}
 .linkb{border:0;background:none;padding:0;color:var(--accent);font:inherit;text-decoration:underline;cursor:pointer}
 @media (max-width:520px){.rkt5.mz th{font-size:9.5px;padding:8px 2px}.rkt5.mz td{padding:8px 2px;font-size:12px}.rkt5.mz td:first-child{padding-left:6px}}
@@ -1509,7 +1510,7 @@ function loadUni(){
       var t=r[C.years_to_maturity];if(r[C.ytm_basis]==='offer'&&r[C.offer_date])t=(new Date(r[C.offer_date])-now)/31557600000;
       if(t==null||t<=0)return;
       var b=r[C.rating_bucket];b=!b?'без рейтинга':(b==='CCC'||b==='CC'||b==='C'||b==='D')?'CCC–D':b;
-      o.push({b:b,y:y,t:t,s:r[C.spread_ofz_bp]})});
+      o.push({b:b,y:y,t:t,s:r[C.spread_ofz_bp],d:r[C.duration_years],n:r[C.name],i:r[C.isin],c:r[C.rating_agency]})});
     UNIQ.rows=o;UNIQ.upd=u.updated_at||'';UNIQ.n=u.rows.length;UNIQ.t=Date.now();M.err.uni=0})
   .catch(function(){M.err.uni=1}).then(function(){UNIQ.p=null});
   return UNIQ.p}
@@ -1524,6 +1525,33 @@ function mzCell(a,st){
     if(st==='sp'){v=v/100;txt=(v>0?'+':'')+nf(v,1);h=Math.max(0,Math.min(1,v/20))}
     else{txt=v>100?'>100':nf(v,1);h=Math.max(0,Math.min(1,(v-12)/30))}}
   return '<td class="mz-c" style="--h:'+Math.round(h*70)+'%" title="выпусков: '+n+'">'+txt+(st==='n'?'':'<small>'+n+'</small>')+'</td>'}
+
+/* ---- график «дюрация × доходность», цвет — рейтинг (те же живые данные, что и «минное поле») ---- */
+var SC={off:{},cap:40},SC_C={'AAA':'#1a9e6e','AA':'#74b33a','A':'#c9b12a','BBB':'#e29a2b','BB':'#e2682b','B':'#d63a3a','CCC–D':'#8e1f5e','без рейтинга':'#8a93a0'};
+function scPts(){return (UNIQ.rows||[]).filter(function(x){return x.d>0&&x.y<=SC.cap&&x.d<=15})}
+function scChart(){
+  var all=scPts(),a=all.filter(function(x){return !SC.off[x.b]});
+  var W=560,H=330,L=44,R=12,T=12,B=36,x1=Math.min(15,Math.ceil(Math.max.apply(0,all.map(function(x){return x.d}).concat([3]))*1.05)),y1=Math.ceil(Math.min(SC.cap,Math.max.apply(0,all.map(function(x){return x.y}).concat([20])))/5)*5;
+  function X(v){return L+v/x1*(W-L-R)}function Y(v){return T+(1-v/y1)*(H-T-B)}
+  var h='<svg class="chart sc" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Облигации: дюрация и доходность по рейтингам">';
+  for(var g=0;g<=y1;g+=5)h+='<line class="ax" x1="'+L+'" x2="'+(W-R)+'" y1="'+Y(g)+'" y2="'+Y(g)+'" opacity=".6"/><text x="'+(L-6)+'" y="'+(Y(g)+4)+'" text-anchor="end">'+g+'%</text>';
+  var xs=x1>8?2:1;for(var k=0;k<=x1;k+=xs)h+='<text x="'+X(k)+'" y="'+(H-16)+'" text-anchor="middle">'+k+'</text>';
+  h+='<text x="'+((L+W-R)/2)+'" y="'+(H-2)+'" text-anchor="middle">Дюрация (Duration), лет</text>';
+  var d='';for(var t=0.1;t<=x1+0.01;t+=x1/60){var v=kbdAt(Math.max(t,0.1));if(v!=null&&v<=y1)d+=(d?'L':'M')+X(t)+','+Y(v)}
+  if(d)h+='<path d="'+d+'" fill="none" stroke="var(--fg)" stroke-width="1.6" stroke-dasharray="5 4" opacity=".75"/><text x="'+(W-R-4)+'" y="'+(Y(kbdAt(x1))-6)+'" text-anchor="end" style="font-weight:700;fill:var(--fg)">ОФЗ (КБД)</text>';
+  var order=['без рейтинга','AAA','AA','A','BBB','BB','B','CCC–D'];
+  order.forEach(function(r){a.forEach(function(x,i){if(x.b===r)h+='<circle class="sp" cx="'+X(x.d).toFixed(1)+'" cy="'+Y(x.y).toFixed(1)+'" r="3.4" fill="'+SC_C[r]+'" fill-opacity=".62" data-sp="'+all.indexOf(x)+'"/>'})});
+  return h+'</svg>'}
+function scLegend(){
+  var all=scPts(),cnt={};all.forEach(function(x){cnt[x.b]=(cnt[x.b]||0)+1});
+  return '<div class="mz-chips">'+MZ_R.map(function(r){return '<button type="button" class="chip sc-ch'+(SC.off[r]?'':' on')+'" data-sc="'+r+'"><i class="sc-dot" style="background:'+SC_C[r]+'"></i>'+r+' <small>'+(cnt[r]||0)+'</small></button>'}).join('')+'</div>'}
+function scPick(i){
+  var x=scPts()[i];if(!x)return '';
+  return '<b>'+esc(x.n||'')+'</b><span>'+x.b+(x.c?' · '+esc(x.c):'')+' · доходность '+nf(x.y,1)+'% · дюрация '+nf(x.d,2)+' г.'+(x.s!=null?' · спред к ОФЗ '+(x.s>0?'+':'')+nf(x.s/100,1)+' п.п.':'')+(x.i?' · <a href="fin2/index.html#issue='+encodeURIComponent(x.i)+'">карточка выпуска →</a>':'')+'</span>'}
+function vScatter(){
+  if(!UNIQ.rows)return '';
+  var all=scPts(),skip=UNIQ.rows.length-all.length;
+  return '<div class="sect" id="sc-root"><h2 style="margin:0">Карта выпусков: дюрация, доходность, рейтинг</h2><p class="note">Каждая точка — выпуск. Правее — длиннее (дюрация (Duration) — средний срок до возврата денег, в годах), выше — больше доходность к погашению или оферте (YTM, Yield to Maturity). Цвет — кредитный рейтинг. Пунктир — кривая ОФЗ (облигации федерального займа) по КБД (кривая бескупонной доходности): точки заметно выше неё платят за риск. Нажми на точку — подпись и ссылка на выпуск. Кнопки рейтингов включают и выключают цвет.</p>'+scLegend()+'<div id="sc-chart">'+scChart()+'</div><div class="hvtip-static" id="sc-pick"><span>Нажми на точку</span></div><p class="note">Показано '+nf(all.length,0)+' рублёвых выпусков с фиксированным купоном (доходность до '+SC.cap+'%, дюрация до 15 лет). Остальные '+nf(skip,0)+' выпусков (флоатеры, валютные, структурные, без дюрации или за пределами шкалы) на график не вошли. Данные те же и обновляются так же, как у «минного поля». <a href="fin2/index.html#screener">все выпуски и фильтры →</a></p></div>'}
 function vMine(){
   var st=MZ.stat,rows=UNIQ.rows;
   var chips=[['med','Медиана'],['avg','Среднее'],['sp','Спред к ОФЗ, п.п.'],['n','Число выпусков']].map(function(x){return '<button type="button" class="chip'+(st===x[0]?' on':'')+'" data-mz="'+x[0]+'">'+x[1]+'</button>'}).join('');
@@ -1534,7 +1562,7 @@ function vMine(){
   h+='<div class="tablewrap"><table class="rkt5 mz" data-cz="1"><thead><tr><th>Рейтинг</th>'+MZ_T.map(function(x){return '<th>'+x[1]+'</th>'}).join('')+'</tr></thead><tbody>'+body+ofz+'</tbody></table></div>';
   var ud=UNIQ.upd?new Date(UNIQ.upd):null;
   h+='<p class="note">Выпусков в расчёте: '+nf(rows.length,0)+' (из '+nf(UNIQ.n,0)+' в базе; без валютных, флоатеров, структурных и несопоставимых). «Медиана» не боится выбросов; «среднее» показывает, как дефолтные и странные выпуски рвут картину (>100%). Пустая клетка — меньше 3 выпусков. Срок — до оферты, если доходность посчитана к ней. Данные обновляются сами примерно раз в час'+(ud&&!isNaN(ud)?'; сейчас на '+ud.toLocaleString('ru-RU',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}):'')+'. <button type="button" class="linkb" data-mzr="1">Обновить сейчас</button> · <a href="fin2/index.html#screener">все выпуски →</a></p></div>';
-  return h}
+  return h+vScatter()}
 function kbdBox(){var k=M.kbd||S.kbd;return '<h2 style="margin:0">Кривая ОФЗ (КБД)</h2>'+
     svgLine(k.pts,{label:'Кривая бескупонной доходности',dots:1,xl:function(p){return [1,3,5,10,20,30].indexOf(p[0])>=0?p[0]+' л':''},vl:function(p,i){return i===0||p[0]===10||i===k.pts.length-1}})+
     '<p class="note">'+(k.live?'Мосбиржа, '+esc(k.date)+' (живые данные)':'ЦБ РФ, '+esc(String(k.date).replace(/\s*\(снимок\)/,''))+' (снимок)')+'. По ней считается спред облигаций.</p>';
@@ -1579,6 +1607,8 @@ view.addEventListener('input',function(e){
 view.addEventListener('click',function(e){
   var z=e.target.closest('[data-mz]');if(z){MZ.stat=z.getAttribute('data-mz');drawMarkets(true);return}
   if(e.target.closest('[data-mzr]')){UNIQ.t=0;loadUni().then(function(){drawMarkets(true)})}
+  var sc=e.target.closest('[data-sc]');if(sc){var r=sc.getAttribute('data-sc');SC.off[r]=!SC.off[r];sc.classList.toggle('on',!SC.off[r]);var ch=document.getElementById('sc-chart');if(ch)ch.innerHTML=scChart();return}
+  var sp=e.target.closest('[data-sp]');if(sp){var pk=document.getElementById('sc-pick');if(pk)pk.innerHTML=scPick(+sp.getAttribute('data-sp'));document.querySelectorAll('.sp.on').forEach(function(n){n.classList.remove('on')});sp.classList.add('on')}
 });
 view.addEventListener('change',function(e){
   var rs=e.target.getAttribute('data-rks');if(rs){RKS[rs]=rs==='lgd'?+e.target.value:e.target.value;drawMarkets(true);return}
