@@ -1471,7 +1471,7 @@ function scLegend(){
   var all=scPts(),cnt={};all.forEach(function(x){cnt[x.b]=(cnt[x.b]||0)+1});
   return '<div class="mz-chips sc-leg">'+MZ_R.map(function(r){return '<button type="button" class="chip sc-ch'+(SC.off[r]?'':' on')+'" data-sc="'+r+'"><i class="sc-dot" style="background:'+SC_C[r]+'"></i>'+r+' <small>'+(cnt[r]||0)+'</small></button>'}).join('')+'</div>'}
 function scPick(x){
-  if(!x)return '<span>Нажми на точку или наведи на неё курсор. Двигай карту пальцем или мышью, приближай кнопками «＋ / −» или колесом.</span>';
+  if(!x)return '<span>Нажми на точку или наведи на неё курсор. Двигай карту пальцем, мышью или тачпадом, приближай кнопками «＋ / −».</span>';
   return '<b><i class="sc-dot" style="background:'+SC_C[x.b]+'"></i>'+esc(x.n||'')+'</b><span>'+x.b+(x.c?' · '+esc(x.c):'')+' · доходность <strong>'+nf(x.y,1)+'%</strong> · дюрация '+nf(x.d,2)+' г.'+(x.s!=null?' · спред к ОФЗ '+(x.s>0?'+':'')+nf(x.s/100,1)+' п.п.':'')+(x.i?' · <a href="fin2/index.html#issue='+encodeURIComponent(x.i)+'">карточка выпуска →</a>':'')+'</span>'}
 function scSelObj(){var s=SC.sel;return s?scPts().filter(function(x){return (x.i||x.n)===s})[0]:null}
 function vScatter(){
@@ -1484,7 +1484,7 @@ function vScatter(){
   +'<div class="sc-bar"><span class="sc-lab">Срок, лет:</span>'+SC_PRE.map(function(n){return bt('data-scp="'+n+'"',n?'0–'+n:'все',(scView().pre===n?'on':''))}).join('')
   +'<span class="sc-sp"></span>'+bt('data-scz="in" aria-label="Приблизить"','＋')+bt('data-scz="out" aria-label="Отдалить"','−')+bt('data-scz="reset"','↺ Сброс')+(SC.full?'':bt('data-scz="full"','⛶ На весь экран','sc-fs'))+'</div>'
   +'<div id="sc-chart" class="sc-chart">'+scChart({clientWidth:Math.max(280,view.clientWidth-8),clientHeight:0})+'</div>'
-  +'<div class="sc-foot"><span id="sc-meta" class="sc-meta"></span><span class="sc-hint">'+(SC.full?'колесо — приблизить, перетаскивание — двигать, два пальца — масштаб':'Ctrl + колесо — приблизить, перетаскивание — двигать; удобнее — на весь экран')+'</span></div>'
+  +'<div class="sc-foot"><span id="sc-meta" class="sc-meta"></span><span class="sc-hint">'+(SC.full?'тачпад или колесо — двигать, Ctrl + колесо или щипок — масштаб, двойной клик — приблизить, стрелки и +/− на клавиатуре':'тянуть мышью — двигать, Ctrl + колесо или щипок — масштаб; удобнее — «На весь экран»')+'</span></div>'
   +'<div class="hvtip-static" id="sc-pick">'+scPick(scSelObj())+'</div>'
   +'<p class="note sc-note">Показано '+nf(all.length,0)+' рублёвых выпусков с фиксированным купоном (доходность до '+SC.cap+'%, дюрация до 15 лет). Остальные '+nf(skip,0)+' (флоатеры, валютные, структурные, без дюрации или за пределами шкалы) на график не вошли. Данные те же и обновляются так же, как у «минного поля». <a href="fin2/index.html#screener">все выпуски и фильтры →</a></p></div>'}
 function scFull(on){SC.full=on;document.documentElement.classList.toggle('sc-lock',on);drawMarkets(true)}
@@ -1523,14 +1523,27 @@ function scUp(e){
   var d=SCD;if(!Object.keys(SCP).length)SCD=null;
   var ch=document.getElementById('sc-chart');if(ch)ch.classList.remove('drag');
   if(d&&d.mv<=6&&e.type==='pointerup'){
+    var now=Date.now(),lt=SC.lt;SC.lt={t:now,x:e.clientX,y:e.clientY};
+    if(lt&&now-lt.t<380&&Math.hypot(e.clientX-lt.x,e.clientY-lt.y)<24&&SCG){SC.lt=null;var sv=document.querySelector('#sc-chart svg'),rc=sv.getBoundingClientRect(),k=SCG.W/rc.width,v=scView(),mx=(e.clientX-rc.left)*k,my=(e.clientY-rc.top)*k;
+      scZoom(e.shiftKey?.5:2,v.x0+(mx-SCG.L)/(SCG.W-SCG.L-SCG.R)*(v.x1-v.x0),v.y1-(my-SCG.T)/(SCG.H-SCG.T-SCG.B)*(v.y1-v.y0));scDraw();return}
     var x=scNear(e,d.t==='mouse'?12:20);SC.sel=x?(x.i||x.n):null;scDraw();var pk=document.getElementById('sc-pick');if(pk)pk.innerHTML=scPick(x)}}
 view.addEventListener('pointerup',scUp);view.addEventListener('pointercancel',scUp);
 view.addEventListener('wheel',function(e){
-  var ch=e.target.closest&&e.target.closest('#sc-chart');if(!ch||!(SC.full||e.ctrlKey||e.metaKey))return;
-  e.preventDefault();var sv=ch.querySelector('svg'),rc=sv.getBoundingClientRect(),k=SCG.W/rc.width,v=scView(),mx=(e.clientX-rc.left)*k,my=(e.clientY-rc.top)*k;
-  var cx=v.x0+(mx-SCG.L)/(SCG.W-SCG.L-SCG.R)*(v.x1-v.x0),cy=v.y1-(my-SCG.T)/(SCG.H-SCG.T-SCG.B)*(v.y1-v.y0);
-  scZoom(e.deltaY<0?1.25:.8,cx,cy);scRaf()},{passive:false});
-document.addEventListener('keydown',function(e){if(e.key==='Escape'&&SC.full)scFull(false)});
+  var ch=e.target.closest&&e.target.closest('#sc-chart');if(!ch||!SCG)return;
+  var zoom=e.ctrlKey||e.metaKey,horiz=Math.abs(e.deltaX)>Math.abs(e.deltaY)*1.2;
+  if(!SC.full&&!zoom&&!horiz)return;
+  e.preventDefault();var sv=ch.querySelector('svg'),rc=sv.getBoundingClientRect(),k=SCG.W/rc.width,v=scView();
+  if(zoom){var mx=(e.clientX-rc.left)*k,my=(e.clientY-rc.top)*k,dy=Math.max(-60,Math.min(60,e.deltaY));
+    var cx=v.x0+(mx-SCG.L)/(SCG.W-SCG.L-SCG.R)*(v.x1-v.x0),cy=v.y1-(my-SCG.T)/(SCG.H-SCG.T-SCG.B)*(v.y1-v.y0);scZoom(Math.exp(-dy*.012),cx,cy)}
+  else{var dx=e.deltaX,dy2=e.deltaY;if(e.shiftKey&&!dx){dx=dy2;dy2=0}
+    var w=v.x1-v.x0,hh=v.y1-v.y0;v.x0+=dx*k/(SCG.W-SCG.L-SCG.R)*w;v.x1+=dx*k/(SCG.W-SCG.L-SCG.R)*w;v.y0-=dy2*k/(SCG.H-SCG.T-SCG.B)*hh;v.y1-=dy2*k/(SCG.H-SCG.T-SCG.B)*hh;scClamp(v)}
+  scRaf()},{passive:false});
+document.addEventListener('keydown',function(e){
+  if(!SC.full)return;if(e.key==='Escape'){scFull(false);return}
+  var v=scView(),w=v.x1-v.x0,hh=v.y1-v.y0,ok=true;
+  if(e.key==='ArrowLeft'){v.x0-=w*.15;v.x1-=w*.15}else if(e.key==='ArrowRight'){v.x0+=w*.15;v.x1+=w*.15}else if(e.key==='ArrowUp'){v.y0+=hh*.15;v.y1+=hh*.15}else if(e.key==='ArrowDown'){v.y0-=hh*.15;v.y1-=hh*.15}
+  else if(e.key==='+'||e.key==='='){scZoom(1.4)}else if(e.key==='-'||e.key==='_'){scZoom(1/1.4)}else if(e.key==='0'){SC.v=scPreset(3)}else ok=false;
+  if(ok){e.preventDefault();scClamp(v);if(e.key==='0')SC.v=scPreset(3);scRaf()}});
 window.addEventListener('resize',function(){if(document.getElementById('sc-chart')){clearTimeout(scFull.rt);scFull.rt=setTimeout(scDraw,120)}});
 function vMine(){
   var st=MZ.stat,rows=UNIQ.rows;
