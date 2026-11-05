@@ -7,13 +7,13 @@ os.makedirs(OUT, exist_ok=True)
 CODES = ['RGBITR', 'RGBI', 'RGBEY', 'RUCBITR', 'MICEXCBITR', 'RUCBTRNS', 'RUCBTRAAANS', 'RUCBTRAANS', 'RUCBTRANS', 'RUCBTRBBBNS',
          'RUCBTRB2B3B', 'RUCBHYTR', 'RUCBITRBBB', 'RUCBITRBB', 'RUCBITRB', 'RUCBICP', 'RUCBTR3YNS', 'RUCBTR5YNS', 'RUCBITR1Y',
          'RUCBTRAAA', 'RUCBTRAA', 'RUCBTRA', 'RUCBTRBBB', 'RUCBTRBB', 'RUCBTRB']
-def get(url, tries=4):
+def get(url, tries=2):
     for i in range(tries):
         try:
-            with urllib.request.urlopen(urllib.request.Request(url, headers={'User-Agent': 'hub-bonds10'}), timeout=60) as r:
+            with urllib.request.urlopen(urllib.request.Request(url, headers={'User-Agent': 'hub-bonds10'}), timeout=25) as r:
                 return json.load(r)
         except Exception as e:
-            err = e; time.sleep(3 * (i + 1))
+            err = e; time.sleep(2)
     raise err
 # какие индексы вообще есть (для лога и поиска кодов)
 found = {}
@@ -26,8 +26,10 @@ for q in ('RUCB', 'RGBI', 'MICEXCB', 'RUMB', 'RUFL'):
 json.dump(found, open(os.path.join(OUT, '_list.json'), 'w'), ensure_ascii=False, indent=0)
 print('индексов найдено', len(found))
 summary = {}
-todo = list(CODES) + sorted(k for k in found if (k.startswith('RUCB') and ('TR' in k)) and k not in CODES)
+todo = ['RUCBTRAAANS', 'RUCBTRAANS', 'RUCBTRANS', 'RUCBTRBBBNS', 'RUCBTRNS', 'RUCBHYTR', 'RUCBITRBBB', 'RUCBITRBB', 'RUCBITRB', 'RUCBTRB2B3B', 'RUCBITR1Y', 'RUCBKEYTR', 'RUCBRNTR']
+T0 = time.time()
 for code in todo:
+    if time.time() - T0 > 900: print('лимит времени'); break
     rows, cols, start = [], None, 0
     urls = ['https://iss.moex.com/iss/history/engines/stock/markets/index/securities/%s.json' % code,
             'https://iss.moex.com/iss/history/engines/stock/markets/index/boards/SNDX/securities/%s.json' % code]
