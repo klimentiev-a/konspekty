@@ -26,7 +26,7 @@ for q in ('RUCB', 'RGBI', 'MICEXCB', 'RUMB', 'RUFL'):
 json.dump(found, open(os.path.join(OUT, '_list.json'), 'w'), ensure_ascii=False, indent=0)
 print('индексов найдено', len(found))
 summary = {}
-todo = ['RUCBTRAAANS', 'RUCBTRAANS', 'RUCBTRANS', 'RUCBTRBBBNS', 'RUCBTRNS', 'RUCBHYTR', 'RUCBITRBBB', 'RUCBITRBB', 'RUCBITRB', 'RUCBTRB2B3B', 'RUCBITR1Y', 'RUCBKEYTR', 'RUCBRNTR']
+todo = ['RUCBTRAAANS', 'RUCBTRAANS', 'RUCBTRANS', 'RUCBTRBBBNS', 'RUCBTRNS', 'RUCBHYTR', 'RUCBITRBBB', 'RUCBITRBB', 'RUCBITRB', 'RUCBTRB2B3B', 'RUCBITR1Y', 'RUCBKEYTR', 'RUCBRNTR', 'RUCBITRL1', 'RUCBITRL2', 'RUCBITRL3', 'RUCBITR', 'RGBITR', 'RUCBITR3+', 'RUCBTR2A3A', 'RUCBTR2B3B', 'RUCBTRA2A', 'RUCBTRB2B']
 T0 = time.time()
 for code in todo:
     if time.time() - T0 > 900: print('лимит времени'); break
