@@ -475,6 +475,11 @@ tr[data-bond],table[data-t="ru"] tbody tr,table[data-t="us"] tbody tr,table[data
 .rkt5{width:100%;border-collapse:collapse;font:500 14px/1.3 var(--sans);background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden}
 .rkt5 th{padding:10px 8px;text-align:right;font:600 11.5px/1.25 var(--sans);letter-spacing:.03em;color:var(--muted);background:var(--rail);border-bottom:1px solid var(--line)}.rkt5 th:first-child,.rkt5 td:first-child{text-align:left}
 .rkt5 td{padding:10px 8px;text-align:right;border-bottom:1px solid var(--line2);font-variant-numeric:tabular-nums}.rkt5 tr:last-child td{border-bottom:0}.rkt5 td small{font:400 11px/1.3 var(--sans);color:var(--faint)}
+.mz-chips{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}.mz-chips .chip{cursor:pointer;font:inherit}
+.rkt5.mz td{text-align:center;padding:9px 4px}.rkt5.mz td:first-child{text-align:left;padding-left:10px}.rkt5.mz td small{display:block;font:400 10px/1.2 var(--sans);color:var(--faint)}
+.rkt5.mz td.mz-c{background:color-mix(in srgb,var(--accent2) var(--h),transparent);font-weight:600}.rkt5.mz td.mz-e{color:var(--faint)}.rkt5.mz tr.mz-o td{background:var(--rail);font-weight:600}
+.linkb{border:0;background:none;padding:0;color:var(--accent);font:inherit;text-decoration:underline;cursor:pointer}
+@media (max-width:520px){.rkt5.mz th{font-size:9.5px;padding:8px 2px}.rkt5.mz td{padding:8px 2px;font-size:12px}.rkt5.mz td:first-child{padding-left:6px}}
 .rkt5 td.rk-bad{color:var(--down)}
 .rkt5 td.rk-top{font-weight:700;color:var(--up);background:color-mix(in srgb,var(--up) 10%,transparent)}
 @media (max-width:520px){.rkt5 th,.rkt5 td{padding:9px 3px;font-size:12.5px}.rkt5 th:first-child,.rkt5 td:first-child{padding-left:8px}.rkt5 th{font-size:10.5px;letter-spacing:0}}
@@ -1356,7 +1361,7 @@ function bondTable(){
 }
 function drawBondTable(){var el=document.getElementById('b-table');if(el)el.innerHTML=M.bonds[BF.kind]?bondTable():(M.err.bonds?'<p class="empty">Мосбиржа сейчас недоступна.</p>':'<p class="empty">Загружаю облигации…</p>');var s=document.getElementById('b-stat');if(s)s.innerHTML=status('bonds','Котировки облигаций')}
 function vBonds(){
-  var h='<div id="bonds-root"><div class="grid2 sect"><div class="box" id="b-curve">'+kbdBox()+'</div>';
+  var h=vMine()+'<div id="bonds-root"><div class="grid2 sect"><div class="box" id="b-curve">'+kbdBox()+'</div>';
   var kr=S.keyrate.map(function(r){var d=new Date(r[0]);return [d.getTime(),r[1],r[0]]});
   h+='<div class="box"><h2 style="margin:0">Ключевая ставка ЦБ</h2>'+svgLine(kr,{label:'Ключевая ставка',step:1,xl:function(p,i){var d=new Date(p[0]);return (i%3===0||i===kr.length-1)?(d.getMonth()+1+'.'+String(d.getFullYear()).slice(2)):''},y0:12})+'<p class="note">Решения совета директоров ЦБ. Источник: cbr.ru.</p></div></div>';
   var ix=M.idx||{};if(ix.RGBI||ix.RUCBICP)h+='<div class="sect"><div class="tiles">'+(ix.RGBI?tileL('#markets/idx/RGBI','RGBI (гособлигации, цены)',nf(ix.RGBI.v,2),pct(ix.RGBI.ch)):'')+(ix.RUCBICP?tileL('#markets/idx/RUCBICP','Корпоративные облигации',nf(ix.RUCBICP.v,2),pct(ix.RUCBICP.ch)):'')+tile('ОФЗ 1 год',nf(kbdAt(1),2)+'%','КБД')+tile('ОФЗ 10 лет',nf(kbdAt(10),2)+'%','наклон 10л−1г: '+nf(kbdAt(10)-kbdAt(1),2)+' п.п.')+'</div></div>';
@@ -1401,7 +1406,7 @@ function vRisk(){
   var fr=function(k){return F.filter(function(x){return x.k===k})[0]};
   var best=function(fn,keys){var b=null,bv=-1e9;keys.forEach(function(k){var v=fn(k);if(v>bv){bv=v;b=k}});return b};
   var h='<div class="sect"><h2 style="margin:0">Куда выгоднее вложить 100 ₽: по рейтингам облигаций</h2>'+
-   '<p class="note">Факт — реальные индексы Мосбиржи (полная доходность: купоны плюс цена, дефолты частично уже внутри). Прогноз — расчёт на 10 лет вперёд с учётом дефолтов и ставок. Опираемся на рынок из '+nf(R.mkt.total,0)+' выпусков ('+nf(R.mkt.rub,0)+' в рублях) '+R.mkt.iss+' эмитентов на '+esc(R.mkt.asof)+'. Не инвестсовет.</p></div>';
+   '<p class="note">Факт — реальные индексы Мосбиржи (полная доходность: купоны плюс цена, дефолты частично уже внутри). Прогноз — расчёт на 10 лет вперёд с учётом дефолтов и ставок. Опираемся на рынок из '+nf(R.mkt.total,0)+' выпусков ('+nf(R.mkt.rub,0)+' в рублях) '+R.mkt.iss+' эмитентов на '+esc(R.mkt.asof)+'. Не инвестсовет. <a href="#markets/bonds">Живая карта доходностей по рейтингу и сроку →</a></p></div>';
   /* матожидание: средний годовой доход с учётом дефолтов + зависимость от частоты дефолтов */
   var pdMulK=RKS.pd==='2'?2:RKS.pd==='3'?3:RKS.pd==='5'?5:1,pdSrc=RKS.pd==='26'?R.pdy26:R.pdy,pdOf=function(k){return Math.min(100,pdSrc[k]*pdMulK)};
   var yOf=function(k){return k==='OFZ'?NW.ofz2:NW[k].y2},eOf=function(k,p){return (1-p/100)*yOf(k)-p/100*RKS.lgd};
@@ -1490,6 +1495,46 @@ function vRisk(){
    '<p class="note">Полные заметки со всеми найденными источниками: <a href="bonds10/A_defaults_by_rating.md">дефолты по рейтингам</a>, <a href="bonds10/B_yields_history.md">доходности и спреды</a>, <a href="bonds10/C_defaults_list.md">список дефолтов</a>, <a href="bonds10/D_benchmarks.md">индексы и фонды</a>.</p>')+'</div>';
   return h+secNews('bonds','Новости об облигациях и ставках',6);
 }
+/* ---- «Минное поле»: эффективная доходность облигаций по рейтингу и сроку (живые данные раздела «Облигации и акции», fin2-data) ---- */
+var UNIQ={t:0,rows:null,upd:'',n:0,p:null},MZ={stat:'med'};
+var MZ_T=[[0.25,'до 3 мес.'],[0.5,'3–6 мес.'],[1,'6–12 мес.'],[2,'1–2 года'],[3,'2–3 года'],[99,'больше 3 лет']],MZ_R=['AAA','AA','A','BBB','BB','B','CCC–D','без рейтинга'];
+function loadUni(){
+  if(UNIQ.rows&&Date.now()-UNIQ.t<600000)return Promise.resolve();
+  if(UNIQ.p)return UNIQ.p;
+  UNIQ.p=fetch(bdbBase()+'universe.json?v='+Math.floor(Date.now()/300000),{cache:'no-cache'}).then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(u){
+    var C={};u.cols.forEach(function(k,i){C[k]=i});var now=Date.now(),o=[];
+    u.rows.forEach(function(r){
+      if(r[C.currency]!=='SUR'&&r[C.currency]!=='RUB')return;
+      var y=r[C.ytm];if(r[C.kind]!=='fixed'||y==null||y<=0||y>300||r[C.noncomparable])return;
+      var t=r[C.years_to_maturity];if(r[C.ytm_basis]==='offer'&&r[C.offer_date])t=(new Date(r[C.offer_date])-now)/31557600000;
+      if(t==null||t<=0)return;
+      var b=r[C.rating_bucket];b=!b?'без рейтинга':(b==='CCC'||b==='CC'||b==='C'||b==='D')?'CCC–D':b;
+      o.push({b:b,y:y,t:t,s:r[C.spread_ofz_bp]})});
+    UNIQ.rows=o;UNIQ.upd=u.updated_at||'';UNIQ.n=u.rows.length;UNIQ.t=Date.now();M.err.uni=0})
+  .catch(function(){M.err.uni=1}).then(function(){UNIQ.p=null});
+  return UNIQ.p}
+function mzMed(a){if(!a.length)return null;a=a.slice().sort(function(x,y){return x-y});var m=a.length>>1;return a.length%2?a[m]:(a[m-1]+a[m])/2}
+function mzCell(a,st){
+  var n=a.length;if(n<3)return '<td class="mz-e" title="выпусков: '+n+'">'+(n?'<small>'+n+' шт.</small>':'—')+'</td>';
+  var v,txt,h;
+  if(st==='n'){v=n;txt=String(n);h=Math.min(1,n/60)}
+  else{var ys=a.map(function(x){return st==='sp'?x.s:x.y}).filter(function(x){return x!=null});
+    if(ys.length<3)return '<td class="mz-e"><small>мало данных</small></td>';
+    v=st==='avg'?ys.reduce(function(s,x){return s+x},0)/ys.length:mzMed(ys);
+    if(st==='sp'){v=v/100;txt=(v>0?'+':'')+nf(v,1);h=Math.max(0,Math.min(1,v/20))}
+    else{txt=v>100?'>100':nf(v,1);h=Math.max(0,Math.min(1,(v-12)/30))}}
+  return '<td class="mz-c" style="--h:'+Math.round(h*70)+'%" title="выпусков: '+n+'">'+txt+(st==='n'?'':'<small>'+n+'</small>')+'</td>'}
+function vMine(){
+  var st=MZ.stat,rows=UNIQ.rows;
+  var chips=[['med','Медиана'],['avg','Среднее'],['sp','Спред к ОФЗ, п.п.'],['n','Число выпусков']].map(function(x){return '<button type="button" class="chip'+(st===x[0]?' on':'')+'" data-mz="'+x[0]+'">'+x[1]+'</button>'}).join('');
+  var h='<div class="sect" id="mz-root"><h2 style="margin:0">Облигации: минное поле</h2><p class="note">Эффективная доходность (YTM) рублёвых облигаций с фиксированным купоном по рейтингу и сроку до оферты или погашения. Под числом — сколько выпусков в клетке.</p><div class="mz-chips">'+chips+'</div>';
+  if(!rows)return h+'<p class="note">'+(M.err.uni?'Данные не загрузились (источник — ветка fin2-data на GitHub). Попробуйте позже.':'Загружаю выпуски…')+'</p></div>';
+  var body=MZ_R.map(function(r){var cells=MZ_T.map(function(tt,i){var lo=i?MZ_T[i-1][0]:0;return mzCell(rows.filter(function(x){return x.b===r&&x.t>lo&&x.t<=tt[0]}),st)}).join('');return '<tr><td><b>'+r+'</b></td>'+cells+'</tr>'}).join('');
+  var ofz='';if(st==='med'||st==='avg'){ofz='<tr class="mz-o"><td><b>ОФЗ</b><br><small>кривая</small></td>'+MZ_T.map(function(tt,i){var mid=[0.25,0.5,1,2,3,5][i];return '<td>'+nf(kbdAt(mid),1)+'</td>'}).join('')+'</tr>'}
+  h+='<div class="tablewrap"><table class="rkt5 mz" data-cz="1"><thead><tr><th>Рейтинг</th>'+MZ_T.map(function(x){return '<th>'+x[1]+'</th>'}).join('')+'</tr></thead><tbody>'+body+ofz+'</tbody></table></div>';
+  var ud=UNIQ.upd?new Date(UNIQ.upd):null;
+  h+='<p class="note">Выпусков в расчёте: '+nf(rows.length,0)+' (из '+nf(UNIQ.n,0)+' в базе; без валютных, флоатеров, структурных и несопоставимых). «Медиана» не боится выбросов; «среднее» показывает, как дефолтные и странные выпуски рвут картину (>100%). Пустая клетка — меньше 3 выпусков. Срок — до оферты, если доходность посчитана к ней. Данные обновляются сами примерно раз в час'+(ud&&!isNaN(ud)?'; сейчас на '+ud.toLocaleString('ru-RU',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}):'')+'. <button type="button" class="linkb" data-mzr="1">Обновить сейчас</button> · <a href="fin2/index.html#screener">все выпуски →</a></p></div>';
+  return h}
 function kbdBox(){var k=M.kbd||S.kbd;return '<h2 style="margin:0">Кривая ОФЗ (КБД)</h2>'+
     svgLine(k.pts,{label:'Кривая бескупонной доходности',dots:1,xl:function(p){return [1,3,5,10,20,30].indexOf(p[0])>=0?p[0]+' л':''},vl:function(p,i){return i===0||p[0]===10||i===k.pts.length-1}})+
     '<p class="note">'+(k.live?'Мосбиржа, '+esc(k.date)+' (живые данные)':'ЦБ РФ, '+esc(String(k.date).replace(/\s*\(снимок\)/,''))+' (снимок)')+'. По ней считается спред облигаций.</p>';
@@ -1531,6 +1576,10 @@ view.addEventListener('input',function(e){
   if(c){BC[c]=e.target.value;BC.name='';var o=document.getElementById('bc-out');if(o)o.innerHTML=bondCalc()}
   var rk=e.target.getAttribute('data-rk');if(rk){RK[rk]=e.target.value;var ro=document.getElementById('rk-out');if(ro)ro.innerHTML=rkCalc()}
 });
+view.addEventListener('click',function(e){
+  var z=e.target.closest('[data-mz]');if(z){MZ.stat=z.getAttribute('data-mz');drawMarkets(true);return}
+  if(e.target.closest('[data-mzr]')){UNIQ.t=0;loadUni().then(function(){drawMarkets(true)})}
+});
 view.addEventListener('change',function(e){
   var rs=e.target.getAttribute('data-rks');if(rs){RKS[rs]=rs==='lgd'?+e.target.value:e.target.value;drawMarkets(true);return}
   if(e.target.getAttribute('data-rkp')==null)return;var x=S.risk&&S.risk.snaps[+e.target.value];if(!x||e.target.value==='')return;
@@ -1570,7 +1619,7 @@ function drawMarkets(full){
   LASTSIG=sig;if(full!==true)flashPrep();else FLPREV=null;view.innerHTML=html;subScroll();flashApply();skel(view);if((cur==='ru'&&CARD.tic)||ASSET.kind)drawPC();window.scrollTo(0,y);
 }
 var LASTSIG='';window.__dm=drawMarkets;
-var loaders={summary:[loadIdx,loadFX,loadCR,loadSnap,loadNews,loadDig,loadCal],ru:[loadRU,loadNews,loadIdx,loadFX,loadKBD,loadSnap],us:[loadSnap,loadNews],crypto:[loadFX,loadCR,loadNews],bonds:[loadKBD,loadIdx,loadNews],risk:[loadNews],cal:[loadRU,loadCal,loadSnap],news:[loadNews]};
+var loaders={summary:[loadIdx,loadFX,loadCR,loadSnap,loadNews,loadDig,loadCal],ru:[loadRU,loadNews,loadIdx,loadFX,loadKBD,loadSnap],us:[loadSnap,loadNews],crypto:[loadFX,loadCR,loadNews],bonds:[loadKBD,loadIdx,loadNews,loadUni],risk:[loadNews],cal:[loadRU,loadCal,loadSnap],news:[loadNews]};
 var timer;
 var busy=false;
 function ago(ms){var s=Math.max(0,Math.round((Date.now()-ms)/1000));return s<5?'только что':s<60?s+' с назад':Math.floor(s/60)+' мин назад'}
