@@ -81,6 +81,11 @@ try:
                        'themes': [{'tag': t.get('tag', ''), 'title': t.get('title', ''), 'lead': t.get('lead', ''), 'facts': t.get('facts', [])} for t in _ry.get('themes', [])]}
 except Exception as e:
     print('brief:', e); static['brief'] = None
+# аналитика облигаций за 10 лет (src/rynok/bonds10.json) — вкладка «Риск и доходность»
+try:
+    static['risk'] = json.load(open(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'rynok', 'bonds10.json'), encoding='utf-8'))
+except Exception as e:
+    print('risk:', e); static['risk'] = None
 # главы и сектора — отдельными файлами learn/<id>.json (страница грузит только открытую главу), learn/all.json — для поиска
 _ldir = os.path.join(os.path.dirname(out) or '.', 'learn'); os.makedirs(_ldir, exist_ok=True)
 _all = {}
