@@ -477,7 +477,17 @@ tr[data-bond],table[data-t="ru"] tbody tr,table[data-t="us"] tbody tr,table[data
 .rkt5 td{padding:10px 8px;text-align:right;border-bottom:1px solid var(--line2);font-variant-numeric:tabular-nums}.rkt5 tr:last-child td{border-bottom:0}.rkt5 td small{font:400 11px/1.3 var(--sans);color:var(--faint)}
 .mz-chips{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}.mz-chips .chip{cursor:pointer;font:inherit}
 .rkt5.mz td{text-align:center;padding:9px 4px}.rkt5.mz td:first-child{text-align:left;padding-left:10px}.rkt5.mz td small{display:block;font:400 10px/1.2 var(--sans);color:var(--faint)}
-.sc-dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:-1px}.sc-ch small{color:var(--faint)}.sc-ch:not(.on){opacity:.45}.chart.sc .sp{cursor:pointer;stroke:none}.chart.sc .sp:hover,.chart.sc .sp.on{stroke:var(--fg);stroke-width:1.6;fill-opacity:1}.hvtip-static{min-height:44px;margin:8px 0;padding:8px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface);font:500 13.5px/1.35 var(--sans)}.hvtip-static b{display:block}.hvtip-static span{color:var(--muted);font-size:12.5px}
+.chart.sc{touch-action:pan-y;user-select:none;-webkit-user-select:none}.sc-bg{fill:var(--surface);stroke:var(--line)}.sc-gl{stroke:var(--line2);stroke-width:1}.chart.sc text{font:500 11.5px var(--sans);fill:var(--muted)}.chart.sc .sc-ax{font-weight:600;fill:var(--faint)}.chart.sc .sc-kl{font-weight:700;fill:var(--fg);paint-order:stroke;stroke:var(--surface);stroke-width:3px}
+.chart.sc .sp{stroke:var(--surface);stroke-width:.7;fill-opacity:.78;pointer-events:none}.sc-sel{stroke:var(--fg);stroke-width:2.4;pointer-events:none}.sc-hl{fill:none;stroke:var(--fg);stroke-width:1.8;pointer-events:none}.sc-xh{stroke:var(--fg);stroke-width:1;stroke-dasharray:3 3;opacity:.55}
+.sc-chart{position:relative;cursor:crosshair}.sc-chart.drag{cursor:grabbing}.sc-head{display:flex;gap:10px;align-items:center;justify-content:space-between}
+.sc-bar{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:4px 0 8px}.sc-lab{font:600 12.5px var(--sans);color:var(--muted);margin-right:2px}.sc-sp{flex:1}.sc-b{cursor:pointer;font:inherit;min-width:36px}.sc-b.on{background:var(--fg);color:var(--bg);border-color:var(--fg)}.sc-fs{font-weight:600}
+.sc-foot{display:flex;flex-wrap:wrap;justify-content:space-between;gap:4px 14px;margin:4px 0 2px;font:500 12px var(--sans);color:var(--faint)}.sc-meta{font-weight:700;color:var(--muted)}
+@media (max-width:520px){.sc-bar .sc-sp{display:none}.sc-hint{display:none}.sc-b{padding:8px 11px}}
+.sc-root.sc-full{position:fixed;inset:0;z-index:70;background:var(--bg);margin:0;padding:12px 14px calc(12px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;overflow:auto;border:0;border-radius:0}
+.sc-full .sc-note{display:none}.sc-full .sc-chart{flex:1;min-height:240px}.sc-full .sc-chart svg{position:absolute;inset:0;height:100%;touch-action:none}.sc-full .hvtip-static{margin:6px 0 0}.sc-x{font-weight:700;flex:none}
+@media (max-width:640px){.sc-leg{gap:5px;margin:8px 0}.sc-leg .chip{padding:5px 9px;font-size:12.5px}.sc-leg .sc-dot{width:8px;height:8px;margin-right:4px}.sc-bar{gap:5px}.sc-full .sc-head h2{font-size:17px;line-height:1.2}.sc-full .sc-leg,.sc-full .sc-bar{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin:6px -14px;padding:0 14px}.sc-full .sc-leg .chip,.sc-full .sc-bar>*{flex:none;white-space:nowrap}.sc-full .sc-b{padding:6px 11px}.sc-full .sc-lab{display:none}}
+html.sc-lock,html.sc-lock body{overflow:hidden}
+.sc-dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:-1px}.sc-ch small{color:var(--faint)}.sc-ch:not(.on){opacity:.45}.hvtip-static{min-height:44px;margin:8px 0;padding:8px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface);font:500 13.5px/1.35 var(--sans)}.hvtip-static b{display:block}.hvtip-static span{color:var(--muted);font-size:12.5px}
 .rkt5.mz td.mz-c{background:color-mix(in srgb,var(--accent2) var(--h),transparent);font-weight:600}.rkt5.mz td.mz-e{color:var(--faint)}.rkt5.mz tr.mz-o td{background:var(--rail);font-weight:600}
 .linkb{border:0;background:none;padding:0;color:var(--accent);font:inherit;text-decoration:underline;cursor:pointer}
 @media (max-width:520px){.rkt5.mz th{font-size:9.5px;padding:8px 2px}.rkt5.mz td{padding:8px 2px;font-size:12px}.rkt5.mz td:first-child{padding-left:6px}}
@@ -1527,31 +1537,131 @@ function mzCell(a,st){
   return '<td class="mz-c" style="--h:'+Math.round(h*70)+'%" title="выпусков: '+n+'">'+txt+(st==='n'?'':'<small>'+n+'</small>')+'</td>'}
 
 /* ---- график «дюрация × доходность», цвет — рейтинг (те же живые данные, что и «минное поле») ---- */
-var SC={off:{},cap:40},SC_C={'AAA':'#1a9e6e','AA':'#74b33a','A':'#c9b12a','BBB':'#e29a2b','BB':'#e2682b','B':'#d63a3a','CCC–D':'#8e1f5e','без рейтинга':'#8a93a0'};
+var SC={off:{},cap:40,v:null,sel:null,full:false,hov:null},SC_C={'AAA':'#1a9e6e','AA':'#74b33a','A':'#c9b12a','BBB':'#e29a2b','BB':'#e2682b','B':'#d63a3a','CCC–D':'#8e1f5e','без рейтинга':'#8a93a0'},SCG=null,SC_PRE=[1,3,5,10,0];
 function scPts(){return (UNIQ.rows||[]).filter(function(x){return x.d>0&&x.y<=SC.cap&&x.d<=15})}
-function scChart(){
-  var all=scPts(),a=all.filter(function(x){return !SC.off[x.b]});
-  var W=560,H=330,L=44,R=12,T=12,B=36,x1=Math.min(15,Math.ceil(Math.max.apply(0,all.map(function(x){return x.d}).concat([3]))*1.05)),y1=Math.ceil(Math.min(SC.cap,Math.max.apply(0,all.map(function(x){return x.y}).concat([20])))/5)*5;
-  function X(v){return L+v/x1*(W-L-R)}function Y(v){return T+(1-v/y1)*(H-T-B)}
-  var h='<svg class="chart sc" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Облигации: дюрация и доходность по рейтингам">';
-  for(var g=0;g<=y1;g+=5)h+='<line class="ax" x1="'+L+'" x2="'+(W-R)+'" y1="'+Y(g)+'" y2="'+Y(g)+'" opacity=".6"/><text x="'+(L-6)+'" y="'+(Y(g)+4)+'" text-anchor="end">'+g+'%</text>';
-  var xs=x1>8?2:1;for(var k=0;k<=x1;k+=xs)h+='<text x="'+X(k)+'" y="'+(H-16)+'" text-anchor="middle">'+k+'</text>';
-  h+='<text x="'+((L+W-R)/2)+'" y="'+(H-2)+'" text-anchor="middle">Дюрация (Duration), лет</text>';
-  var d='';for(var t=0.1;t<=x1+0.01;t+=x1/60){var v=kbdAt(Math.max(t,0.1));if(v!=null&&v<=y1)d+=(d?'L':'M')+X(t)+','+Y(v)}
-  if(d)h+='<path d="'+d+'" fill="none" stroke="var(--fg)" stroke-width="1.6" stroke-dasharray="5 4" opacity=".75"/><text x="'+(W-R-4)+'" y="'+(Y(kbdAt(x1))-6)+'" text-anchor="end" style="font-weight:700;fill:var(--fg)">ОФЗ (КБД)</text>';
-  var order=['без рейтинга','AAA','AA','A','BBB','BB','B','CCC–D'];
-  order.forEach(function(r){a.forEach(function(x,i){if(x.b===r)h+='<circle class="sp" cx="'+X(x.d).toFixed(1)+'" cy="'+Y(x.y).toFixed(1)+'" r="3.4" fill="'+SC_C[r]+'" fill-opacity=".62" data-sp="'+all.indexOf(x)+'"/>'})});
-  return h+'</svg>'}
+function scXmax(){var m=3;scPts().forEach(function(x){if(x.d>m)m=x.d});return Math.min(15,Math.ceil(m*1.05))}
+function scNum(v){return String(Math.round(v*100)/100).replace('.',',')}
+function scStep(span,n){var raw=span/n,p=Math.pow(10,Math.floor(Math.log(raw)/Math.LN10)),c=[1,2,2.5,5,10],s=p*10;for(var i=0;i<c.length;i++)if(c[i]*p>=raw){s=c[i]*p;break}return s}
+function scFit(v){
+  var ys=scPts().filter(function(x){return !SC.off[x.b]&&x.d>=v.x0&&x.d<=v.x1}).map(function(x){return x.y}).sort(function(a,b){return a-b});
+  if(ys.length<3){v.y0=0;v.y1=25;return v}
+  var lo=ys[Math.floor(ys.length*.01)],hi=ys[Math.min(ys.length-1,Math.ceil(ys.length*.99)-1)],pad=(hi-lo)*.07+.4;
+  v.y0=Math.max(0,Math.floor((lo-pad)*2)/2);v.y1=Math.ceil((hi+pad)*2)/2;if(v.y1-v.y0<2)v.y1=v.y0+2;return v}
+function scPreset(n){var xm=scXmax(),x1=n?Math.min(n,xm):xm,v={x0:-x1*.02,x1:x1*1.01,pre:n};return scFit(v)}
+function scView(){if(!SC.v)SC.v=scPreset(3);return SC.v}
+function scClamp(v){
+  var xm=scXmax()*1.04,ym=SC.cap+1,w=v.x1-v.x0,h=v.y1-v.y0;
+  w=Math.max(.12,Math.min(w,xm+.4));h=Math.max(.8,Math.min(h,ym+1));
+  var cx=(v.x0+v.x1)/2,cy=(v.y0+v.y1)/2;v.x0=cx-w/2;v.x1=cx+w/2;v.y0=cy-h/2;v.y1=cy+h/2;
+  if(v.x0<-.3){v.x1+=-.3-v.x0;v.x0=-.3}if(v.x1>xm+.3){v.x0-=v.x1-xm-.3;v.x1=xm+.3}
+  if(v.y0<-.5){v.y1+=-.5-v.y0;v.y0=-.5}if(v.y1>ym){v.y0-=v.y1-ym;v.y1=ym}
+  v.pre=null;return v}
+function scZoom(f,cx,cy){var v=scView();if(cx==null){cx=(v.x0+v.x1)/2;cy=(v.y0+v.y1)/2}
+  v.x0=cx-(cx-v.x0)/f;v.x1=cx+(v.x1-cx)/f;v.y0=cy-(cy-v.y0)/f;v.y1=cy+(v.y1-cy)/f;scClamp(v)}
+function scSize(el){
+  var W=Math.max(280,Math.round(el.clientWidth||(view.clientWidth-8)||600)),H;
+  if(SC.full)H=Math.max(260,Math.round(el.clientHeight||window.innerHeight*.6));else H=W<520?Math.round(Math.min(420,W*1.05)):Math.round(Math.min(480,W*.52));
+  return {W:W,H:H,L:W<420?40:46,R:W<420?10:16,T:12,B:36}}
+function scPx(x,g,v){return g.L+(x.d-v.x0)/(v.x1-v.x0)*(g.W-g.L-g.R)}
+function scPy(x,g,v){return g.T+(1-(x.y-v.y0)/(v.y1-v.y0))*(g.H-g.T-g.B)}
+function scChart(el){
+  var all=scPts(),v=scView(),g=SCG=scSize(el||document.getElementById('sc-chart')||{clientWidth:view.clientWidth-8}),W=g.W,H=g.H,L=g.L,R=g.R,T=g.T,B=g.B;
+  function X(t){return L+(t-v.x0)/(v.x1-v.x0)*(W-L-R)}function Y(t){return T+(1-(t-v.y0)/(v.y1-v.y0))*(H-T-B)}
+  var h='<svg class="chart sc" width="'+W+'" height="'+H+'" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Облигации: дюрация и доходность по рейтингам"><defs><clipPath id="sc-cp"><rect x="'+L+'" y="'+T+'" width="'+(W-L-R)+'" height="'+(H-T-B)+'"/></clipPath></defs>';
+  h+='<rect class="sc-bg" x="'+L+'" y="'+T+'" width="'+(W-L-R)+'" height="'+(H-T-B)+'" rx="6"/>';
+  var ys=scStep(v.y1-v.y0,H<320?5:7),xs=scStep(v.x1-v.x0,W<420?5:9),k;
+  for(k=Math.ceil(v.y0/ys)*ys;k<=v.y1+1e-9;k+=ys)h+='<line class="sc-gl" x1="'+L+'" x2="'+(W-R)+'" y1="'+Y(k).toFixed(1)+'" y2="'+Y(k).toFixed(1)+'"/><text x="'+(L-6)+'" y="'+(Y(k)+4).toFixed(1)+'" text-anchor="end">'+scNum(k)+'%</text>';
+  for(k=Math.ceil(v.x0/xs)*xs;k<=v.x1+1e-9;k+=xs)if(k>=-1e-9)h+='<line class="sc-gl" x1="'+X(k).toFixed(1)+'" x2="'+X(k).toFixed(1)+'" y1="'+T+'" y2="'+(H-B)+'"/><text x="'+X(k).toFixed(1)+'" y="'+(H-B+15)+'" text-anchor="middle">'+scNum(k)+'</text>';
+  h+='<text class="sc-ax" x="'+((L+W-R)/2)+'" y="'+(H-3)+'" text-anchor="middle">Дюрация (Duration), лет →</text>';
+  h+='<g clip-path="url(#sc-cp)">';
+  var d='',n=90;for(var i=0;i<=n;i++){var t=Math.max(v.x0,.05)+(v.x1-Math.max(v.x0,.05))*i/n,kv=kbdAt(Math.max(t,.1));if(kv!=null)d+=(d?'L':'M')+X(t).toFixed(1)+','+Y(kv).toFixed(1)}
+  if(d)h+='<path d="'+d+'" fill="none" stroke="var(--fg)" stroke-width="2" stroke-dasharray="6 5" opacity=".8"/>';
+  var z=(v.x1-v.x0),r=Math.max(2.2,Math.min(6.5,3.2*Math.pow(3/Math.max(.6,z),.28))),vis=0;
+  ['без рейтинга','AAA','AA','A','BBB','BB','B','CCC–D'].forEach(function(rt){if(SC.off[rt])return;all.forEach(function(x){if(x.b!==rt)return;var px=scPx(x,g,v),py=scPy(x,g,v);if(px<L-8||px>W-R+8||py<T-8||py>H-B+8)return;vis++;h+='<circle class="sp" cx="'+px.toFixed(1)+'" cy="'+py.toFixed(1)+'" r="'+r.toFixed(1)+'" fill="'+SC_C[rt]+'"/>'})});
+  var sx=SC.sel&&all.filter(function(x){return (x.i||x.n)===SC.sel})[0];
+  if(sx&&!SC.off[sx.b]){var qx=scPx(sx,g,v),qy=scPy(sx,g,v);
+    h+='<line class="sc-xh" x1="'+L+'" x2="'+qx.toFixed(1)+'" y1="'+qy.toFixed(1)+'" y2="'+qy.toFixed(1)+'"/><line class="sc-xh" x1="'+qx.toFixed(1)+'" x2="'+qx.toFixed(1)+'" y1="'+qy.toFixed(1)+'" y2="'+(H-B)+'"/><circle class="sc-sel" cx="'+qx.toFixed(1)+'" cy="'+qy.toFixed(1)+'" r="'+(r+4).toFixed(1)+'" fill="'+SC_C[sx.b]+'"/>'}
+  h+='<circle id="sc-hl" class="sc-hl" r="'+(r+3.5).toFixed(1)+'" cx="-50" cy="-50"/></g>';
+  var ky=kbdAt(Math.min(v.x1,Math.max(v.x0+.2,.1)));
+  if(ky!=null){var lx=Math.max(L+4,Math.min(W-R-4,X(v.x0+(v.x1-v.x0)*.04)+(W<420?4:0))),ly=Y(kbdAt(Math.max(v.x0+(v.x1-v.x0)*.04,.1)));
+    if(ly>T+14&&ly<H-B-6)h+='<text class="sc-kl" x="'+(lx+6).toFixed(1)+'" y="'+(ly-8).toFixed(1)+'">ОФЗ (КБД)</text>'}
+  h+='</svg>';
+  SC.n=vis;return h}
+function scDraw(){
+  var el=document.getElementById('sc-chart');if(!el)return;
+  var run=function(){el.innerHTML=scChart(el);scMeta();scPresets()};
+  run()}
+function scMeta(){
+  var m=document.getElementById('sc-meta');if(!m)return;
+  var a=scPts().filter(function(x){return !SC.off[x.b]});
+  m.textContent='в окне '+nf(SC.n||0,0)+' из '+nf(a.length,0)+' выпусков'}
+function scPresets(){
+  var v=scView();document.querySelectorAll('[data-scp]').forEach(function(b){var n=+b.getAttribute('data-scp');b.classList.toggle('on',v.pre===n)})}
 function scLegend(){
   var all=scPts(),cnt={};all.forEach(function(x){cnt[x.b]=(cnt[x.b]||0)+1});
-  return '<div class="mz-chips">'+MZ_R.map(function(r){return '<button type="button" class="chip sc-ch'+(SC.off[r]?'':' on')+'" data-sc="'+r+'"><i class="sc-dot" style="background:'+SC_C[r]+'"></i>'+r+' <small>'+(cnt[r]||0)+'</small></button>'}).join('')+'</div>'}
-function scPick(i){
-  var x=scPts()[i];if(!x)return '';
-  return '<b>'+esc(x.n||'')+'</b><span>'+x.b+(x.c?' · '+esc(x.c):'')+' · доходность '+nf(x.y,1)+'% · дюрация '+nf(x.d,2)+' г.'+(x.s!=null?' · спред к ОФЗ '+(x.s>0?'+':'')+nf(x.s/100,1)+' п.п.':'')+(x.i?' · <a href="fin2/index.html#issue='+encodeURIComponent(x.i)+'">карточка выпуска →</a>':'')+'</span>'}
+  return '<div class="mz-chips sc-leg">'+MZ_R.map(function(r){return '<button type="button" class="chip sc-ch'+(SC.off[r]?'':' on')+'" data-sc="'+r+'"><i class="sc-dot" style="background:'+SC_C[r]+'"></i>'+r+' <small>'+(cnt[r]||0)+'</small></button>'}).join('')+'</div>'}
+function scPick(x){
+  if(!x)return '<span>Нажми на точку или наведи на неё курсор. Двигай карту пальцем или мышью, приближай кнопками «＋ / −» или колесом.</span>';
+  return '<b><i class="sc-dot" style="background:'+SC_C[x.b]+'"></i>'+esc(x.n||'')+'</b><span>'+x.b+(x.c?' · '+esc(x.c):'')+' · доходность <strong>'+nf(x.y,1)+'%</strong> · дюрация '+nf(x.d,2)+' г.'+(x.s!=null?' · спред к ОФЗ '+(x.s>0?'+':'')+nf(x.s/100,1)+' п.п.':'')+(x.i?' · <a href="fin2/index.html#issue='+encodeURIComponent(x.i)+'">карточка выпуска →</a>':'')+'</span>'}
+function scSelObj(){var s=SC.sel;return s?scPts().filter(function(x){return (x.i||x.n)===s})[0]:null}
 function vScatter(){
   if(!UNIQ.rows)return '';
   var all=scPts(),skip=UNIQ.rows.length-all.length;
-  return '<div class="sect" id="sc-root"><h2 style="margin:0">Карта выпусков: дюрация, доходность, рейтинг</h2><p class="note">Каждая точка — выпуск. Правее — длиннее (дюрация (Duration) — средний срок до возврата денег, в годах), выше — больше доходность к погашению или оферте (YTM, Yield to Maturity). Цвет — кредитный рейтинг. Пунктир — кривая ОФЗ (облигации федерального займа) по КБД (кривая бескупонной доходности): точки заметно выше неё платят за риск. Нажми на точку — подпись и ссылка на выпуск. Кнопки рейтингов включают и выключают цвет.</p>'+scLegend()+'<div id="sc-chart">'+scChart()+'</div><div class="hvtip-static" id="sc-pick"><span>Нажми на точку</span></div><p class="note">Показано '+nf(all.length,0)+' рублёвых выпусков с фиксированным купоном (доходность до '+SC.cap+'%, дюрация до 15 лет). Остальные '+nf(skip,0)+' выпусков (флоатеры, валютные, структурные, без дюрации или за пределами шкалы) на график не вошли. Данные те же и обновляются так же, как у «минного поля». <a href="fin2/index.html#screener">все выпуски и фильтры →</a></p></div>'}
+  var bt=function(a,t,c){return '<button type="button" class="chip sc-b'+(c?' '+c:'')+'" '+a+'>'+t+'</button>'};
+  return '<div class="sect sc-root'+(SC.full?' sc-full':'')+'" id="sc-root"><div class="sc-head"><h2 style="margin:0">Карта выпусков: дюрация, доходность, рейтинг</h2>'+(SC.full?bt('data-scz="full"','✕ Закрыть','sc-x'):'')+'</div>'
+  +'<p class="note sc-note">Каждая точка — выпуск. Правее — длиннее (дюрация (Duration) — средний срок до возврата денег, в годах), выше — больше доходность к погашению или оферте (YTM, Yield to Maturity). Пунктир — кривая ОФЗ (облигации федерального займа) по КБД (кривая бескупонной доходности): точки выше неё платят за риск.</p>'
+  +scLegend()
+  +'<div class="sc-bar"><span class="sc-lab">Срок, лет:</span>'+SC_PRE.map(function(n){return bt('data-scp="'+n+'"',n?'0–'+n:'все',(scView().pre===n?'on':''))}).join('')
+  +'<span class="sc-sp"></span>'+bt('data-scz="in" aria-label="Приблизить"','＋')+bt('data-scz="out" aria-label="Отдалить"','−')+bt('data-scz="reset"','↺ Сброс')+(SC.full?'':bt('data-scz="full"','⛶ На весь экран','sc-fs'))+'</div>'
+  +'<div id="sc-chart" class="sc-chart">'+scChart({clientWidth:Math.max(280,view.clientWidth-8),clientHeight:0})+'</div>'
+  +'<div class="sc-foot"><span id="sc-meta" class="sc-meta"></span><span class="sc-hint">'+(SC.full?'колесо — приблизить, перетаскивание — двигать, два пальца — масштаб':'Ctrl + колесо — приблизить, перетаскивание — двигать; удобнее — на весь экран')+'</span></div>'
+  +'<div class="hvtip-static" id="sc-pick">'+scPick(scSelObj())+'</div>'
+  +'<p class="note sc-note">Показано '+nf(all.length,0)+' рублёвых выпусков с фиксированным купоном (доходность до '+SC.cap+'%, дюрация до 15 лет). Остальные '+nf(skip,0)+' (флоатеры, валютные, структурные, без дюрации или за пределами шкалы) на график не вошли. Данные те же и обновляются так же, как у «минного поля». <a href="fin2/index.html#screener">все выпуски и фильтры →</a></p></div>'}
+function scFull(on){SC.full=on;document.documentElement.classList.toggle('sc-lock',on);drawMarkets(true)}
+function scNear(e,rad){
+  var el=document.getElementById('sc-chart'),sv=el&&el.querySelector('svg');if(!sv||!SCG)return null;
+  var rc=sv.getBoundingClientRect(),k=SCG.W/rc.width,mx=(e.clientX-rc.left)*k,my=(e.clientY-rc.top)*k,v=scView(),best=null,bd=rad*rad*k*k;
+  scPts().forEach(function(x){if(SC.off[x.b])return;var dx=scPx(x,SCG,v)-mx,dy=scPy(x,SCG,v)-my,dd=dx*dx+dy*dy;if(dd<=bd){bd=dd;best=x}});
+  return best}
+function scHl(x){var c=document.getElementById('sc-hl');if(!c)return;if(!x||!SCG){c.setAttribute('cx',-50);c.setAttribute('cy',-50);return}var v=scView();c.setAttribute('cx',scPx(x,SCG,v).toFixed(1));c.setAttribute('cy',scPy(x,SCG,v).toFixed(1))}
+var SCD=null,SCP={},SCR=0;
+function scRaf(){if(SCR)return;SCR=requestAnimationFrame(function(){SCR=0;scDraw()})}
+view.addEventListener('pointerdown',function(e){
+  var ch=e.target.closest&&e.target.closest('#sc-chart');if(!ch)return;
+  SCP[e.pointerId]={x:e.clientX,y:e.clientY};
+  if(Object.keys(SCP).length===1){SCD={x:e.clientX,y:e.clientY,mv:0,t:e.pointerType}}else{SCD&&(SCD.mv=99)}
+  try{ch.setPointerCapture(e.pointerId)}catch(x){}});
+view.addEventListener('pointermove',function(e){
+  var ch=e.target.closest&&e.target.closest('#sc-chart');
+  if(SCP[e.pointerId]&&SCD){
+    var ids=Object.keys(SCP),v=scView(),sv=ch&&ch.querySelector('svg'),k=sv?SCG.W/sv.getBoundingClientRect().width:1;
+    if(ids.length===2){
+      var a=SCP[ids[0]],b=SCP[ids[1]],d0=Math.hypot(a.x-b.x,a.y-b.y);SCP[e.pointerId]={x:e.clientX,y:e.clientY};
+      var a2=SCP[ids[0]],b2=SCP[ids[1]],d1=Math.hypot(a2.x-b2.x,a2.y-b2.y);
+      if(d0>10&&d1>10){var rc=sv.getBoundingClientRect(),mx=((a2.x+b2.x)/2-rc.left)*k,my=((a2.y+b2.y)/2-rc.top)*k;
+        var cx=v.x0+(mx-SCG.L)/(SCG.W-SCG.L-SCG.R)*(v.x1-v.x0),cy=v.y1-(my-SCG.T)/(SCG.H-SCG.T-SCG.B)*(v.y1-v.y0);scZoom(d1/d0,cx,cy);scRaf()}
+      return}
+    var dx=(e.clientX-SCP[e.pointerId].x)*k,dy=(e.clientY-SCP[e.pointerId].y)*k;SCD.mv+=Math.abs(dx)+Math.abs(dy);
+    SCP[e.pointerId]={x:e.clientX,y:e.clientY};
+    if(SCD.mv>6&&ids.length===1&&SCG&&(SC.full||SCD.t==='mouse')){
+      var w=v.x1-v.x0,hh=v.y1-v.y0;v.x0-=dx/(SCG.W-SCG.L-SCG.R)*w;v.x1-=dx/(SCG.W-SCG.L-SCG.R)*w;v.y0+=dy/(SCG.H-SCG.T-SCG.B)*hh;v.y1+=dy/(SCG.H-SCG.T-SCG.B)*hh;scClamp(v);scRaf();ch.classList.add('drag')}
+    return}
+  if(ch&&e.pointerType==='mouse'){var x=scNear(e,12);scHl(x);var pk=document.getElementById('sc-pick');if(pk&&(x||null)!==SC.hov){SC.hov=x||null;pk.innerHTML=scPick(x||scSelObj())}}
+  else if(SC.hov){SC.hov=null;scHl(null);var pk2=document.getElementById('sc-pick');if(pk2)pk2.innerHTML=scPick(scSelObj())}});
+function scUp(e){
+  if(!SCP[e.pointerId])return;delete SCP[e.pointerId];
+  var d=SCD;if(!Object.keys(SCP).length)SCD=null;
+  var ch=document.getElementById('sc-chart');if(ch)ch.classList.remove('drag');
+  if(d&&d.mv<=6&&e.type==='pointerup'){
+    var x=scNear(e,d.t==='mouse'?12:20);SC.sel=x?(x.i||x.n):null;scDraw();var pk=document.getElementById('sc-pick');if(pk)pk.innerHTML=scPick(x)}}
+view.addEventListener('pointerup',scUp);view.addEventListener('pointercancel',scUp);
+view.addEventListener('wheel',function(e){
+  var ch=e.target.closest&&e.target.closest('#sc-chart');if(!ch||!(SC.full||e.ctrlKey||e.metaKey))return;
+  e.preventDefault();var sv=ch.querySelector('svg'),rc=sv.getBoundingClientRect(),k=SCG.W/rc.width,v=scView(),mx=(e.clientX-rc.left)*k,my=(e.clientY-rc.top)*k;
+  var cx=v.x0+(mx-SCG.L)/(SCG.W-SCG.L-SCG.R)*(v.x1-v.x0),cy=v.y1-(my-SCG.T)/(SCG.H-SCG.T-SCG.B)*(v.y1-v.y0);
+  scZoom(e.deltaY<0?1.25:.8,cx,cy);scRaf()},{passive:false});
+document.addEventListener('keydown',function(e){if(e.key==='Escape'&&SC.full)scFull(false)});
+window.addEventListener('resize',function(){if(document.getElementById('sc-chart')){clearTimeout(scFull.rt);scFull.rt=setTimeout(scDraw,120)}});
 function vMine(){
   var st=MZ.stat,rows=UNIQ.rows;
   var chips=[['med','Медиана'],['avg','Среднее'],['sp','Спред к ОФЗ, п.п.'],['n','Число выпусков']].map(function(x){return '<button type="button" class="chip'+(st===x[0]?' on':'')+'" data-mz="'+x[0]+'">'+x[1]+'</button>'}).join('');
@@ -1607,8 +1717,9 @@ view.addEventListener('input',function(e){
 view.addEventListener('click',function(e){
   var z=e.target.closest('[data-mz]');if(z){MZ.stat=z.getAttribute('data-mz');drawMarkets(true);return}
   if(e.target.closest('[data-mzr]')){UNIQ.t=0;loadUni().then(function(){drawMarkets(true)})}
-  var sc=e.target.closest('[data-sc]');if(sc){var r=sc.getAttribute('data-sc');SC.off[r]=!SC.off[r];sc.classList.toggle('on',!SC.off[r]);var ch=document.getElementById('sc-chart');if(ch)ch.innerHTML=scChart();return}
-  var sp=e.target.closest('[data-sp]');if(sp){var pk=document.getElementById('sc-pick');if(pk)pk.innerHTML=scPick(+sp.getAttribute('data-sp'));document.querySelectorAll('.sp.on').forEach(function(n){n.classList.remove('on')});sp.classList.add('on')}
+  var sc=e.target.closest('[data-sc]');if(sc){var r=sc.getAttribute('data-sc');SC.off[r]=!SC.off[r];sc.classList.toggle('on',!SC.off[r]);if(SC.v&&SC.v.pre!=null)SC.v=scPreset(SC.v.pre);scDraw();return}
+  var sp=e.target.closest('[data-scp]');if(sp){SC.v=scPreset(+sp.getAttribute('data-scp'));scDraw();return}
+  var sz=e.target.closest('[data-scz]');if(sz){var a=sz.getAttribute('data-scz');if(a==='in')scZoom(1.5);else if(a==='out')scZoom(1/1.5);else if(a==='reset'){SC.v=scPreset(3);SC.sel=null;SC.off={};document.querySelectorAll('.sc-ch').forEach(function(n){n.classList.add('on')});var pk=document.getElementById('sc-pick');if(pk)pk.innerHTML=scPick(null)}else if(a==='full'){scFull(!SC.full);return}scDraw();return}
 });
 view.addEventListener('change',function(e){
   var rs=e.target.getAttribute('data-rks');if(rs){RKS[rs]=rs==='lgd'?+e.target.value:e.target.value;drawMarkets(true);return}
@@ -1646,7 +1757,7 @@ function drawMarkets(full){
   var y=window.scrollY,fn=ASSET.kind?vAsset:{summary:vSummary,ru:CARD.tic?function(){return vCard(CARD.tic)}:vRU,us:vUS,crypto:vCrypto,bonds:vBonds,risk:vRisk,cal:vCal,news:vNews}[cur];
   var html=subnav()+fn(),sig=html.replace(/data-ago="\d+">[^<]*</g,'');
   if(full!==true&&sig===LASTSIG){view.querySelectorAll('.stat [data-ago]').forEach(function(e){e.setAttribute('data-ago',Date.now())});return}   // данные не изменились — не трогаем страницу
-  LASTSIG=sig;if(full!==true)flashPrep();else FLPREV=null;view.innerHTML=html;subScroll();flashApply();skel(view);if((cur==='ru'&&CARD.tic)||ASSET.kind)drawPC();window.scrollTo(0,y);
+  LASTSIG=sig;if(full!==true)flashPrep();else FLPREV=null;view.innerHTML=html;if(document.getElementById('sc-chart'))scDraw();subScroll();flashApply();skel(view);if((cur==='ru'&&CARD.tic)||ASSET.kind)drawPC();window.scrollTo(0,y);
 }
 var LASTSIG='';window.__dm=drawMarkets;
 var loaders={summary:[loadIdx,loadFX,loadCR,loadSnap,loadNews,loadDig,loadCal],ru:[loadRU,loadNews,loadIdx,loadFX,loadKBD,loadSnap],us:[loadSnap,loadNews],crypto:[loadFX,loadCR,loadNews],bonds:[loadKBD,loadIdx,loadNews,loadUni],risk:[loadNews],cal:[loadRU,loadCal,loadSnap],news:[loadNews]};
