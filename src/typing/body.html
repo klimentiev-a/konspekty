@@ -1,0 +1,43 @@
+<div class="w kw" id="kl">
+  <!--TOPBAR-->
+  <h1>Клавиатура</h1>
+  <p class="lead">Тренажёр для печати вслепую. Начни с уроков: они ведут от первой клавиши до целых текстов.</p>
+  <div class="kset" id="kset">
+    <div class="kseg" role="group" aria-label="Язык"><button type="button" data-lang="ru">Русский</button><button type="button" data-lang="en">English</button></div>
+    <button type="button" class="ktg" data-tg="fix" aria-pressed="true" title="Ошибочная клавиша не засчитывается, пока не нажмёшь верную">Стоп на ошибке</button>
+    <button type="button" class="ktg" data-tg="kb" aria-pressed="true">Клавиатура на экране</button>
+    <button type="button" class="ktg" data-tg="fing" aria-pressed="true">Подсказка пальцев</button>
+    <button type="button" class="ktg" data-tg="snd" aria-pressed="false">Звук</button>
+    <span class="ksz" aria-label="Размер текста"><button type="button" data-sz="-0.1" aria-label="Меньше">A−</button><em id="kroot-size">100%</em><button type="button" data-sz="0.1" aria-label="Больше">A+</button></span>
+  </div>
+  <nav class="kmodes" id="kmodes" aria-label="Режимы"></nav>
+
+  <section id="kv-menu"></section>
+
+  <section id="kv-run" hidden>
+    <div class="kst" id="kst">
+      <div><b id="ks-cpm">0</b><span>зн/мин</span></div><div><b id="ks-wpm">0</b><span>слов/мин</span></div><div><b id="ks-acc">100%</b><span>точность</span></div><div><b id="ks-tm">0:00</b><span>время</span></div>
+      <div class="kq"><button type="button" class="kbtn sm" data-a="redo" title="Tab">↺ Заново</button><button type="button" class="kbtn sm" data-a="quit" title="Esc">✕ Выйти</button></div>
+    </div>
+    <div class="kbarw" id="kbar"><i id="kbarf"></i></div>
+    <div class="kstage" id="kstage">
+      <div class="kbox" id="kbox"><div class="ktext" id="ktext"></div></div>
+      <div class="kfocus">Нажми сюда и печатай</div>
+      <div class="kwarn" id="kwarn" hidden></div>
+    </div>
+    <div class="khint" id="khint"></div>
+    <div id="kkb"></div>
+  </section>
+
+  <section id="kv-game" hidden>
+    <div class="kst gh"><div><b id="kg-sc">0</b><span>очков</span></div><div><b id="kg-lv">1</b><span>уровень</span></div><div><b id="kg-li">♥♥♥♥♥</b><span>жизни</span></div><div class="kq"><button type="button" class="kbtn sm" data-a="quit" title="Esc">✕ Выйти</button></div></div>
+    <div class="kgame" id="kgame"></div>
+    <div class="kfocus">Нажми сюда и печатай</div>
+    <div id="kkb2"></div>
+  </section>
+
+  <section id="kv-res" class="kresw" hidden><div id="kres"></div></section>
+
+  <input id="kin" class="kin" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" inputmode="text" enterkeyhint="done" aria-label="Поле ввода тренажёра">
+  <p class="src ktip">Подсказки: Esc — выйти, Tab — начать заново, Enter на итоге — следующее действие. Прогресс хранится в этом браузере.</p>
+</div>

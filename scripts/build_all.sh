@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Собирает все страницы сайта из исходников:
-#   src/finance/hub.html + make_hub.py      → index.html, artem.html, nastya.html, nastya-ucheba.html (+ замок для Артема)
+#   src/finance/hub.html + make_hub.py      → index.html, artem.html, nastya.html, nastya-ucheba.html, nastya-klava.html (+ замок для Артема)
 #   src/index.src.html + make_ucheba.py     → ucheba.html
 #   src/finance/content/*.md + шаблон       → finance.html
 #   src/english/lessons|ref/*.md + шаблон   → english.html (курс английского)
@@ -25,7 +25,7 @@ PY
 # Синхронизация прогресса между устройствами: подключаем sync.js первым скриптом (идемпотентно)
 python3 - <<'PY'
 import re
-for f in ['index.html','artem.html','nastya.html','nastya-ucheba.html','ucheba.html','finance.html','english.html','fin-english.html']:
+for f in ['index.html','artem.html','nastya.html','nastya-ucheba.html','nastya-klava.html','ucheba.html','finance.html','english.html','fin-english.html']:
     s = open(f, encoding='utf-8').read()
     if 'src="tables.js"' not in s:
         s = s.replace('<meta charset="utf-8">', '<meta charset="utf-8"><script src="tables.js"></script>', 1)

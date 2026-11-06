@@ -3,7 +3,8 @@
   index.html         — выбор профиля (Артем / Настя) и ввод пароля;
   artem.html         — разделы Артема: Учёба и Финансы;
   nastya.html        — разделы Насти: Учёба, English;
-  nastya-ucheba.html — Учёба Насти (пока пусто).
+  nastya-ucheba.html — Учёба Насти (расписание);
+  nastya-klava.html  — клавиатурный тренажёр Насти (src/typing/).
 Пароль сверяется по SHA-256 (в коде лежит только хэш), после ввода запоминается в localStorage и куки на год.
 Это замок от случайных посетителей: файлы сайта всё равно лежат в открытом репозитории.
 Запуск из корня репозитория: python3 src/finance/make_hub.py"""
@@ -187,7 +188,10 @@ nastya_cards = ('<div class="cards">\n    <div class="card u"><a class="cover" h
                 '      <div class="links"><a href="nastya-ucheba.html">Открыть</a></div>\n    </div>\n'
                 '    <div class="card e"><a class="cover" href="english.html" aria-label="English"></a>\n'
                 '      <div class="ic">Aa</div><b>English</b><span>Курс A2 → B1+: уроки, слова, справочник</span>\n'
-                '      <div class="links"><a href="english.html">Уроки</a><a href="english.html#words">Слова</a><a href="english.html#ref">Справочник</a></div>\n    </div>\n  </div>')
+                '      <div class="links"><a href="english.html">Уроки</a><a href="english.html#words">Слова</a><a href="english.html#ref">Справочник</a></div>\n    </div>\n'
+                '    <div class="card k"><a class="cover" href="nastya-klava.html" aria-label="Клавиатура"></a>\n'
+                '      <div class="ic">⌨</div><b>Клавиатура</b><span>Тренажёр печати: уроки для новичка, слова, тексты, на время, игра</span>\n'
+                '      <div class="links"><a href="nastya-klava.html">Учиться печатать</a></div>\n    </div>\n  </div>')
 nastya_body = ('<div class="w">\n  ' + topbar('index.html', 'Профили', 'nastya') + '\n  <h1>Настя</h1>\n  <p class="lead">Выбери раздел.</p>\n  '
                + nastya_cards + '\n  ' + foot + '\n</div>\n' + LOGOUT_JS)
 nastya_html = page('Hub · Настя', nastya_body, 'nastya')
@@ -249,6 +253,13 @@ fetch('schedule_nastya.json?t='+Date.now(),{cache:'no-store'}).then(function(r){
 nu_body = ('<div class="w">\n  ' + topbar('nastya.html', 'Настя') + '\n  <h1>Расписание</h1>\n  <p class="lead">Группа 15.24Д-ЭБ01/25с.</p>\n'
            '  <div id="sch"><p class="src">Загружаю…</p></div>\n</div>\n' + NU_JS)
 nu_html = page('Учёба · Настя', nu_body, 'nastya').replace('</head>', NU_CSS + '</head>', 1)
+
+
+# ---------------- nastya-klava.html: клавиатурный тренажёр Насти ----------------
+_tp = os.path.join(ROOT, 'src', 'typing')
+_rd = lambda n: open(os.path.join(_tp, n), encoding='utf-8').read()
+kl_body = _rd('body.html').replace('<!--TOPBAR-->', topbar('nastya.html', 'Настя') + '\n  ', 1) + '<script>\n' + _rd('data.js') + '\n' + _rd('typing.js') + '\n</script>'
+kl_html = page('Клавиатура · Настя', kl_body, 'nastya').replace('</head>', '<style>\n' + _rd('typing.css') + '</style></head>', 1)
 
 
 # ---------------- search.html: поиск по всему сайту Артема ----------------
@@ -354,6 +365,6 @@ search_html = page('Hub · Поиск', search_body, 'artem').replace('</head>',
 # замок для страниц Артема (ucheba.html, finance.html) — его вставляют make_ucheba.py и build_finance.py
 open(os.path.join(ROOT, 'src', 'finance', 'gate_artem.html'), 'w', encoding='utf-8').write(gate('artem'))
 
-for name, html in (('index.html', index_html), ('artem.html', artem_html), ('nastya.html', nastya_html), ('nastya-ucheba.html', nu_html), ('search.html', search_html)):
+for name, html in (('index.html', index_html), ('artem.html', artem_html), ('nastya.html', nastya_html), ('nastya-ucheba.html', nu_html), ('nastya-klava.html', kl_html), ('search.html', search_html)):
     open(os.path.join(ROOT, name), 'w', encoding='utf-8').write(html)
     print('ok', name, len(html))
