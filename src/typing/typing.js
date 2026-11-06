@@ -2,10 +2,12 @@
 (function(){
 'use strict';
 var LS='klava:v1',$=function(s,r){return (r||document).querySelector(s)},$$=function(s,r){return [].slice.call((r||document).querySelectorAll(s))};
-var D={lang:'ru',fix:true,kb:true,fing:true,snd:false,size:1,les:{ru:{},en:{}},hist:[],err:{ru:{},en:{}},hit:{ru:{},en:{}},opt:{words:{n:25,caps:false},time:{sec:60},sym:{kind:'mix',n:30},text:{id:'r'},game:{lv:1}},mode:'les'};
-function load(){try{var j=JSON.parse(localStorage.getItem(LS)||'null');if(j)for(var k in j){if(k==='opt')for(var o in j.opt)D.opt[o]=j.opt[o];else D[k]=j[k]}}catch(e){}}
+var D={lvl:2,ch:{ru:{},en:{}},lang:'ru',fix:true,kb:true,fing:true,snd:false,size:1,les:{ru:{},en:{}},hist:[],err:{ru:{},en:{}},hit:{ru:{},en:{}},opt:{words:{n:25,caps:false,len:0,pun:false},time:{sec:60,hard:0},sym:{kind:'mix',n:30},text:{id:'r',d:0},game:{lv:1}},mode:'les'};
+function load(){try{var j=JSON.parse(localStorage.getItem(LS)||'null');if(j)for(var k in j){if(k==='opt'){for(var o in j.opt){D.opt[o]=D.opt[o]||{};for(var q in j.opt[o])D.opt[o][q]=j.opt[o][q]}}else D[k]=j[k]}}catch(e){}}
 function save(){try{localStorage.setItem(LS,JSON.stringify(D))}catch(e){}}
 load();
+var LVG=[1,1.4,1.9],LVA=[90,94,96],LVL=[1,1.5,2.2],LVN=['Новичок','Средний','Про'];
+function lvl(){return Math.max(1,Math.min(3,D.lvl||2))-1}
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
 function rnd(a){return a[Math.floor(Math.random()*a.length)]}
 function shuf(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t}return a}
@@ -20,6 +22,13 @@ var FN={1:'левый мизинец',2:'левый безымянный',3:'л�
 var KMAP={};
 function kmap(l){if(KMAP[l])return KMAP[l];var m={};LAY[l].rows.forEach(function(r,ri){for(var i=0;i<r[0].length;i++){m[r[0][i]]={k:r[0][i],sh:0,f:FING[ri][i]};if(r[1][i]!==r[0][i])m[r[1][i]]={k:r[0][i],sh:1,f:FING[ri][i]}}});m[' ']={k:' ',sh:0,f:9};return KMAP[l]=m}
 
+/* ---------- второй курс: скорость и сложные тексты ---------- */
+KD.lessons.ru=KD.lessons.ru.concat([
+{t:'Длинные слова',k:'long',g:100,a:1},{t:'Сложные сочетания букв',k:'combo',g:105,a:1},{t:'Предложения со знаками',k:'sentp',g:110,a:1},{t:'Числа, даты, суммы',k:'dates',g:100,a:1},
+{t:'Заглавные и знаки вперемешку',k:'mixed',g:105,a:1},{t:'Спринт: 40 секунд',k:'sprint',g:130,a:1},{t:'Большой текст',k:'big',g:125,a:1},{t:'Экзамен: длинный сложный текст',k:'exam',g:140,a:1}]);
+KD.lessons.en=KD.lessons.en.concat([
+{t:'Long words',k:'long',g:100,a:1},{t:'Consonant clusters',k:'combo',g:105,a:1},{t:'Sentences with punctuation',k:'sentp',g:110,a:1},{t:'Numbers, dates, sums',k:'dates',g:100,a:1},
+{t:'Capitals and signs mixed',k:'mixed',g:105,a:1},{t:'Sprint: 40 seconds',k:'sprint',g:130,a:1},{t:'Big text',k:'big',g:125,a:1},{t:'Exam: long hard text',k:'exam',g:140,a:1}]);
 /* ---------- генерация текста ---------- */
 function setUpTo(l,i){var s='';KD.lessons[l].slice(0,i+1).forEach(function(x){if(x.n)s+=x.n});return s}
 function allIn(w,s){for(var i=0;i<w.length;i++)if(s.indexOf(w[i])<0)return false;return true}
@@ -36,6 +45,27 @@ function genLetters(l,i,len){
   return out.join(' ')}
 function cap(w){return w.charAt(0).toUpperCase()+w.slice(1)}
 function genWords(l,n,caps){var d=shuf(KD.dict[l]),o=[];for(var i=0;i<n;i++){var w=d[i%d.length];o.push(caps&&Math.random()<.35?cap(w):w)}return o.join(' ')}
+function genWordsX(l,n,o){
+  o=o||{};var d=KD.dict[l].concat(KD.long[l]),len=o.len||0;
+  if(len===1)d=d.filter(function(w){return w.length<=5});else if(len===2)d=d.filter(function(w){return w.length>=7});else if(len===3)d=d.filter(function(w){return w.length>=9});
+  if(d.length<8)d=KD.long[l];
+  var o2=[],pool=shuf(d),i;
+  for(i=0;i<n;i++){var w=pool[i%pool.length];if(i&&i%pool.length===0)pool=shuf(d);
+    if(o.caps&&Math.random()<.35)w=cap(w);
+    if(o.pun&&Math.random()<.4){var r=Math.random();w=r<.45?w+rnd([',','.',';',':']):r<.65?w+rnd(['!','?']):r<.82?'"'+w+'"':'('+w+')'}
+    o2.push(w)}
+  return o2.join(' ')}
+function genDates(l){
+  var out=[],i,t=function(){return Math.floor(Math.random()*9)+1},two=function(){return ('0'+(Math.floor(Math.random()*28)+1)).slice(-2)};
+  for(i=0;i<7;i++){var k=i%7;
+    if(k===0)out.push(two()+'.'+('0'+(Math.floor(Math.random()*12)+1)).slice(-2)+'.'+(2024+Math.floor(Math.random()*6)));
+    else if(k===1)out.push(t()+' '+t()+t()+t()+' '+t()+'00');
+    else if(k===2)out.push(t()+','+t()+t()+'%');
+    else if(k===3)out.push(rnd(KD.dict[l])+' '+two()+':'+('0'+Math.floor(Math.random()*60)).slice(-2));
+    else if(k===4)out.push('+7 ('+t()+t()+t()+') '+t()+t()+t()+'-'+t()+t()+'-'+t()+t());
+    else if(k===5)out.push(t()+t()+'/'+t()+t()+t()+t());
+    else out.push(t()+'*'+t()+'='+(t()*t()))}
+  return out.join(' ')}
 function genDigits(){var k=Math.floor(Math.random()*5);if(k===0)return String(Math.floor(Math.random()*9000+1000));if(k===1)return String(Math.floor(Math.random()*90+10))+'.'+('0'+Math.floor(Math.random()*12+1)).slice(-2)+'.'+(2000+Math.floor(Math.random()*30));if(k===2)return Math.floor(Math.random()*90+1)+','+Math.floor(Math.random()*90+10);if(k===3)return String(Math.floor(Math.random()*900000+100000));return Math.floor(Math.random()*20+1)+'-'+Math.floor(Math.random()*90+10)+'-'+Math.floor(Math.random()*90+10)}
 function genSym(l,kind,n){
   var d=KD.dict[l],o=[];
@@ -45,7 +75,16 @@ function genSym(l,kind,n){
   return o.join(' ')}
 function lessonText(l,i){
   var L=KD.lessons[l][i],k=L.k;
-  if(!k)return genLetters(l,i,i<4?90:130);
+  if(!k)return genLetters(l,i,Math.round((i<4?90:130)*LVL[lvl()]));
+  var sp=KD.sent[l].concat(KD.sent2[l]),ts=KD.texts[l];
+  if(k==='long')return genWordsX(l,Math.round(11*LVL[lvl()]),{len:3});
+  if(k==='combo'){var re=l==='ru'?/[бвгджзйклмнпрстфхцчшщ]{3,}/:/[^aeiou\W]{3,}/,pool=KD.dict[l].concat(KD.long[l]).filter(function(w){return re.test(w)});return shuf(pool).slice(0,Math.round(15*LVL[lvl()])).join(' ')}
+  if(k==='sentp')return shuf(sp).slice(0,Math.round(2+lvl()*1.5)).join(' ');
+  if(k==='dates')return genDates(l)+' '+genDates(l).split(' ').slice(0,6).join(' ');
+  if(k==='mixed')return genWordsX(l,Math.round(16*LVL[lvl()]),{caps:1,pun:1,len:0});
+  if(k==='sprint')return genWordsX(l,60,{caps:1,pun:1});
+  if(k==='big'){var hs=ts.filter(function(x){return x.d>=2&&x.c==='t'});return shuf(hs).slice(0,1).concat(shuf(hs).slice(0,1)).map(function(x){return x.s}).filter(function(v,j,a){return a.indexOf(v)===j}).join(' ')}
+  if(k==='exam'){var hh=ts.filter(function(x){return x.d===3&&x.c==='t'});return shuf(hh).slice(0,2).map(function(x){return x.s}).join(' ')+' '+rnd(KD.sent2[l])}
   var all=setUpTo(l,KD.lessons[l].length-1),ru=l==='ru';
   if(k==='caps'){var w=shuf(KD.dict[l]).slice(0,16).map(function(x,j){return j%2?x:cap(x)});return w.join(' ')}
   if(k==='pun1'){var s=shuf(KD.dict[l]).slice(0,5).map(function(x,j){return x+(j%2?'.':',')}).join(' ');return s+' '+shuf(KD.dict[l]).slice(0,4).join(', ')+'.'}
@@ -84,7 +123,7 @@ function kbFlash(ch,ok){
 /* ---------- запуск режимов ---------- */
 function mkRun(cfg){
   var t=cfg.text;
-  return {mode:cfg.mode,lang:cfg.lang||D.lang,text:t,st:new Array(t.length).fill(0),idx:0,keys:0,errs:0,t0:0,tEnd:0,limit:cfg.limit||0,les:cfg.les,okT:[],em:{},hm:{},done:false,label:cfg.label||'',stream:!!cfg.stream}}
+  return {mode:cfg.mode,lang:cfg.lang||D.lang,text:t,st:new Array(t.length).fill(0),idx:0,keys:0,errs:0,t0:0,tEnd:0,limit:cfg.limit||0,les:cfg.les,okT:[],em:{},hm:{},done:false,label:cfg.label||'',stream:!!cfg.stream,moreF:cfg.moreF,tg:cfg.tg,maxErr:cfg.maxErr==null?null:cfg.maxErr}}
 function start(cfg){
   stopAll();R=mkRun(cfg);show('run');
   $('#ktext').innerHTML=R.text.split('').map(function(c,i){return '<span class="c" data-i="'+i+'">'+(c===' '?'&nbsp;':esc(c))+'</span>'}).join('');
@@ -94,7 +133,7 @@ function start(cfg){
   mark();stats();focusIn();
   if(R.limit){$('#kbar').hidden=false}else $('#kbar').hidden=false}
 function more(){
-  if(!R.stream)return;var add=' '+genWords(R.lang,40,false);var base=R.text.length;R.text+=add;
+  if(!R.stream)return;var add=' '+(R.moreF?R.moreF():genWords(R.lang,40,false));var base=R.text.length;R.text+=add;
   for(var i=0;i<add.length;i++){R.st.push(0);var s=document.createElement('span');s.className='c';s.setAttribute('data-i',base+i);s.innerHTML=add[i]===' '?'&nbsp;':esc(add[i]);$('#ktext').appendChild(s)}}
 function mark(){
   var cur=$('.c.cur',ROOT);if(cur)cur.classList.remove('cur');
@@ -116,6 +155,7 @@ function onChar(ch){
   else{R.errs++;R.em[exp]=(R.em[exp]||0)+1;beep(false);kbFlash(exp,false);
     if(D.fix){var el=$('.c[data-i="'+R.idx+'"]',ROOT);if(el){el.classList.add('shake');setTimeout(function(){el.classList.remove('shake')},200)}}
     else{R.st[R.idx]=2;R.idx++}}
+  if(R.maxErr!=null&&R.errs>R.maxErr){R.failed=true;finish();return}
   if(ok||!D.fix)paint(R.idx-1);
   if(R.stream&&R.text.length-R.idx<70)more();
   if(!R.limit&&R.idx>=R.text.length){finish();return}
@@ -142,15 +182,17 @@ function finish(){
   if(!R||R.done)return;R.done=true;R.tEnd=performance.now();clearInterval(TM);
   if(R.limit&&R.t0)R.tEnd=Math.min(R.tEnd,R.t0+R.limit*1000);
   var c=calc(),res={d:Date.now(),m:R.mode,l:R.lang,cpm:Math.round(c.cpm),acc:Math.round(c.acc*10)/10,sec:Math.round(c.el),ch:c.okc};
-  if(c.okc>=10||R.mode==='les'){D.hist.push(res);if(D.hist.length>300)D.hist=D.hist.slice(-300)}
+  if(c.okc>=10||R.tg){D.hist.push(res);if(D.hist.length>300)D.hist=D.hist.slice(-300)}
   for(var k in R.em){D.err[R.lang][k]=(D.err[R.lang][k]||0)+R.em[k]}
   for(var k2 in R.hm){D.hit[R.lang][k2]=(D.hit[R.lang][k2]||0)+R.hm[k2]}
-  var extra='',les=R.les;
-  if(les!=null){var L=KD.lessons[R.lang][les],goal=lessonGoal(les),pass=c.acc>=90&&c.cpm>=goal,stars=!pass?0:(c.acc>=97&&c.cpm>=goal*1.3?3:c.acc>=94&&c.cpm>=goal*1.1?2:1),old=D.les[R.lang][les]||{};
-    D.les[R.lang][les]={s:Math.max(stars,old.s||0),b:Math.max(Math.round(c.cpm),old.b||0),a:Math.max(Math.round(c.acc),old.a||0)};
-    res.pass=pass;res.stars=stars;res.goal=goal;res.les=les}
+  var t=R.tg;
+  if(t){var am=LVA[lvl()],pass=!R.failed&&c.acc>=am&&c.cpm>=t.goal&&(R.limit?true:R.idx>=R.text.length)&&(R.maxErr==null||R.errs<=R.maxErr),
+      stars=!pass?0:(c.acc>=Math.min(99,am+3)&&c.cpm>=t.goal*1.25?3:c.acc>=Math.min(99,am+1.5)&&c.cpm>=t.goal*1.1?2:1),
+      st=D[t.store][R.lang],old=st[t.id]||{};
+    st[t.id]={s:Math.max(stars,old.s||0),b:Math.max(Math.round(c.cpm),old.b||0),a:Math.max(Math.round(c.acc),old.a||0)};
+    res.pass=pass;res.stars=stars;res.goal=t.goal;res.am=am;res.store=t.store;res.id=t.id;res.failed=!!R.failed}
   save();showResult(c,res)}
-function lessonGoal(i){return Math.round(40+i*3.2)}
+function lessonGoal(l,i){var L=KD.lessons[l][i];return Math.round((L.g||(40+i*3.2))*LVG[lvl()])}
 function sparkline(){
   var T=R.okT,el=Math.max(1,Math.ceil(elapsed())),b=[];for(var s=0;s<el;s++)b.push(0);
   T.forEach(function(t){var s=Math.min(el-1,Math.floor(t/1000));b[s]++});
@@ -161,12 +203,12 @@ function showResult(c,res){
   show('res');
   var worst=Object.keys(R.em).sort(function(a,b){return R.em[b]-R.em[a]}).slice(0,5).map(function(k){return '<span class="kchip">'+esc(k===' '?'пробел':k)+' <small>×'+R.em[k]+'</small></span>'}).join('');
   var h='<div class="kres-h"><div><div class="kbig">'+nf(c.cpm,0)+'<small> зн/мин</small></div><div class="kr2">'+nf(c.wpm,0)+' слов/мин · '+rate(c.cpm)+'</div></div>';
-  if(res.les!=null){h+='<div class="kstars" aria-label="Звёзды">'+[1,2,3].map(function(i){return '<span class="'+(i<=res.stars?'on':'')+'">★</span>'}).join('')+'</div>'}
+  if(res.stars!=null){h+='<div class="kstars" aria-label="Звёзды">'+[1,2,3].map(function(i){return '<span class="'+(i<=res.stars?'on':'')+'">★</span>'}).join('')+'</div>'}
   h+='</div><div class="kgrid"><div><b>'+nf(c.acc,0)+'%</b><span>точность</span></div><div><b>'+R.errs+'</b><span>ошибок</span></div><div><b>'+nf(c.el,0)+' с</b><span>время</span></div><div><b>'+c.okc+'</b><span>знаков</span></div></div>';
-  if(res.les!=null){h+='<p class="kmsg '+(res.pass?'good':'bad')+'">'+(res.pass?'Урок пройден! ':'Цель урока: точность от 90% и скорость от '+res.goal+' зн/мин. ')+(res.pass&&res.stars<3?'Для трёх звёзд — точность от 97% и скорость '+Math.round(res.goal*1.3)+'+.':'')+'</p>'}
-  else if(c.acc<90)h+='<p class="kmsg bad">Много ошибок. Сбавь скорость: сначала точность, потом скорость.</p>';
+  if(res.stars!=null){h+='<p class="kmsg '+(res.pass?'good':'bad')+'">'+(res.pass?(res.store==='ch'?'Вызов принят! ':'Урок пройден! '):(res.failed?'Слишком много ошибок для этого вызова. ':'Цель: точность от '+res.am+'% и скорость от '+res.goal+' зн/мин. '))+(res.pass&&res.stars<3?'Для трёх звёзд — точность от '+Math.min(99,res.am+3)+'% и скорость '+Math.round(res.goal*1.25)+'+.':'')+'</p>'}
+  else if(c.acc<LVA[lvl()])h+='<p class="kmsg bad">Много ошибок. Сбавь скорость: сначала точность, потом скорость.</p>';
   h+=R.mode==='game'?'':(sparkline()+(worst?'<div class="kwst"><span>Чаще всего промахи:</span> '+worst+'</div>':''));
-  h+='<div class="kact">'+(res.les!=null&&res.pass&&res.les<KD.lessons[R.lang].length-1?'<button class="kbtn pri" data-a="next">Следующий урок →</button>':'')+'<button class="kbtn'+(res.les!=null&&res.pass?'':' pri')+'" data-a="again">Ещё раз</button><button class="kbtn" data-a="menu">Выбрать другое</button></div>';
+  h+='<div class="kact">'+(res.store==='les'&&res.pass&&res.id<KD.lessons[R.lang].length-1?'<button class="kbtn pri" data-a="next">Следующий урок →</button>':'')+'<button class="kbtn'+(res.pass&&res.store==='les'?'':' pri')+'" data-a="again">Ещё раз</button><button class="kbtn" data-a="menu">Выбрать другое</button></div>';
   $('#kres').innerHTML=h}
 
 /* ---------- игра «Дождь слов» ---------- */
@@ -204,18 +246,27 @@ var V='menu';
 function show(v){V=v;['menu','run','res','game'].forEach(function(x){var e=$('#kv-'+x);if(e)e.hidden=x!==v});$('#kmodes').hidden=(v!=='menu');ROOT.classList.toggle('running',v==='run'||v==='game');if(v==='menu')window.scrollTo({top:0})}
 function stopAll(){clearInterval(TM);if(GM){cancelAnimationFrame(GM.raf);GM=null}}
 function focusIn(){var i=$('#kin');i.value='';try{i.focus({preventScroll:true})}catch(e){i.focus()}}
-var MODES=[['les','Уроки','Для новичка: буква за буквой'],['words','Слова','Случайные слова'],['text','Тексты','Готовые отрывки'],['time','На время','15 секунд — 3 минуты'],['sym','Цифры и знаки','Числа и пунктуация'],['game','Дождь слов','Игра на скорость'],['stat','Статистика','Прогресс и слабые клавиши']];
+var MODES=[['les','Уроки','Курс: от букв до экзамена'],['ch','Вызовы','Сложные задания'],['words','Слова','Случайные слова'],['text','Тексты','Готовые отрывки'],['time','На время','15 секунд — 3 минуты'],['sym','Цифры и знаки','Числа и пунктуация'],['game','Дождь слов','Игра на скорость'],['stat','Статистика','Прогресс и слабые клавиши']];
 function chips(name,opts,cur,fmt){return '<div class="kchips" data-o="'+name+'">'+opts.map(function(o){return '<button type="button" class="kchip2'+(String(o)===String(cur)?' on':'')+'" data-v="'+o+'">'+(fmt?fmt(o):o)+'</button>'}).join('')+'</div>'}
 function menuHTML(){
   var l=D.lang,m=D.mode,h='';
   if(m==='les'){
-    var ls=KD.lessons[l],done=ls.filter(function(x,i){return D.les[l][i]&&D.les[l][i].s>0}).length,first=0;for(var i=0;i<ls.length;i++){if(!(D.les[l][i]&&D.les[l][i].s>0)){first=i;break}first=i}
-    h+='<p class="kdesc">Каждый урок учит несколько новых клавиш. Печатай всеми десятью пальцами и не смотри на клавиатуру. Пройдено: <b>'+done+' из '+ls.length+'</b>.</p><div class="klg">';
-    ls.forEach(function(x,i){var r=D.les[l][i]||{},st=r.s||0;h+='<button type="button" class="klc'+(i===first&&!st?' next':'')+(st?' done':'')+'" data-les="'+i+'"><i>'+(i+1)+'</i><b>'+esc(x.t)+'</b><span class="kst">'+[1,2,3].map(function(n){return '<em class="'+(n<=st?'on':'')+'">★</em>'}).join('')+'</span>'+(r.b?'<small>лучший: '+r.b+' зн/мин</small>':'<small>цель: '+lessonGoal(i)+' зн/мин</small>')+'</button>'});
+    var ls=KD.lessons[l],done=ls.filter(function(x,i){return D.les[l][i]&&D.les[l][i].s>0}).length,first=ls.length-1;for(var i0=0;i0<ls.length;i0++){if(!(D.les[l][i0]&&D.les[l][i0].s>0)){first=i0;break}}
+    h+='<p class="kdesc">Уровень <b>'+LVN[lvl()]+'</b>: цель урока — от '+LVA[lvl()]+'% точности и своя скорость. Уровень меняется сверху. Пройдено: <b>'+done+' из '+ls.length+'</b>.</p>';
+    var card=function(x,i){var r=D.les[l][i]||{},st=r.s||0;return '<button type="button" class="klc'+(i===first&&!st?' next':'')+(st?' done':'')+'" data-les="'+i+'"><i>'+(i+1)+'</i><b>'+esc(x.t)+'</b><span class="kst">'+[1,2,3].map(function(n){return '<em class="'+(n<=st?'on':'')+'">★</em>'}).join('')+'</span>'+(r.b?'<small>лучший: '+r.b+' зн/мин · цель '+lessonGoal(l,i)+'</small>':'<small>цель: '+lessonGoal(l,i)+' зн/мин</small>')+'</button>'};
+    h+='<h3 class="kh3">Основной курс</h3><div class="klg">';
+    ls.forEach(function(x,i){if(!x.a)h+=card(x,i)});
+    h+='</div><h3 class="kh3">Скорость и сложные тексты</h3><div class="klg">';
+    ls.forEach(function(x,i){if(x.a)h+=card(x,i)});
     h+='</div>'}
-  else if(m==='words'){var o=D.opt.words;h+='<p class="kdesc">Случайные частые слова. Хорошая разминка.</p><div class="kopt"><span>Сколько слов</span>'+chips('words.n',[10,25,50,100],o.n)+'</div><div class="kopt"><span>Заглавные</span>'+chips('words.caps',[0,1],o.caps?1:0,function(v){return v?'Да':'Нет'})+'</div><button class="kbtn pri big" data-a="go">Начать</button>'}
-  else if(m==='text'){h+='<p class="kdesc">Выбери отрывок или нажми «Случайный».</p><div class="ktl"><button type="button" class="kt" data-tx="r"><b>Случайный</b><small>любой отрывок</small></button>'+KD.texts[l].map(function(x){return '<button type="button" class="kt" data-tx="'+x.id+'"><b>'+esc(x.t)+'</b><small>'+x.s.length+' знаков · '+(x.c==='w'?'скороговорки':'текст')+'</small></button>'}).join('')+'</div>'}
-  else if(m==='time'){var o=D.opt.time;h+='<p class="kdesc">Печатай, пока не кончится время. Слова будут появляться без остановки.</p><div class="kopt"><span>Время</span>'+chips('time.sec',[15,30,60,120,180],o.sec,function(v){return v<60?v+' с':v/60+' мин'})+'</div><button class="kbtn pri big" data-a="go">Начать</button>'}
+  else if(m==='ch'){
+    var cl=chList(l),dn=cl.filter(function(c){return D.ch[l][c.id]&&D.ch[l][c.id].s>0}).length;
+    h+='<p class="kdesc">Сложные задания на точность, скорость и выдержку. Уровень <b>'+LVN[lvl()]+'</b>: точность от '+LVA[lvl()]+'%. Выполнено: <b>'+dn+' из '+cl.length+'</b>.</p><div class="klg">';
+    cl.forEach(function(c){var r=D.ch[l][c.id]||{},st=r.s||0;h+='<button type="button" class="klc'+(st?' done':'')+'" data-ch="'+c.id+'"><i>'+(cl.indexOf(c)+1)+'</i><b>'+esc(c.t)+'</b><span class="kst">'+[1,2,3].map(function(n){return '<em class="'+(n<=st?'on':'')+'">★</em>'}).join('')+'</span><small>'+esc(c.d)+' · от '+chGoal(c)+' зн/мин'+(r.b?' · лучший '+r.b:'')+'</small></button>'});
+    h+='</div>'}
+  else if(m==='words'){var o=D.opt.words;h+='<p class="kdesc">Случайные слова. Чем длиннее слова и больше заглавных и знаков, тем сложнее.</p><div class="kopt"><span>Сколько слов</span>'+chips('words.n',[10,25,50,100,200],o.n)+'</div><div class="kopt"><span>Длина слов</span>'+chips('words.len',[0,1,2,3],o.len||0,function(v){return ['Любые','Короткие','Длинные (7+)','Очень длинные (9+)'][v]})+'</div><div class="kopt"><span>Заглавные</span>'+chips('words.caps',[0,1],o.caps?1:0,function(v){return v?'Да':'Нет'})+'</div><div class="kopt"><span>Знаки препинания</span>'+chips('words.pun',[0,1],o.pun?1:0,function(v){return v?'Да':'Нет'})+'</div><button class="kbtn pri big" data-a="go">Начать</button>'}
+  else if(m==='text'){var fd=D.opt.text.d||0,tl=KD.texts[l].filter(function(x){return !fd||x.d===fd});h+='<p class="kdesc">Выбери отрывок или нажми «Случайный».</p><div class="kopt"><span>Сложность</span>'+chips('text.d',[0,1,2,3],fd,function(v){return ['Все','Лёгкие','Средние','Сложные'][v]})+'</div><div class="ktl"><button type="button" class="kt" data-tx="r"><b>Случайный</b><small>из списка ниже</small></button>'+tl.map(function(x){return '<button type="button" class="kt" data-tx="'+x.id+'"><b>'+esc(x.t)+'</b><small>'+x.s.length+' знаков · '+['','лёгкий','средний','сложный'][x.d]+(x.c==='w'?' · скороговорки':'')+'</small></button>'}).join('')+'</div>'}
+  else if(m==='time'){var o=D.opt.time;h+='<p class="kdesc">Печатай, пока не кончится время. Слова будут появляться без остановки.</p><div class="kopt"><span>Время</span>'+chips('time.sec',[15,30,60,120,180,300],o.sec,function(v){return v<60?v+' с':v/60+' мин'})+'</div><div class="kopt"><span>Слова</span>'+chips('time.hard',[0,1,2],o.hard||0,function(v){return ['Обычные','Длинные','Длинные, заглавные, знаки'][v]})+'</div><button class="kbtn pri big" data-a="go">Начать</button>'}
   else if(m==='sym'){var o=D.opt.sym;h+='<p class="kdesc">Цифры и знаки — самое неудобное для новичков. Тренируйся отдельно.</p><div class="kopt"><span>Что печатать</span>'+chips('sym.kind',['dig','pun','mix'],o.kind,function(v){return {dig:'Цифры',pun:'Знаки',mix:'Вместе'}[v]})+'</div><div class="kopt"><span>Сколько</span>'+chips('sym.n',[15,30,60],o.n)+'</div><button class="kbtn pri big" data-a="go">Начать</button>'}
   else if(m==='game'){var o=D.opt.game;h+='<p class="kdesc">Слова падают сверху. Набери слово целиком, пока оно не упало. 5 жизней. Чем дальше, тем быстрее.</p><div class="kopt"><span>Сложность</span>'+chips('game.lv',[1,2,3],o.lv,function(v){return ['Лёгкая','Средняя','Быстрая'][v-1]})+'</div><div class="kopt"><span>Рекорд</span><b>'+(o['best'+o.lv]||0)+' очков</b></div><button class="kbtn pri big" data-a="go">Играть</button>'}
   else h+=statHTML();
@@ -235,34 +286,59 @@ function statHTML(){
 function drawMenu(){
   $('#kmodes').innerHTML=MODES.map(function(x){return '<button type="button" class="kmode'+(D.mode===x[0]?' on':'')+'" data-m="'+x[0]+'"><b>'+x[1]+'</b><small>'+x[2]+'</small></button>'}).join('');
   $('#kv-menu').innerHTML=menuHTML();
+  $$('[data-lvl]').forEach(function(b){b.classList.toggle('on',+b.getAttribute('data-lvl')===lvl()+1)});
   $$('[data-lang]').forEach(function(b){b.classList.toggle('on',b.getAttribute('data-lang')===D.lang)});
   [['fix'],['kb'],['fing'],['snd']].forEach(function(a){var b=$('[data-tg="'+a[0]+'"]');if(b){b.classList.toggle('on',!!D[a[0]]);b.setAttribute('aria-pressed',!!D[a[0]])}});
   $('#kroot-size').textContent=Math.round(D.size*100)+'%';ROOT.style.setProperty('--ks',D.size)}
 function go(){
   var l=D.lang,m=D.mode;
-  if(m==='words'){var o=D.opt.words;start({mode:'words',text:genWords(l,o.n,o.caps)})}
-  else if(m==='time'){start({mode:'time',text:genWords(l,60,false),limit:D.opt.time.sec,stream:true})}
+  if(m==='words'){var o=D.opt.words;start({mode:'words',text:genWordsX(l,o.n,{len:o.len,caps:o.caps,pun:o.pun})})}
+  else if(m==='time'){var hd=[{},{len:2},{len:2,caps:1,pun:1}][D.opt.time.hard||0];start({mode:'time',text:genWordsX(l,60,hd),limit:D.opt.time.sec,stream:true,moreF:function(){return genWordsX(l,40,hd)}})}
   else if(m==='sym'){var o2=D.opt.sym;start({mode:'sym',text:genSym(l,o2.kind,o2.n)})}
   else if(m==='game')startGame()}
-function startLesson(i){D.lastLes=i;start({mode:'les',les:i,text:lessonText(D.lang,i)})}
-function startText(id){var a=KD.texts[D.lang],x=id==='r'?rnd(a):a.filter(function(t){return t.id===id})[0];D.lastText=x.id;start({mode:'text',text:x.s})}
-function again(){var m=R&&R.mode;if(m==='les')startLesson(R.les);else if(m==='text')startText(D.lastText||'r');else if(m==='game')startGame();else go()}
+function startLesson(i){
+  var l=D.lang,L=KD.lessons[l][i];D.lastLes=i;
+  var cfg={mode:'les',text:lessonText(l,i),tg:{store:'les',id:i,goal:lessonGoal(l,i)}};
+  if(L.k==='sprint'){cfg.limit=40;cfg.stream=true;cfg.moreF=function(){return genWordsX(l,40,{caps:1,pun:1})}}
+  start(cfg)}
+/* вызовы */
+function chGoal(c){return Math.round(c.g*LVG[lvl()])}
+function chList(l){
+  var ru=l==='ru',sp=KD.sent[l].concat(KD.sent2[l]);
+  return [
+  {id:'c1',t:ru?'Чистая печать':'Clean typing',d:ru?'300 знаков, не больше 3 ошибок':'300 characters, at most 3 mistakes',g:110,maxErr:3,gen:function(){return shuf(sp).join(' ').slice(0,300).replace(/\s+\S*$/,'')}},
+  {id:'c2',t:ru?'Без права на ошибку':'No mistakes allowed',d:ru?'200 знаков, при первой ошибке провал':'200 characters, the first mistake fails',g:100,maxErr:0,gen:function(){return genWordsX(l,30,{len:0}).slice(0,200).replace(/\s+\S*$/,'')}},
+  {id:'c3',t:ru?'Спринт 30 секунд':'30-second sprint',d:ru?'Заглавные и знаки, 30 секунд':'Capitals and punctuation, 30 seconds',g:150,limit:30,o:{caps:1,pun:1},gen:function(){return genWordsX(l,60,{caps:1,pun:1})}},
+  {id:'c4',t:ru?'Длинные слова':'Long words',d:ru?'25 слов от 9 букв':'25 words of 9+ letters',g:120,gen:function(){return genWordsX(l,25,{len:3})}},
+  {id:'c5',t:ru?'Цифры и даты':'Numbers and dates',d:ru?'Числа, проценты, телефоны':'Numbers, percents, phones',g:100,gen:function(){return genDates(l)+' '+genDates(l)}},
+  {id:'c6',t:ru?'Зачёт на 60 секунд':'60-second test',d:ru?'Обычные слова, как можно быстрее':'Common words, as fast as you can',g:200,limit:60,gen:function(){return genWordsX(l,80,{})}},
+  {id:'c7',t:ru?'Марафон 3 минуты':'3-minute marathon',d:ru?'Слова с заглавными и знаками':'Words with capitals and punctuation',g:160,limit:180,o:{caps:1,pun:1},gen:function(){return genWordsX(l,80,{caps:1,pun:1})}},
+  {id:'c8',t:ru?'Диктант: сложный текст':'Dictation: hard text',d:ru?'Длинный текст с цифрами и кавычками':'A long text with digits and quotes',g:130,gen:function(){return shuf(KD.texts[l].filter(function(x){return x.d===3&&x.c==='t'}))[0].s}}]}
+function startChallenge(id){
+  var c=chList(D.lang).filter(function(x){return x.id===id})[0];D.lastCh=id;
+  var cfg={mode:'ch',text:c.gen(),tg:{store:'ch',id:id,goal:chGoal(c)},maxErr:c.maxErr==null?null:c.maxErr};
+  if(c.limit){cfg.limit=c.limit;cfg.stream=true;cfg.moreF=function(){return genWordsX(D.lang,40,c.o||{})}}
+  start(cfg)}
+function startText(id){var a=KD.texts[D.lang].filter(function(t){return !D.opt.text.d||t.d===D.opt.text.d}),x=id==='r'?rnd(a):KD.texts[D.lang].filter(function(t){return t.id===id})[0];D.lastText=x.id;start({mode:'text',text:x.s})}
+function again(){var m=R&&R.mode;if(R&&R.tg&&R.tg.store==='les')startLesson(R.tg.id);else if(R.tg&&R.tg.store==='ch')startChallenge(R.tg.id);else if(m==='text')startText(D.lastText||'r');else if(m==='game')startGame();else go()}
 
 /* ---------- события ---------- */
 ROOT.addEventListener('click',function(e){
-  var t=e.target.closest('button,[data-les],[data-tx]');
+  var t=e.target.closest('button,[data-les],[data-tx],[data-ch]');
   if(!t){if(e.target.closest('#kstage,#kv-game'))focusIn();return}
   var v;
   if((v=t.getAttribute('data-m'))){D.mode=v;save();drawMenu();return}
   if((v=t.getAttribute('data-lang'))){D.lang=v;save();drawMenu();return}
   if((v=t.getAttribute('data-tg'))){D[v]=!D[v];save();drawMenu();if(V==='run'||V==='game'){$('#kkb').hidden=!D.kb;$('#khint').hidden=!D.fing;ROOT.classList.toggle('nof',!D.fing);if(R&&V==='run'){$('#kkb').innerHTML=D.kb?kbHTML(R.lang):'';mark()}}return}
   if((v=t.getAttribute('data-sz'))){D.size=Math.max(.8,Math.min(1.6,Math.round((D.size+(+v))*100)/100));save();drawMenu();return}
+  if((v=t.getAttribute('data-lvl'))){D.lvl=+v;save();drawMenu();return}
+  if(t.hasAttribute('data-ch')){startChallenge(t.getAttribute('data-ch'));return}
   if(t.hasAttribute('data-les')){startLesson(+t.getAttribute('data-les'));return}
   if(t.hasAttribute('data-tx')){startText(t.getAttribute('data-tx'));return}
-  if((v=t.getAttribute('data-v'))!==null&&t.parentNode.hasAttribute('data-o')){var p=t.parentNode.getAttribute('data-o').split('.');var val=/^\d+$/.test(v)?+v:v;if(p[1]==='caps')val=!!+v;D.opt[p[0]][p[1]]=val;save();drawMenu();return}
+  if((v=t.getAttribute('data-v'))!==null&&t.parentNode.hasAttribute('data-o')){var p=t.parentNode.getAttribute('data-o').split('.');var val=/^\d+$/.test(v)?+v:v;if(p[1]==='caps'||p[1]==='pun')val=!!+v;D.opt[p[0]][p[1]]=val;save();drawMenu();return}
   if((v=t.getAttribute('data-a'))){
     if(v==='go')go();else if(v==='again')again();else if(v==='menu'){stopAll();R=null;show('menu');drawMenu()}
-    else if(v==='next'){startLesson(R.les+1)}
+    else if(v==='next'){startLesson(R.tg.id+1)}
     else if(v==='quit'){stopAll();if(R&&!R.done&&R.mode!=='game'&&R.keys>=10){finish()}else{R=null;show('menu');drawMenu()}}
     else if(v==='redo'){again()}
     else if(v==='reset'){if(t.getAttribute('data-sure')){D.hist=[];D.les={ru:{},en:{}};D.err={ru:{},en:{}};D.hit={ru:{},en:{}};D.opt.game.best1=D.opt.game.best2=D.opt.game.best3=0;save();drawMenu()}else{t.setAttribute('data-sure','1');t.textContent='Точно сбросить? Нажми ещё раз';setTimeout(function(){drawMenu()},3500)}}

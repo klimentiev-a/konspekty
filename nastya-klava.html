@@ -304,9 +304,10 @@ h1.brand{line-height:0;margin:4px 0 14px}h1.brand .wm{height:clamp(52px,12vw,76p
   <div class="top"><a href="nastya.html"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg>Настя</a><div class="tr"><button type="button" class="thm" id="thm" aria-label="Оформление" title="Оформление"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 0 0 16z" fill="currentColor"/></svg></button></div></div>
   
   <h1>Клавиатура</h1>
-  <p class="lead">Тренажёр для печати вслепую. Начни с уроков: они ведут от первой клавиши до целых текстов.</p>
+  <p class="lead">Тренажёр для печати вслепую. Уроки ведут от первой клавиши до сложных текстов, «Вызовы» проверяют скорость и выдержку. Уровень сложности — сверху.</p>
   <div class="kset" id="kset">
     <div class="kseg" role="group" aria-label="Язык"><button type="button" data-lang="ru">Русский</button><button type="button" data-lang="en">English</button></div>
+    <div class="kseg" role="group" aria-label="Уровень сложности" title="Уровень: цели по скорости и точности в уроках и вызовах"><button type="button" data-lvl="1">Новичок</button><button type="button" data-lvl="2">Средний</button><button type="button" data-lvl="3">Про</button></div>
     <button type="button" class="ktg" data-tg="fix" aria-pressed="true" title="Ошибочная клавиша не засчитывается, пока не нажмёшь верную">Стоп на ошибке</button>
     <button type="button" class="ktg" data-tg="kb" aria-pressed="true">Клавиатура на экране</button>
     <button type="button" class="ktg" data-tg="fing" aria-pressed="true">Подсказка пальцев</button>
@@ -418,14 +419,55 @@ en:[
 {id:'e5',c:'t',t:'About money',s:'A budget is not a ban, it is a plan. Write down how much money comes in and where it goes. Put aside a small part as soon as you get your income. In a year you will be surprised how much you have saved.'}]
 };
 
+/* ---------- Второй уровень сложности ---------- */
+KD.long={
+ru:('ответственность возможность необходимость деятельность образование информация организация производство управление развитие обеспечение требование соглашение обязательство собственность имущество представитель законодательство регулирование ограничение исполнение рассмотрение определение распределение особенность достижение преимущество подготовка конкуренция инвестиции стоимость рентабельность ликвидность прибыльность доходность волатильность инфляция девальвация капитализация диверсификация '+
+'университет специальность аудитория расписание преподаватель студенческий экзаменационный дисциплина семестровый библиотека лаборатория практика исследование конференция презентация '+
+'путешествие приключение впечатление удивительный замечательный великолепный неожиданный одновременно по-прежнему благодаря несмотря вследствие относительно соответствующий '+
+'компьютерный программирование разработчик приложение платформа инструмент технология автоматизация пользователь настройка подключение обновление безопасность '+
+'здравоохранение строительство транспортный промышленность сельскохозяйственный электростанция телекоммуникация '+
+'взаимодействие самостоятельный целеустремленный трудолюбивый основополагающий последовательность одновременность переосмысление противоречивый').split(' ').map(function(w){return w.replace(/ё/g,'е')}),
+en:('responsibility opportunity necessity activity education information organization production management development requirement agreement obligation ownership representative legislation regulation restriction performance consideration distribution achievement advantage preparation competition investment profitability liquidity volatility inflation capitalization diversification '+
+'university specialty classroom schedule professor semester discipline library laboratory research conference presentation '+
+'adventure impression wonderful unexpected simultaneously nevertheless throughout regardless appropriate programming developer application platform automation security configuration communication environment').split(' ')
+};
+KD.sent2={
+ru:['Если сумма вклада — 250 000 рублей, а ставка составляет 14,5% годовых, то за год доход будет около 36 250 рублей.','Встреча назначена на 12.03.2027 в 15:30 (аудитория 4-17); при опоздании более чем на 10 минут вход закрыт.','«Не откладывай на завтра то, что можно сделать сегодня», — говорил мой дед, но сам всегда делал наоборот.','Контракт № 48/2026 подписан сторонами; оплата — в течение 5 (пяти) рабочих дней, иначе начисляется неустойка: 0,1% в день.','Во-первых, нужно проверить исходные данные; во-вторых — сравнить их с прошлым годом; в-третьих, сделать выводы.','Почему, когда спешишь, ошибок больше? Потому что мозг опережает пальцы, а пальцы не успевают за мозгом!','Температура упала до −5 °C, поэтому электричка опоздала на 20 минут, а кофе в буфете закончился ещё утром.','Курс вырос на 3,2% (до 98,40 за доллар), однако аналитики ждут коррекции: «рынок перегрет», — пишет «Коммерсантъ».','Сначала — разминка, затем — основная часть, в конце — растяжка; так советует тренер, и с ним трудно спорить.','Проект включает три этапа: анализ (2 недели), разработку (6 недель) и тестирование (3 недели); итого — 11 недель.'].map(function(s){return s.replace(/ё/g,'е').replace(/−/g,'-').replace(/°C/g,'C')}),
+en:['If the deposit is 250,000 dollars and the rate is 14.5% a year, the income after one year will be about 36,250 dollars.','The meeting is set for 12.03.2027 at 3:30 p.m. (room 4-17); if you are more than 10 minutes late, the door is closed.','"Do not put off until tomorrow what you can do today," my grandfather used to say, but he always did the opposite.','Contract No. 48/2026 is signed; payment is due within 5 (five) working days, otherwise a penalty of 0.1% per day applies.','First, check the source data; second, compare it with last year; third, draw conclusions.','Why are there more mistakes when you hurry? Because the brain runs ahead of the fingers, and the fingers cannot keep up!']
+};
+/* d: 1 — лёгкий, 2 — средний, 3 — сложный */
+KD.texts.ru.forEach(function(x){x.d=x.c==='w'?3:(x.s.length<260?1:2)});
+KD.texts.en.forEach(function(x){x.d=x.s.length<230?1:2});
+KD.texts.ru=KD.texts.ru.concat([
+{id:'h1',c:'t',d:3,t:'Бюджет студента (с цифрами)',s:'Допустим, стипендия составляет 4 800 рублей в месяц, подработка приносит ещё 15 000, а расходы — 17 350: проезд (2 200), еда (9 500), связь (650), учёба и прочее (5 000). Остаток — 2 450 рублей, то есть около 12,4% дохода. Если откладывать их ежемесячно, за год накопится 29 400 рублей; при ставке 14% годовых набежит ещё примерно 2 000.'},
+{id:'h2',c:'t',d:3,t:'Как работает память',s:'Память делится на кратковременную и долговременную: информация сначала попадает в «буфер» объёмом 5–9 элементов, а затем, при повторении, переходит дальше. Именно поэтому интервальные повторения (через 1 день, 3 дня, неделю, месяц) эффективнее, чем «зубрёжка» за ночь до экзамена; об этом писал ещё Эббингауз — и его выводы подтверждаются до сих пор.'},
+{id:'h3',c:'t',d:3,t:'Деловое письмо',s:'Уважаемые коллеги! Направляю вам проект договора № 17/2026 для согласования. Просим рассмотреть его до 20.11.2026 и сообщить замечания; после этого документ будет передан на подпись руководителю (приложение 1 — спецификация, приложение 2 — график платежей). Если возникнут вопросы, пишите на почту или звоните: 8 (800) 555-35-35. С уважением, отдел договорной работы.'},
+{id:'h4',c:'t',d:3,t:'Про инфляцию',s:'Инфляция — это устойчивый рост общего уровня цен, при котором каждая денежная единица покупает всё меньше товаров и услуг. Центральный банк борется с ней, повышая ключевую ставку: кредиты дорожают, спрос падает, а рост цен замедляется. Однако у такой политики есть цена — замедление экономики, рост безработицы и снижение инвестиций; поэтому решение всегда является компромиссом.'},
+{id:'h5',c:'t',d:2,t:'Путешествие на поезде',s:'Поезд отправлялся в 6:40, и мы пришли на вокзал заранее, чтобы не спешить. В вагоне пахло чаем и свежим бельём, за окном медленно проплывали поля, перелески и маленькие станции с одинаковыми названиями. К вечеру разговоры стихли, и осталось только мерное постукивание колёс.'},
+{id:'h6',c:'t',d:3,t:'Алгоритм и программа',s:'Алгоритм — это конечная последовательность чётких шагов, приводящая к результату; программа — запись алгоритма на языке, понятном компьютеру. Хороший алгоритм обладает свойствами: детерминированностью, массовостью, результативностью и дискретностью. Сложность оценивают не секундами, а числом операций в зависимости от размера входных данных, например линейно или квадратично.'},
+{id:'h7',c:'t',d:3,t:'Договор и обязательство',s:'Обязательство — это правоотношение, в силу которого одно лицо (должник) обязано совершить в пользу другого лица (кредитора) определённое действие либо воздержаться от него, а кредитор вправе требовать исполнения. Обязательства возникают из договоров, причинения вреда, неосновательного обогащения и иных оснований; исполнять их следует надлежащим образом, в установленный срок.'},
+{id:'h8',c:'t',d:2,t:'Зачем нужна скорость печати',s:'Быстрая печать экономит время каждый день: конспекты, письма, курсовые, чаты. При скорости 200 знаков в минуту страница текста набирается примерно за 9 минут, а при скорости 100 — почти за 20. Но важнее скорости точность: исправлять ошибки дольше, чем печатать медленнее, но чисто.'}
+].map(function(x){x.s=x.s.replace(/ё/g,'е').replace(/²/g,'2');return x}));
+KD.texts.en=KD.texts.en.concat([
+{id:'g1',c:'t',d:3,t:'A student budget (with numbers)',s:'Suppose the scholarship is 480 dollars a month, a part-time job brings another 1,500, and expenses are 1,735: transport (220), food (950), phone (65), study and other costs (500). What remains is 245 dollars, about 12.4% of income. If you save it every month, you will have 2,940 in a year; at 14% interest you will earn roughly 200 more.'},
+{id:'g2',c:'t',d:3,t:'How memory works',s:'Memory is divided into short-term and long-term: information first enters a buffer of 5-9 items and, with repetition, moves further. That is why spaced repetition (after 1 day, 3 days, a week, a month) works better than cramming the night before an exam; Ebbinghaus wrote about it long ago, and his conclusions still hold.'},
+{id:'g3',c:'t',d:3,t:'On inflation',s:'Inflation is a sustained rise in the general price level, so each unit of money buys fewer goods and services. A central bank fights it by raising the key rate: loans become more expensive, demand falls, and price growth slows down. However, such a policy has a cost - slower growth, higher unemployment and lower investment; therefore every decision is a compromise.'},
+{id:'g4',c:'t',d:2,t:'A trip by train',s:'The train left at 6:40, and we came to the station early so as not to hurry. The carriage smelled of tea and fresh linen, and outside the window fields, groves and small stations with identical names slowly floated past. By evening the talk faded, and only the steady knocking of the wheels remained.'}
+]);
+/* Нормализация: только знаки, которые есть на клавиатуре */
+(function(){var f=function(s){return s.replace(/[—–−]/g,'-').replace(/[«»„“”]/g,'"').replace(/…/g,'...').replace(/[’‘]/g,"'")};
+['ru','en'].forEach(function(l){KD.texts[l].forEach(function(x){x.s=f(x.s)});KD.sent[l]=KD.sent[l].map(f);KD.sent2[l]=KD.sent2[l].map(f)})})();
+
 /* Клавиатурный тренажёр (Hub · Настя). Данные — в data.js (KD). Состояние — localStorage «klava:v1». */
 (function(){
 'use strict';
 var LS='klava:v1',$=function(s,r){return (r||document).querySelector(s)},$$=function(s,r){return [].slice.call((r||document).querySelectorAll(s))};
-var D={lang:'ru',fix:true,kb:true,fing:true,snd:false,size:1,les:{ru:{},en:{}},hist:[],err:{ru:{},en:{}},hit:{ru:{},en:{}},opt:{words:{n:25,caps:false},time:{sec:60},sym:{kind:'mix',n:30},text:{id:'r'},game:{lv:1}},mode:'les'};
-function load(){try{var j=JSON.parse(localStorage.getItem(LS)||'null');if(j)for(var k in j){if(k==='opt')for(var o in j.opt)D.opt[o]=j.opt[o];else D[k]=j[k]}}catch(e){}}
+var D={lvl:2,ch:{ru:{},en:{}},lang:'ru',fix:true,kb:true,fing:true,snd:false,size:1,les:{ru:{},en:{}},hist:[],err:{ru:{},en:{}},hit:{ru:{},en:{}},opt:{words:{n:25,caps:false,len:0,pun:false},time:{sec:60,hard:0},sym:{kind:'mix',n:30},text:{id:'r',d:0},game:{lv:1}},mode:'les'};
+function load(){try{var j=JSON.parse(localStorage.getItem(LS)||'null');if(j)for(var k in j){if(k==='opt'){for(var o in j.opt){D.opt[o]=D.opt[o]||{};for(var q in j.opt[o])D.opt[o][q]=j.opt[o][q]}}else D[k]=j[k]}}catch(e){}}
 function save(){try{localStorage.setItem(LS,JSON.stringify(D))}catch(e){}}
 load();
+var LVG=[1,1.4,1.9],LVA=[90,94,96],LVL=[1,1.5,2.2],LVN=['Новичок','Средний','Про'];
+function lvl(){return Math.max(1,Math.min(3,D.lvl||2))-1}
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
 function rnd(a){return a[Math.floor(Math.random()*a.length)]}
 function shuf(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t}return a}
@@ -440,6 +482,13 @@ var FN={1:'левый мизинец',2:'левый безымянный',3:'л�
 var KMAP={};
 function kmap(l){if(KMAP[l])return KMAP[l];var m={};LAY[l].rows.forEach(function(r,ri){for(var i=0;i<r[0].length;i++){m[r[0][i]]={k:r[0][i],sh:0,f:FING[ri][i]};if(r[1][i]!==r[0][i])m[r[1][i]]={k:r[0][i],sh:1,f:FING[ri][i]}}});m[' ']={k:' ',sh:0,f:9};return KMAP[l]=m}
 
+/* ---------- второй курс: скорость и сложные тексты ---------- */
+KD.lessons.ru=KD.lessons.ru.concat([
+{t:'Длинные слова',k:'long',g:100,a:1},{t:'Сложные сочетания букв',k:'combo',g:105,a:1},{t:'Предложения со знаками',k:'sentp',g:110,a:1},{t:'Числа, даты, суммы',k:'dates',g:100,a:1},
+{t:'Заглавные и знаки вперемешку',k:'mixed',g:105,a:1},{t:'Спринт: 40 секунд',k:'sprint',g:130,a:1},{t:'Большой текст',k:'big',g:125,a:1},{t:'Экзамен: длинный сложный текст',k:'exam',g:140,a:1}]);
+KD.lessons.en=KD.lessons.en.concat([
+{t:'Long words',k:'long',g:100,a:1},{t:'Consonant clusters',k:'combo',g:105,a:1},{t:'Sentences with punctuation',k:'sentp',g:110,a:1},{t:'Numbers, dates, sums',k:'dates',g:100,a:1},
+{t:'Capitals and signs mixed',k:'mixed',g:105,a:1},{t:'Sprint: 40 seconds',k:'sprint',g:130,a:1},{t:'Big text',k:'big',g:125,a:1},{t:'Exam: long hard text',k:'exam',g:140,a:1}]);
 /* ---------- генерация текста ---------- */
 function setUpTo(l,i){var s='';KD.lessons[l].slice(0,i+1).forEach(function(x){if(x.n)s+=x.n});return s}
 function allIn(w,s){for(var i=0;i<w.length;i++)if(s.indexOf(w[i])<0)return false;return true}
@@ -456,6 +505,27 @@ function genLetters(l,i,len){
   return out.join(' ')}
 function cap(w){return w.charAt(0).toUpperCase()+w.slice(1)}
 function genWords(l,n,caps){var d=shuf(KD.dict[l]),o=[];for(var i=0;i<n;i++){var w=d[i%d.length];o.push(caps&&Math.random()<.35?cap(w):w)}return o.join(' ')}
+function genWordsX(l,n,o){
+  o=o||{};var d=KD.dict[l].concat(KD.long[l]),len=o.len||0;
+  if(len===1)d=d.filter(function(w){return w.length<=5});else if(len===2)d=d.filter(function(w){return w.length>=7});else if(len===3)d=d.filter(function(w){return w.length>=9});
+  if(d.length<8)d=KD.long[l];
+  var o2=[],pool=shuf(d),i;
+  for(i=0;i<n;i++){var w=pool[i%pool.length];if(i&&i%pool.length===0)pool=shuf(d);
+    if(o.caps&&Math.random()<.35)w=cap(w);
+    if(o.pun&&Math.random()<.4){var r=Math.random();w=r<.45?w+rnd([',','.',';',':']):r<.65?w+rnd(['!','?']):r<.82?'"'+w+'"':'('+w+')'}
+    o2.push(w)}
+  return o2.join(' ')}
+function genDates(l){
+  var out=[],i,t=function(){return Math.floor(Math.random()*9)+1},two=function(){return ('0'+(Math.floor(Math.random()*28)+1)).slice(-2)};
+  for(i=0;i<7;i++){var k=i%7;
+    if(k===0)out.push(two()+'.'+('0'+(Math.floor(Math.random()*12)+1)).slice(-2)+'.'+(2024+Math.floor(Math.random()*6)));
+    else if(k===1)out.push(t()+' '+t()+t()+t()+' '+t()+'00');
+    else if(k===2)out.push(t()+','+t()+t()+'%');
+    else if(k===3)out.push(rnd(KD.dict[l])+' '+two()+':'+('0'+Math.floor(Math.random()*60)).slice(-2));
+    else if(k===4)out.push('+7 ('+t()+t()+t()+') '+t()+t()+t()+'-'+t()+t()+'-'+t()+t());
+    else if(k===5)out.push(t()+t()+'/'+t()+t()+t()+t());
+    else out.push(t()+'*'+t()+'='+(t()*t()))}
+  return out.join(' ')}
 function genDigits(){var k=Math.floor(Math.random()*5);if(k===0)return String(Math.floor(Math.random()*9000+1000));if(k===1)return String(Math.floor(Math.random()*90+10))+'.'+('0'+Math.floor(Math.random()*12+1)).slice(-2)+'.'+(2000+Math.floor(Math.random()*30));if(k===2)return Math.floor(Math.random()*90+1)+','+Math.floor(Math.random()*90+10);if(k===3)return String(Math.floor(Math.random()*900000+100000));return Math.floor(Math.random()*20+1)+'-'+Math.floor(Math.random()*90+10)+'-'+Math.floor(Math.random()*90+10)}
 function genSym(l,kind,n){
   var d=KD.dict[l],o=[];
@@ -465,7 +535,16 @@ function genSym(l,kind,n){
   return o.join(' ')}
 function lessonText(l,i){
   var L=KD.lessons[l][i],k=L.k;
-  if(!k)return genLetters(l,i,i<4?90:130);
+  if(!k)return genLetters(l,i,Math.round((i<4?90:130)*LVL[lvl()]));
+  var sp=KD.sent[l].concat(KD.sent2[l]),ts=KD.texts[l];
+  if(k==='long')return genWordsX(l,Math.round(11*LVL[lvl()]),{len:3});
+  if(k==='combo'){var re=l==='ru'?/[бвгджзйклмнпрстфхцчшщ]{3,}/:/[^aeiou\W]{3,}/,pool=KD.dict[l].concat(KD.long[l]).filter(function(w){return re.test(w)});return shuf(pool).slice(0,Math.round(15*LVL[lvl()])).join(' ')}
+  if(k==='sentp')return shuf(sp).slice(0,Math.round(2+lvl()*1.5)).join(' ');
+  if(k==='dates')return genDates(l)+' '+genDates(l).split(' ').slice(0,6).join(' ');
+  if(k==='mixed')return genWordsX(l,Math.round(16*LVL[lvl()]),{caps:1,pun:1,len:0});
+  if(k==='sprint')return genWordsX(l,60,{caps:1,pun:1});
+  if(k==='big'){var hs=ts.filter(function(x){return x.d>=2&&x.c==='t'});return shuf(hs).slice(0,1).concat(shuf(hs).slice(0,1)).map(function(x){return x.s}).filter(function(v,j,a){return a.indexOf(v)===j}).join(' ')}
+  if(k==='exam'){var hh=ts.filter(function(x){return x.d===3&&x.c==='t'});return shuf(hh).slice(0,2).map(function(x){return x.s}).join(' ')+' '+rnd(KD.sent2[l])}
   var all=setUpTo(l,KD.lessons[l].length-1),ru=l==='ru';
   if(k==='caps'){var w=shuf(KD.dict[l]).slice(0,16).map(function(x,j){return j%2?x:cap(x)});return w.join(' ')}
   if(k==='pun1'){var s=shuf(KD.dict[l]).slice(0,5).map(function(x,j){return x+(j%2?'.':',')}).join(' ');return s+' '+shuf(KD.dict[l]).slice(0,4).join(', ')+'.'}
@@ -504,7 +583,7 @@ function kbFlash(ch,ok){
 /* ---------- запуск режимов ---------- */
 function mkRun(cfg){
   var t=cfg.text;
-  return {mode:cfg.mode,lang:cfg.lang||D.lang,text:t,st:new Array(t.length).fill(0),idx:0,keys:0,errs:0,t0:0,tEnd:0,limit:cfg.limit||0,les:cfg.les,okT:[],em:{},hm:{},done:false,label:cfg.label||'',stream:!!cfg.stream}}
+  return {mode:cfg.mode,lang:cfg.lang||D.lang,text:t,st:new Array(t.length).fill(0),idx:0,keys:0,errs:0,t0:0,tEnd:0,limit:cfg.limit||0,les:cfg.les,okT:[],em:{},hm:{},done:false,label:cfg.label||'',stream:!!cfg.stream,moreF:cfg.moreF,tg:cfg.tg,maxErr:cfg.maxErr==null?null:cfg.maxErr}}
 function start(cfg){
   stopAll();R=mkRun(cfg);show('run');
   $('#ktext').innerHTML=R.text.split('').map(function(c,i){return '<span class="c" data-i="'+i+'">'+(c===' '?'&nbsp;':esc(c))+'</span>'}).join('');
@@ -514,7 +593,7 @@ function start(cfg){
   mark();stats();focusIn();
   if(R.limit){$('#kbar').hidden=false}else $('#kbar').hidden=false}
 function more(){
-  if(!R.stream)return;var add=' '+genWords(R.lang,40,false);var base=R.text.length;R.text+=add;
+  if(!R.stream)return;var add=' '+(R.moreF?R.moreF():genWords(R.lang,40,false));var base=R.text.length;R.text+=add;
   for(var i=0;i<add.length;i++){R.st.push(0);var s=document.createElement('span');s.className='c';s.setAttribute('data-i',base+i);s.innerHTML=add[i]===' '?'&nbsp;':esc(add[i]);$('#ktext').appendChild(s)}}
 function mark(){
   var cur=$('.c.cur',ROOT);if(cur)cur.classList.remove('cur');
@@ -536,6 +615,7 @@ function onChar(ch){
   else{R.errs++;R.em[exp]=(R.em[exp]||0)+1;beep(false);kbFlash(exp,false);
     if(D.fix){var el=$('.c[data-i="'+R.idx+'"]',ROOT);if(el){el.classList.add('shake');setTimeout(function(){el.classList.remove('shake')},200)}}
     else{R.st[R.idx]=2;R.idx++}}
+  if(R.maxErr!=null&&R.errs>R.maxErr){R.failed=true;finish();return}
   if(ok||!D.fix)paint(R.idx-1);
   if(R.stream&&R.text.length-R.idx<70)more();
   if(!R.limit&&R.idx>=R.text.length){finish();return}
@@ -562,15 +642,17 @@ function finish(){
   if(!R||R.done)return;R.done=true;R.tEnd=performance.now();clearInterval(TM);
   if(R.limit&&R.t0)R.tEnd=Math.min(R.tEnd,R.t0+R.limit*1000);
   var c=calc(),res={d:Date.now(),m:R.mode,l:R.lang,cpm:Math.round(c.cpm),acc:Math.round(c.acc*10)/10,sec:Math.round(c.el),ch:c.okc};
-  if(c.okc>=10||R.mode==='les'){D.hist.push(res);if(D.hist.length>300)D.hist=D.hist.slice(-300)}
+  if(c.okc>=10||R.tg){D.hist.push(res);if(D.hist.length>300)D.hist=D.hist.slice(-300)}
   for(var k in R.em){D.err[R.lang][k]=(D.err[R.lang][k]||0)+R.em[k]}
   for(var k2 in R.hm){D.hit[R.lang][k2]=(D.hit[R.lang][k2]||0)+R.hm[k2]}
-  var extra='',les=R.les;
-  if(les!=null){var L=KD.lessons[R.lang][les],goal=lessonGoal(les),pass=c.acc>=90&&c.cpm>=goal,stars=!pass?0:(c.acc>=97&&c.cpm>=goal*1.3?3:c.acc>=94&&c.cpm>=goal*1.1?2:1),old=D.les[R.lang][les]||{};
-    D.les[R.lang][les]={s:Math.max(stars,old.s||0),b:Math.max(Math.round(c.cpm),old.b||0),a:Math.max(Math.round(c.acc),old.a||0)};
-    res.pass=pass;res.stars=stars;res.goal=goal;res.les=les}
+  var t=R.tg;
+  if(t){var am=LVA[lvl()],pass=!R.failed&&c.acc>=am&&c.cpm>=t.goal&&(R.limit?true:R.idx>=R.text.length)&&(R.maxErr==null||R.errs<=R.maxErr),
+      stars=!pass?0:(c.acc>=Math.min(99,am+3)&&c.cpm>=t.goal*1.25?3:c.acc>=Math.min(99,am+1.5)&&c.cpm>=t.goal*1.1?2:1),
+      st=D[t.store][R.lang],old=st[t.id]||{};
+    st[t.id]={s:Math.max(stars,old.s||0),b:Math.max(Math.round(c.cpm),old.b||0),a:Math.max(Math.round(c.acc),old.a||0)};
+    res.pass=pass;res.stars=stars;res.goal=t.goal;res.am=am;res.store=t.store;res.id=t.id;res.failed=!!R.failed}
   save();showResult(c,res)}
-function lessonGoal(i){return Math.round(40+i*3.2)}
+function lessonGoal(l,i){var L=KD.lessons[l][i];return Math.round((L.g||(40+i*3.2))*LVG[lvl()])}
 function sparkline(){
   var T=R.okT,el=Math.max(1,Math.ceil(elapsed())),b=[];for(var s=0;s<el;s++)b.push(0);
   T.forEach(function(t){var s=Math.min(el-1,Math.floor(t/1000));b[s]++});
@@ -581,12 +663,12 @@ function showResult(c,res){
   show('res');
   var worst=Object.keys(R.em).sort(function(a,b){return R.em[b]-R.em[a]}).slice(0,5).map(function(k){return '<span class="kchip">'+esc(k===' '?'пробел':k)+' <small>×'+R.em[k]+'</small></span>'}).join('');
   var h='<div class="kres-h"><div><div class="kbig">'+nf(c.cpm,0)+'<small> зн/мин</small></div><div class="kr2">'+nf(c.wpm,0)+' слов/мин · '+rate(c.cpm)+'</div></div>';
-  if(res.les!=null){h+='<div class="kstars" aria-label="Звёзды">'+[1,2,3].map(function(i){return '<span class="'+(i<=res.stars?'on':'')+'">★</span>'}).join('')+'</div>'}
+  if(res.stars!=null){h+='<div class="kstars" aria-label="Звёзды">'+[1,2,3].map(function(i){return '<span class="'+(i<=res.stars?'on':'')+'">★</span>'}).join('')+'</div>'}
   h+='</div><div class="kgrid"><div><b>'+nf(c.acc,0)+'%</b><span>точность</span></div><div><b>'+R.errs+'</b><span>ошибок</span></div><div><b>'+nf(c.el,0)+' с</b><span>время</span></div><div><b>'+c.okc+'</b><span>знаков</span></div></div>';
-  if(res.les!=null){h+='<p class="kmsg '+(res.pass?'good':'bad')+'">'+(res.pass?'Урок пройден! ':'Цель урока: точность от 90% и скорость от '+res.goal+' зн/мин. ')+(res.pass&&res.stars<3?'Для трёх звёзд — точность от 97% и скорость '+Math.round(res.goal*1.3)+'+.':'')+'</p>'}
-  else if(c.acc<90)h+='<p class="kmsg bad">Много ошибок. Сбавь скорость: сначала точность, потом скорость.</p>';
+  if(res.stars!=null){h+='<p class="kmsg '+(res.pass?'good':'bad')+'">'+(res.pass?(res.store==='ch'?'Вызов принят! ':'Урок пройден! '):(res.failed?'Слишком много ошибок для этого вызова. ':'Цель: точность от '+res.am+'% и скорость от '+res.goal+' зн/мин. '))+(res.pass&&res.stars<3?'Для трёх звёзд — точность от '+Math.min(99,res.am+3)+'% и скорость '+Math.round(res.goal*1.25)+'+.':'')+'</p>'}
+  else if(c.acc<LVA[lvl()])h+='<p class="kmsg bad">Много ошибок. Сбавь скорость: сначала точность, потом скорость.</p>';
   h+=R.mode==='game'?'':(sparkline()+(worst?'<div class="kwst"><span>Чаще всего промахи:</span> '+worst+'</div>':''));
-  h+='<div class="kact">'+(res.les!=null&&res.pass&&res.les<KD.lessons[R.lang].length-1?'<button class="kbtn pri" data-a="next">Следующий урок →</button>':'')+'<button class="kbtn'+(res.les!=null&&res.pass?'':' pri')+'" data-a="again">Ещё раз</button><button class="kbtn" data-a="menu">Выбрать другое</button></div>';
+  h+='<div class="kact">'+(res.store==='les'&&res.pass&&res.id<KD.lessons[R.lang].length-1?'<button class="kbtn pri" data-a="next">Следующий урок →</button>':'')+'<button class="kbtn'+(res.pass&&res.store==='les'?'':' pri')+'" data-a="again">Ещё раз</button><button class="kbtn" data-a="menu">Выбрать другое</button></div>';
   $('#kres').innerHTML=h}
 
 /* ---------- игра «Дождь слов» ---------- */
@@ -624,18 +706,27 @@ var V='menu';
 function show(v){V=v;['menu','run','res','game'].forEach(function(x){var e=$('#kv-'+x);if(e)e.hidden=x!==v});$('#kmodes').hidden=(v!=='menu');ROOT.classList.toggle('running',v==='run'||v==='game');if(v==='menu')window.scrollTo({top:0})}
 function stopAll(){clearInterval(TM);if(GM){cancelAnimationFrame(GM.raf);GM=null}}
 function focusIn(){var i=$('#kin');i.value='';try{i.focus({preventScroll:true})}catch(e){i.focus()}}
-var MODES=[['les','Уроки','Для новичка: буква за буквой'],['words','Слова','Случайные слова'],['text','Тексты','Готовые отрывки'],['time','На время','15 секунд — 3 минуты'],['sym','Цифры и знаки','Числа и пунктуация'],['game','Дождь слов','Игра на скорость'],['stat','Статистика','Прогресс и слабые клавиши']];
+var MODES=[['les','Уроки','Курс: от букв до экзамена'],['ch','Вызовы','Сложные задания'],['words','Слова','Случайные слова'],['text','Тексты','Готовые отрывки'],['time','На время','15 секунд — 3 минуты'],['sym','Цифры и знаки','Числа и пунктуация'],['game','Дождь слов','Игра на скорость'],['stat','Статистика','Прогресс и слабые клавиши']];
 function chips(name,opts,cur,fmt){return '<div class="kchips" data-o="'+name+'">'+opts.map(function(o){return '<button type="button" class="kchip2'+(String(o)===String(cur)?' on':'')+'" data-v="'+o+'">'+(fmt?fmt(o):o)+'</button>'}).join('')+'</div>'}
 function menuHTML(){
   var l=D.lang,m=D.mode,h='';
   if(m==='les'){
-    var ls=KD.lessons[l],done=ls.filter(function(x,i){return D.les[l][i]&&D.les[l][i].s>0}).length,first=0;for(var i=0;i<ls.length;i++){if(!(D.les[l][i]&&D.les[l][i].s>0)){first=i;break}first=i}
-    h+='<p class="kdesc">Каждый урок учит несколько новых клавиш. Печатай всеми десятью пальцами и не смотри на клавиатуру. Пройдено: <b>'+done+' из '+ls.length+'</b>.</p><div class="klg">';
-    ls.forEach(function(x,i){var r=D.les[l][i]||{},st=r.s||0;h+='<button type="button" class="klc'+(i===first&&!st?' next':'')+(st?' done':'')+'" data-les="'+i+'"><i>'+(i+1)+'</i><b>'+esc(x.t)+'</b><span class="kst">'+[1,2,3].map(function(n){return '<em class="'+(n<=st?'on':'')+'">★</em>'}).join('')+'</span>'+(r.b?'<small>лучший: '+r.b+' зн/мин</small>':'<small>цель: '+lessonGoal(i)+' зн/мин</small>')+'</button>'});
+    var ls=KD.lessons[l],done=ls.filter(function(x,i){return D.les[l][i]&&D.les[l][i].s>0}).length,first=ls.length-1;for(var i0=0;i0<ls.length;i0++){if(!(D.les[l][i0]&&D.les[l][i0].s>0)){first=i0;break}}
+    h+='<p class="kdesc">Уровень <b>'+LVN[lvl()]+'</b>: цель урока — от '+LVA[lvl()]+'% точности и своя скорость. Уровень меняется сверху. Пройдено: <b>'+done+' из '+ls.length+'</b>.</p>';
+    var card=function(x,i){var r=D.les[l][i]||{},st=r.s||0;return '<button type="button" class="klc'+(i===first&&!st?' next':'')+(st?' done':'')+'" data-les="'+i+'"><i>'+(i+1)+'</i><b>'+esc(x.t)+'</b><span class="kst">'+[1,2,3].map(function(n){return '<em class="'+(n<=st?'on':'')+'">★</em>'}).join('')+'</span>'+(r.b?'<small>лучший: '+r.b+' зн/мин · цель '+lessonGoal(l,i)+'</small>':'<small>цель: '+lessonGoal(l,i)+' зн/мин</small>')+'</button>'};
+    h+='<h3 class="kh3">Основной курс</h3><div class="klg">';
+    ls.forEach(function(x,i){if(!x.a)h+=card(x,i)});
+    h+='</div><h3 class="kh3">Скорость и сложные тексты</h3><div class="klg">';
+    ls.forEach(function(x,i){if(x.a)h+=card(x,i)});
     h+='</div>'}
-  else if(m==='words'){var o=D.opt.words;h+='<p class="kdesc">Случайные частые слова. Хорошая разминка.</p><div class="kopt"><span>Сколько слов</span>'+chips('words.n',[10,25,50,100],o.n)+'</div><div class="kopt"><span>Заглавные</span>'+chips('words.caps',[0,1],o.caps?1:0,function(v){return v?'Да':'Нет'})+'</div><button class="kbtn pri big" data-a="go">Начать</button>'}
-  else if(m==='text'){h+='<p class="kdesc">Выбери отрывок или нажми «Случайный».</p><div class="ktl"><button type="button" class="kt" data-tx="r"><b>Случайный</b><small>любой отрывок</small></button>'+KD.texts[l].map(function(x){return '<button type="button" class="kt" data-tx="'+x.id+'"><b>'+esc(x.t)+'</b><small>'+x.s.length+' знаков · '+(x.c==='w'?'скороговорки':'текст')+'</small></button>'}).join('')+'</div>'}
-  else if(m==='time'){var o=D.opt.time;h+='<p class="kdesc">Печатай, пока не кончится время. Слова будут появляться без остановки.</p><div class="kopt"><span>Время</span>'+chips('time.sec',[15,30,60,120,180],o.sec,function(v){return v<60?v+' с':v/60+' мин'})+'</div><button class="kbtn pri big" data-a="go">Начать</button>'}
+  else if(m==='ch'){
+    var cl=chList(l),dn=cl.filter(function(c){return D.ch[l][c.id]&&D.ch[l][c.id].s>0}).length;
+    h+='<p class="kdesc">Сложные задания на точность, скорость и выдержку. Уровень <b>'+LVN[lvl()]+'</b>: точность от '+LVA[lvl()]+'%. Выполнено: <b>'+dn+' из '+cl.length+'</b>.</p><div class="klg">';
+    cl.forEach(function(c){var r=D.ch[l][c.id]||{},st=r.s||0;h+='<button type="button" class="klc'+(st?' done':'')+'" data-ch="'+c.id+'"><i>'+(cl.indexOf(c)+1)+'</i><b>'+esc(c.t)+'</b><span class="kst">'+[1,2,3].map(function(n){return '<em class="'+(n<=st?'on':'')+'">★</em>'}).join('')+'</span><small>'+esc(c.d)+' · от '+chGoal(c)+' зн/мин'+(r.b?' · лучший '+r.b:'')+'</small></button>'});
+    h+='</div>'}
+  else if(m==='words'){var o=D.opt.words;h+='<p class="kdesc">Случайные слова. Чем длиннее слова и больше заглавных и знаков, тем сложнее.</p><div class="kopt"><span>Сколько слов</span>'+chips('words.n',[10,25,50,100,200],o.n)+'</div><div class="kopt"><span>Длина слов</span>'+chips('words.len',[0,1,2,3],o.len||0,function(v){return ['Любые','Короткие','Длинные (7+)','Очень длинные (9+)'][v]})+'</div><div class="kopt"><span>Заглавные</span>'+chips('words.caps',[0,1],o.caps?1:0,function(v){return v?'Да':'Нет'})+'</div><div class="kopt"><span>Знаки препинания</span>'+chips('words.pun',[0,1],o.pun?1:0,function(v){return v?'Да':'Нет'})+'</div><button class="kbtn pri big" data-a="go">Начать</button>'}
+  else if(m==='text'){var fd=D.opt.text.d||0,tl=KD.texts[l].filter(function(x){return !fd||x.d===fd});h+='<p class="kdesc">Выбери отрывок или нажми «Случайный».</p><div class="kopt"><span>Сложность</span>'+chips('text.d',[0,1,2,3],fd,function(v){return ['Все','Лёгкие','Средние','Сложные'][v]})+'</div><div class="ktl"><button type="button" class="kt" data-tx="r"><b>Случайный</b><small>из списка ниже</small></button>'+tl.map(function(x){return '<button type="button" class="kt" data-tx="'+x.id+'"><b>'+esc(x.t)+'</b><small>'+x.s.length+' знаков · '+['','лёгкий','средний','сложный'][x.d]+(x.c==='w'?' · скороговорки':'')+'</small></button>'}).join('')+'</div>'}
+  else if(m==='time'){var o=D.opt.time;h+='<p class="kdesc">Печатай, пока не кончится время. Слова будут появляться без остановки.</p><div class="kopt"><span>Время</span>'+chips('time.sec',[15,30,60,120,180,300],o.sec,function(v){return v<60?v+' с':v/60+' мин'})+'</div><div class="kopt"><span>Слова</span>'+chips('time.hard',[0,1,2],o.hard||0,function(v){return ['Обычные','Длинные','Длинные, заглавные, знаки'][v]})+'</div><button class="kbtn pri big" data-a="go">Начать</button>'}
   else if(m==='sym'){var o=D.opt.sym;h+='<p class="kdesc">Цифры и знаки — самое неудобное для новичков. Тренируйся отдельно.</p><div class="kopt"><span>Что печатать</span>'+chips('sym.kind',['dig','pun','mix'],o.kind,function(v){return {dig:'Цифры',pun:'Знаки',mix:'Вместе'}[v]})+'</div><div class="kopt"><span>Сколько</span>'+chips('sym.n',[15,30,60],o.n)+'</div><button class="kbtn pri big" data-a="go">Начать</button>'}
   else if(m==='game'){var o=D.opt.game;h+='<p class="kdesc">Слова падают сверху. Набери слово целиком, пока оно не упало. 5 жизней. Чем дальше, тем быстрее.</p><div class="kopt"><span>Сложность</span>'+chips('game.lv',[1,2,3],o.lv,function(v){return ['Лёгкая','Средняя','Быстрая'][v-1]})+'</div><div class="kopt"><span>Рекорд</span><b>'+(o['best'+o.lv]||0)+' очков</b></div><button class="kbtn pri big" data-a="go">Играть</button>'}
   else h+=statHTML();
@@ -655,34 +746,59 @@ function statHTML(){
 function drawMenu(){
   $('#kmodes').innerHTML=MODES.map(function(x){return '<button type="button" class="kmode'+(D.mode===x[0]?' on':'')+'" data-m="'+x[0]+'"><b>'+x[1]+'</b><small>'+x[2]+'</small></button>'}).join('');
   $('#kv-menu').innerHTML=menuHTML();
+  $$('[data-lvl]').forEach(function(b){b.classList.toggle('on',+b.getAttribute('data-lvl')===lvl()+1)});
   $$('[data-lang]').forEach(function(b){b.classList.toggle('on',b.getAttribute('data-lang')===D.lang)});
   [['fix'],['kb'],['fing'],['snd']].forEach(function(a){var b=$('[data-tg="'+a[0]+'"]');if(b){b.classList.toggle('on',!!D[a[0]]);b.setAttribute('aria-pressed',!!D[a[0]])}});
   $('#kroot-size').textContent=Math.round(D.size*100)+'%';ROOT.style.setProperty('--ks',D.size)}
 function go(){
   var l=D.lang,m=D.mode;
-  if(m==='words'){var o=D.opt.words;start({mode:'words',text:genWords(l,o.n,o.caps)})}
-  else if(m==='time'){start({mode:'time',text:genWords(l,60,false),limit:D.opt.time.sec,stream:true})}
+  if(m==='words'){var o=D.opt.words;start({mode:'words',text:genWordsX(l,o.n,{len:o.len,caps:o.caps,pun:o.pun})})}
+  else if(m==='time'){var hd=[{},{len:2},{len:2,caps:1,pun:1}][D.opt.time.hard||0];start({mode:'time',text:genWordsX(l,60,hd),limit:D.opt.time.sec,stream:true,moreF:function(){return genWordsX(l,40,hd)}})}
   else if(m==='sym'){var o2=D.opt.sym;start({mode:'sym',text:genSym(l,o2.kind,o2.n)})}
   else if(m==='game')startGame()}
-function startLesson(i){D.lastLes=i;start({mode:'les',les:i,text:lessonText(D.lang,i)})}
-function startText(id){var a=KD.texts[D.lang],x=id==='r'?rnd(a):a.filter(function(t){return t.id===id})[0];D.lastText=x.id;start({mode:'text',text:x.s})}
-function again(){var m=R&&R.mode;if(m==='les')startLesson(R.les);else if(m==='text')startText(D.lastText||'r');else if(m==='game')startGame();else go()}
+function startLesson(i){
+  var l=D.lang,L=KD.lessons[l][i];D.lastLes=i;
+  var cfg={mode:'les',text:lessonText(l,i),tg:{store:'les',id:i,goal:lessonGoal(l,i)}};
+  if(L.k==='sprint'){cfg.limit=40;cfg.stream=true;cfg.moreF=function(){return genWordsX(l,40,{caps:1,pun:1})}}
+  start(cfg)}
+/* вызовы */
+function chGoal(c){return Math.round(c.g*LVG[lvl()])}
+function chList(l){
+  var ru=l==='ru',sp=KD.sent[l].concat(KD.sent2[l]);
+  return [
+  {id:'c1',t:ru?'Чистая печать':'Clean typing',d:ru?'300 знаков, не больше 3 ошибок':'300 characters, at most 3 mistakes',g:110,maxErr:3,gen:function(){return shuf(sp).join(' ').slice(0,300).replace(/\s+\S*$/,'')}},
+  {id:'c2',t:ru?'Без права на ошибку':'No mistakes allowed',d:ru?'200 знаков, при первой ошибке провал':'200 characters, the first mistake fails',g:100,maxErr:0,gen:function(){return genWordsX(l,30,{len:0}).slice(0,200).replace(/\s+\S*$/,'')}},
+  {id:'c3',t:ru?'Спринт 30 секунд':'30-second sprint',d:ru?'Заглавные и знаки, 30 секунд':'Capitals and punctuation, 30 seconds',g:150,limit:30,o:{caps:1,pun:1},gen:function(){return genWordsX(l,60,{caps:1,pun:1})}},
+  {id:'c4',t:ru?'Длинные слова':'Long words',d:ru?'25 слов от 9 букв':'25 words of 9+ letters',g:120,gen:function(){return genWordsX(l,25,{len:3})}},
+  {id:'c5',t:ru?'Цифры и даты':'Numbers and dates',d:ru?'Числа, проценты, телефоны':'Numbers, percents, phones',g:100,gen:function(){return genDates(l)+' '+genDates(l)}},
+  {id:'c6',t:ru?'Зачёт на 60 секунд':'60-second test',d:ru?'Обычные слова, как можно быстрее':'Common words, as fast as you can',g:200,limit:60,gen:function(){return genWordsX(l,80,{})}},
+  {id:'c7',t:ru?'Марафон 3 минуты':'3-minute marathon',d:ru?'Слова с заглавными и знаками':'Words with capitals and punctuation',g:160,limit:180,o:{caps:1,pun:1},gen:function(){return genWordsX(l,80,{caps:1,pun:1})}},
+  {id:'c8',t:ru?'Диктант: сложный текст':'Dictation: hard text',d:ru?'Длинный текст с цифрами и кавычками':'A long text with digits and quotes',g:130,gen:function(){return shuf(KD.texts[l].filter(function(x){return x.d===3&&x.c==='t'}))[0].s}}]}
+function startChallenge(id){
+  var c=chList(D.lang).filter(function(x){return x.id===id})[0];D.lastCh=id;
+  var cfg={mode:'ch',text:c.gen(),tg:{store:'ch',id:id,goal:chGoal(c)},maxErr:c.maxErr==null?null:c.maxErr};
+  if(c.limit){cfg.limit=c.limit;cfg.stream=true;cfg.moreF=function(){return genWordsX(D.lang,40,c.o||{})}}
+  start(cfg)}
+function startText(id){var a=KD.texts[D.lang].filter(function(t){return !D.opt.text.d||t.d===D.opt.text.d}),x=id==='r'?rnd(a):KD.texts[D.lang].filter(function(t){return t.id===id})[0];D.lastText=x.id;start({mode:'text',text:x.s})}
+function again(){var m=R&&R.mode;if(R&&R.tg&&R.tg.store==='les')startLesson(R.tg.id);else if(R.tg&&R.tg.store==='ch')startChallenge(R.tg.id);else if(m==='text')startText(D.lastText||'r');else if(m==='game')startGame();else go()}
 
 /* ---------- события ---------- */
 ROOT.addEventListener('click',function(e){
-  var t=e.target.closest('button,[data-les],[data-tx]');
+  var t=e.target.closest('button,[data-les],[data-tx],[data-ch]');
   if(!t){if(e.target.closest('#kstage,#kv-game'))focusIn();return}
   var v;
   if((v=t.getAttribute('data-m'))){D.mode=v;save();drawMenu();return}
   if((v=t.getAttribute('data-lang'))){D.lang=v;save();drawMenu();return}
   if((v=t.getAttribute('data-tg'))){D[v]=!D[v];save();drawMenu();if(V==='run'||V==='game'){$('#kkb').hidden=!D.kb;$('#khint').hidden=!D.fing;ROOT.classList.toggle('nof',!D.fing);if(R&&V==='run'){$('#kkb').innerHTML=D.kb?kbHTML(R.lang):'';mark()}}return}
   if((v=t.getAttribute('data-sz'))){D.size=Math.max(.8,Math.min(1.6,Math.round((D.size+(+v))*100)/100));save();drawMenu();return}
+  if((v=t.getAttribute('data-lvl'))){D.lvl=+v;save();drawMenu();return}
+  if(t.hasAttribute('data-ch')){startChallenge(t.getAttribute('data-ch'));return}
   if(t.hasAttribute('data-les')){startLesson(+t.getAttribute('data-les'));return}
   if(t.hasAttribute('data-tx')){startText(t.getAttribute('data-tx'));return}
-  if((v=t.getAttribute('data-v'))!==null&&t.parentNode.hasAttribute('data-o')){var p=t.parentNode.getAttribute('data-o').split('.');var val=/^\d+$/.test(v)?+v:v;if(p[1]==='caps')val=!!+v;D.opt[p[0]][p[1]]=val;save();drawMenu();return}
+  if((v=t.getAttribute('data-v'))!==null&&t.parentNode.hasAttribute('data-o')){var p=t.parentNode.getAttribute('data-o').split('.');var val=/^\d+$/.test(v)?+v:v;if(p[1]==='caps'||p[1]==='pun')val=!!+v;D.opt[p[0]][p[1]]=val;save();drawMenu();return}
   if((v=t.getAttribute('data-a'))){
     if(v==='go')go();else if(v==='again')again();else if(v==='menu'){stopAll();R=null;show('menu');drawMenu()}
-    else if(v==='next'){startLesson(R.les+1)}
+    else if(v==='next'){startLesson(R.tg.id+1)}
     else if(v==='quit'){stopAll();if(R&&!R.done&&R.mode!=='game'&&R.keys>=10){finish()}else{R=null;show('menu');drawMenu()}}
     else if(v==='redo'){again()}
     else if(v==='reset'){if(t.getAttribute('data-sure')){D.hist=[];D.les={ru:{},en:{}};D.err={ru:{},en:{}};D.hit={ru:{},en:{}};D.opt.game.best1=D.opt.game.best2=D.opt.game.best3=0;save();drawMenu()}else{t.setAttribute('data-sure','1');t.textContent='Точно сбросить? Нажми ещё раз';setTimeout(function(){drawMenu()},3500)}}
