@@ -62,13 +62,6 @@ for f in sorted(glob.glob(os.path.join(ROOT, 'src', 'finenglish', 'lessons', '[0
     for h, x in sections(body):
         if h == 'Theory': h = ''
         out.append(['en', title, (short + '. ' + x).strip() if not h else x, 'fin-english.html#t/' + fid, h])
-# ИИ-курс (bootcamp.html)
-for f in sorted(glob.glob(os.path.join(ROOT, 'src', 'bootcamp', 'lessons', '[0-9]*.md'))):
-    t = open(f, encoding='utf-8').read().strip().split('\n')
-    title = re.sub(r'^# Занятие \d+\. ', '', t[0]).strip(); short = t[1][6:].strip() if len(t) > 1 and t[1].startswith('short:') else ''
-    fid = re.sub(r'^\d+_', '', os.path.splitext(os.path.basename(f))[0])
-    for h, x in sections('\n'.join(t[3:])):
-        out.append(['bc', title, (short + '. ' + x).strip() if not h else x, 'bootcamp.html#t/' + fid, h])
 # билеты и конспекты (Учёба)
 tk = json.load(open(os.path.join(ROOT, 'src', 'tickets.json'), encoding='utf-8'))
 KEY = {'konst': 'const', 'ugol': 'crim', 'grazh': 'civil'}; LAB = {'konst': 'Конституционное право', 'ugol': 'Уголовное право', 'grazh': 'Гражданское право'}

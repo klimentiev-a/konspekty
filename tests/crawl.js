@@ -10,7 +10,7 @@ const src = fs.readFileSync(ROOT + 'src/finance/make_hub.py', 'utf8');
 const prof = [...src.matchAll(/'(\w+)': \('[^']+', '(\d+)'/g)].map(m => [m[1], m[2]]);
 const AUTH = prof.map(([p, pw]) => `localStorage.setItem('hub:auth:${p}','${crypto.createHash('sha256').update(`hub:${p}:${pw}`).digest('hex').slice(0, 24)}')`).join(';');
 const START = ['index.html', 'artem.html', 'nastya.html', 'nastya-ucheba.html', 'ucheba.html', 'finance.html',
-  'english.html', 'fin-english.html', 'bootcamp.html', 'search.html', 'search.html?q=wacc', 'fin2/index.html', 'fin2/akcii.html'];
+  'english.html', 'fin-english.html', 'search.html', 'search.html?q=wacc', 'fin2/index.html', 'fin2/akcii.html'];
 const ONLY = process.argv[2] ? process.argv[2].split(',') : null;
 const WIDTHS = process.argv[3] ? process.argv[3].split(',').map(Number) : [1280, 390];
 const MAXR = +(process.env.CRAWL_MAX || 700);
