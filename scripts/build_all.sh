@@ -13,6 +13,7 @@ python3 src/finance/make_ucheba.py src/index.src.html ucheba.html
 python3 src/finance/build_finance.py src/finance/content src/marked.min.js finance.html
 python3 src/english/build_english.py
 python3 src/finenglish/build.py
+python3 src/bootcamp/build.py
 python3 src/fin2/build.py
 python3 src/finance/make_search.py
 # Страницы, которых больше нет: переадресация на новые адреса (закладки и старые ссылки продолжают работать)
@@ -25,7 +26,7 @@ PY
 # Синхронизация прогресса между устройствами: подключаем sync.js первым скриптом (идемпотентно)
 python3 - <<'PY'
 import re
-for f in ['index.html','artem.html','nastya.html','nastya-ucheba.html','nastya-klava.html','ucheba.html','finance.html','english.html','fin-english.html']:
+for f in ['index.html','artem.html','nastya.html','nastya-ucheba.html','nastya-klava.html','ucheba.html','finance.html','english.html','fin-english.html','bootcamp.html']:
     s = open(f, encoding='utf-8').read()
     if 'src="tables.js"' not in s:
         s = s.replace('<meta charset="utf-8">', '<meta charset="utf-8"><script src="tables.js"></script>', 1)
