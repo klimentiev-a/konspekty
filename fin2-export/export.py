@@ -241,6 +241,21 @@ def main():
             uni["count"] = len(rowmap)
             sizes["universe.json"] = dump(out, "universe.json", uni)
             log(f"  universe.json {sizes['universe.json'] / 1024:.0f} КБ ({len(rowmap)} + {len(rows) - len(rowmap)} строк)")
+            # лёгкая выгрузка для «минного поля» на сайте Hub: только нужные колонки (≈0,3 МБ вместо 3,4 МБ).
+            # Сбой здесь не должен ронять основную выгрузку.
+            try:
+                MZ_COLS = ["currency", "kind", "ytm", "noncomparable", "years_to_maturity", "ytm_basis", "offer_date",
+                           "rating_bucket", "spread_ofz_bp", "duration_years", "name", "isin", "rating_agency"]
+                mz_rows = []
+                for r in slim:
+                    y = r.get("ytm")
+                    if r.get("currency") not in ("SUR", "RUB") or r.get("kind") != "fixed" or y is None or y <= 0 or y > 300 or r.get("noncomparable"):
+                        continue
+                    mz_rows.append([r.get(k) for k in MZ_COLS])
+                sizes["universe-mz.json"] = dump(out, "universe-mz.json", {"cols": MZ_COLS, "rows": mz_rows, "updated_at": snapshot_at, "count_all": len(slim)})
+                log(f"  universe-mz.json {sizes['universe-mz.json'] / 1024:.0f} КБ ({len(mz_rows)} строк)")
+            except Exception as e:  # noqa: BLE001
+                log(f"  universe-mz.json не собран: {e}")
         finally:
             db.close()
 

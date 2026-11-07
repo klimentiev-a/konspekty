@@ -235,7 +235,7 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 .sw a.out{color:var(--accent2);white-space:nowrap}.sw a.out:first-of-type{margin-left:auto}
 /* «Сегодня»: разбор месяца, темы, фразы */
 .brief h2 small{font:400 13px/1 var(--sans);color:var(--faint);margin-left:8px;white-space:nowrap}
-.pitch p{margin:0 0 8px;font-size:15px;line-height:1.5;max-width:76ch}.pmb{display:none}@media (max-width:640px){.pitch:not(.open) p.pm{display:none}.pitch:not(.open) .pmb{display:inline-flex}}.pitch p::before{content:'—';color:var(--accent);margin-right:8px}
+.pitch p{margin:0 0 8px;font-size:15px;line-height:1.5;max-width:76ch}.pitch .pmb{display:none}@media (max-width:640px){.pitch:not(.open) p.pm{display:none}.pitch:not(.open) .pmb{display:inline-flex}}.pitch p::before{content:'—';color:var(--accent);margin-right:8px}
 .themes{display:grid;gap:4px}.btm{border-top:1px solid var(--line2)}.btm summary{display:flex;gap:10px;align-items:baseline;padding:9px 0;cursor:pointer;list-style:none}.btm summary::-webkit-details-marker{display:none}
 .btm summary .tag{flex:none;font:600 10.5px/1.2 var(--sans);letter-spacing:.06em;text-transform:uppercase;color:var(--accent);padding:3px 7px;border:1px solid color-mix(in srgb,var(--accent) 40%,transparent);border-radius:999px}.btm summary b{font:600 15px/1.35 var(--sans)}
 .btm p,.btm ul{margin:4px 0 10px;font-size:14px;line-height:1.5;color:var(--muted);max-width:76ch}.btm ul{padding-left:18px}.btm li{margin:3px 0}
@@ -1244,8 +1244,6 @@ function vRU(){
     {k:'ev',t:'EV/EBITDA',num:1,f:function(r){return r.ev==null?'—':mult(r.ev)}},
     {k:'pb',t:'P/B',num:1,f:function(r){return r.pb==null?(r.blue?'отр.':'—'):mult(r.pb)}},
     {k:'dy',t:'Дивиденды',num:1,f:function(r){return r.dy==null?'—':esc(r.dy)}},
-    {k:'vol',t:'Оборот за день, млн ₽',num:1,x:1,f:function(r){return r.vol?nf(r.vol/1e6,r.vol<1e7?1:0):'—'}},
-    {k:'nd',t:'Чистый долг / EBITDA · ROE',num:1,x:1,f:function(r){return r.nd==null?'—':esc(r.nd)}},
     {k:'note',t:'Заметка',cls:'nt',x:1,f:function(r){return esc(r.note)}}];
   var secs=[];rows.forEach(function(r){if(secs.indexOf(r.sec)<0)secs.push(r.sec)});Object.keys(UNI.ru).forEach(function(t){var x=UNI.ru[t][1];if(secs.indexOf(x)<0)secs.push(x)});secs.sort(function(a,b){return a==='Прочее'?1:b==='Прочее'?-1:a.localeCompare(b,'ru')});
   var views=['Все','Голубые фишки','1-й уровень'],total=rows.length,more='';
@@ -1300,8 +1298,7 @@ function vCrypto(){
     {k:'pr',t:'Цена, ₽',num:1,f:function(x){return auto(x.p*r)}},
     {k:'c24',t:'24 ч',num:1,f:function(x){return pct(x.c24)}},
     {k:'c7',t:'7 дней',num:1,f:function(x){return pct(x.c7)}},
-    {k:'cap',t:'Капитализация',num:1,f:function(x){return bigUsd(x.cap)}},
-    {k:'vol',t:'Объём 24 ч',num:1,f:function(x){return bigUsd(x.vol)}}];
+    {k:'cap',t:'Капитализация',num:1,f:function(x){return bigUsd(x.cap)}}];
   var tot=a.reduce(function(s,x){return s+(x.cap||0)},0),btc=a.filter(function(x){return x.s==='BTC'})[0];
   var h=status('cr','Криптокотировки'+(M.crsrc?' ('+M.crsrc+')':''));
   if(btc&&btc.cap&&tot)h+='<div class="tiles" style="margin-top:12px">'+tile('Капитализация топ-'+a.length,bigUsd(tot),'сумма монет в таблице')+tile('Доминация BTC (в топе)',nf(btc.cap/tot*100,1)+'%','доля BTC в капитализации топа')+tile('USD/RUB для пересчёта',nf(r,2),'курс ЦБ')+'</div>';
@@ -1509,19 +1506,30 @@ function vRisk(){
 /* ---- «Минное поле»: эффективная доходность облигаций по рейтингу и сроку (живые данные раздела «Облигации и акции», fin2-data) ---- */
 var UNIQ={t:0,rows:null,upd:'',n:0,p:null},MZ={stat:'med'};
 var MZ_T=[[0.25,'до 3 мес.'],[0.5,'3–6 мес.'],[1,'6–12 мес.'],[2,'1–2 года'],[3,'2–3 года'],[99,'больше 3 лет']],MZ_R=['AAA','AA','A','BBB','BB','B','CCC–D','без рейтинга'];
+var UNIK='hub:uni:v2';
+function uniHydrate(){   // мгновенный показ из кэша браузера, пока грузится свежий файл
+  if(UNIQ.rows)return;
+  try{var c=JSON.parse(localStorage.getItem(UNIK)||'null');if(!c||!c.rows||!c.rows.length)return;
+    var dy=(Date.now()-c.ts)/31557600000;
+    UNIQ.rows=c.rows.map(function(r){return {b:r[0],y:r[1],t:r[2]-dy,s:r[3],d:r[4],n:r[5],i:r[6],c:r[7]}}).filter(function(r){return r.t>0});
+    UNIQ.upd=c.upd||'';UNIQ.n=c.n||UNIQ.rows.length;UNIQ.t=c.ts}catch(e){}}
+function uniParse(u){
+  var C={};u.cols.forEach(function(k,i){C[k]=i});var now=Date.now(),o=[];
+  u.rows.forEach(function(r){
+    if(r[C.currency]!=='SUR'&&r[C.currency]!=='RUB')return;
+    var y=r[C.ytm];if(r[C.kind]!=='fixed'||y==null||y<=0||y>300||r[C.noncomparable])return;
+    var t=r[C.years_to_maturity];if(r[C.ytm_basis]==='offer'&&r[C.offer_date])t=(new Date(r[C.offer_date])-now)/31557600000;
+    if(t==null||t<=0)return;
+    var b=r[C.rating_bucket];b=!b?'без рейтинга':(b==='CCC'||b==='CC'||b==='C'||b==='D')?'CCC–D':b;
+    o.push({b:b,y:y,t:t,s:r[C.spread_ofz_bp],d:r[C.duration_years],n:r[C.name],i:r[C.isin],c:r[C.rating_agency]})});
+  UNIQ.rows=o;UNIQ.upd=u.updated_at||'';UNIQ.n=u.count_all||u.rows.length;UNIQ.t=Date.now();M.err.uni=0;
+  try{localStorage.setItem(UNIK,JSON.stringify({ts:UNIQ.t,upd:UNIQ.upd,n:UNIQ.n,rows:o.map(function(r){return [r.b,r.y,r.t,r.s,r.d,r.n,r.i,r.c]})}))}catch(e){}}
 function loadUni(){
   if(UNIQ.rows&&Date.now()-UNIQ.t<600000)return Promise.resolve();
   if(UNIQ.p)return UNIQ.p;
-  UNIQ.p=fetch(bdbBase()+'universe.json?v='+Math.floor(Date.now()/300000),{cache:'no-cache'}).then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(u){
-    var C={};u.cols.forEach(function(k,i){C[k]=i});var now=Date.now(),o=[];
-    u.rows.forEach(function(r){
-      if(r[C.currency]!=='SUR'&&r[C.currency]!=='RUB')return;
-      var y=r[C.ytm];if(r[C.kind]!=='fixed'||y==null||y<=0||y>300||r[C.noncomparable])return;
-      var t=r[C.years_to_maturity];if(r[C.ytm_basis]==='offer'&&r[C.offer_date])t=(new Date(r[C.offer_date])-now)/31557600000;
-      if(t==null||t<=0)return;
-      var b=r[C.rating_bucket];b=!b?'без рейтинга':(b==='CCC'||b==='CC'||b==='C'||b==='D')?'CCC–D':b;
-      o.push({b:b,y:y,t:t,s:r[C.spread_ofz_bp],d:r[C.duration_years],n:r[C.name],i:r[C.isin],c:r[C.rating_agency]})});
-    UNIQ.rows=o;UNIQ.upd=u.updated_at||'';UNIQ.n=u.rows.length;UNIQ.t=Date.now();M.err.uni=0})
+  var v='?v='+Math.floor(Date.now()/300000),get=function(f){return fetch(bdbBase()+f+v,{cache:'no-cache'}).then(function(r){if(!r.ok)throw 0;return r.json()})};
+  /* universe-mz.json — лёгкая выгрузка только нужных колонок (≈0,3 МБ вместо 3,4); пока её нет в ветке — берём полный файл */
+  UNIQ.p=get('universe-mz.json').catch(function(){return get('universe.json')}).then(uniParse)
   .catch(function(){M.err.uni=1}).then(function(){UNIQ.p=null});
   return UNIQ.p}
 function mzMed(a){if(!a.length)return null;a=a.slice().sort(function(x,y){return x-y});var m=a.length>>1;return a.length%2?a[m]:(a[m-1]+a[m])/2}
@@ -1676,10 +1684,10 @@ document.addEventListener('keydown',function(e){
   if(ok){e.preventDefault();scClamp(v);if(e.key==='0')SC.v=scPreset(3);scRaf()}});
 window.addEventListener('resize',function(){if(document.getElementById('sc-chart')){clearTimeout(scFull.rt);scFull.rt=setTimeout(scDraw,120)}});
 function vMine(){
-  var st=MZ.stat,rows=UNIQ.rows;
+  uniHydrate();var st=MZ.stat,rows=UNIQ.rows;
   var chips=[['med','Медиана'],['avg','Среднее'],['sp','Спред к ОФЗ, п.п.'],['n','Число выпусков']].map(function(x){return '<button type="button" class="chip'+(st===x[0]?' on':'')+'" data-mz="'+x[0]+'">'+x[1]+'</button>'}).join('');
   var h='<div class="sect" id="mz-root"><h2 style="margin:0">Облигации: минное поле</h2><p class="note">Эффективная доходность (YTM) рублёвых облигаций с фиксированным купоном по рейтингу и сроку до оферты или погашения. Под числом — сколько выпусков в клетке.</p><div class="mz-chips">'+chips+'</div>';
-  if(!rows)return h+'<p class="note">'+(M.err.uni?'Данные не загрузились (источник — ветка fin2-data на GitHub). Попробуйте позже.':'Загружаю выпуски…')+'</p></div>';
+  if(!rows)return h+'<p class="note" style="min-height:520px">'+(M.err.uni?'Данные не загрузились (источник — ветка fin2-data на GitHub). Попробуйте позже.':'Загружаю выпуски…')+'</p></div>';
   var body=MZ_R.map(function(r){var cells=MZ_T.map(function(tt,i){var lo=i?MZ_T[i-1][0]:0;return mzCell(rows.filter(function(x){return x.b===r&&x.t>lo&&x.t<=tt[0]}),st)}).join('');return '<tr><td><b>'+r+'</b></td>'+cells+'</tr>'}).join('');
   var ofz='';if(st==='med'||st==='avg'){ofz='<tr class="mz-o"><td><b>ОФЗ</b><br><small>кривая</small></td>'+MZ_T.map(function(tt,i){var mid=[0.25,0.5,1,2,3,5][i];return '<td>'+nf(kbdAt(mid),1)+'</td>'}).join('')+'</tr>'}
   h+='<div class="tablewrap"><table class="rkt5 mz" data-cz="1"><thead><tr><th>Рейтинг</th>'+MZ_T.map(function(x){return '<th>'+x[1]+'</th>'}).join('')+'</tr></thead><tbody>'+body+ofz+'</tbody></table></div>';
