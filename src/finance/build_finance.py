@@ -107,3 +107,11 @@ if os.path.exists(_g):   # замок профиля «Артем»
     html = html.replace('<meta charset="utf-8">', '<meta charset="utf-8">' + open(_g, encoding='utf-8').read(), 1)
 open(out, 'w', encoding='utf-8').write(html)
 print('ok', len(chs), 'chapters', len(secs), 'sectors', len(TERMS), 'terms', len(html.encode()), 'bytes')
+
+# профили компаний (бизнес, сегменты, место на рынке) — отдельный файл, страница грузит его только в карточке
+_pr = {}
+for _f in ('profiles_ru.json', 'profiles_us.json'):
+    _pr.update(json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), _f), encoding='utf-8')))
+_wdir = os.path.join(os.path.dirname(out) or '.', 'world', 'companies'); os.makedirs(_wdir, exist_ok=True)
+json.dump(_pr, open(os.path.join(_wdir, 'profiles.json'), 'w', encoding='utf-8'), ensure_ascii=False, separators=(',', ':'))
+print('ok profiles', len(_pr))

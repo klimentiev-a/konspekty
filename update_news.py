@@ -77,7 +77,8 @@ FEEDS = [
 # поиск Google Новостей за последние сутки — сотни изданий, включая Reuters и Bloomberg
 FEEDS += [(None, 'ru', G(q)) for q in ['Мосбиржа акции', 'фондовый рынок России', 'ключевая ставка ЦБ', 'курс рубля', 'ОФЗ доходность',
                                          'дивиденды совет директоров', 'нефть Brent', 'санкции банки', 'отчетность МСФО прибыль', 'атака дата-центр OR НПЗ',
-                                         'размещение облигаций', 'сбор заявок облигации', 'корпоративные облигации выпуск', 'облигации ВДО', 'book building облигации', 'рейтинг АКРА эксперт РА', 'дефолт облигации']]
+                                         'размещение облигаций', 'сбор заявок облигации', 'корпоративные облигации выпуск', 'облигации ВДО', 'book building облигации', 'рейтинг АКРА эксперт РА', 'дефолт облигации',
+                                         'флоатер облигации купон', 'оферта облигации выкуп', 'аукцион ОФЗ Минфин', 'индекс RGBI', 'замещающие облигации', 'site:smart-lab.ru облигации', 'site:cbonds.ru', 'site:rusbonds.ru']]
 FEEDS += [(None, 'world', G(q, 'en')) for q in ['stock market today', 'Wall Street stocks', 'Federal Reserve rates', 'earnings stock shares',
                                                  'site:reuters.com markets', 'site:bloomberg.com markets', 'oil prices', 'Treasury yields']]
 FEEDS += [(None, 'crypto', G('bitcoin price', 'en'))]
@@ -301,6 +302,7 @@ for i_, a_ in enumerate(multi):
             a_['m'] += b_['m']; a_['u'] |= b_['u']; b_['m'] = []
 clusters = [c for c in clusters if c['m']]
 PAYWALL = {'WSJ', 'The Wall Street Journal', 'Bloomberg.com', 'Bloomberg', 'Financial Times', 'The Economist', 'New York Times', "Barron's", 'Reuters'}
+BOND_RU = re.compile(r'ОФЗ|облигаци|купон|флоатер|размещени[ея] (?:выпуск|облигац)|сбор заявок|book.?building|ВДО|RGBI|аукцион[а-я]* Минфин', re.I)
 def base_imp(x):
     t = (x['t'] + ' ' + x.get('to', ''))
     s_ = min(6, 2 * len(HI.findall(t))) + SRCW.get(x['s'], 0)
@@ -309,6 +311,8 @@ def base_imp(x):
     if LO.search(t) and not x.get('tags'): s_ -= 4
     if LO2.search(t): s_ -= 5
     if x['cat'] == 'us' and not HI.search(t): s_ -= 2   # ленты Yahoo по тикеру — много проходных материалов
+    # российские облигации: размещения, купоны, ОФЗ, флоатеры — нужны во вкладке «Облигации», иначе тонут под нулевой важностью
+    if x['cat'] in ('ru', 'cbr') and BOND_RU.search(x['t']): s_ += 3
     return s_
 for c in clusters:
     m = c['m']
