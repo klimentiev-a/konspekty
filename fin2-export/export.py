@@ -249,7 +249,7 @@ def main():
                 mz_rows = []
                 for r in slim:
                     y = r.get("ytm")
-                    if r.get("currency") not in ("SUR", "RUB") or r.get("kind") != "fixed" or y is None or y <= 0 or y > 300 or r.get("noncomparable"):
+                    if r.get("currency") not in ("SUR", "RUB") or r.get("kind") not in ("fixed", "discount") or y is None or y <= 0 or y > 300 or r.get("noncomparable"):
                         continue
                     mz_rows.append([r.get(k) for k in MZ_COLS])
                 sizes["universe-mz.json"] = dump(out, "universe-mz.json", {"cols": MZ_COLS, "rows": mz_rows, "updated_at": snapshot_at, "count_all": len(slim)})
