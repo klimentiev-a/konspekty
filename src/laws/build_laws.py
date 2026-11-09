@@ -113,11 +113,11 @@ def toc(doc):
 def konst():
     page = get('http://www.kremlin.ru/acts/constitution/item')
     out = {}
-    for m in re.finditer(r'<h3><span><a class="bm" id="article-(\d+)"></a>Статья \d+</span>.*?</h3>(.*?)(?=<h3|<h2|$)', page, re.S):
+    for m in re.finditer(r'<h3[^>]*>\s*<span[^>]*>\s*(?:<a[^>]*></a>)?\s*Статья\s+(\d+(?:\.\d+)?)\s*</span>.*?</h3>(.*?)(?=<h3|<h2|$)', page, re.S):
         n = m.group(1)
-        paras = [clean(p) for p in re.findall(r'<p>(.*?)</p>', m.group(2), re.S)]
-        paras = [p for p in paras if p]
-        if paras:
+        paras = [clean(p) for p in re.findall(r'<p(?:\s[^>]*)?>(.*?)</p>', m.group(2), re.S)]
+        paras = [p for p in paras if p and not p.startswith(DROP)]
+        if paras and n not in out:
             out[n] = {'t': '', 'p': paras}
     print('konst', len(out), file=sys.stderr)
     return out
