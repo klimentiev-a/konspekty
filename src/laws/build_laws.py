@@ -120,6 +120,9 @@ def konst():
         if paras and n not in out:
             out[n] = {'t': '', 'p': paras}
     print('konst', len(out), file=sys.stderr)
+    for probe in ('Статья 68', 'Статья 5.1'):
+        i = page.find(probe)
+        print('ОТЛАДКА', probe, i, repr(page[max(0, i - 200):i + 700]) if i >= 0 else '', file=sys.stderr)
     return out
 
 def main():
