@@ -321,7 +321,9 @@ main{min-width:0;padding-inline:var(--gut);padding-bottom:96px}
 #artsheet .ax{width:38px;height:38px;border-radius:10px;font-size:18px;color:var(--muted)}
 #artsheet .ab2{overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;min-height:0;padding:0 16px calc(18px + env(safe-area-inset-bottom,0px))}
 #artsheet .ab2 p{margin:0 0 .75em;font:400 16px/1.55 var(--serif)}
-#artsheet .ab2 p.on{margin-inline:-8px;padding:4px 8px;border-radius:6px;background:rgba(255,208,0,.32)}
+#artsheet .ab2 p.on{margin-inline:-10px;padding:6px 10px;border-radius:10px;background:none;box-shadow:inset 0 0 0 1.5px var(--accent);animation:artOn .9s ease-out}
+@keyframes artOn{0%{box-shadow:inset 0 0 0 1.5px var(--accent),0 0 0 7px color-mix(in srgb,var(--accent) 38%,transparent)}100%{box-shadow:inset 0 0 0 1.5px var(--accent),0 0 0 0 transparent}}
+@media (prefers-reduced-motion:reduce){#artsheet .ab2 p.on{animation:none}}
 #artsheet .src{margin:.5em 0 0;font:400 12.5px/1.4 var(--sans);color:var(--faint)}
 .crtab{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 16px}
 .crtab button{height:36px;padding:0 16px;border:1px solid var(--line);border-radius:999px;background:var(--bg);color:var(--fg);font:500 14px/1 var(--sans);cursor:pointer}
