@@ -293,11 +293,22 @@ main{min-width:0;padding-inline:var(--gut);padding-bottom:96px}
 #hlsheet .hb.del{color:#c0392b}
 .hlrow q{display:block;font:italic 400 15px/1.4 var(--serif);quotes:none}
 .hlrow em{display:block;margin-top:2px;font:400 13.5px/1.4 var(--sans);font-style:normal;color:var(--accent)}
-.prose a.art{color:inherit;text-decoration:none;border-bottom:1.5px dotted var(--accent);cursor:pointer}
-.prose a.art:hover{color:var(--accent)}
-#artsheet{position:fixed;inset:0;z-index:96;background:rgba(0,0,0,.35)}
+.prose a.art{color:inherit;text-decoration:none;border:0;cursor:pointer;border-radius:4px;transition:background .15s}
+.prose a.art:hover,.prose a.art:focus-visible{background:color-mix(in srgb,var(--accent) 18%,transparent);outline:0}
+#artsheet{position:fixed;inset:0;z-index:96;background:rgba(0,0,0,0);transition:background .22s ease}
 #artsheet[hidden]{display:none}
-#artsheet .as{position:absolute;left:0;right:0;bottom:0;max-width:680px;margin:0 auto;max-height:78vh;display:flex;flex-direction:column;border-radius:16px 16px 0 0;background:var(--bg);color:var(--fg);box-shadow:0 -8px 30px rgba(0,0,0,.25)}
+#artsheet.open{background:rgba(0,0,0,.32)}
+#artsheet .as{position:absolute;left:0;right:0;bottom:0;max-width:680px;margin:0 auto;max-height:78vh;display:flex;flex-direction:column;border-radius:18px 18px 0 0;background:var(--bg);color:var(--fg);box-shadow:0 -10px 40px rgba(0,0,0,.28);transform:translateY(28px);opacity:0;transition:transform .26s cubic-bezier(.2,.8,.2,1),opacity .2s ease}
+#artsheet.open .as{transform:none;opacity:1}
+@media (min-width:720px){
+  #artsheet,#artsheet.open{background:transparent}
+  #artsheet .as{right:auto;bottom:auto;margin:0;width:min(440px,calc(100vw - 24px));max-height:min(60vh,460px);border:1px solid var(--line);border-radius:14px;box-shadow:0 14px 44px rgba(0,0,0,.24),0 2px 8px rgba(0,0,0,.12);transform:translateY(6px) scale(.97);transform-origin:var(--ox,20px) var(--oy,0);}
+  #artsheet.open .as{transform:none}
+  #artsheet .ah{padding:12px 12px 6px 16px}
+  #artsheet .at{font-size:15px}
+  #artsheet .ab2 p{font-size:15px}
+}
+@media (prefers-reduced-motion:reduce){#artsheet,#artsheet .as{transition:none}}
 #artsheet .ah{display:flex;align-items:center;gap:12px;padding:16px 16px 10px}
 #artsheet .at{flex:1;font:600 17px/1.3 var(--head,var(--serif))}
 #artsheet .ax{width:38px;height:38px;border-radius:10px;font-size:18px;color:var(--muted)}
@@ -1709,28 +1720,45 @@ function artLoad(code){
   if(LAWS[code])return Promise.resolve(LAWS[code]);
   return fetch('laws/'+code+'.json').then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(j){LAWS[code]=j;return j});
 }
-function artOpen(code,n,part){
+var artT=0;
+function artClose(now){
+  if(!artSheet||artSheet.hidden)return;
+  clearTimeout(artT);artSheet.classList.remove('open');
+  if(now)artSheet.hidden=true;else artT=setTimeout(function(){artSheet.hidden=true},230);
+}
+function artPlace(a){
+  var box=$('.as',artSheet);box.style.left=box.style.top=box.style.bottom='';
+  if(!a||innerWidth<720)return;
+  var r=a.getBoundingClientRect(),w=Math.min(440,innerWidth-24),hh=Math.min(innerHeight*.6,460,box.offsetHeight||300);
+  var left=Math.max(12,Math.min(r.left-12,innerWidth-w-12));
+  var below=innerHeight-r.bottom>hh+24||r.top<hh+24;
+  box.style.left=left+'px';
+  box.style.setProperty('--ox',Math.max(12,Math.min(w-12,r.left-left+12))+'px');
+  if(below){box.style.top=Math.min(r.bottom+8,Math.max(12,innerHeight-hh-12))+'px';box.style.setProperty('--oy','0px')}
+  else{box.style.top=Math.max(12,r.top-hh-8)+'px';box.style.setProperty('--oy','100%')}
+}
+function artOpen(code,n,part,anchor){
   if(!artSheet){
     artSheet=document.createElement('div');artSheet.id='artsheet';artSheet.hidden=true;
     artSheet.innerHTML='<div class="as"><div class="ah"><span class="at"></span><button type="button" class="ax" data-ax aria-label="Закрыть">✕</button></div><div class="ab2"></div></div>';
     document.body.appendChild(artSheet);
-    artSheet.addEventListener('click',function(e){if(e.target===artSheet||e.target.closest('[data-ax]'))artSheet.hidden=true});
-    document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!artSheet.hidden)artSheet.hidden=true});window.addEventListener('hashchange',function(){artSheet.hidden=true});
+    artSheet.addEventListener('click',function(e){if(e.target===artSheet||e.target.closest('[data-ax]'))artClose()});
+    document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!artSheet.hidden)artClose()});window.addEventListener('hashchange',function(){artClose(1)});
   }
   var nm=(LIDX&&LIDX.codes[code]&&LIDX.codes[code].n)||'',b=$('.ab2',artSheet);
   $('.at',artSheet).textContent='Статья '+n+' '+nm;
-  b.innerHTML='<p class="src">Загружаю текст…</p>';artSheet.hidden=false;
+  b.innerHTML='<p class="src">Загружаю текст…</p>';clearTimeout(artT);artSheet.hidden=false;artPlace(anchor);requestAnimationFrame(function(){requestAnimationFrame(function(){artSheet.classList.add('open')})});
   artLoad(code).then(function(L){
     var a=L[n];if(!a)throw 0;
     $('.at',artSheet).textContent='Статья '+n+' '+nm+(a.t?'. '+a.t:'');
     var src=code==='konst'?'Конституция Российской Федерации, официальный текст (kremlin.ru), загружен '+artDate(L._asof)+'.':'КонсультантПлюс, действующая редакция на '+artDate(L._asof)+', без пометок об изменениях. Перед ответом сверь с официальным текстом.';
     b.innerHTML=a.p.map(function(t){var on=part&&t.indexOf(part+'. ')===0;return '<p'+(on?' class="on"':'')+'>'+esc(t)+'</p>'}).join('')+'<p class="src">'+esc(src)+'</p>';
-    var on=$('p.on',b);b.scrollTop=on?Math.max(0,on.offsetTop-60):0;
+    var on=$('p.on',b);b.scrollTop=on?Math.max(0,on.offsetTop-60):0;artPlace(anchor);
   }).catch(function(){b.innerHTML='<p class="src">Не удалось загрузить текст статьи. Проверь соединение и попробуй ещё раз.</p>'});
 }
 view.addEventListener('click',function(e){
   var a=e.target.closest&&e.target.closest('a.art');if(!a)return;
-  e.preventDefault();e.stopPropagation();artOpen(a.getAttribute('data-code')||'konst',a.getAttribute('data-art'),a.getAttribute('data-part')||'');
+  e.preventDefault();e.stopPropagation();artOpen(a.getAttribute('data-code')||'konst',a.getAttribute('data-art'),a.getAttribute('data-part')||'',a);
 },true);
 artLoadIdx();
 
