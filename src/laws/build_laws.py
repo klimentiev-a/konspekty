@@ -65,7 +65,7 @@ def get(url, tries=4):
         try:
             with urllib.request.urlopen(urllib.request.Request(url, headers=UA), timeout=60) as r:
                 b = r.read()
-            time.sleep(1.0)
+            time.sleep(0.4)
             return b.decode('utf-8', 'replace')
         except Exception as e:
             print('  retry', url[-50:], e, file=sys.stderr)
@@ -141,18 +141,24 @@ def main():
             urls = {}
             for d in docs:
                 urls.update(toc(d))
+            todo = []
             for a in want:
                 if a in have:
                     continue
                 if a not in urls:
                     print('  нет в оглавлении', code, a, file=sys.stderr)
                     continue
-                art = parse_article(get(urls[a]))
-                if art and art['p']:
-                    have[a] = art
-                    print('  ok', code, a, len(art['p']), file=sys.stderr)
-                else:
-                    print('  не разобрана', code, a, file=sys.stderr)
+                todo.append(a)
+            def one(a):
+                return a, parse_article(get(urls[a]))
+            from concurrent.futures import ThreadPoolExecutor
+            with ThreadPoolExecutor(8) as ex:
+                for a, art in ex.map(one, todo):
+                    if art and art['p']:
+                        have[a] = art
+                        print('  ok', code, a, len(art['p']), file=sys.stderr, flush=True)
+                    else:
+                        print('  не разобрана', code, a, file=sys.stderr, flush=True)
         for a in list(have):
             if a == '_asof':
                 del have[a]
