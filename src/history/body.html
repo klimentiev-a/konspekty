@@ -1,0 +1,44 @@
+<div class="w hw" id="hist">
+  <!--TOPBAR-->
+  <div class="hhead">
+    <h1>История мира</h1>
+    <p class="lead" id="hlead">Все государства, культуры и события на одной ленте времени. Нажми на полосу, событие или любое место ленты — откроется рассказ о том, что было в мире в этот год.</p>
+  </div>
+  <div class="htools">
+    <div class="hs" id="hs">
+      <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+      <input id="hq" type="search" placeholder="Найти: Рим, инки, Тан, 1812, 500 до н. э." autocomplete="off" enterkeyhint="search" aria-label="Найти государство, событие или год">
+      <div class="hres" id="hres" role="listbox" hidden></div>
+    </div>
+    <div class="hpre" id="hpre" role="group" aria-label="Период">
+      <button type="button" data-pre="all">Вся история</button>
+      <button type="button" data-pre="anc">Древний мир</button>
+      <button type="button" data-pre="ant">Античность</button>
+      <button type="button" data-pre="mid">Средние века</button>
+      <button type="button" data-pre="new">Новое время</button>
+      <button type="button" data-pre="xx">XX век</button>
+    </div>
+    <div class="hopt">
+      <button type="button" class="htg" id="hcomp" aria-pressed="true" title="Древние тысячелетия занимают меньше места, последние века — больше">Сжать древность</button>
+      <button type="button" class="htg" id="hfold" aria-pressed="false" title="Свернуть или развернуть все регионы">Свернуть регионы</button>
+    </div>
+  </div>
+  <div class="hbox" id="hbox" tabindex="0" aria-label="Лента времени: колесо — масштаб, перетаскивание — сдвиг, нажатие — подробности">
+    <canvas id="hcv"></canvas>
+    <div class="hctl">
+      <button type="button" data-z="in" aria-label="Приблизить" title="Приблизить (+)">+</button>
+      <button type="button" data-z="out" aria-label="Отдалить" title="Отдалить (−)">−</button>
+      <button type="button" data-z="all" aria-label="Вся история" title="Вся история (0)"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h18M7 8l-4 4 4 4M17 8l4 4-4 4"/></svg></button>
+      <button type="button" data-z="full" aria-label="На весь экран" title="На весь экран (Esc — выйти)"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
+    </div>
+    <div class="htip" id="htip" hidden></div>
+    <aside class="hp" id="hp" hidden aria-live="polite">
+      <button type="button" class="hpx" id="hpx" aria-label="Закрыть">×</button>
+      <div class="hpc" id="hpc"></div>
+    </aside>
+  </div>
+  <div class="hfoot">
+    <div class="hleg" id="hleg"></div>
+    <p class="hhint" id="hhint">Колесо мыши — масштаб, Shift + колесо — вверх-вниз, перетаскивание — сдвиг, двойной клик — приблизить. На телефоне: тяни пальцем, разводи двумя пальцами. Название региона слева сворачивает его. Даты древности и границы эпох условны: где начало или конец известны примерно, край полосы размыт.</p>
+  </div>
+</div>

@@ -96,7 +96,7 @@ h1{margin:0;font:600 clamp(34px,7vw,56px)/1.05 'Literata',Georgia,serif;letter-s
 .card{position:relative;display:flex;flex-direction:column;gap:10px;min-height:190px;padding:22px 22px 18px;border:1px solid var(--line);border-radius:18px;background:var(--surface);text-decoration:none;color:inherit;transition:border-color .15s}
 .card:hover{border-color:var(--faint)}
 .card .ic{font:600 30px/1 'Literata',Georgia,serif}
-.card.u .ic{color:var(--a1)}.card.f .ic{color:var(--a2)}.card.e .ic{color:#7A5CC2}:root[data-theme="dark"] .card.e .ic{color:#A58BE8}
+.card.u .ic{color:var(--a1)}.card.f .ic{color:var(--a2)}.card.h .ic{color:#B0662A;letter-spacing:-.02em}:root[data-theme="dark"] .card.h .ic{color:#E3A062}.card.e .ic{color:#7A5CC2}:root[data-theme="dark"] .card.e .ic{color:#A58BE8}
 .card b{font:600 26px/1.15 'Literata',Georgia,serif;letter-spacing:-.01em}
 .card span{color:var(--muted);font-size:15px}
 .links{display:flex;flex-wrap:wrap;gap:8px;margin-top:auto;padding-top:8px}
@@ -216,21 +216,13 @@ h1.brand{line-height:0;margin:4px 0 14px}h1.brand .wm{height:clamp(52px,12vw,76p
       <div class="ic">§</div><b>Учёба</b><span>Конспекты, расписание, билеты, кредиты</span>
       <div class="links"><a href="ucheba.html">Конспекты</a><a href="ucheba.html#schedule">Расписание</a><a href="ucheba.html#tickets">Билеты</a><a href="ucheba.html#credits">Кредиты</a></div>
     </div>
-    <div class="card f"><a class="cover" href="finance.html#learn" aria-label="Учебник финансов"></a>
-      <div class="ic">₽</div><b>Учебник финансов</b><span>Корпоративные финансы для инвестбанкинга: 5 шагов, шпаргалки, сектора, глоссарий</span>
-      <div class="links"><a href="finance.html#learn">Уроки</a><a href="finance.html#learn/sektor">Сектора</a><a href="finance.html#learn/glossariy">Глоссарий</a></div>
+    <div class="card f"><a class="cover" href="finance.html#learn" aria-label="Финансы"></a>
+      <div class="ic">₽</div><b>Финансы</b><span>Учебник корпоративных финансов, рынок с новостями и причинами, облигации и акции</span>
+      <div class="links"><a href="finance.html#learn">Учебник</a><a href="finance.html#markets">Рынок</a><a href="finance.html#markets/news">Новости</a><a href="fin2/index.html#screener">Облигации</a><a href="fin2/akcii.html#screener">Акции</a><a href="finance.html#learn/glossariy">Глоссарий</a></div>
     </div>
-    <div class="card f"><a class="cover" href="finance.html#markets" aria-label="Рынок"></a>
-      <div class="ic">%</div><b>Рынок</b><span>Что происходит сегодня и почему: цены, новости с причинами, календарь</span>
-      <div class="links"><a href="finance.html#markets">Сегодня</a><a href="finance.html#markets/ru">Россия</a><a href="finance.html#markets/us">Мир</a><a href="finance.html#markets/news">Новости</a></div>
-    </div>
-    <div class="card f"><a class="cover" href="fin2/index.html" aria-label="Облигации и акции"></a>
-      <div class="ic">2</div><b>Облигации и акции</b><span>Скринеры, карточки выпусков, ОФЗ, макро, фонды</span>
-      <div class="links"><a href="fin2/index.html#screener">Облигации</a><a href="fin2/akcii.html#screener">Акции</a><a href="fin2/index.html#auctions">ОФЗ</a><a href="fin2/akcii.html#funds">Фонды</a></div>
-    </div>
-    <div class="card e"><a class="cover" href="fin-english.html" aria-label="Английский"></a>
-      <div class="ic">Aa</div><b>Английский</b><span>Finance English: 20 тем уровня курса. Общий курс A2 → B1+: 60 уроков</span>
-      <div class="links"><a href="fin-english.html">Finance English</a><a href="english.html">Общий курс</a></div>
+    <div class="card h"><a class="cover" href="istoriya.html" aria-label="История мира"></a>
+      <div class="ic">XV</div><b>История мира</b><span>Все государства и события на одной ленте времени: тыкай в любую дату и читай</span>
+      <div class="links"><a href="istoriya.html">Лента</a><a href="istoriya.html#y=1500">1500 год</a><a href="istoriya.html#y=-500">500 до н. э.</a></div>
     </div>
   </div>
   <p class="foot" id="appfoot">Приложение для Android: <a href="https://github.com/klimentiev-a/konspekty/releases/latest/download/Hub.apk" style="color:inherit">скачать Hub.apk</a>. На iPhone: Safari → «Поделиться» → «На экран Домой».</p>

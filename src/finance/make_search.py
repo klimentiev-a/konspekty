@@ -53,15 +53,16 @@ import universe as UNI
 for w in UNI.WORLD:
     if w[0] not in {x[0] for x in S.US}:
         out.append(['co', w[1] + ' · ' + w[0], w[3] + ' · ' + (UNI.COUNTRY.get(w[2], w[2])), 'finance.html#markets/us/' + w[0]])
-# финансы по-английски (fin-english.html)
-for f in sorted(glob.glob(os.path.join(ROOT, 'src', 'finenglish', 'lessons', '[0-9]*.md'))):
-    t = open(f, encoding='utf-8').read().strip().split('\n')
-    title = re.sub(r'^# Topic \d+\. ', '', t[0]).strip(); short = t[1][6:].strip() if len(t) > 1 and t[1].startswith('short:') else ''
-    fid = re.sub(r'^\d+_', '', os.path.splitext(os.path.basename(f))[0])
-    body = '\n'.join(t[2:]).split('## Words')[0].replace('## Theory', '')
-    for h, x in sections(body):
-        if h == 'Theory': h = ''
-        out.append(['en', title, (short + '. ' + x).strip() if not h else x, 'fin-english.html#t/' + fid, h])
+# История мира (istoriya.html): государства, культуры, события, эпохи
+_hp = os.path.join(ROOT, 'src', 'history', 'data.json')
+if os.path.exists(_hp):
+    H = json.load(open(_hp, encoding='utf-8'))
+    _rg = dict((r[0], r[1]) for r in H['regions'])
+    def _yr(y): return ('%d до н. э.' % -y) if y < 0 else str(y)
+    for it in H['items']:
+        out.append(['hi', it[1], '%s, %s – %s. %s' % (_rg.get(it[4], ''), _yr(it[2]), _yr(it[3]) if it[3] < 2026 else 'сейчас', it[6]), 'istoriya.html#s=' + it[0]])
+    for ev in H['events']:
+        out.append(['hi', ev[2], '%s. %s' % (_yr(ev[1]), ev[3]), 'istoriya.html#e=' + ev[0]])
 # билеты и конспекты (Учёба)
 tk = json.load(open(os.path.join(ROOT, 'src', 'tickets.json'), encoding='utf-8'))
 KEY = {'konst': 'const', 'ugol': 'crim', 'grazh': 'civil'}; LAB = {'konst': 'Конституционное право', 'ugol': 'Уголовное право', 'grazh': 'Гражданское право'}
