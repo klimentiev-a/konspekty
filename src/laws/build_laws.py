@@ -160,7 +160,7 @@ def main():
                     else:
                         print('  не разобрана', code, a, file=sys.stderr, flush=True)
         for a in list(have):
-            if a == '_asof':
+            if a.startswith('_'):
                 del have[a]
         have = {a: have[a] for a in sorted(have, key=float)}
         out = {'_asof': today, '_name': title}
