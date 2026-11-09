@@ -173,10 +173,35 @@ index_html = page('Hub', index_body)
 
 # ---------------- artem.html ----------------
 cards_artem = re.search(r'<div class="cards">.*?\n  </div>', TPL, re.S).group(0)
+# «Финансы» на главной — одна карточка; нажатие открывает выбор из трёх разделов (#fin), «← Артем» возвращает назад
+cards_artem = cards_artem.replace('<div class="cards">', '<div class="cards" data-group="">', 1).replace('<a class="cover" href="finance.html#learn" aria-label="Финансы">', '<a class="cover" href="#fin" aria-label="Финансы">', 1)
+cards_artem += ('''
+  <div class="cards" data-group="fin" hidden>
+    <div class="card f"><a class="cover" href="finance.html#learn" aria-label="Учебник финансов"></a>
+      <div class="ic">₽</div><b>Учебник финансов</b><span>Корпоративные финансы для инвестбанкинга: 5 шагов, шпаргалки, сектора, глоссарий</span>
+      <div class="links"><a href="finance.html#learn">Уроки</a><a href="finance.html#learn/sektor">Сектора</a><a href="finance.html#learn/glossariy">Глоссарий</a></div>
+    </div>
+    <div class="card f"><a class="cover" href="finance.html#markets" aria-label="Рынок"></a>
+      <div class="ic">%</div><b>Рынок</b><span>Что происходит сегодня и почему: цены, новости с причинами, календарь</span>
+      <div class="links"><a href="finance.html#markets">Сегодня</a><a href="finance.html#markets/ru">Россия</a><a href="finance.html#markets/us">Мир</a><a href="finance.html#markets/news">Новости</a></div>
+    </div>
+    <div class="card f"><a class="cover" href="fin2/index.html" aria-label="Облигации и акции"></a>
+      <div class="ic">2</div><b>Облигации и акции</b><span>Скринеры, карточки выпусков, ОФЗ, макро, фонды</span>
+      <div class="links"><a href="fin2/index.html#screener">Облигации</a><a href="fin2/akcii.html#screener">Акции</a><a href="fin2/index.html#auctions">ОФЗ</a><a href="fin2/akcii.html#funds">Фонды</a></div>
+    </div>
+  </div>
+  <script>
+  (function(){var N={fin:'Финансы'};
+  function v(){var g=location.hash.slice(1);if(!N[g])g='';
+    document.querySelectorAll('[data-group]').forEach(function(e){e.hidden=e.getAttribute('data-group')!==g});
+    var h=document.getElementById('hh');if(h)h.textContent=N[g]||'Артем';var b=document.getElementById('hback');if(b)b.hidden=!g;
+    var f=document.querySelector('.hsrch');if(f)f.hidden=!!g}
+  window.addEventListener('hashchange',v);v()})();
+  </script>''')
 # Главная Артёма: два входа (Учёба, Финансы) и одна строка поиска по всему сайту.
 HUBSEARCH = ('<form class="hsrch" action="search.html" method="get" role="search"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>'
              '<input type="search" name="q" placeholder="Найти по сайту: WACC, ОФЗ, сделки, юридические лица…" autocomplete="off" enterkeyhint="search" aria-label="Поиск по сайту"></form>')
-artem_body = ('<div class="w">\n  ' + topbar('index.html', 'Профили', 'artem') + '\n  <h1 id="hh">Артем</h1>\n  ' + HUBSEARCH + '\n  '
+artem_body = ('<div class="w">\n  ' + topbar('index.html', 'Профили', 'artem') + '\n  <a id="hback" class="hback" href="#" hidden>← Артем</a>\n  <h1 id="hh">Артем</h1>\n  ' + HUBSEARCH + '\n  '
               + cards_artem + '\n  ' + foot + '\n</div>\n' + LOGOUT_JS)
 SEARCH_BTN = '<a class="sbtn" href="search.html" aria-label="Поиск по сайту"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>Поиск</a>'
 artem_body = artem_body.replace('<div class="tr">', '<div class="tr">' + SEARCH_BTN, 1)
