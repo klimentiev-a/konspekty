@@ -1430,7 +1430,7 @@ function renderNote(n){
 }
 
 /* ---------- калькулятор оценки ---------- */
-var CR_FLOOR='Округляется только итоговая оценка, в меньшую сторону.',CR_NONE='Округление: итог ниже 4 не округляется вверх (3,9 → 3, пересдача), от 4 — по обычным правилам (4,9 → 5).';
+var CR_FLOOR='Округляется только итоговая оценка, в меньшую сторону.',CR_NONE='Правило округления в программе не указано, считаю по обычным правилам: 3,49 → 3, 3,50 → 4.';
 var CALC={
   const:{note:CR_FLOOR,m:[
     {n:'Модуль 2',round:'floor',block:1,p:[['Собеседование',.7,1],['Работа на семинарах 1',.2],['Посещаемость лекций 1',.1]]},
@@ -1450,7 +1450,7 @@ var CALC={
 try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist()}catch(e){}
 function calcSaved(){try{var o=JSON.parse(store('calc')||'{}');return o&&typeof o==='object'?o:{}}catch(e){return {}}}
 function calcNum(v){v=String(v).replace(',','.').trim();if(v==='')return null;var n=parseFloat(v);return isNaN(n)?null:Math.max(0,Math.min(10,n))}
-function calcGrade(t,m){var r=m.round;if(m.k)t=t*m.k;var g=r==='floor'||(r!=='arith'&&t<4)?Math.floor(t+1e-9):Math.floor(t+.5+1e-9);return m.max?Math.min(g,m.max):g}
+function calcGrade(t,m){var r=m.round;if(m.k)t=t*m.k;var g=r==='floor'?Math.floor(t+1e-9):Math.floor(t+.5+1e-9);return m.max?Math.min(g,m.max):g}
 function calcFmt(x){return String(Math.round(x*100)/100).replace('.',',')}
 function calcHtml(id){
   var c=CALC[id];if(!c)return '';var sv=calcSaved()[id]||{};
