@@ -1715,7 +1715,7 @@ function artOpen(code,n,part){
     artSheet.innerHTML='<div class="as"><div class="ah"><span class="at"></span><button type="button" class="ax" data-ax aria-label="Закрыть">✕</button></div><div class="ab2"></div></div>';
     document.body.appendChild(artSheet);
     artSheet.addEventListener('click',function(e){if(e.target===artSheet||e.target.closest('[data-ax]'))artSheet.hidden=true});
-    document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!artSheet.hidden)artSheet.hidden=true});
+    document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!artSheet.hidden)artSheet.hidden=true});window.addEventListener('hashchange',function(){artSheet.hidden=true});
   }
   var nm=(LIDX&&LIDX.codes[code]&&LIDX.codes[code].n)||'',b=$('.ab2',artSheet);
   $('.at',artSheet).textContent='Статья '+n+' '+nm;
