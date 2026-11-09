@@ -309,7 +309,11 @@ main{min-width:0;padding-inline:var(--gut);padding-bottom:96px}
   #artsheet .ab2 p{font-size:15px}
 }
 @media (prefers-reduced-motion:reduce){#artsheet,#artsheet .as{transition:none}}
-#artsheet .ah{display:flex;align-items:center;gap:12px;padding:16px 16px 10px}
+#artsheet .ah{display:flex;align-items:center;gap:12px;padding:16px 16px 10px;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none}
+#artsheet .ah:active{cursor:grabbing}
+#artsheet .ah::before{content:'';position:absolute;left:50%;top:7px;width:36px;height:4px;margin-left:-18px;border-radius:2px;background:var(--line)}
+#artsheet .as{position:absolute}
+#artsheet .ah{position:relative}
 #artsheet .at{flex:1;font:600 17px/1.3 var(--head,var(--serif))}
 #artsheet .ax{width:38px;height:38px;border-radius:10px;font-size:18px;color:var(--muted)}
 #artsheet .ab2{overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 16px calc(18px + env(safe-area-inset-bottom,0px))}
@@ -1727,21 +1731,45 @@ function artClose(now){
   if(now)artSheet.hidden=true;else artT=setTimeout(function(){artSheet.hidden=true},230);
 }
 function artPlace(a){
-  var box=$('.as',artSheet);box.style.left=box.style.top=box.style.bottom='';
+  var box=$('.as',artSheet);box.style.left=box.style.top=box.style.bottom=box.style.width='';box.style.transform='';
   if(!a||innerWidth<720)return;
-  var r=a.getBoundingClientRect(),w=Math.min(440,innerWidth-24),hh=Math.min(innerHeight*.6,460,box.offsetHeight||300);
-  var left=Math.max(12,Math.min(r.left-12,innerWidth-w-12));
-  var below=innerHeight-r.bottom>hh+24||r.top<hh+24;
-  box.style.left=left+'px';
-  box.style.setProperty('--ox',Math.max(12,Math.min(w-12,r.left-left+12))+'px');
-  if(below){box.style.top=Math.min(r.bottom+8,Math.max(12,innerHeight-hh-12))+'px';box.style.setProperty('--oy','0px')}
-  else{box.style.top=Math.max(12,r.top-hh-8)+'px';box.style.setProperty('--oy','100%')}
+  var r=a.getBoundingClientRect(),pr=($('.prose',view)||view).getBoundingClientRect();
+  var hh=Math.min(innerHeight*.6,460,box.offsetHeight||300),M=12,GAP=16;
+  var aR=innerWidth-M-(pr.right+GAP),aL=pr.left-GAP-M,w,left,top,ox='20px',oy='0px';
+  if(aR>=320){w=Math.min(440,aR);left=pr.right+GAP;ox='0px'}
+  else if(aL>=320){w=Math.min(440,aL);left=pr.left-GAP-w;ox=w+'px'}
+  else{
+    w=Math.min(440,innerWidth-2*M);left=Math.max(M,Math.min(r.left-12,innerWidth-w-M));ox=Math.max(12,Math.min(w-12,r.left-left+12))+'px';
+    var below=innerHeight-r.bottom>hh+24||r.top<hh+24;
+    top=below?Math.min(r.bottom+8,Math.max(M,innerHeight-hh-M)):Math.max(M,r.top-hh-8);oy=below?'0px':'100%';
+  }
+  if(top==null){top=Math.max(M,Math.min(r.top-24,innerHeight-hh-72));oy=Math.max(0,r.top+r.height/2-top)+'px'}
+  box.style.width=w+'px';box.style.left=left+'px';box.style.top=top+'px';
+  box.style.setProperty('--ox',ox);box.style.setProperty('--oy',oy);
+}
+function artDrag(e){
+  if(e.target.closest('[data-ax]')||e.button>0)return;
+  var el=e.currentTarget,box=$('.as',artSheet),bx=box.getBoundingClientRect(),sx=e.clientX,sy=e.clientY,desk=innerWidth>=720,id=e.pointerId,dy=0;
+  box.style.transition='none';
+  try{el.setPointerCapture(id)}catch(x){}
+  if(desk){box.style.left=bx.left+'px';box.style.top=bx.top+'px';box.style.bottom=''}
+  function mv(ev){
+    var x=ev.clientX-sx,y=ev.clientY-sy;
+    if(desk){box.style.left=Math.max(-bx.width+80,Math.min(innerWidth-80,bx.left+x))+'px';box.style.top=Math.max(0,Math.min(innerHeight-48,bx.top+y))+'px'}
+    else{dy=Math.max(0,y);box.style.transform='translateY('+dy+'px)'}
+  }
+  function up(){
+    el.removeEventListener('pointermove',mv);el.removeEventListener('pointerup',up);el.removeEventListener('pointercancel',up);
+    box.style.transition='';
+    if(!desk){if(dy>90)artClose();else box.style.transform=''}
+  }
+  el.addEventListener('pointermove',mv);el.addEventListener('pointerup',up);el.addEventListener('pointercancel',up);
 }
 function artOpen(code,n,part,anchor){
   if(!artSheet){
     artSheet=document.createElement('div');artSheet.id='artsheet';artSheet.hidden=true;
     artSheet.innerHTML='<div class="as"><div class="ah"><span class="at"></span><button type="button" class="ax" data-ax aria-label="Закрыть">✕</button></div><div class="ab2"></div></div>';
-    document.body.appendChild(artSheet);
+    document.body.appendChild(artSheet);$('.ah',artSheet).addEventListener('pointerdown',artDrag);
     artSheet.addEventListener('click',function(e){if(e.target===artSheet||e.target.closest('[data-ax]'))artClose()});
     document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!artSheet.hidden)artClose()});window.addEventListener('hashchange',function(){artClose(1)});
   }
