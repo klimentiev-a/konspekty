@@ -123,9 +123,9 @@ def konst():
         if paras and n not in out:
             out[n] = {'t': '', 'p': paras}
     print('konst', len(out), file=sys.stderr)
-    i = page.find('id="article-5-1"')
-    j = page.find('Статья 5<sup')
-    print('ОТЛАДКА 5.1', i, j, repr(page[max(0, j - 100):j + 400]) if j >= 0 else '', file=sys.stderr)
+    for pr in (r'Стат[^<]{0,12}67\D{0,40}1', r'67\.1', r'article-67'):
+        mm = [x.start() for x in re.finditer(pr, page)][:3]
+        print('ОТЛАДКА', pr, mm, [repr(page[max(0, k - 150):k + 350]) for k in mm[:2]], file=sys.stderr)
     return out
 
 def main():
