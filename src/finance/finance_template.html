@@ -707,8 +707,8 @@ function doneStat(ids){var d=doneGet(),n=0;ids.forEach(function(i){if(d[i])n++})
 /* где урок в маршруте: {step: индекс шага, name, k: номер в шаге, n: всего в шаге, next: следующая глава} */
 function lessonPos(c){for(var i=0;i<TRACKS.length;i++){var ids=TRACKS[i][2].filter(function(id){return CH.some(function(x){return x.id===id})}),k=ids.indexOf(c.id);
   if(k>=0){var nxid=ids[k+1]||(TRACKS[i+1]&&TRACKS[i+1][2][0]),nx=nxid?CH.filter(function(x){return x.id===nxid})[0]:null;return {step:i,name:TRACKS[i][0],k:k+1,n:ids.length,next:nx}}}return null}
-/* следующий урок: последний открытый, если он не пройден; иначе первый непройденный по порядку шагов */
-function nextLesson(){var last=CH.filter(function(x){return x.id===store('fin:last')})[0];if(last&&!doneIs(last.id)&&last.id!=='glossariy'&&last.id!=='istochniki'&&last.id!=='marshrut')return last;
+/* следующий урок: первый непройденный по порядку шагов (случайно открытый урок фокус не забирает) */
+function nextLesson(){
   for(var i=0;i<TRACKS.length;i++){if(TRACKS[i][0]==='Справка'||/^Шпаргалка/.test(TRACKS[i][0]))continue;for(var j=0;j<TRACKS[i][2].length;j++){var c=CH.filter(function(x){return x.id===TRACKS[i][2][j]})[0];if(c&&!doneIs(c.id))return c}}return null}
 function renderLearn(){
   var last=CH.filter(function(x){return x.id===store('fin:last')})[0];
