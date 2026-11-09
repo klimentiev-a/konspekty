@@ -673,7 +673,7 @@ var heads=[];
 marked.use({gfm:true,breaks:false,renderer:{
   code:function(code,lang){if(lang==='f')return '<div class="f">'+esc(code)+'</div>\n';return '<pre><code>'+esc(code)+'</code></pre>\n'},
   table:function(h,b){return '<div class="tablewrap"><table><thead>'+h+'</thead><tbody>'+b+'</tbody></table></div>\n'},
-  heading:function(text,level,raw){if(level===1)return '';if(level===2){var id='h'+heads.length;heads.push({id:id,t:raw});return '<h2 id="'+id+'">'+text+'</h2>\n'}return '<h'+level+'>'+text+'</h'+level+'>\n'},
+  heading:function(text,level,raw){if(level===1)return '';if(level===2){var id='h'+heads.length;var dd=document.createElement('textarea');dd.innerHTML=String(text).replace(/<[^>]+>/g,'');heads.push({id:id,t:dd.value});return '<h2 id="'+id+'">'+text+'</h2>\n'}return '<h'+level+'>'+text+'</h'+level+'>\n'},
   link:function(href,title,text){return '<a href="'+eu(href)+'" target="_blank" rel="noopener noreferrer">'+text+'</a>'}
 }});
 /* текст для поиска считаем лениво (2 МБ глав на телефоне разбирать при старте — заметная задержка); минуты чтения — по длине markdown (~6,3 знака на слово) */
@@ -689,11 +689,11 @@ SEC.forEach(function(c,i){prepDoc(c,i);c.sec=1});
 
 /* ---------------- обучение ---------------- */
 var TRACKS=[
- ['Шаг 1. Основы','Бухучёт, отчётность, МСФО, деньги во времени, статистика',['ib','buhuchet-s-nulya','otchetnost','msfo-standarty','us-gaap-vs-msfo','konsolidatsiya-goodwill','model-3-otchetov','analiz-otchetnosti','npv-irr','koeffitsienty','kolichestvennye-metody']],
+ ['Шаг 1. Основы','Бухучёт, отчётность, МСФО, деньги во времени, статистика',['ib','buhuchet-s-nulya','otchetnost','msfo-standarty','us-gaap-vs-msfo','konsolidatsiya-goodwill','model-3-otchetov','analiz-otchetnosti','uchet-baza','npv-irr','koeffitsienty','kolichestvennye-metody']],
  ['Шаг 2. Оценка компаний','Ядро работы аналитика',['vidy-otsenki','portfel-capm','wacc','dcf','multiplikatory','comps','metody','sektory','otraslevoy-analiz','banki-fig','kpi','chuvstvitelnost-stsenarii']],
- ['Шаг 3. Сделки','Как это применяют в банке: M&A, ECM/DCM, LBO, венчур',['ma-lbo','lbo-poshagovo','accretion-dilution','process-sdelki','vrazhdebnye-sdelki','sdelki-v-rossii','ecm-dcm','ipo-v-rossii','dolgovoe-finansirovanie','leveraged-finance','restrukturizatsiya','struktura-kapitala','oborotny-kapital','teoriya-nwc','praktikum-nwc','venchur','alternativnye-investitsii','private-equity-v-rabote']],
- ['Шаг 4. Рынки и макро','Рынки, облигации, деривативы, микро и макро, валюты, Россия, этика',['rynki-kapitala','organizatsiya-rynkov','moex-infrastruktura','obligatsii','derivativy','mikroekonomika-rynki','makro','mezhdunarodnye','rossiya','povedencheskie-esg','etika-regulirovanie']],
- ['Шаг 5. Практика и собеседование','Кейсы, задачи, подготовка к стажировке',['stazhirovka','keysy','sobesedovanie','praktikum','excel','project-black','karera']],
+ ['Шаг 3. Сделки','Как это применяют в банке: M&A, ECM/DCM, LBO, венчур',['ma-lbo','korpfin-baza','lbo-poshagovo','accretion-dilution','process-sdelki','vrazhdebnye-sdelki','sdelki-v-rossii','ecm-dcm','ipo-v-rossii','dolgovoe-finansirovanie','leveraged-finance','restrukturizatsiya','struktura-kapitala','oborotny-kapital','teoriya-nwc','praktikum-nwc','venchur','alternativnye-investitsii','private-equity-v-rabote']],
+ ['Шаг 4. Рынки и макро','Рынки, облигации, деривативы, микро и макро, валюты, Россия, этика',['rynki-kapitala','ekonomika-baza','instrumenty-baza','organizatsiya-rynkov','moex-infrastruktura','obligatsii','derivativy','mikroekonomika-rynki','makro','mezhdunarodnye','rossiya','povedencheskie-esg','etika-regulirovanie']],
+ ['Шаг 5. Практика и собеседование','Кейсы, задачи, подготовка к стажировке',['stazhirovka','keysy','sobesedovanie','fit-sobesedovanie','praktikum','excel','project-black','karera']],
  ['Шпаргалка: формулы и понятия','Все формулы и термины кратко: деньги во времени, отчётность, оценка, акции, облигации, деривативы, портфель, сделки, макро',['shpargalka-osnovy','shpargalka-otchetnost','shpargalka-otsenka','shpargalka-aktsii-rynok','shpargalka-obligatsii','shpargalka-derivativy','shpargalka-portfel-risk','shpargalka-korpfin-sdelki','shpargalka-makro-valyuty']],
  ['Справка','Возвращайся по необходимости: маршрут на год, глоссарий, источники',['marshrut','glossariy','istochniki']]];
 (function(){var order=[];TRACKS.forEach(function(tr){tr[2].forEach(function(id){var c=CH.filter(function(x){return x.id===id})[0];if(c&&order.indexOf(c)<0)order.push(c)})});

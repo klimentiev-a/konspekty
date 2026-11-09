@@ -24,6 +24,7 @@ short: Учебники, сайты, источники цифр этого сп
 | Ставки США | fred.stlouisfed.org, federalreserve.gov |
 | Крипта | coingecko.com, coinmarketcap.com |
 | Обучающие гайды по IB | Wall Street Prep, Corporate Finance Institute, Breaking Into Wall Street (часть бесплатна) |
+| Сборник вопросов для IB | Breaking Into Wall Street, «The 400 Investment Banking Interview Questions & Answers», 2-е изд., 2010 (платная книга, США): использована как чек-лист тем, тексты в учебнике свои |
 
 ## Источники цифр в справочнике (октябрь 2026)
 
