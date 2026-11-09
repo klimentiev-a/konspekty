@@ -1,5 +1,7 @@
 name: Законы — проба источников
 on: workflow_dispatch
+permissions:
+  contents: write
 jobs:
   probe:
     runs-on: ubuntu-latest
@@ -14,5 +16,6 @@ jobs:
           get konst "http://www.kremlin.ru/acts/constitution"
           get konst2 "http://www.kremlin.ru/acts/constitution/item"
           get uk_art "https://www.consultant.ru/document/cons_doc_LAW_10699/e5a8b0a3b5c9b1a0c0e0b7b5b0b2b1a0b0a0b0a0/"
-      - uses: actions/upload-artifact@v4
-        with: {name: probe, path: out}
+      - name: В ветку laws-raw
+        run: |
+          cd out && git init -q -b laws-raw && git config user.email a@b && git config user.name bot && git add -A && git commit -qm raw && git push -f "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}" laws-raw
