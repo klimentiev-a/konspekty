@@ -221,7 +221,7 @@ details.qa.qk-ok{border-left:4px solid var(--up);padding-left:10px;background:co
 #tip b{display:block;margin-bottom:4px;font:600 14.5px/1.35 var(--sans);color:var(--accent)}
 #tip a{display:inline-block;margin-top:6px;font:500 12.5px var(--sans);color:var(--muted)}
 #prog{display:none}
-#totop{position:fixed;right:16px;bottom:calc(20px + env(safe-area-inset-bottom,0px));z-index:40;width:44px;height:44px;border:1px solid var(--line);border-radius:50%;background:var(--surface);color:var(--fg);font:600 18px/1 var(--sans);box-shadow:0 4px 16px rgba(0,0,0,.15)}
+#totop[hidden]{display:none!important}#totop{position:fixed;right:16px;bottom:calc(20px + env(safe-area-inset-bottom,0px));z-index:40;width:44px;height:44px;border:1px solid var(--line);border-radius:50%;background:var(--surface);color:var(--fg);font:600 18px/1 var(--sans);box-shadow:0 4px 16px rgba(0,0,0,.15)}
 .resume{display:inline-flex;flex-direction:column;gap:3px;margin-top:20px;padding:13px 18px;border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:12px;background:var(--surface);text-decoration:none;max-width:100%}
 .resume small{font:500 11px/1 var(--sans);letter-spacing:.07em;text-transform:uppercase;color:var(--faint)}
 .resume b{font:600 17px/1.3 var(--serif)}
@@ -829,7 +829,7 @@ view.addEventListener('keydown',function(e){var el=e.target.closest&&e.target.cl
 window.addEventListener('scroll',function(){if(!tip.hidden&&tipEl){var r=tipEl.getBoundingClientRect();if(r.bottom<0||r.top>innerHeight)hideTip();else showTip(tipEl)}},{passive:true});
 window.addEventListener('hashchange',hideTip);
 var prog=document.getElementById('prog'),totop=document.getElementById('totop');
-function onScroll(){var h=document.documentElement,max=h.scrollHeight-innerHeight;var art=state==='learn'&&view.querySelector('.art');prog.style.transform='scaleX('+(art&&max>0?Math.min(1,scrollY/max):0)+')';totop.hidden=scrollY<900}
+function onScroll(){var h=document.documentElement,max=h.scrollHeight-innerHeight;var art=state==='learn'&&view.querySelector('.art');prog.style.transform='scaleX('+(art&&max>0?Math.min(1,scrollY/max):0)+')';totop.hidden=true}/* «Наверх» одна — .ztop из zoom.js */
 window.addEventListener('scroll',onScroll,{passive:true});window.addEventListener('hashchange',function(){setTimeout(onScroll,50)});
 totop.onclick=function(){scrollTo({top:0,behavior:'smooth'})};
 /* поиск: по разделам глав, по словам (с окончаниями) и по формулам */
