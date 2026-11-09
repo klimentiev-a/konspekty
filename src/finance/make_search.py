@@ -53,16 +53,6 @@ import universe as UNI
 for w in UNI.WORLD:
     if w[0] not in {x[0] for x in S.US}:
         out.append(['co', w[1] + ' · ' + w[0], w[3] + ' · ' + (UNI.COUNTRY.get(w[2], w[2])), 'finance.html#markets/us/' + w[0]])
-# История мира (istoriya.html): государства, культуры, события, эпохи
-_hp = os.path.join(ROOT, 'src', 'history', 'data.json')
-if os.path.exists(_hp):
-    H = json.load(open(_hp, encoding='utf-8'))
-    _rg = dict((r[0], r[1]) for r in H['regions'])
-    def _yr(y): return ('%d до н. э.' % -y) if y < 0 else str(y)
-    for it in H['items']:
-        out.append(['hi', it[1], '%s, %s – %s. %s' % (_rg.get(it[4], ''), _yr(it[2]), _yr(it[3]) if it[3] < 2026 else 'сейчас', it[6]), 'istoriya.html#s=' + it[0]])
-    for ev in H['events']:
-        out.append(['hi', ev[2], '%s. %s' % (_yr(ev[1]), ev[3]), 'istoriya.html#e=' + ev[0]])
 # билеты и конспекты (Учёба)
 tk = json.load(open(os.path.join(ROOT, 'src', 'tickets.json'), encoding='utf-8'))
 KEY = {'konst': 'const', 'ugol': 'crim', 'grazh': 'civil'}; LAB = {'konst': 'Конституционное право', 'ugol': 'Уголовное право', 'grazh': 'Гражданское право'}

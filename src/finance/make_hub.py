@@ -4,8 +4,7 @@
   artem.html         — разделы Артема: Учёба и Финансы;
   nastya.html        — разделы Насти: Учёба, English;
   nastya-ucheba.html — Учёба Насти (расписание);
-  nastya-klava.html  — клавиатурный тренажёр Насти (src/typing/);
-  istoriya.html      — История мира: лента времени (src/history/).
+  nastya-klava.html  — клавиатурный тренажёр Насти (src/typing/).
 Пароль сверяется по SHA-256 (в коде лежит только хэш), после ввода запоминается в localStorage и куки на год.
 Это замок от случайных посетителей: файлы сайта всё равно лежат в открытом репозитории.
 Запуск из корня репозитория: python3 src/finance/make_hub.py"""
@@ -174,7 +173,7 @@ index_html = page('Hub', index_body)
 
 # ---------------- artem.html ----------------
 cards_artem = re.search(r'<div class="cards">.*?\n  </div>', TPL, re.S).group(0)
-# Главная Артёма: три входа (Учёба, Финансы, История мира) и одна строка поиска по всему сайту.
+# Главная Артёма: два входа (Учёба, Финансы) и одна строка поиска по всему сайту.
 HUBSEARCH = ('<form class="hsrch" action="search.html" method="get" role="search"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>'
              '<input type="search" name="q" placeholder="Найти по сайту: WACC, ОФЗ, сделки, юридические лица…" autocomplete="off" enterkeyhint="search" aria-label="Поиск по сайту"></form>')
 artem_body = ('<div class="w">\n  ' + topbar('index.html', 'Профили', 'artem') + '\n  <h1 id="hh">Артем</h1>\n  ' + HUBSEARCH + '\n  '
@@ -256,16 +255,6 @@ nu_body = ('<div class="w">\n  ' + topbar('nastya.html', 'Настя') + '\n  <h
 nu_html = page('Учёба · Настя', nu_body, 'nastya').replace('</head>', NU_CSS + '</head>', 1)
 
 
-# ---------------- istoriya.html: История мира (лента времени) ----------------
-_hs = os.path.join(ROOT, 'src', 'history')
-def _hr(n): return open(os.path.join(_hs, n), encoding='utf-8').read()
-import subprocess
-subprocess.run([sys.executable, os.path.join(_hs, 'build_data.py')], check=True)
-_hdata = _hr('data.json').replace('</', '<\\/')
-hi_body = (_hr('body.html').replace('<!--TOPBAR-->', topbar('artem.html', 'Артем') + '\n  ', 1)
-           + '<script type="application/json" id="hdata">' + _hdata + '</script>\n<script>\n' + _hr('history.js') + '\n</script>')
-hi_html = page('История мира · Hub', hi_body, 'artem').replace('</head>', '<style>\n' + _hr('history.css') + '</style></head>', 1)
-
 # ---------------- nastya-klava.html: клавиатурный тренажёр Насти ----------------
 _tp = os.path.join(ROOT, 'src', 'typing')
 _rd = lambda n: open(os.path.join(_tp, n), encoding='utf-8').read()
@@ -291,7 +280,7 @@ SEARCH_CSS = """<style>
 SEARCH_JS = r"""<script>
 /* Поиск по всему сайту: тот же алгоритм, что в разделе «Финансы» — основы слов (окончания), формулы, раскладка в обе стороны, транслит, совпадение по заголовку раздела выше, чем по тексту. Переход открывает нужный раздел с подсветкой. */
 (function(){
-var KIND={ch:'Глава',sec:'Сектор',term:'Термин',co:'Компания',tk:'Билет',nt:'Конспект',hi:'История'},TAB=[['',['ch','sec','term','co','tk','nt','hi'],'Всё'],['f',['ch','sec','term'],'Финансы'],['c',['co'],'Компании'],['u',['tk','nt'],'Учёба'],['h',['hi'],'История']];
+var KIND={ch:'Глава',sec:'Сектор',term:'Термин',co:'Компания',tk:'Билет',nt:'Конспект'},TAB=[['',['ch','sec','term','co','tk','nt'],'Всё'],['f',['ch','sec','term'],'Финансы'],['c',['co'],'Компании'],['u',['tk','nt'],'Учёба']];
 var IDX=null,Q='',tab='',box=document.getElementById('sr'),inp=document.getElementById('q'),tabs=document.getElementById('sf'),kb=-1,res=[];
 function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
 function lc(x){return String(x==null?'':x).toLowerCase().replace(/ё/g,'е')}
@@ -376,6 +365,6 @@ search_html = page('Hub · Поиск', search_body, 'artem').replace('</head>',
 # замок для страниц Артема (ucheba.html, finance.html) — его вставляют make_ucheba.py и build_finance.py
 open(os.path.join(ROOT, 'src', 'finance', 'gate_artem.html'), 'w', encoding='utf-8').write(gate('artem'))
 
-for name, html in (('index.html', index_html), ('artem.html', artem_html), ('nastya.html', nastya_html), ('nastya-ucheba.html', nu_html), ('nastya-klava.html', kl_html), ('search.html', search_html), ('istoriya.html', hi_html)):
+for name, html in (('index.html', index_html), ('artem.html', artem_html), ('nastya.html', nastya_html), ('nastya-ucheba.html', nu_html), ('nastya-klava.html', kl_html), ('search.html', search_html)):
     open(os.path.join(ROOT, name), 'w', encoding='utf-8').write(html)
     print('ok', name, len(html))

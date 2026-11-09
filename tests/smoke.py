@@ -27,7 +27,7 @@ PAGES = ['index.html', 'artem.html', 'nastya.html', 'nastya-ucheba.html',
          'finance.html#markets/ru/VKCO', 'finance.html#markets/us/ASML.AS', 'finance.html#markets/us/7203.T', 'finance.html#markets/us/INTC',
          'finance.html#markets/week', 'finance.html#world/sectors/banki-finansy', 'finance.html#calc', 'finance.html#home',
          'english.html', 'english.html#words', 'english.html#words/list', 'english.html#ref', 'english.html#ref/vremena',
-         'istoriya.html', 'istoriya.html#y=1500', 'search.html', 'search.html?q=wacc', 'fin2/index.html', 'fin2/akcii.html']
+         'search.html', 'search.html?q=wacc', 'fin2/index.html', 'fin2/akcii.html']
 IGNORE = re.compile(r'Failed to fetch|NetworkError|Load failed|ResizeObserver')
 
 problems = []
