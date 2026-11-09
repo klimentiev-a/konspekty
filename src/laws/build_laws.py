@@ -113,16 +113,19 @@ def toc(doc):
 def konst():
     page = get('http://www.kremlin.ru/acts/constitution/item')
     out = {}
-    for m in re.finditer(r'<h3[^>]*>\s*<span[^>]*>\s*(?:<a[^>]*></a>)?\s*Статья\s+(\d+(?:\.\d+)?)\s*</span>.*?</h3>(.*?)(?=<h3|<h2|$)', page, re.S):
-        n = m.group(1)
+    for m in re.finditer(r'<h3[^>]*>(.*?)</h3>(.*?)(?=<h3|<h2|$)', page, re.S):
+        hm = re.search(r'Статья\s+(\d+)(?:\s*<sup>\s*(\d+)\s*</sup>|\.(\d+))?', m.group(1))
+        if not hm:
+            continue
+        n = hm.group(1) + ('.' + (hm.group(2) or hm.group(3)) if (hm.group(2) or hm.group(3)) else '')
         paras = [clean(p) for p in re.findall(r'<p(?:\s[^>]*)?>(.*?)</p>', m.group(2), re.S)]
         paras = [p for p in paras if p and not p.startswith(DROP)]
         if paras and n not in out:
             out[n] = {'t': '', 'p': paras}
     print('konst', len(out), file=sys.stderr)
-    for probe in ('Статья 68', 'Статья 5.1'):
-        i = page.find(probe)
-        print('ОТЛАДКА', probe, i, repr(page[max(0, i - 200):i + 700]) if i >= 0 else '', file=sys.stderr)
+    i = page.find('id="article-5-1"')
+    j = page.find('Статья 5<sup')
+    print('ОТЛАДКА 5.1', i, j, repr(page[max(0, j - 100):j + 400]) if j >= 0 else '', file=sys.stderr)
     return out
 
 def main():
