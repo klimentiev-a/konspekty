@@ -1,0 +1,20 @@
+name: Тексты статей для Учёбы
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  laws:
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    steps:
+      - uses: actions/checkout@v4
+      - name: Скачать недостающие статьи
+        run: python3 src/laws/build_laws.py 2>&1 | tail -n 400
+      - name: Сохранить в main
+        run: |
+          git config user.name "laws-bot"; git config user.email "laws-bot@users.noreply.github.com"
+          git add laws
+          git diff --cached --quiet && { echo "без изменений"; exit 0; }
+          git commit -qm "Тексты статей для Учёбы (laws/)"
+          for i in 1 2 3; do git pull -q --rebase -X theirs origin main && git push -q origin HEAD:main && break; sleep 5; done
