@@ -114,7 +114,7 @@ def konst():
     page = get('http://www.kremlin.ru/acts/constitution/item')
     out = {}
     for m in re.finditer(r'<h3[^>]*>(.*?)</h3>(.*?)(?=<h3|<h2|$)', page, re.S):
-        hm = re.search(r'Статья\s+(\d+)(?:\s*<sup>\s*(\d+)\s*</sup>|\.(\d+))?', m.group(1))
+        hm = re.search(r'Статья\s+(\d+)(?:\s*<sup>\s*(\d+)\*?\s*</sup>|\.(\d+))?', m.group(1))
         if not hm:
             continue
         n = hm.group(1) + ('.' + (hm.group(2) or hm.group(3)) if (hm.group(2) or hm.group(3)) else '')
@@ -123,9 +123,6 @@ def konst():
         if paras and n not in out:
             out[n] = {'t': '', 'p': paras}
     print('konst', len(out), file=sys.stderr)
-    for pr in (r'Стат[^<]{0,12}67\D{0,40}1', r'67\.1', r'article-67'):
-        mm = [x.start() for x in re.finditer(pr, page)][:3]
-        print('ОТЛАДКА', pr, mm, [repr(page[max(0, k - 150):k + 350]) for k in mm[:2]], file=sys.stderr)
     return out
 
 def main():
