@@ -19,27 +19,32 @@ WORD = {'УК': 'uk', 'ГК': 'gk', 'УПК': 'upk', 'ГПК': 'gpk', 'АПК': 
 SUBJ = {'const': 'konst', 'civil': 'gk', 'crim': 'uk'}
 TKT = {'konst': 'konst', 'ugol': 'uk', 'grazh': 'gk'}
 NUM = r'\d{1,4}(?:\.\d{1,2})?'
-REF = re.compile(r'(?<![\wа-яё])(?:ст\.\s?ст\.|ст\.|статьи|статье|статья|статей|статью)\s*(' + NUM + r')((?:\s*\([^)]{0,50}\))?(?:\s*(?:,|и|–|—|-)\s*' + NUM + r'(?:\s*\([^)]{0,50}\))?)*)', re.I)
+REF = re.compile(r'(?<![\wа-яё])(?:ст\.\s?ст\.|ст\.|статьи|статье|статья|статей|статью)\s*(' + NUM + r')((?:\s*\([^)]{0,50}\))?(?:\s*(?:,|и|–|—|-|/)\s*' + NUM + r'(?:\s*\([^)]{0,50}\))?)*)', re.I)
 AFTER = re.compile(r'^\s*(?:\([^)]{0,40}\)\s*)?(?:(?:ч|п|пп|абз)\.\s?[^\s,;]{1,8}\s*){0,3}(УК|ГК|УПК|ГПК|АПК|КоАП|КОАП|НК|ТК|СК|ЗК|ЖК|Конституци|Основного)')
 NOT = re.compile(r'^\s*(?:\([^)]{0,40}\)\s*)?(?:ФЗ|ФКЗ|ЕКС|Федеральн|Закон|закон|кодекс|Кодекс|Конвенци|Устав|устав|договор|Гражданск|Уголовн)')
 
+ABBR = re.compile(r'^\s*(?:\([^)]{0,40}\)\s*)?[А-ЯЁ][а-яё]?[А-ЯЁ]')
+TOK = re.compile(r'(?<![А-ЯЁа-яё])(УПК|ГПК|АПК|КоАП|УК|ГК|НК|ТК|СК|ЗК|ЖК|Конституци|ФКЗ|ФЗ|Закон|Кодекс)(?![А-ЯЁ])')
+
 def refs(text, default):
-    """[(код, номер)] — та же логика, что в artLinkify на странице."""
+    """[(код, номер)] — та же логика, что в artLinkify / artCode на странице."""
     res = []
     for m in REF.finditer(text):
         after = text[m.end():m.end() + 50]
         am = AFTER.match(after)
         if am:
             code = WORD[am.group(1)]
-        elif NOT.match(after):
+        elif NOT.match(after) or ABBR.match(after):
             continue
         else:
             seg = text[max(0, m.start() - 60):m.start()]
             seg = seg[max(seg.rfind(';'), seg.rfind('\n')) + 1:]
-            code = 'konst' if 'Конституци' in seg else default
-            tail = seg[-80:]
-            if code != 'konst' and re.search(r'(?:ФЗ|ФКЗ|УК|ГК|УПК|КоАП|НК|ТК|СК|ГПК|АПК|[Зз]акон|[Кк]одекс)(?![а-яё])', tail):
-                continue
+            toks = TOK.findall(seg[-80:])
+            if toks:
+                last = toks[-1]
+                code = WORD.get(last) if last in WORD else ('konst' if last == 'Конституци' else '')
+            else:
+                code = 'konst' if 'Конституци' in seg else default
         if not code:
             continue
         for n in re.findall(NUM, m.group(1) + m.group(2)):

@@ -171,7 +171,7 @@ main{min-width:0;padding-inline:var(--gut);padding-bottom:96px}
 .hlrow em{display:block;margin-top:2px;font:400 13.5px/1.4 var(--sans);font-style:normal;color:var(--accent)}
 .prose a.art{color:inherit;text-decoration:none;border:0;cursor:pointer;border-radius:4px;transition:background .15s}
 .prose a.art:hover,.prose a.art:focus-visible{background:color-mix(in srgb,var(--accent) 18%,transparent);outline:0}
-#artsheet{position:fixed;inset:0;z-index:96;background:rgba(0,0,0,0);transition:background .22s ease}
+#artsheet{position:fixed;inset:0;z-index:96;zoom:var(--iz,1);background:rgba(0,0,0,0);transition:background .22s ease}
 #artsheet[hidden]{display:none}
 #artsheet.open{background:rgba(0,0,0,.32)}
 #artsheet .as{position:absolute;left:0;right:0;bottom:0;max-width:680px;margin:0 auto;max-height:78vh;display:flex;flex-direction:column;border-radius:18px 18px 0 0;background:var(--bg);color:var(--fg);box-shadow:0 -10px 40px rgba(0,0,0,.28);transform:translateY(28px);opacity:0;transition:transform .26s cubic-bezier(.2,.8,.2,1),opacity .2s ease}
@@ -197,9 +197,10 @@ main{min-width:0;padding-inline:var(--gut);padding-bottom:96px}
 #artsheet .ax{width:38px;height:38px;border-radius:10px;font-size:18px;color:var(--muted)}
 #artsheet .ab2{overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;min-height:0;padding:0 16px calc(18px + env(safe-area-inset-bottom,0px))}
 #artsheet .ab2 p{margin:0 0 .75em;font:400 16px/1.55 var(--serif)}
-#artsheet .ab2 p.on{margin-inline:-10px;padding:6px 10px;border-radius:10px;background:none;box-shadow:inset 0 0 0 1.5px var(--accent);animation:artOn .9s ease-out}
-@keyframes artOn{0%{box-shadow:inset 0 0 0 1.5px var(--accent),0 0 0 7px color-mix(in srgb,var(--accent) 38%,transparent)}100%{box-shadow:inset 0 0 0 1.5px var(--accent),0 0 0 0 transparent}}
-@media (prefers-reduced-motion:reduce){#artsheet .ab2 p.on{animation:none}}
+#artsheet .ab2 .on{margin:0 -10px .75em;padding:6px 10px 1px;border-radius:10px;box-shadow:inset 0 0 0 1px var(--accent);animation:artOn .9s ease-out}
+#artsheet .ab2 .on p:last-child{margin-bottom:.45em}
+@keyframes artOn{0%{box-shadow:inset 0 0 0 1px var(--accent),0 0 0 7px color-mix(in srgb,var(--accent) 38%,transparent)}100%{box-shadow:inset 0 0 0 1px var(--accent),0 0 0 0 transparent}}
+@media (prefers-reduced-motion:reduce){#artsheet .ab2 .on{animation:none}}
 #artsheet .src{margin:.5em 0 0;font:400 12.5px/1.4 var(--sans);color:var(--faint)}
 .crtab{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 16px}
 .crtab button{height:36px;padding:0 16px;border:1px solid var(--line);border-radius:999px;background:var(--bg);color:var(--fg);font:500 14px/1 var(--sans);cursor:pointer}
@@ -1546,18 +1547,20 @@ function tkNotes(){
 /* ---------- статьи кодексов по нажатию (тексты — laws/<код>.json, собирает src/laws/build_laws.py в GitHub Actions) ---------- */
 var LIDX=null,LAWS={},artSheet=null;
 var NUMR='\\d{1,4}(?:\\.\\d{1,2})?';
-var ART_RE=new RegExp('(?<![\\wа-яё])(?:ст\\.\\s?ст\\.|ст\\.|статьи|статье|статья|статей|статью)\\s*('+NUMR+')((?:\\s*\\([^)]{0,50}\\))?(?:\\s*(?:,|и|–|—|-)\\s*'+NUMR+'(?:\\s*\\([^)]{0,50}\\))?)*)','giu');
+var ART_RE=new RegExp('(?<![\\wа-яё])(?:ст\\.\\s?ст\\.|ст\\.|статьи|статье|статья|статей|статью)\\s*('+NUMR+')((?:\\s*\\([^)]{0,50}\\))?(?:\\s*(?:,|и|–|—|-|\\/)\\s*'+NUMR+'(?:\\s*\\([^)]{0,50}\\))?)*)','giu');
 var ART_AFTER=/^\s*(?:\([^)]{0,40}\)\s*)?(?:(?:ч|п|пп|абз)\.\s?[^\s,;]{1,8}\s*){0,3}(УК|ГК|УПК|ГПК|АПК|КоАП|КОАП|НК|ТК|СК|ЗК|ЖК|Конституци|Основного)/u;
 var ART_CODE={'УК':'uk','ГК':'gk','УПК':'upk','ГПК':'gpk','АПК':'apk','КоАП':'koap','КОАП':'koap','НК':'nk','ТК':'tk','СК':'sk','ЗК':'zk','ЖК':'zhk','Конституци':'konst','Основного':'konst'};
 var ART_NOT=/^\s*(?:\([^)]{0,40}\)\s*)?(?:ФЗ|ФКЗ|ЕКС|Федеральн|Закон|закон|кодекс|Кодекс|Конвенци|Устав|устав|договор|Гражданск|Уголовн)/u;
 var ART_SUBJ={'const':'konst','civil':'gk','crim':'uk'};
+var ART_ABBR=/^\s*(?:\([^)]{0,40}\)\s*)?[А-ЯЁ][а-яё]?[А-ЯЁ]/u;
+var ART_TOK=/(?<![А-ЯЁа-яё])(УПК|ГПК|АПК|КоАП|УК|ГК|НК|ТК|СК|ЗК|ЖК|Конституци|ФКЗ|ФЗ|Закон|Кодекс)(?![А-ЯЁ])/gu;
 function artCode(before,after,def){
   var am=ART_AFTER.exec(after);if(am)return ART_CODE[am[1]];
-  if(ART_NOT.test(after))return '';
-  var seg=before.slice(Math.max(before.lastIndexOf(';'),before.lastIndexOf('\n'))+1);
-  var code=/Конституци/.test(seg)?'konst':def;
-  if(code!=='konst'&&/(?:ФЗ|ФКЗ|УК|ГК|УПК|КоАП|НК|ТК|СК|ГПК|АПК|[Зз]акон|[Кк]одекс)(?![а-яё])/.test(seg.slice(-80)))return '';
-  return code||'';
+  if(ART_NOT.test(after)||ART_ABBR.test(after))return '';
+  var seg=before.slice(Math.max(before.lastIndexOf(';'),before.lastIndexOf('\n'))+1),tail=seg.slice(-80),m,last=null;
+  ART_TOK.lastIndex=0;while((m=ART_TOK.exec(tail)))last=m[1];
+  if(last){if(ART_CODE[last])return ART_CODE[last];if(last==='Конституци')return 'konst';return ''}
+  return /Конституци/.test(seg)?'konst':(def||'');
 }
 function artHas(code,n){var c=LIDX&&LIDX.codes&&LIDX.codes[code];return !!(c&&c.a.indexOf(n)>=0)}
 function artLinkify(c,def){
@@ -1688,8 +1691,9 @@ function artOpen(code,n,part,anchor){
   artLoad(code).then(function(L){
     var a=L[n];if(!a)throw 0;
     $('.at',artSheet).textContent='Статья '+n+' '+nm+(a.t?'. '+a.t:'');
-    b.innerHTML=a.p.map(function(t){var on=part&&t.indexOf(part+'. ')===0;return '<p'+(on?' class="on"':'')+'>'+esc(t)+'</p>'}).join('');
-    var on=$('p.on',b);b.scrollTop=on?Math.max(0,on.offsetTop-60):0;artPlace(anchor);
+    var s0=-1,s1=-1;if(part){a.p.forEach(function(t,i){if(s0<0&&t.indexOf(part+'. ')===0)s0=i});if(s0>=0){s1=a.p.length;for(var k=s0+1;k<a.p.length;k++){if(/^\d+(?:\.\d+)?\.\s/.test(a.p[k])){s1=k;break}}}}
+    b.innerHTML=a.p.map(function(t,i){return (i===s0?'<div class="on">':'')+'<p>'+esc(t)+'</p>'+(i===s1-1&&s0>=0?'</div>':'')}).join('');
+    var on=$('.on',b);b.scrollTop=on?Math.max(0,on.offsetTop-60):0;artPlace(anchor);
   }).catch(function(){b.innerHTML='<p class="src">Не удалось загрузить текст статьи. Проверь соединение и попробуй ещё раз.</p>'});
 }
 view.addEventListener('click',function(e){
