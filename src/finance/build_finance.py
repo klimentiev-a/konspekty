@@ -37,7 +37,7 @@ def check(md):
 
 def read_md(f, ids=None):
     name = os.path.basename(f)
-    b = name[:2]
+    b = name.split('_')[0]
     t = open(f, encoding='utf-8').read().strip().split('\n')
     title = t[0].lstrip('# ').strip()
     assert len(t) > 1 and t[1].startswith('short:'), f
