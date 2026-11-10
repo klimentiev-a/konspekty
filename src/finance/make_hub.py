@@ -178,12 +178,16 @@ cards_artem = cards_artem.replace('<div class="cards">', '<div class="cards" dat
 cards_artem += ('''
   <div class="cards" data-group="fin" hidden>
     <div class="card f"><a class="cover" href="finance.html#learn" aria-label="Учебник финансов"></a>
-      <div class="ic">₽</div><b>Учебник финансов</b><span>Корпоративные финансы для инвестбанкинга: 7 шагов, шпаргалки, сектора, глоссарий</span>
+      <div class="ic">₽</div><b>Учебник финансов</b><span>Корпоративные финансы для инвестбанкинга: 5 шагов, шпаргалки, сектора, глоссарий</span>
       <div class="links"><a href="finance.html#learn">Уроки</a><a href="finance.html#learn/sektor">Сектора</a><a href="finance.html#learn/glossariy">Глоссарий</a></div>
     </div>
     <div class="card f"><a class="cover" href="finance.html#markets" aria-label="Рынок"></a>
       <div class="ic">%</div><b>Рынок</b><span>Что происходит сегодня и почему: цены, новости с причинами, календарь</span>
       <div class="links"><a href="finance.html#markets">Сегодня</a><a href="finance.html#markets/ru">Россия</a><a href="finance.html#markets/us">Мир</a><a href="finance.html#markets/news">Новости</a></div>
+    </div>
+    <div class="card f"><a class="cover" href="lectures.html" aria-label="Лекции"></a>
+      <div class="ic">▤</div><b>Лекции</b><span>Презентации по курсам School of Finance, IB Club, Campus Finance: M&amp;A, моделирование, отрасли, PE</span>
+      <div class="links"><a href="lectures.html">Все лекции</a></div>
     </div>
     <div class="card f"><a class="cover" href="fin2/index.html" aria-label="Облигации и акции"></a>
       <div class="ic">2</div><b>Облигации и акции</b><span>Скринеры, карточки выпусков, ОФЗ, макро, фонды</span>
@@ -287,6 +291,11 @@ kl_body = _rd('body.html').replace('<!--TOPBAR-->', topbar('nastya.html', 'На�
 kl_html = page('Клавиатура · Настя', kl_body, 'nastya').replace('</head>', '<style>\n' + _rd('typing.css') + '</style></head>', 1)
 
 
+# ---------------- lectures.html: лекции-презентации (src/lectures/) ----------------
+_lp = os.path.join(ROOT, 'src', 'lectures')
+_lr = lambda n: open(os.path.join(_lp, n), encoding='utf-8').read()
+lec_body = _lr('body.html').replace('<!--TOPBAR-->', topbar('artem.html#fin', 'Финансы') + '\n  ', 1) + '<script>\n' + _lr('lectures.js') + '\n</script>'
+lec_html = page('Лекции · Hub', lec_body, 'artem').replace('</head>', '<style>\n' + _lr('lectures.css') + '</style></head>', 1)
 
 
 # ---------------- search.html: поиск по всему сайту Артема ----------------
@@ -307,7 +316,7 @@ SEARCH_CSS = """<style>
 SEARCH_JS = r"""<script>
 /* Поиск по всему сайту: тот же алгоритм, что в разделе «Финансы» — основы слов (окончания), формулы, раскладка в обе стороны, транслит, совпадение по заголовку раздела выше, чем по тексту. Переход открывает нужный раздел с подсветкой. */
 (function(){
-var KIND={ch:'Глава',sec:'Сектор',term:'Термин',co:'Компания',tk:'Билет',nt:'Конспект'},TAB=[['',['ch','sec','term','co','tk','nt'],'Всё'],['f',['ch','sec','term','lc'],'Финансы'],['c',['co'],'Компании'],['u',['tk','nt'],'Учёба']];
+var KIND={ch:'Глава',sec:'Сектор',term:'Термин',co:'Компания',tk:'Билет',nt:'Конспект',lc:'Лекция'},TAB=[['',['ch','sec','term','co','tk','nt','lc'],'Всё'],['f',['ch','sec','term','lc'],'Финансы'],['c',['co'],'Компании'],['u',['tk','nt'],'Учёба']];
 var IDX=null,Q='',tab='',box=document.getElementById('sr'),inp=document.getElementById('q'),tabs=document.getElementById('sf'),kb=-1,res=[];
 function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
 function lc(x){return String(x==null?'':x).toLowerCase().replace(/ё/g,'е')}
@@ -392,6 +401,6 @@ search_html = page('Hub · Поиск', search_body, 'artem').replace('</head>',
 # замок для страниц Артема (ucheba.html, finance.html) — его вставляют make_ucheba.py и build_finance.py
 open(os.path.join(ROOT, 'src', 'finance', 'gate_artem.html'), 'w', encoding='utf-8').write(gate('artem'))
 
-for name, html in (('index.html', index_html), ('artem.html', artem_html), ('nastya.html', nastya_html), ('nastya-ucheba.html', nu_html), ('nastya-klava.html', kl_html), ('search.html', search_html)):
+for name, html in (('index.html', index_html), ('artem.html', artem_html), ('nastya.html', nastya_html), ('nastya-ucheba.html', nu_html), ('nastya-klava.html', kl_html), ('search.html', search_html), ('lectures.html', lec_html)):
     open(os.path.join(ROOT, name), 'w', encoding='utf-8').write(html)
     print('ok', name, len(html))
