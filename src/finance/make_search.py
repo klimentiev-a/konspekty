@@ -67,6 +67,23 @@ if m:
         for n in sj.get('notes', []):
             for h, x in sections(n.get('md', '')):
                 out.append(['nt', n['title'], (sj['name'] + '. ' + x) if not h else x, 'ucheba.html#' + n['id'], h])
+# лекции-презентации: кусками по 4 слайда, ссылка на первый слайд куска
+def _stext(s):
+    parts = [s.get('h', ''), s.get('lead', ''), s.get('q', ''), s.get('a', ''), s.get('ex', ''), s.get('note', '')] + list(s.get('f', []))
+    for x in s.get('items', []): parts.append(x if isinstance(x, str) else x.get('b', '') + ' ' + x.get('d', ''))
+    for x in s.get('steps', []): parts.append(x.get('h', '') + ' ' + x.get('d', ''))
+    for x in s.get('stats', []): parts.append(x.get('v', '') + ' ' + x.get('l', ''))
+    for k in ('l', 'r'):
+        if s.get(k): parts += [s[k].get('h', '')] + list(s[k].get('items', []))
+    parts += list(s.get('cols', [])) + [c for r in s.get('rows', []) for c in r]
+    return ' '.join(p for p in parts if p)
+for f in sorted(glob.glob(os.path.join(ROOT, 'src', 'lectures', 'decks', '*.json'))):
+    d = json.load(open(f, encoding='utf-8'))
+    out.append(['lc', d['title'], d['group'] + '. ' + d['desc'] + ' ' + ' '.join(d.get('tags', [])), 'lectures.html#' + d['id']])
+    sl = d['slides']
+    for i in range(0, len(sl), 4):
+        ch = sl[i:i + 4]
+        out.append(['lc', d['title'], clean(' '.join(_stext(s) for s in ch), 700), 'lectures.html#%s/%d' % (d['id'], i + 2), ch[0].get('h') or ch[0].get('q', '')])
 p = os.path.join(ROOT, 'search-index.json')
 open(p, 'w', encoding='utf-8').write(json.dumps(out, ensure_ascii=False, separators=(',', ':')))
 print('ok search-index', len(out), os.path.getsize(p) // 1024, 'KB')
