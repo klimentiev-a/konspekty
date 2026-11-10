@@ -1,7 +1,7 @@
 (function(){
 'use strict';
 var $=function(i){return document.getElementById(i)};
-var GROUPS={'M&A и сделки':[205,'M&A'],'LBO и моделирование':[262,'LBO'],'Оценка':[160,'EV'],'Отчётность и учёт':[28,'P&L'],'PE и венчур':[330,'PE'],'Нефть и газ':[215,'Oil'],'Металлы и добыча':[38,'Me'],'TMT и медиа':[285,'TMT'],'Телеком':[190,'Tel'],'Финтех и банки':[145,'Fin'],'Страхование и пенсии':[5,'Ins'],'Инфраструктура и проекты':[55,'Inf'],'Недвижимость и ритейл':[345,'RE'],'Налоги':[95,'Tax'],'Кейсы M&A':[238,'Case'],'Крипта и альтернативы':[300,'Alt'],'Макро и Excel':[175,'Xl'],'Здравоохранение и прочее':[125,'Med']};
+var GROUPS={'M&A и сделки':[205,'M&A'],'LBO, левфин и слияния':[262,'LBO'],'Модели и Excel':[175,'Xl'],'Оценка':[160,'EV'],'Кейсы M&A':[238,'Case'],'Отчётность и учёт':[28,'P&L'],'Налоги':[95,'Tax'],'PE и венчур':[330,'PE'],'Нефть и газ':[215,'Oil'],'Металлы и добыча':[38,'Me'],'TMT и медиа':[285,'TMT'],'Телеком':[190,'Tel'],'Финтех и банки':[145,'Fin'],'Страхование и пенсии':[5,'Ins'],'Инфраструктура и проекты':[55,'Inf'],'Недвижимость и ритейл':[345,'RE'],'Здравоохранение и прочее':[125,'Med'],'Крипта и альтернативы':[300,'Alt']};
 var ORDER=Object.keys(GROUPS);
 var IDX=null,DECK=null,CUR=0,TOTAL=0,LAST=0,SEEN={},Q='',GF='';
 var LS='lec:v1';
@@ -32,24 +32,42 @@ function matches(d){
   var w=qwords(Q);if(!w.length)return true;var h=hay(d);
   return w.every(function(x){return h.indexOf(x)>=0});
 }
+function row(d,k){
+  var p=prog(d.id),pc=p&&p.n?Math.min(100,Math.round(100*(p.m||0)/p.n)):0,done=p&&p.n&&p.m>=p.n;
+  return '<a class="lrow'+(done?' done':'')+'" href="#'+esc(d.id)+(p&&p.i&&!done?'/'+(p.i+1):'')+'">'+
+    '<span class="ln">'+(k<9?'0':'')+(k+1)+'</span>'+
+    '<span class="lt"><b>'+esc(d.title)+'</b><em>'+esc(d.desc)+'</em></span>'+
+    '<span class="lm">'+d.n+' сл. · ~'+d.min+' мин'+(done?'<i class="ok">✓</i>':pc?'<i class="pc">'+pc+'%</i>':'')+'</span>'+
+    '<span class="lbar"><i style="width:'+pc+'%"></i></span></a>';
+}
+function topic(g,ds,all){
+  var mins=0,sl=0,dn=0;all.forEach(function(d){mins+=d.min;sl+=d.n;var p=prog(d.id);if(p&&p.n&&p.m>=p.n)dn++});
+  return '<section class="ltop" style="--h:'+gh(g)+'" id="g-'+esc((GROUPS[g]||[0,'x'])[1])+'">'+
+    '<div class="lth" data-g="'+esc((GROUPS[g]||[0,''])[1])+'"><h3>'+esc(g)+'</h3>'+
+    '<p>'+all.length+' '+plur(all.length,'презентация','презентации','презентаций')+' · '+sl+' слайдов · ~'+mins+' мин</p>'+
+    '<div class="ltp"><i style="width:'+Math.round(100*dn/all.length)+'%"></i></div><small>'+(dn?'пройдено '+dn+' из '+all.length:'ещё не открывал')+'</small></div>'+
+    '<div class="ltl">'+ds.map(function(d){return row(d,all.indexOf(d))}).join('')+'</div></section>';
+}
+function plur(n,a,b,c){var m=n%10,h=n%100;return m===1&&h!==11?a:m>=2&&m<=4&&(h<10||h>=20)?b:c}
 function drawList(){
-  var ds=IDX.decks.filter(matches),by={};
+  var ds=IDX.decks.filter(matches),by={},full={};
+  IDX.decks.forEach(function(d){(full[d.group]=full[d.group]||[]).push(d)});
   ds.forEach(function(d){(by[d.group]=by[d.group]||[]).push(d)});
   var cont=[];
   if(!Q&&!GF){
-    var o=load();cont=IDX.decks.filter(function(d){var p=o[d.id];return p&&p.m>0&&p.m<p.n}).sort(function(a,b){return (o[b.id].t||0)-(o[a.id].t||0)}).slice(0,4);
+    var o=load();cont=IDX.decks.filter(function(d){var p=o[d.id];return p&&p.m>0&&p.m<p.n}).sort(function(a,b){return (o[b.id].t||0)-(o[a.id].t||0)}).slice(0,3);
   }
   $('lcont').innerHTML=cont.length?'<div class="lh3"><span>Продолжить</span><i></i></div><div class="lgrid">'+cont.map(card).join('')+'</div>':'';
   var h='';
   ORDER.concat(Object.keys(by).filter(function(g){return ORDER.indexOf(g)<0})).forEach(function(g){
-    if(!by[g])return;
-    h+='<div class="lh3" style="--h:'+gh(g)+'"><b>'+esc(g)+'</b><i></i><span>'+by[g].length+'</span></div><div class="lgrid">'+by[g].map(card).join('')+'</div>';
+    if(by[g])h+=topic(g,by[g],full[g]);
   });
   $('lall').innerHTML=h;$('lempty').hidden=ds.length>0;
   var cnt={};IDX.decks.forEach(function(d){cnt[d.group]=(cnt[d.group]||0)+1});
-  var c='<button type="button" class="lchip'+(GF?'':' on')+'" data-g="">Все <em>'+IDX.decks.length+'</em></button>';
-  ORDER.forEach(function(g){if(cnt[g])c+='<button type="button" class="lchip'+(GF===g?' on':'')+'" data-g="'+esc(g)+'">'+esc(g)+' <em>'+cnt[g]+'</em></button>'});
+  var c='<button type="button" class="lchip'+(GF?'':' on')+'" data-g="">Все темы <em>'+Object.keys(cnt).length+'</em></button>';
+  ORDER.forEach(function(g){if(cnt[g])c+='<button type="button" class="lchip'+(GF===g?' on':'')+'" data-g="'+esc(g)+'" style="--h:'+gh(g)+'"><u></u>'+esc(g)+'</button>'});
   $('lchips').innerHTML=c;
+  var st=$('lstat');if(st)st.textContent=Object.keys(cnt).length+' тем · '+IDX.decks.length+' '+plur(IDX.decks.length,'презентация','презентации','презентаций');
 }
 
 /* ---------- слайды ---------- */
@@ -122,31 +140,31 @@ function overview(on){
 /* ---------- маршруты ---------- */
 function setBack(deck){
   var a=document.querySelector('.top a');if(!a)return;
-  a.setAttribute('href',deck?'#':'artem.html#fin');a.lastChild.textContent=deck?'Лекции':'Финансы';
+  a.setAttribute('href',deck?'#':'artem.html#fin');a.lastChild.textContent=deck?'Презентации':'Финансы';
 }
 function route(){
   var m=location.hash.replace(/^#/,'').split('/'),id=m[0];
   if(!IDX)return;
   var d=IDX.decks.filter(function(x){return x.id===id})[0];
-  if(!d){DECK=null;$('lv-deck').hidden=true;$('lv-list').hidden=false;document.title='Лекции · Hub';setBack(false);drawList();return}
+  if(!d){DECK=null;$('lv-deck').hidden=true;$('lv-list').hidden=false;document.title='Презентации · Hub';setBack(false);drawList();return}
   var want=m[1]?Math.max(1,parseInt(m[1],10)||1)-1:null;
   if(DECK&&DECK.id===id){if(want!=null&&want!==CUR)show(want,want>CUR?1:-1);return}
   $('lv-list').hidden=true;$('lv-deck').hidden=false;setBack(true);
   $('slide').innerHTML='<div class="sc"><p class="lead">Загрузка…</p></div>';
   fetch('lectures/'+encodeURIComponent(id)+'.json').then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(j){
     DECK=j;TOTAL=j.slides.length+1;var p=prog(id);SEEN={};(p&&p.s||[]).forEach(function(x){SEEN[x]=1});
-    document.title=j.title+' · Лекции';
+    document.title=j.title+' · Презентации';
     $('lw').style.setProperty('--h',gh(j.group));
     $('dg').textContent=j.group;$('dt').textContent=j.title;
     related(j);
     CUR=-1;show(want!=null?want:0,0);window.scrollTo(0,0);
-  }).catch(function(){$('slide').innerHTML='<div class="sc"><p class="lead">Не удалось загрузить лекцию. Проверь сеть и обнови страницу.</p></div>'});
+  }).catch(function(){$('slide').innerHTML='<div class="sc"><p class="lead">Не удалось загрузить презентацию. Проверь сеть и обнови страницу.</p></div>'});
 }
 function related(j){
   var h='',hubs=(j.hub||[]);
   if(hubs.length){h+='<div><h5>В учебнике</h5><div class="rc">'+hubs.map(function(x){var t=(IDX.hub||{})[x];return t?'<a href="finance.html#learn/'+esc(x)+'">'+esc(t)+'</a>':''}).join('')+'</div></div>'}
-  var same=IDX.decks.filter(function(d){return d.group===j.group&&d.id!==j.id}).slice(0,8);
-  if(same.length)h+='<div><h5>Ещё: '+esc(j.group)+'</h5><div class="rc">'+same.map(function(d){return '<a href="#'+esc(d.id)+'">'+esc(d.title)+'</a>'}).join('')+'</div></div>';
+  var grp=IDX.decks.filter(function(d){return d.group===j.group}),k=-1;grp.forEach(function(d,i){if(d.id===j.id)k=i});
+  if(grp.length>1)h='<div class="rnx"><h5>'+esc(j.group)+': '+(k+1)+' из '+grp.length+'</h5><div class="rn">'+grp.map(function(d,i){return '<a href="#'+esc(d.id)+'"'+(i===k?' class="cur"':'')+'><span>'+(i<9?'0':'')+(i+1)+'</span><b>'+esc(d.title)+'</b>'+(i===k+1?'<em>дальше →</em>':'')+'</a>'}).join('')+'</div></div>'+h;
   $('rel').innerHTML=h;
 }
 

@@ -564,7 +564,7 @@ pre{overflow-x:auto;max-width:100%}
     <button class="ibtn" id="b-theme" type="button" aria-label="Сменить тему"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 1 0 16z" fill="currentColor" stroke="none"/></svg></button>
   </div>
   <div class="search" id="search"><input id="q" type="search" placeholder="Поиск: слово или формула (WACC, FV=PV*(1+r))" autocomplete="off" enterkeyhint="search" aria-label="Поиск по справочнику"></div>
-  <nav class="sw" id="sw"><a href="#learn" data-s="learn">Учебник</a><a href="#markets" data-s="markets">Рынок</a><a href="fin2/index.html" class="out" title="Облигации и акции: скринер, карточки выпусков">Облигации →</a><a href="artem.html" class="out" title="На главную">Главная →</a></nav>
+  <nav class="sw" id="sw"><a href="#learn" data-s="learn">Учебник</a><a href="#markets" data-s="markets">Рынок</a><a href="lectures.html" class="out" title="Презентации по отраслям, сделкам и моделям">Презентации →</a><a href="fin2/index.html" class="out" title="Облигации и акции: скринер, карточки выпусков">Облигации →</a><a href="artem.html" class="out" title="На главную">Главная →</a></nav>
 </header>
 <div id="prog"></div><button id="totop" type="button" aria-label="Наверх" hidden>↑</button>
 <main id="view"></main>
@@ -689,17 +689,19 @@ SEC.forEach(function(c,i){prepDoc(c,i);c.sec=1});
 
 /* ---------------- обучение ---------------- */
 var TRACKS=[
- ['Шаг 1. Основы','Бухучёт, отчётность, МСФО, деньги во времени, статистика',['ib','buhuchet-s-nulya','otchetnost','msfo-standarty','us-gaap-vs-msfo','konsolidatsiya-goodwill','model-3-otchetov','analiz-otchetnosti','uchet-baza','npv-irr','koeffitsienty','kolichestvennye-metody']],
- ['Шаг 2. Оценка компаний','Ядро работы аналитика',['vidy-otsenki','portfel-capm','wacc','dcf','multiplikatory','comps','metody','sektory','otraslevoy-analiz','banki-fig','kpi','chuvstvitelnost-stsenarii']],
- ['Шаг 3. Сделки','Как это применяют в банке: M&A, ECM/DCM, LBO, венчур',['ma-lbo','korpfin-baza','lbo-poshagovo','accretion-dilution','process-sdelki','vrazhdebnye-sdelki','sdelki-v-rossii','ecm-dcm','ipo-v-rossii','dolgovoe-finansirovanie','leveraged-finance','restrukturizatsiya','struktura-kapitala','oborotny-kapital','teoriya-nwc','praktikum-nwc','venchur','alternativnye-investitsii','private-equity-v-rabote']],
- ['Шаг 4. Рынки и макро','Рынки, облигации, деривативы, микро и макро, валюты, Россия, этика',['rynki-kapitala','ekonomika-baza','instrumenty-baza','organizatsiya-rynkov','moex-infrastruktura','obligatsii','derivativy','mikroekonomika-rynki','makro','mezhdunarodnye','rossiya','povedencheskie-esg','etika-regulirovanie']],
- ['Шаг 5. Практика и собеседование','Кейсы, задачи, подготовка к стажировке',['stazhirovka','keysy','sobesedovanie','fit-sobesedovanie','praktikum','excel','project-black','karera']],
+ ['Шаг 1. Деньги, экономика и рынки','Что такое инвестиции: деньги во времени, экономика, инструменты, рынки, риск и доходность',['ib','npv-irr','ekonomika-baza','mikroekonomika-rynki','makro','rossiya','mezhdunarodnye','instrumenty-baza','rynki-kapitala','organizatsiya-rynkov','moex-infrastruktura','obligatsii','derivativy','portfel-capm','povedencheskie-esg','kolichestvennye-metody']],
+ ['Шаг 2. Отчётность и корпоративные финансы','Как читать компанию: учёт, три отчёта, МСФО, анализ, капитал, долг, оборотный капитал',['buhuchet-s-nulya','uchet-baza','otchetnost','uchet-ebit-ebitda-chistka','msfo-standarty','us-gaap-vs-msfo','konsolidatsiya-goodwill','model-3-otchetov','koeffitsienty','analiz-otchetnosti','korpfin-baza','struktura-kapitala','oborotny-kapital','teoriya-nwc','praktikum-nwc','dolgovoe-finansirovanie','leveraged-finance']],
+ ['Шаг 3. Оценка компаний','Ядро работы аналитика: DCF, WACC, мультипликаторы, мост к стоимости акций, модель',['vidy-otsenki','wacc','dcf','multiplikatory','ev-most-statyi','comps','metody','sektory','chuvstvitelnost-stsenarii','excel','otraslevoy-analiz','kpi','banki-fig']],
+ ['Шаг 4. Сделки','Как это применяют в банке: M&A, LBO, размещения, венчур и PE, реструктуризация',['ma-lbo','process-sdelki','accretion-dilution','lbo-poshagovo','vrazhdebnye-sdelki','sdelki-v-rossii','ecm-dcm','ipo-v-rossii','venchur','private-equity-v-rabote','alternativnye-investitsii','restrukturizatsiya']],
+ ['Шаг 5. Собеседование и практика','Стажировка, вопросы fit и технические, задачи, кейсы, этика',['stazhirovka','karera','fit-sobesedovanie','sobesedovanie','praktikum','project-black','keysy','etika-regulirovanie']],
  ['Шпаргалка: формулы и понятия','Все формулы и термины кратко: деньги во времени, отчётность, оценка, акции, облигации, деривативы, портфель, сделки, макро',['shpargalka-osnovy','shpargalka-otchetnost','shpargalka-otsenka','shpargalka-aktsii-rynok','shpargalka-obligatsii','shpargalka-derivativy','shpargalka-portfel-risk','shpargalka-korpfin-sdelki','shpargalka-makro-valyuty']],
  ['Справка','Возвращайся по необходимости: маршрут на год, глоссарий, источники',['marshrut','glossariy','istochniki']]];
 (function(){var order=[];TRACKS.forEach(function(tr){tr[2].forEach(function(id){var c=CH.filter(function(x){return x.id===id})[0];if(c&&order.indexOf(c)<0)order.push(c)})});
   CH.forEach(function(c){if(order.indexOf(c)<0)order.push(c)});CH=order;CH.forEach(function(c,i){c.i=i})})();
 var CALC_LINK={'npv-irr':['npv','Посчитать NPV и IRR'],'wacc':['wacc','Посчитать WACC'],'dcf':['dcf','Собрать свой DCF'],'ma-lbo':['lbo','Посчитать LBO'],'struktura-kapitala':['wacc','Поиграть со структурой капитала'],'rynki-kapitala':['npv','Калькулятор потоков'],'praktikum':['npv','Проверить ответы в калькуляторах']};
 /* пройденные уроки: localStorage 'fin:done' = {id:1} (общий для глав обучения; секторы не считаются) */
+/* сброс прогресса: учебник пересобран 11.11.2026, Артём проходит заново. Один раз на устройство; метка времени сброса фиксированная, чтобы сброс на втором устройстве не стёр новый прогресс с первого */
+try{if(store('fin:epoch')!=='2'){store('fin:done','{}');store('fin:quiz','{}');store('fin:qa','{}');try{localStorage.removeItem('fin:last')}catch(e){}store('fin:epoch','2');try{var _m=JSON.parse(localStorage.getItem('sync:meta')||'{}')||{};['fin:done','fin:quiz','fin:qa'].forEach(function(k){_m[k]=1794348000000});localStorage.setItem('sync:meta',JSON.stringify(_m))}catch(e){}}}catch(e){}
 function doneGet(){try{return JSON.parse(store('fin:done')||'{}')||{}}catch(e){return {}}}
 function doneIs(id){return !!doneGet()[id]}
 function doneSet(id,on){var d=doneGet();if(on)d[id]=1;else delete d[id];store('fin:done',JSON.stringify(d))}
@@ -713,7 +715,7 @@ function nextLesson(){
 function renderLearn(){
   var last=CH.filter(function(x){return x.id===store('fin:last')})[0];
   var nx=nextLesson(),np=nx?lessonPos(nx):null,allN=CH.filter(function(x){return x.id!=='glossariy'&&x.id!=='istochniki'}),doneN=doneStat(allN.map(function(x){return x.id}));
-  var h='<section class="hero"><h1>Справочник по корпоративным финансам</h1>'+
+  var h='<section class="hero"><h1>Инвестиции и корпоративные финансы</h1>'+
     (nx?'<a class="nextl" href="#learn/'+nx.id+'"><small>'+(doneN?'Твой следующий урок':'Начни отсюда')+' · '+esc(np.name.replace(/^Шаг (\d)\. /,'шаг $1: '))+', урок '+np.k+' из '+np.n+'</small><b>'+esc(nx.title)+'</b><span>'+esc(nx.short)+'</span><em>'+nx.min+' мин · открыть →</em></a>':'<p class="note">Все уроки пройдены. Возвращайся к любому шагу ниже.</p>')+
     '<div class="howto"><p><b>Как тут всё устроено.</b> Курс идёт шагами сверху вниз, каждый следующий опирается на предыдущий. Не нужно выбирать, что читать: открывай урок из карточки выше, в конце урока нажми «Отметить пройденным», и карточка сама покажет следующий. Текущий шаг раскрыт, остальные свёрнуты. Термины с пунктиром объясняются по нажатию.</p></div>'+
     '<div class="prog" id="lprog"></div></section>'+'<nav class="trk-nav" aria-label="Шаги">'+TRACKS.map(function(t,i){return '<a href="#" data-trk="trk'+i+'"'+(np&&np.step===i?' class="cur"':'')+'>'+esc(t[0].replace(/^Шаг (\d)\. /,'$1. '))+'</a>'}).join('')+(SEC.length?'<a href="#" data-trk="trksec">Сектора</a>':'')+'</nav>';

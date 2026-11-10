@@ -4,8 +4,8 @@
 import os, re, json, glob, ast, sys
 
 HERE = os.path.dirname(os.path.abspath(__file__)); ROOT = os.path.abspath(os.path.join(HERE, '..', '..'))
-GROUPS = ['M&A и сделки', 'LBO и моделирование', 'Оценка', 'Отчётность и учёт', 'PE и венчур', 'Нефть и газ', 'Металлы и добыча', 'TMT и медиа', 'Телеком',
-          'Финтех и банки', 'Страхование и пенсии', 'Инфраструктура и проекты', 'Недвижимость и ритейл', 'Налоги', 'Кейсы M&A', 'Крипта и альтернативы', 'Макро и Excel', 'Здравоохранение и прочее']
+GROUPS = ['M&A и сделки', 'LBO, левфин и слияния', 'Модели и Excel', 'Оценка', 'Кейсы M&A', 'Отчётность и учёт', 'Налоги', 'PE и венчур', 'Нефть и газ', 'Металлы и добыча', 'TMT и медиа', 'Телеком',
+          'Финтех и банки', 'Страхование и пенсии', 'Инфраструктура и проекты', 'Недвижимость и ритейл', 'Здравоохранение и прочее', 'Крипта и альтернативы']
 TYPES = {'points', 'table', 'formula', 'steps', 'compare', 'stats', 'qa', 'takeaway'}
 SOURCES = {'School of Finance', 'IB Club', 'Campus Finance', 'Skillspace'}
 
@@ -62,6 +62,7 @@ for fn in sorted(glob.glob(os.path.join(HERE, 'decks', '*.json'))):
     try: d = json.load(open(fn, encoding='utf-8'))
     except Exception as ex:
         print('ОШИБКА JSON', fn, ex); bad += 1; continue
+    d['group'] = {'LBO и моделирование': 'LBO, левфин и слияния', 'Макро и Excel': 'Модели и Excel'}.get(d.get('group'), d.get('group'))  # старые названия тем
     err = check(d, fn)
     if err:
         print('ОШИБКА', os.path.basename(fn), '; '.join(err[:6])); bad += 1; continue
@@ -76,7 +77,7 @@ for d in decks:
     heads = ' '.join((s.get('h') or s.get('q') or '') for s in d['slides'])
     idx.append({'id': d['id'], 'title': d['title'], 'group': d['group'], 'source': d['source'], 'level': d.get('level', 'base'), 'desc': d['desc'],
                 'tags': d.get('tags', []), 'n': n, 'min': max(2, round((n - 1) * 0.7)), 'q': heads})
-idx.sort(key=lambda x: (GROUPS.index(x['group']), x['title']))
+idx.sort(key=lambda x: (GROUPS.index(x['group']), x['id']))
 hubused = sorted({h for d in decks for h in d['hub']})
 json.dump({'decks': idx, 'hub': {h: HUB[h] for h in hubused}}, open(os.path.join(out, 'index.json'), 'w', encoding='utf-8'), ensure_ascii=False, separators=(',', ':'))
 print('ok lectures: %d колод, %d слайдов, ошибок %d' % (len(decks), sum(len(d['slides']) for d in decks), bad))
