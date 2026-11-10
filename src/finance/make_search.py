@@ -81,9 +81,9 @@ for f in sorted(glob.glob(os.path.join(ROOT, 'src', 'lectures', 'decks', '*.json
     d = json.load(open(f, encoding='utf-8'))
     out.append(['lc', d['title'], d['group'] + '. ' + d['desc'] + ' ' + ' '.join(d.get('tags', [])), 'lectures.html#' + d['id']])
     sl = d['slides']
-    for i in range(0, len(sl), 4):
-        ch = sl[i:i + 4]
-        out.append(['lc', d['title'], clean(' '.join(_stext(s) for s in ch), 700), 'lectures.html#%s/%d' % (d['id'], i + 2), ch[0].get('h') or ch[0].get('q', '')])
+    for i in range(0, len(sl), 5):
+        ch = sl[i:i + 5]
+        out.append(['lc', d['title'], clean(' '.join(_stext(s) for s in ch), 480), 'lectures.html#%s/%d' % (d['id'], i + 2), ch[0].get('h') or ch[0].get('q', '')])
 p = os.path.join(ROOT, 'search-index.json')
 open(p, 'w', encoding='utf-8').write(json.dumps(out, ensure_ascii=False, separators=(',', ':')))
 print('ok search-index', len(out), os.path.getsize(p) // 1024, 'KB')

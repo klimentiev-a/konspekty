@@ -26,7 +26,8 @@ def walk(o, path, errs):
     elif isinstance(o, list):
         for i, x in enumerate(o): walk(x, '%s[%d]' % (path, i), errs)
     elif isinstance(o, dict):
-        for k, v in o.items(): walk(v, path + '.' + k, errs)
+        for k, v in o.items():
+            if k != 'cols': walk(v, path + '.' + k, errs)
 
 
 def check(d, fn):
@@ -46,6 +47,10 @@ def check(d, fn):
     for i, s in enumerate(sl[:-1]):
         if s.get('t') == 'takeaway': e.append('takeaway не в конце: слайд %d' % (i + 1))
     for s in sl:
+        for k in ('note', 'n', 'lead', 'ex'):
+            if k in s and not str(s[k]).strip(): del s[k]
+        if s.get('t') == 'table':
+            s['cols'] = [(c if str(c).strip() else ' ') for c in s.get('cols', [])]
         if s.get('t') == 'table': s['rows'] = [[(c if str(c).strip() else '—') for c in r] for r in s.get('rows', [])]
     walk(d, d.get('id', fn), e)
     d['hub'] = [h for h in d.get('hub', []) if h in HUB]
