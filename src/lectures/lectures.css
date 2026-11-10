@@ -78,7 +78,9 @@
 .st li:not(:last-child)::after{content:"";position:absolute;left:calc(var(--tx)*1.05 - 1px);top:calc(var(--tx)*2.1);bottom:calc(var(--tx)*-.7);width:2px;background:var(--gl)}
 .st b{font-weight:600;font-size:calc(var(--tx)*1.05);align-self:center}.st p{margin:0;color:var(--muted);font-size:calc(var(--tx)*.9);grid-column:2}
 @container (min-width:760px){
-  .st{grid-auto-flow:column;grid-auto-columns:1fr;gap:calc(var(--tx)*.9)}
+  .st{grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:calc(var(--tx)*.9)}
+  .st.st6{grid-auto-flow:row;grid-template-columns:repeat(3,minmax(0,1fr));row-gap:calc(var(--tx)*1.1)}
+  .st li{min-width:0}
   .st li{grid-template-columns:1fr;align-content:start;gap:calc(var(--tx)*.5)}
   .st li::before{grid-row:auto}
   .st li:not(:last-child)::after{left:calc(var(--tx)*2.1 + var(--tx)*.3);right:calc(var(--tx)*-.9 + var(--tx)*.3);top:calc(var(--tx)*1.05 - 1px);bottom:auto;width:auto;height:2px}

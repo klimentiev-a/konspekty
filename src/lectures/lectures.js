@@ -83,7 +83,7 @@ function render(s,i){
       (s.rows||[]).map(function(r){return '<tr>'+r.map(function(c){return '<td>'+esc(c)+'</td>'}).join('')+'</tr>'}).join('')+'</tbody></table></div>'+(s.note?'<p class="nt a" style="--i:2">'+esc(s.note)+'</p>':'');
   }
   else if(t==='formula')h=head(s)+'<div class="fm">'+(s.f||[]).map(function(f,k){return '<div class="f a" style="--i:'+(k+1)+'">'+esc(f)+'</div>'}).join('')+'</div>'+(s.ex?'<div class="ex a" style="--i:5"><b>Пример.</b> '+esc(String(s.ex).replace(/^Пример:?\s*/i,''))+'</div>':'')+(s.note?'<p class="nt a" style="--i:6">'+esc(s.note)+'</p>':'');
-  else if(t==='steps')h=head(s)+'<ol class="st">'+(s.steps||[]).map(function(x,k){return '<li class="a" style="--i:'+(k+1)+'"><b>'+esc(x.h)+'</b>'+(x.d?'<p>'+esc(x.d)+'</p>':'')+'</li>'}).join('')+'</ol>';
+  else if(t==='steps')h=head(s)+'<ol class="st'+((s.steps||[]).length>5?' st6':'')+'">'+(s.steps||[]).map(function(x,k){return '<li class="a" style="--i:'+(k+1)+'"><b>'+esc(x.h)+'</b>'+(x.d?'<p>'+esc(x.d)+'</p>':'')+'</li>'}).join('')+'</ol>';
   else if(t==='compare'){
     var side=function(o,k){return '<div class="a" style="--i:'+k+'"><h4>'+esc(o.h)+'</h4><ul>'+(o.items||[]).map(function(x){return '<li>'+esc(x)+'</li>'}).join('')+'</ul></div>'};
     h=head(s)+'<div class="cp">'+side(s.l||{},1)+side(s.r||{},2)+'</div>';

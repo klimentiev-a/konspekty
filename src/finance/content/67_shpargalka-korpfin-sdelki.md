@@ -1,7 +1,7 @@
 # Шпаргалка 8. Корпоративные финансы и сделки
 short: Структура капитала, Модильяни–Миллер, дивиденды, оборотный капитал, M&A, accretion/dilution, LBO, IRR и MOIC, IPO, долг, ключевые термины банкира
 
-> **Суть.** Формулы и понятия финансового директора и банкира: структура капитала, дивиденды, выгода сделки. Подробнее: [Структура капитала](#learn/struktura-kapitala), [M&A и LBO](#learn/ma-lbo), [LBO пошагово](#learn/lbo-poshagovo), [Accretion/Dilution](#learn/accretion-dilution), [Leveraged Finance](#learn/leveraged-finance), [Private Equity в работе](#learn/private-equity-v-rabote), [IPO и SPO в России](#learn/ipo-v-rossii).
+> **Суть.** Формулы и понятия финансового директора и банкира: структура капитала, дивиденды, выгода сделки. Подробнее: [Структура капитала](#learn/struktura-kapitala), [M&A и LBO](#learn/ma-lbo), [LBO пошагово](#learn/lbo-poshagovo), [Accretion/Dilution](#learn/accretion-dilution), [Leveraged Finance](#learn/dolgovoe-finansirovanie), [Private Equity в работе](#learn/venchur), [IPO и SPO в России](#learn/ecm-dcm).
 
 > **За минуту.**
 > 1. Долг дешевле капитала из-за налогового щита (tax shield), но повышает риск банкротства.
@@ -31,7 +31,7 @@ short: Структура капитала, Модильяни–Миллер, �
 - **Buyback (обратный выкуп):** гибче дивиденда, в ряде систем налогово выгоднее, повышает EPS.
 - **Потолок выплат** — FCFE (free cash flow to equity, свободный поток акционерам).
 
-Оборотный капитал: [теория NWC](#learn/teoriya-nwc).
+Оборотный капитал: [теория NWC](#learn/oborotny-kapital).
 
 ## 3. M&A
 

@@ -83,7 +83,7 @@ short: Рассказ о себе, почему IB, слабости, неуда
 ## Что понимать про работу банка
 
 - **Как компании выбирают банкиров:** опыт в отрасли и похожих сделках, связи с покупателями и инвесторами, команда, цена (комиссия за успех, success fee), отсутствие конфликта интересов.
-- **DCM и leveraged finance:** DCM (debt capital markets) размещает долг для надёжных заёмщиков, leveraged finance — для рискованных и для LBO. Подробнее в главах [Долговое финансирование](#learn/dolgovoe-finansirovanie) и [Leveraged finance](#learn/leveraged-finance).
+- **DCM и leveraged finance:** DCM (debt capital markets) размещает долг для надёжных заёмщиков, leveraged finance — для рискованных и для LBO. Подробнее в главах [Долговое финансирование](#learn/dolgovoe-finansirovanie) и [Leveraged finance](#learn/dolgovoe-finansirovanie).
 - **Состав pitch book и процесс продажи:** глава [Процесс сделки](#learn/process-sdelki).
 
 ## Головоломки и быстрый счёт
