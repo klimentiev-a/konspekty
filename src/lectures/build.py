@@ -7,7 +7,7 @@ HERE = os.path.dirname(os.path.abspath(__file__)); ROOT = os.path.abspath(os.pat
 GROUPS = ['M&A и сделки', 'LBO, левфин и слияния', 'Модели и Excel', 'Оценка', 'Кейсы M&A', 'Отчётность и учёт', 'Налоги', 'PE и венчур', 'Нефть и газ', 'Металлы и добыча', 'TMT и медиа', 'Телеком',
           'Финтех и банки', 'Страхование и пенсии', 'Инфраструктура и проекты', 'Недвижимость и ритейл', 'Здравоохранение и прочее', 'Крипта и альтернативы']
 TYPES = {'points', 'table', 'formula', 'steps', 'compare', 'stats', 'qa', 'takeaway'}
-SOURCES = {'School of Finance', 'IB Club', 'Campus Finance', 'Skillspace'}
+SOURCES = {'School of Finance', 'IB Club', 'Campus Finance', 'Skillspace', 'Проект «Навигатор BI»'}
 
 # названия глав учебника: id → заголовок
 src = open(os.path.join(ROOT, 'src', 'finance', 'build_finance.py'), encoding='utf-8').read()
