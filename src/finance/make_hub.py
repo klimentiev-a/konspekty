@@ -392,6 +392,13 @@ search_body = ('<div class="w">\n  ' + topbar('artem.html', 'Артем') + '\n 
                '  <div class="sq"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>'
                '<input id="q" type="search" placeholder="Что найти?" autocomplete="off" enterkeyhint="search" aria-label="Поиск по сайту"></div>\n'
                '  <div class="sf" id="sf" role="group" aria-label="Фильтр"></div>\n  <div class="sr" id="sr" aria-live="polite"></div>\n</div>\n')
+# ---------------- python-demo.html: демо-КР по Python с проверкой кода (src/pytrainer/) ----------------
+_pp = os.path.join(ROOT, 'src', 'pytrainer')
+_pr = lambda n: open(os.path.join(_pp, n), encoding='utf-8').read()
+py_body = _pr('body.html').replace('<!--TOPBAR-->', topbar('ucheba.html#python-7', 'Учёба') + '\n  ', 1) + '<script>\n' + _pr('tasks.js') + '\n' + _pr('trainer.js') + '\n</script>'
+py_html = page('Демо-КР по Python · Hub', py_body, 'artem').replace('</head>', '<style>\n' + _pr('trainer.css') + '</style></head>', 1)
+
+
 search_html = page('Hub · Поиск', search_body, 'artem').replace('</head>', SEARCH_CSS + '</head>', 1).replace('</body>', SEARCH_JS + BACK_JS + '</body>', 1)
 
 
@@ -401,6 +408,6 @@ search_html = page('Hub · Поиск', search_body, 'artem').replace('</head>',
 # замок для страниц Артема (ucheba.html, finance.html) — его вставляют make_ucheba.py и build_finance.py
 open(os.path.join(ROOT, 'src', 'finance', 'gate_artem.html'), 'w', encoding='utf-8').write(gate('artem'))
 
-for name, html in (('index.html', index_html), ('artem.html', artem_html), ('nastya.html', nastya_html), ('nastya-ucheba.html', nu_html), ('nastya-klava.html', kl_html), ('search.html', search_html), ('lectures.html', lec_html)):
+for name, html in (('index.html', index_html), ('artem.html', artem_html), ('nastya.html', nastya_html), ('nastya-ucheba.html', nu_html), ('nastya-klava.html', kl_html), ('search.html', search_html), ('lectures.html', lec_html), ('python-demo.html', py_html)):
     open(os.path.join(ROOT, name), 'w', encoding='utf-8').write(html)
     print('ok', name, len(html))
