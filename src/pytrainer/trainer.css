@@ -1,7 +1,15 @@
-/* Демо-КР по Python — цвета из переменных Hub (--bg, --surface, --fg, --muted, --faint, --line, --a1, --a2) */
-.pw{max-width:1180px}
-.pw h1{margin-bottom:0}
-.pw.inwork>h1,.pw.inwork>.lead{display:none}
+/* Тренажёр КР по Python, встроен в конспект Учёбы: цвета берутся из переменных темы Учёбы */
+.pw{--a1:var(--accent);--a2:var(--accent);margin:18px 0 8px;font-family:var(--sans)}
+.prose .pw h2,.prose .pw h3,.prose .pw h4,.prose .pw h5{font-family:var(--sans);font-style:normal;text-transform:none;letter-spacing:0;text-align:left;color:var(--fg);padding:0;border:0;background:none;display:block;line-height:1.25}
+.prose .pw h2:before,.prose .pw h2:after,.prose .pw h3:before,.prose .pw h3:after,.prose .pw h4:before,.prose .pw h4:after{content:none!important;display:none}
+.prose .pw h2{font-size:1.3em;font-weight:700;margin:0 0 8px}
+.prose .pw h3{font-size:1.1em;font-weight:700;margin:2px 0 6px}
+.prose .pw h4{font-size:.78em;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:14px 0 4px}
+.prose .pw h5{font-size:1em;font-weight:700;margin:0 0 6px}
+.prose .pw p{text-indent:0}.prose .pw p:first-child:first-letter{all:unset}
+.prose .pw .pgrid{display:block}.prose .pw .ptask{position:static;max-height:none}
+.prose .pw pre{margin:6px 0;white-space:pre-wrap}
+.prose .pw table{width:100%}
 .pm{font:13px/1.35 ui-monospace,'SF Mono','JetBrains Mono',Menlo,Consolas,monospace}
 .pw code,.pw pre,.pw textarea{font-family:ui-monospace,'SF Mono','JetBrains Mono',Menlo,Consolas,monospace}
 .pbtn{height:42px;padding:0 18px;border:1px solid var(--line);border-radius:999px;background:var(--surface);color:var(--fg);font:500 14px/1 'IBM Plex Sans',system-ui,sans-serif;cursor:pointer;white-space:nowrap}

@@ -49,6 +49,10 @@ if errs:
     print('\n'.join(errs)); sys.exit(1)
 js = 'var PYD=' + json.dumps(out, ensure_ascii=False, separators=(',', ':')) + ';\n'
 open(os.path.join(HERE, 'tasks.js'), 'w', encoding='utf-8').write(js)
+_r=lambda n: open(os.path.join(HERE,n),encoding='utf-8').read()
+os.makedirs(os.path.join(os.path.dirname(os.path.dirname(HERE)),'pytrainer'),exist_ok=True)
+_app="(function(){var st=document.getElementById('pyt-css');if(!st){st=document.createElement('style');st.id='pyt-css';st.textContent="+json.dumps(_r('trainer.css'),ensure_ascii=False)+";document.head.appendChild(st)}})();\n"+js+"\n"+_r('trainer.js')
+open(os.path.join(os.path.dirname(os.path.dirname(HERE)),'pytrainer','app.js'),'w',encoding='utf-8').write(_app)
 print('ok pytrainer: %d вариантов, %d задач, tasks.js %d байт' % (len(out), total, len(js.encode())))
 if '-v' in sys.argv:
     for v in out:

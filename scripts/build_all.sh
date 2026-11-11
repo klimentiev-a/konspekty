@@ -18,7 +18,7 @@ python3 src/fin2/build.py
 python3 src/finance/make_search.py
 # Страницы, которых больше нет: переадресация на новые адреса (закладки и старые ссылки продолжают работать)
 python3 - <<'PY'
-R={'politika.html':'artem.html','energy.html':'artem.html','rynok.html':'finance.html#markets','slovar.html':'search.html','bootcamp.html':'ucheba.html#ai-1','fin-english.html':'artem.html','istoriya.html':'artem.html'}
+R={'politika.html':'artem.html','energy.html':'artem.html','rynok.html':'finance.html#markets','slovar.html':'search.html','bootcamp.html':'ucheba.html#ai-1','fin-english.html':'artem.html','istoriya.html':'artem.html','python-demo.html':'ucheba.html#python-7'}
 for f,to in R.items():
     open(f,'w',encoding='utf-8').write('<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="robots" content="noindex"><meta http-equiv="refresh" content="0;url='+to+'"><script>location.replace("'+to+'"+(location.search||"")'+('' if '#' in to else '+location.hash')+')</script><title>Переадресация</title></head><body><a href="'+to+'">'+to+'</a></body></html>')
 print('ok переадресации', ', '.join(R))

@@ -3,6 +3,7 @@
 var PYO='https://cdn.jsdelivr.net/pyodide/v0.26.4/full/';
 var LS='pyd:v1',EXAM_MIN=80,RUN_MS=4000;
 var $=function(i){return document.getElementById(i)};
+function toTop(){var d=$('pd');if(!d)return;var r=d.getBoundingClientRect();if(r.top<0)window.scrollTo({top:r.top+window.scrollY-70})}
 function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
 function fmt(n){return (Math.round(n*100)/100).toString().replace('.',',')}
 function inl(s){return esc(s).replace(/`([^`]+)`/g,'<code>$1</code>').replace(/\*\*([^*]+)\*\*/g,'<b>$1</b>')}
@@ -147,10 +148,8 @@ function statusOf(t){
 /* ---------- меню ---------- */
 function renderMenu(){
   stopTimer();S.sol=false;$('pd').classList.remove('inwork');
-  var h='<div class="ph3">Режим</div><div class="pmodes" id="pmodes">'+
-   '<button type="button" class="pmode'+(S.mode==='train'?' on':'')+'" data-m="train"><b>Тренировка</b><small>Без времени и штрафов. Есть подсказки, а к каждой задаче — решение и полный разбор.</small></button>'+
-   '<button type="button" class="pmode'+(S.mode==='exam'?' on':'')+'" data-m="exam"><b>Контрольная</b><small>'+EXAM_MIN+' минут, без подсказок и решений. Баллы как в демоверсии, за каждую неверную проверку −10% от баллов задачи. Разбор открывается после завершения.</small></button></div>';
-  h+='<div class="ph3">Варианты</div><div class="pvars">';
+  var h='';
+  h+='<div class="ph3">Выбери вариант</div><div class="pvars">';
   PYD.forEach(function(v){
     var e=exOf(v.id),dots=v.tasks.map(function(t){var s;if(S.mode==='exam'){var r=e&&e.r[t.id];s=r?(r.ok?'ok':(r.fail?'bad':'')):''}else{var q=P.tr[t.id];s=q?(q.ok?'ok':(q.att?'bad':'')):''}return '<i class="pdot '+s+'" title="'+esc(t.title)+'"></i>'}).join('');
     var solved=v.tasks.filter(function(t){var q=P.tr[t.id];return q&&q.ok}).length;
@@ -162,7 +161,7 @@ function renderMenu(){
        '<button type="button" class="pbtn pri" data-start="'+v.id+'">'+lab+'</button>'+
        (S.mode==='exam'&&e&&e.fin?'<button type="button" class="pbtn" data-res="'+v.id+'">Итог и разбор</button>':'')+'</div></div>';
   });
-  h+='</div><p class="pnote"><b>Как проверяется.</b> Программа запускается в браузере (Python загружается один раз, ≈10 МБ, поэтому нужен интернет). Вывод сравнивается с эталоном построчно, пробелы в конце строк не учитываются. Первые два теста видны в условии, остальные скрыты, как на настоящей проверке. Баллы за задачу: целиком за все пройденные тесты (частичных нет). Формулу штрафа я взял из программы дисциплины («10% за неверную попытку, дальше больше»); как именно растёт штраф, я не уточнял. Прогресс хранится в этом браузере.</p>';
+  h+='</div><p class="pnote"><b>Как это работает.</b> Читаешь задачу, пишешь код, жмёшь «Проверить»: программа запускается здесь же (при первом запуске Python грузится ≈10 МБ, нужен интернет) и сравнивает вывод с ответом на всех тестах. Два примера видны в условии, остальные тесты скрыты, как на настоящей проверке. Посмотреть готовое решение и разбор можно только после первой проверки. Прогресс хранится в этом браузере.</p>';
   $('pv-menu').innerHTML=h;$('pv-menu').hidden=false;$('pv-work').hidden=true;$('pv-end').hidden=true;
 }
 /* ---------- рабочее окно ---------- */
@@ -178,7 +177,7 @@ function renderWork(){
   var v=variant(S.v),t=curTask(),ex=S.mode==='exam';
   var tabs=v.tasks.map(function(x,k){return '<button type="button" class="ptab '+statusOf(x)+(k===S.i?' cur':'')+'" data-i="'+k+'" aria-label="Задача '+(k+1)+'">'+(k+1)+'<small>'+fmt(x.pts)+' б.</small></button>'}).join('');
   var ex2=t.tests.slice(0,2).map(function(x,k){return '<div class="pex"><div><small>Пример '+(k+1)+' — ввод</small><pre class="pbk">'+esc(x.i)+'</pre></div><div><small>вывод</small><pre class="pbk">'+esc(x.o||'(пусто)')+'</pre></div></div>'}).join('');
-  var h='<div class="pbar"><button type="button" class="pbtn sm" data-a="menu">← Варианты</button><span class="ptt">'+esc(v.name)+' · '+esc(v.sub)+'</span><span class="pbadge'+(ex?' ex':'')+'">'+(ex?'Контрольная':'Тренировка')+'</span><span class="pspc"></span>'+
+  var h='<div class="pbar"><button type="button" class="pbtn sm" data-a="menu">← Варианты</button><span class="ptt">'+esc(v.name)+' · '+esc(v.sub)+'</span>'+(ex?'<span class="pbadge ex">Контрольная</span>':'')+'<span class="pspc"></span>'+
     (ex?'<span class="pscore">Баллы: <b id="pscore">'+fmt(examScore(S.v))+'</b> / 10</span><span class="ptimer" id="ptimer">--:--</span><button type="button" class="pbtn sm" data-a="finish">Завершить</button>':'')+'</div>'+
     '<nav class="ptabs" id="ptabs">'+tabs+'</nav>'+
     '<div class="pgrid"><article class="ptask"><h2>Задача '+t.n+'. '+esc(t.title)+'</h2><div class="pmeta"><span class="pts">'+fmt(t.pts)+' балла</span><span>'+esc(t.topics)+'</span></div>'+paras(t.text)+
@@ -187,7 +186,7 @@ function renderWork(){
       '<textarea id="pcode" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" aria-label="Код решения" placeholder="Напишите решение здесь"></textarea>'+
       '<div class="pkeys"><button type="button" class="pbtn sm" data-k="tab" title="Tab">⇥ отступ</button><button type="button" class="pbtn sm" data-k="untab" title="Shift+Tab">⇤ назад</button><button type="button" class="pbtn sm" data-k="colon">:</button><button type="button" class="pbtn sm" data-k="q">\'\'</button><button type="button" class="pbtn sm" data-k="br">[]</button><button type="button" class="pbtn sm" data-k="par">()</button></div>'+
       '<div class="pact"><button type="button" class="pbtn" data-a="run" title="Ctrl+Enter">▶ Запустить</button><button type="button" class="pbtn pri" data-a="check">✓ Проверить</button>'+
-        '<button type="button" class="pbtn" data-a="hint"'+(ex?' disabled title="В контрольной подсказок нет"':'')+'>💡 Подсказка</button><button type="button" class="pbtn" data-a="sol"'+(ex?' disabled title="Откроется после завершения"':'')+'>Решение и разбор</button><button type="button" class="pbtn sm" data-a="reset">Сбросить код</button></div>'+
+        '<button type="button" class="pbtn" id="psolb" data-a="sol"'+(ex?' disabled title="Откроется после завершения"':(solOpen(t)?'':' disabled title="Сначала нажми «Проверить»"'))+'>Посмотреть ответ</button><button type="button" class="pbtn sm" data-a="reset">Сбросить код</button></div>'+
       '<details class="pin"><summary>Свой ввод для запуска</summary><textarea id="pin" spellcheck="false" aria-label="Входные данные"></textarea></details>'+
       '<div class="pst" id="pst"></div><div class="pout" id="pout"></div></div></div><div id="psol"></div>';
   $('pd').classList.add('inwork');var w=$('pv-work');w.innerHTML=h;w.hidden=false;$('pv-menu').hidden=true;$('pv-end').hidden=true;
@@ -198,7 +197,7 @@ function renderWork(){
   setStat(WSTAT,WSTAT==='ok'?'Python готов':'');
   if(ex)startTimer();else stopTimer();
   if(WSTAT==='idle')setTimeout(function(){startWorker().catch(function(){})},600);
-  var q=S.i>=0&&window.scrollY>400;if(q)window.scrollTo({top:0});
+  toTop();
 }
 function editorKeys(e){
   var ta=e.target;
@@ -272,7 +271,7 @@ function doCheck(){
     /* учёт */
     if(ex){var e=exOf(S.v),r=e.r[t.id]||(e.r[t.id]={ok:0,fail:0});if(!r.ok){if(all)r.ok=1;else r.fail=(r.fail||0)+1}save();if($('pscore'))$('pscore').textContent=fmt(examScore(S.v))}
     else{var q=trRes(t.id);q.att=(q.att||0)+1;if(all)q.ok=1;save()}
-    refreshTabs();
+    refreshTabs();if(!ex&&$('psolb'))$('psolb').disabled=false;
     outBox().innerHTML=renderCheck(t,res,passed,all,ex);
     if(all&&!ex)$('pst').textContent='';
   });
@@ -316,8 +315,9 @@ function solView(t,bare){
     (bare?'':'<div class="prow"><button type="button" class="pbtn sm" data-a="paste">Вставить решение в редактор</button><button type="button" class="pbtn sm" data-a="solclose">Скрыть разбор</button></div>')+'</div>';
   return h;
 }
+function solOpen(t){var q=P.tr[t.id];return !!(q&&q.att)}
 function doSol(){
-  var t=curTask();$('psol').innerHTML=solView(t);S.sol=true;
+  var t=curTask();if(S.mode!=='exam'&&!solOpen(t)){var el0=$('pst');if(el0)el0.textContent='Сначала проверь своё решение: нажми «Проверить».';return}$('psol').innerHTML=solView(t);S.sol=true;
   var el=$('psol');if(el.scrollIntoView)el.scrollIntoView({behavior:'smooth',block:'start'});
 }
 /* ---------- завершение контрольной ---------- */
@@ -335,11 +335,11 @@ function renderEnd(vid,auto){
     '<div class="pbig">'+fmt(sc)+' <small>из 10 баллов · потрачено '+m+' мин</small></div>'+
     '<div class="ptblw"><table class="ptbl"><thead><tr><th>№</th><th>Задача</th><th>Итог</th><th>Неверных проверок</th><th>Баллы</th><th></th></tr></thead><tbody>'+rows+'</tbody></table></div>'+
     '<div class="pact"><button type="button" class="pbtn pri" data-start="'+vid+'">Пройти заново</button><button type="button" class="pbtn" data-a="train">Открыть в режиме тренировки</button></div><div id="psol-end"></div>';
-  $('pd').classList.add('inwork');var el=$('pv-end');el.innerHTML=h;el.hidden=false;$('pv-menu').hidden=true;$('pv-work').hidden=true;window.scrollTo({top:0});
+  $('pd').classList.add('inwork');var el=$('pv-end');el.innerHTML=h;el.hidden=false;$('pv-menu').hidden=true;$('pv-work').hidden=true;toTop();
 }
 /* ---------- события ---------- */
 document.addEventListener('click',function(ev){
-  var b=ev.target.closest('button');if(!b||!$('pd').contains(b))return;
+  var b=ev.target.closest&&ev.target.closest('button'),pd=$('pd');if(!b||!pd||!pd.contains(b))return;
   if(b.dataset.m){S.mode=b.dataset.m;renderMenu();return}
   if(b.dataset.start){var v=b.dataset.start;if(S.mode==='exam'){var e=exOf(v);if(e&&e.fin&&!confirm('Начать заново? Прежний результат и код этого варианта будут стёрты.'))return}startVariant(v);return}
   if(b.dataset.res){renderEnd(b.dataset.res);return}
@@ -360,9 +360,6 @@ document.addEventListener('click',function(ev){
   else if(a==='train'){S.mode='train';startVariant(S.v)}
 });
 /* запрет закрытия с запущенным таймером не нужен: состояние хранится, время идёт по часам */
-(function init(){
-  var qs=new URLSearchParams(location.search);
-  if(qs.get('m')==='exam')S.mode='exam';
-  renderMenu();
-})();
+window.PYT={mount:function(){stopTimer();S.sol=false;if($('pd'))renderMenu()}};
+if($('pd'))window.PYT.mount();
 })();
