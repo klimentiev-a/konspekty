@@ -7,7 +7,7 @@ HERE = os.path.dirname(os.path.abspath(__file__)); ROOT = os.path.abspath(os.pat
 GROUPS = ['M&A и сделки', 'LBO, левфин и слияния', 'Модели и Excel', 'Оценка', 'Кейсы M&A', 'Отчётность и учёт', 'Налоги', 'PE и венчур', 'Нефть и газ', 'Металлы и добыча', 'TMT и медиа', 'Телеком',
           'Финтех и банки', 'Страхование и пенсии', 'Инфраструктура и проекты', 'Недвижимость и ритейл', 'Здравоохранение и прочее', 'Крипта и альтернативы']
 TYPES = {'points', 'table', 'formula', 'steps', 'compare', 'stats', 'qa', 'takeaway'}
-SOURCES = {'School of Finance', 'IB Club', 'Campus Finance', 'Skillspace', 'Проект «Навигатор BI»'}
+SOURCES = {'School of Finance', 'IB Club', 'Campus Finance', 'Skillspace', 'Hub Артёма'}
 
 # названия глав учебника: id → заголовок
 src = open(os.path.join(ROOT, 'src', 'finance', 'build_finance.py'), encoding='utf-8').read()
@@ -77,6 +77,21 @@ for d in decks:
     heads = ' '.join((s.get('h') or s.get('q') or '') for s in d['slides'])
     idx.append({'id': d['id'], 'title': d['title'], 'group': d['group'], 'source': d['source'], 'level': d.get('level', 'base'), 'desc': d['desc'],
                 'tags': d.get('tags', []), 'n': n, 'min': max(2, round((n - 1) * 0.7)), 'q': heads})
+
+def _stext(s):
+    parts = [s.get('h', ''), s.get('lead', ''), s.get('q', ''), s.get('a', ''), s.get('ex', ''), s.get('note', ''), s.get('n', '')] + list(s.get('f', []))
+    for x in s.get('items', []): parts.append(x if isinstance(x, str) else x.get('b', '') + ' ' + x.get('d', ''))
+    for x in s.get('steps', []): parts.append(x.get('h', '') + ' ' + x.get('d', ''))
+    for x in s.get('stats', []): parts.append(x.get('v', '') + ' ' + x.get('l', ''))
+    for k in ('l', 'r'):
+        if s.get(k): parts += [s[k].get('h', '')] + list(s[k].get('items', []))
+    parts += list(s.get('cols', [])) + [c for r in s.get('rows', []) for c in r]
+    return re.sub(r'\s+', ' ', ' '.join(str(p) for p in parts if p)).strip()
+sr = []
+for d in decks:
+    for i, sl in enumerate(d['slides']):
+        sr.append([d['id'], i + 2, sl.get('h') or sl.get('q') or '', _stext(sl)])
+json.dump(sr, open(os.path.join(out, 'search.json'), 'w', encoding='utf-8'), ensure_ascii=False, separators=(',', ':'))
 idx.sort(key=lambda x: (GROUPS.index(x['group']), x['id']))
 hubused = sorted({h for d in decks for h in d['hub']})
 json.dump({'decks': idx, 'hub': {h: HUB[h] for h in hubused}}, open(os.path.join(out, 'index.json'), 'w', encoding='utf-8'), ensure_ascii=False, separators=(',', ':'))

@@ -3,7 +3,7 @@
 var $=function(i){return document.getElementById(i)};
 var GROUPS={'M&A и сделки':[205,'M&A'],'LBO, левфин и слияния':[262,'LBO'],'Модели и Excel':[175,'Xl'],'Оценка':[160,'EV'],'Кейсы M&A':[238,'Case'],'Отчётность и учёт':[28,'P&L'],'Налоги':[95,'Tax'],'PE и венчур':[330,'PE'],'Нефть и газ':[215,'Oil'],'Металлы и добыча':[38,'Me'],'TMT и медиа':[285,'TMT'],'Телеком':[190,'Tel'],'Финтех и банки':[145,'Fin'],'Страхование и пенсии':[5,'Ins'],'Инфраструктура и проекты':[55,'Inf'],'Недвижимость и ритейл':[345,'RE'],'Здравоохранение и прочее':[125,'Med'],'Крипта и альтернативы':[300,'Alt']};
 var ORDER=Object.keys(GROUPS);
-var IDX=null,DECK=null,CUR=0,TOTAL=0,LAST=0,SEEN={},Q='',GF='';
+var SR=null,SRL=0,IDX=null,DECK=null,CUR=0,TOTAL=0,LAST=0,SEEN={},Q='',GF='';
 var LS='lec:v1';
 function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
 function gh(g){return (GROUPS[g]||[160])[0]}
@@ -62,12 +62,42 @@ function drawList(){
   ORDER.concat(Object.keys(by).filter(function(g){return ORDER.indexOf(g)<0})).forEach(function(g){
     if(by[g])h+=topic(g,by[g],full[g]);
   });
-  $('lall').innerHTML=h;$('lempty').hidden=ds.length>0;
+  $('lall').innerHTML=h;var nh=drawHits();$('lempty').hidden=ds.length>0||nh>0;
   var cnt={};IDX.decks.forEach(function(d){cnt[d.group]=(cnt[d.group]||0)+1});
   var c='<button type="button" class="lchip'+(GF?'':' on')+'" data-g="">Все темы <em>'+Object.keys(cnt).length+'</em></button>';
   ORDER.forEach(function(g){if(cnt[g])c+='<button type="button" class="lchip'+(GF===g?' on':'')+'" data-g="'+esc(g)+'" style="--h:'+gh(g)+'"><u></u>'+esc(g)+'</button>'});
   $('lchips').innerHTML=c;
   var st=$('lstat');if(st)st.textContent=Object.keys(cnt).length+' тем · '+IDX.decks.length+' '+plur(IDX.decks.length,'презентация','презентации','презентаций');
+}
+
+
+/* ---------- поиск по тексту слайдов ---------- */
+function loadSR(){if(SR||SRL)return;SRL=1;fetch('lectures/search.json').then(function(r){return r.json()}).then(function(j){SR=j;if(Q)drawList()}).catch(function(){SRL=0})}
+function snip(x,ws){
+  var t=norm(x),k=-1,i;ws.forEach(function(w){i=t.indexOf(w);if(i>=0&&(k<0||i<k))k=i});
+  if(k<0)k=0;var a=Math.max(0,k-60),b=Math.min(x.length,k+110),o=(a>0?'… ':'')+x.slice(a,b)+(b<x.length?' …':'');
+  var h=esc(o);ws.forEach(function(w){if(w.length<2)return;h=h.replace(new RegExp('('+w.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'[а-яa-z0-9]*)','gi'),'<mark>$1</mark>')});
+  return h;
+}
+function drawHits(){
+  var el=$('lhits');if(!el)return 0;var ws=qwords(Q);
+  if(!ws.length){el.innerHTML='';return 0}
+  if(!SR){el.innerHTML='<p class="lhn">Ищу по слайдам…</p>';loadSR();return 0}
+  var T={};IDX.decks.forEach(function(d){T[d.id]=d});
+  var res=[];
+  SR.forEach(function(r){
+    var d=T[r[0]];if(!d||(GF&&d.group!==GF))return;
+    var hh=norm(r[2]),tt=norm(r[3]+' '+d.title);
+    if(!ws.every(function(w){return tt.indexOf(w)>=0}))return;
+    var sc=ws.reduce(function(a,w){return a+(hh.indexOf(w)>=0?3:1)},0);
+    res.push({d:d,n:r[1],h:r[2],x:r[3],sc:sc});
+  });
+  res.sort(function(a,b){return b.sc-a.sc});
+  var per={},out=[];res.forEach(function(r){per[r.d.id]=(per[r.d.id]||0)+1;if(per[r.d.id]<=3&&out.length<30)out.push(r)});
+  if(!out.length){el.innerHTML='';return 0}
+  el.innerHTML='<div class="lh3"><span>Найдено в слайдах: '+res.length+'</span><i></i></div><div class="lhl">'+out.map(function(r){
+    return '<a class="lhit" style="--h:'+gh(r.d.group)+'" href="#'+esc(r.d.id)+'/'+r.n+'"><span class="lhg">'+esc(r.d.group)+'</span><b>'+esc(r.d.title)+'</b><u>'+esc(r.h||'слайд '+r.n)+'</u><em>'+snip(r.x,ws)+'</em></a>'}).join('')+'</div>';
+  return res.length;
 }
 
 /* ---------- слайды ---------- */
