@@ -1304,7 +1304,7 @@ function renderNote(n){
   var s=n.subject,ml=minLevel(n.md);
   shift=ml===null?0:2-ml;
   var html=marked.parse(n.md);
-  if(n.id==='python-7')html=html.replace(/<p>\[\[pytrainer\]\]<\/p>/,'<div class="pw" id="pd"><section id="pv-menu"></section><section id="pv-work" hidden></section><section id="pv-end" hidden></section></div>');
+  if(n.id==='python-7')html=html.replace(/<p>\[\[pytrainer\]\]<\/p>/,'<div class="pyt" id="pd"><section id="pv-menu"></section><section id="pv-work" hidden></section><section id="pv-end" hidden></section></div>');
   var pv=s.notes[n.idx-1],nx=s.notes[n.idx+1];
   var pager=(pv||nx)?'<nav class="pager" aria-label="Соседние конспекты">'+
     (pv?'<a class="pv" href="#'+pv.id+'" data-go="'+pv.id+'"><span class="k">← Назад'+(pv.date?' · '+esc(pv.date):'')+'</span><span class="v">'+esc(pv.title)+'</span></a>':'')+
