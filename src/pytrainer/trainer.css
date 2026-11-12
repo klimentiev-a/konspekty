@@ -7,7 +7,6 @@
 .prose .pyt h4{font-size:.78em;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:14px 0 4px}
 .prose .pyt h5{font-size:1em;font-weight:700;margin:0 0 6px}
 .prose .pyt p{text-indent:0}.prose .pyt p:first-child:first-letter{all:unset}
-.prose .pyt .pgrid{display:block}.prose .pyt .ptask{position:static;max-height:none}
 .prose .pyt pre{margin:6px 0;white-space:pre-wrap}
 .prose .pyt table{width:100%}
 .pm{font:13px/1.35 ui-monospace,'SF Mono','JetBrains Mono',Menlo,Consolas,monospace}
@@ -52,7 +51,12 @@
 .ptab.bad::after{content:"✗";position:absolute;top:2px;right:5px;font-size:11px;color:#d9534f}
 /* сетка задачи */
 .pgrid{display:grid;grid-template-columns:minmax(0,1fr);gap:18px;align-items:start}
-@media(min-width:1000px){.pgrid{grid-template-columns:minmax(0,5fr) minmax(0,6fr)}.ptask{position:sticky;top:12px;max-height:calc(100vh - 24px);overflow:auto}}
+@media(min-width:1000px){.pgrid{grid-template-columns:minmax(0,5fr) minmax(0,6fr)}.ptask{position:sticky;top:calc(var(--hdr,0px) + 14px);max-height:calc(100vh - var(--hdr,0px) - 30px);overflow:auto}main:has(.pyt.inwork){max-width:min(1240px,100%)!important}.note-wrap:has(.pyt.inwork){grid-template-columns:minmax(0,1fr)!important}.note:has(.pyt.inwork){max-width:100%!important}.pqb,.pqc{display:none!important}}
+.pqc{display:none;margin:0 0 10px}
+.pqb{position:sticky;top:54px;z-index:6;align-self:flex-end;background:var(--surface)}
+#pqs{position:fixed;inset:0;z-index:98;background:rgba(0,0,0,.42);display:flex;align-items:flex-start;justify-content:center;padding:54px 8px 8px;box-sizing:border-box}
+#pqs .ptask{width:100%;max-width:680px;max-height:100%;overflow:auto;box-sizing:border-box;box-shadow:0 14px 44px rgba(0,0,0,.4);position:static}
+#pqs .pqc{display:inline-block!important}
 .ptask{padding:18px 20px;border:1px solid var(--line);border-radius:16px;background:var(--surface)}
 .ptask h2{margin:0 0 6px;font:600 21px/1.25 'IBM Plex Sans',system-ui,sans-serif}
 .ptask .pmeta{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 12px}
@@ -112,3 +116,6 @@
 .pbig small{font:500 16px 'IBM Plex Sans',sans-serif;color:var(--muted)}
 @media(max-width:560px){.pex,.pdiff{grid-template-columns:1fr}.ptask{padding:15px 15px}.psol{padding:15px}.pbtn{height:44px}.pbtn.sm{height:36px}#pcode{font-size:16px;min-height:260px}}
 @media(prefers-reduced-motion:reduce){.pmode,.pbtn{transition:none}}
+
+.ptask h2{text-align:left!important;font:600 20px/1.25 'IBM Plex Sans',system-ui,sans-serif!important;padding:0!important;margin:0 0 6px!important;font-style:normal!important;letter-spacing:0!important;text-transform:none!important}
+.ptask h4{text-align:left!important;font:600 11.5px/1.2 'IBM Plex Sans',system-ui,sans-serif!important;font-style:normal!important;letter-spacing:.08em!important;text-transform:uppercase!important;margin:14px 0 4px!important;padding:0!important;color:var(--faint)!important}

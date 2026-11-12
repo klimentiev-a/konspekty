@@ -180,16 +180,16 @@ function renderWork(){
   var h='<div class="pbar"><button type="button" class="pbtn sm" data-a="menu">← Варианты</button><span class="ptt">'+esc(v.name)+' · '+esc(v.sub)+'</span>'+(ex?'<span class="pbadge ex">Контрольная</span>':'')+'<span class="pspc"></span>'+
     (ex?'<span class="pscore">Баллы: <b id="pscore">'+fmt(examScore(S.v))+'</b> / 10</span><span class="ptimer" id="ptimer">--:--</span><button type="button" class="pbtn sm" data-a="finish">Завершить</button>':'')+'</div>'+
     '<nav class="ptabs" id="ptabs">'+tabs+'</nav>'+
-    '<div class="pgrid"><article class="ptask"><h2>Задача '+t.n+'. '+esc(t.title)+'</h2><div class="pmeta"><span class="pts">'+fmt(t.pts)+' балла</span><span>'+esc(t.topics)+'</span></div>'+paras(t.text)+
+    '<div class="pgrid"><article class="ptask"><button type="button" class="pbtn sm pqc" data-a="tkx">✕ Закрыть условие</button><h2>Задача '+t.n+'. '+esc(t.title)+'</h2><div class="pmeta"><span class="pts">'+fmt(t.pts)+' балла</span><span>'+esc(t.topics)+'</span></div>'+paras(t.text)+
       '<h4>Формат ввода</h4><p>'+inl(t.fin)+'</p><h4>Формат вывода</h4><p>'+inl(t.fout)+'</p><h4>Примеры</h4>'+ex2+'<p class="pst" style="margin:6px 0 0">Остальные тесты скрыты: проверьте пустой ответ, равенство границе и один элемент.</p></article>'+
-    '<div class="pcode">'+(t.pre?'<div class="ppre-l">В окне уже задано (не переписывайте, используйте):</div><pre class="pbk ppre" id="ppre">'+hl(t.pre)+'</pre>':'')+
+    '<div class="pcode"><button type="button" class="pbtn sm pqb" data-a="tk">📖 Условие</button>'+(t.pre?'<div class="ppre-l">В окне уже задано (не переписывайте, используйте):</div><pre class="pbk ppre" id="ppre">'+hl(t.pre)+'</pre>':'')+
       '<textarea id="pcode" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" aria-label="Код решения" placeholder="Напишите решение здесь"></textarea>'+
       '<div class="pkeys"><button type="button" class="pbtn sm" data-k="tab" title="Tab">⇥ отступ</button><button type="button" class="pbtn sm" data-k="untab" title="Shift+Tab">⇤ назад</button><button type="button" class="pbtn sm" data-k="colon">:</button><button type="button" class="pbtn sm" data-k="q">\'\'</button><button type="button" class="pbtn sm" data-k="br">[]</button><button type="button" class="pbtn sm" data-k="par">()</button></div>'+
       '<div class="pact"><button type="button" class="pbtn" data-a="run" title="Ctrl+Enter">▶ Запустить</button><button type="button" class="pbtn pri" data-a="check">✓ Проверить</button>'+
         '<button type="button" class="pbtn" id="psolb" data-a="sol"'+(ex?' disabled title="Откроется после завершения"':(solOpen(t)?'':' disabled title="Сначала нажми «Проверить»"'))+'>Посмотреть ответ</button><button type="button" class="pbtn sm" data-a="reset">Сбросить код</button></div>'+
       '<details class="pin"><summary>Свой ввод для запуска</summary><textarea id="pin" spellcheck="false" aria-label="Входные данные"></textarea></details>'+
       '<div class="pst" id="pst"></div><div class="pout" id="pout"></div></div></div><div id="psol"></div>';
-  $('pd').classList.add('inwork');var w=$('pv-work');w.innerHTML=h;w.hidden=false;$('pv-menu').hidden=true;$('pv-end').hidden=true;
+  closeTask();$('pd').classList.add('inwork');var w=$('pv-work');w.innerHTML=h;w.hidden=false;$('pv-menu').hidden=true;$('pv-end').hidden=true;
   var ta=$('pcode');ta.value=P.code[t.id]||'';
   $('pin').value=t.tests[0].i;
   ta.addEventListener('input',function(){P.code[t.id]=ta.value;clearTimeout(S.sv);S.sv=setTimeout(save,400)});
@@ -199,6 +199,14 @@ function renderWork(){
   if(WSTAT==='idle')setTimeout(function(){startWorker().catch(function(){})},600);
   toTop();
 }
+function closeTask(){var d=document.getElementById('pqs');if(d)d.remove()}
+function openTask(){
+  var el=document.querySelector('.ptask');if(!el)return;closeTask();
+  var d=document.createElement('div');d.id='pqs';d.innerHTML='<div class="ptask">'+el.innerHTML+'</div>';
+  d.addEventListener('click',function(e){if(e.target===d||(e.target.closest&&e.target.closest('[data-a="tkx"]')))closeTask()});
+  document.body.appendChild(d);
+}
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closeTask()});
 function editorKeys(e){
   var ta=e.target;
   if(e.key==='Tab'){e.preventDefault();e.shiftKey?dedent(ta):indent(ta)}
@@ -348,6 +356,8 @@ document.addEventListener('click',function(ev){
   if(b.dataset.an!==undefined){var t=variant(S.v).tasks[+b.dataset.an];$('psol-end').innerHTML=solView(t,true);$('psol-end').scrollIntoView({behavior:'smooth'});return}
   var a=b.dataset.a;if(!a)return;
   if(a==='menu'){if(S.mode==='exam'&&exOf(S.v)&&!exOf(S.v).fin)stopTimer();renderMenu()}
+  else if(a==='tk')openTask();
+  else if(a==='tkx')closeTask();
   else if(a==='run')doRun();
   else if(a==='check')doCheck();
   else if(a==='hint')doHint();
