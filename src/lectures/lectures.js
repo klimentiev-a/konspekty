@@ -105,7 +105,26 @@ function items(a){return a.map(function(x,i){
   var s=typeof x==='string'?'<span>'+esc(x)+'</span>':'<b>'+esc(x.b)+'</b>'+(x.d?' — <span>'+esc(x.d)+'</span>':'');
   return '<li class="a" style="--i:'+(i+2)+'">'+s+'</li>'}).join('')}
 function head(s){return '<h3 class="a">'+esc(s.h)+'</h3>'}
-function render(s,i){
+/* ---------- живые цифры: {{usd}} {{brent}} … подставляются из markets.json при показе ---------- */
+var LV=null;
+function fr(n,d,u){return n==null||isNaN(n)?'—':Number(n).toLocaleString('ru-RU',{minimumFractionDigits:d,maximumFractionDigits:d}).replace(/\u00a0/g,' ')+(u||'')}
+function liveCalc(m,kp){
+  var o={},g=function(f){try{return f()}catch(e){return null}};
+  o.usd=fr(g(function(){return m.fx.Valute.USD.Value}),2,' ₽');
+  o.eur=fr(g(function(){return m.fx.Valute.EUR.Value}),2,' ₽');
+  o.cny=fr(g(function(){return m.fx.Valute.CNY.Value}),2,' ₽');
+  o.imoex=fr(g(function(){return m.idx.IMOEX.v}),1);
+  o.brent=fr(g(function(){return m.energy['BZ=F'].p}),1,' $');
+  o.wti=fr(g(function(){return m.energy['CL=F'].p}),1,' $');
+  var b=g(function(){return m.crypto.filter(function(x){return x.s==='BTC'})[0]}),e=g(function(){return m.crypto.filter(function(x){return x.s==='ETH'})[0]});
+  o.btc=b?'$'+fr(b.p,0):'—';o.btc24=b?(b.c24>0?'+':'')+fr(b.c24,1,'%'):'—';o.eth=e?'$'+fr(e.p,0):'—';
+  var k=g(function(){return m.kbd.pts.filter(function(x){return x[0]===10})[0][1]});o.ofz10=k==null?'—':fr(k,2,'%');
+  kp=kp||{};o.key=kp.key||'—';o.cpi=kp.cpi||'—';
+  o.asof=(m&&m.updated?String(m.updated).replace(/\s*МСК.*/,''):'')||'последний снимок';
+  return o}
+function lv(h){return LV?h.replace(/\{\{(\w+)\}\}/g,function(a,k){return LV[k]!=null?esc(LV[k]):'—'}):h.replace(/\{\{(\w+)\}\}/g,'…')}
+function render(s,i){return lv(render0(s,i))}
+function render0(s,i){
   var t=s.t,h='';
   if(t==='points')h=head(s)+(s.lead?'<p class="lead a" style="--i:1">'+esc(s.lead)+'</p>':'')+'<ul class="pt">'+items(s.items||[])+'</ul>';
   else if(t==='table'){
@@ -240,6 +259,16 @@ document.addEventListener('keydown',function(e){
     if(x>r.width*0.78)go(1);else if(x<r.width*0.22)go(-1);
   });
 })();
+/* живые цифры: markets.json обновляет GitHub Actions, ключевая ставка и инфляция — из lectures/live.json */
+function liveStrip(){
+  var el=$('llive');if(!el||!LV)return;
+  var it=[['Доллар',LV.usd],['Юань',LV.cny],['Индекс Мосбиржи',LV.imoex],['Brent',LV.brent],['ОФЗ 10 лет',LV.ofz10],['Ключевая ставка',LV.key],['Bitcoin',LV.btc]];
+  el.innerHTML='<div class="lvh"><b>Рынок сейчас</b><span>обновляется само · '+esc(LV.asof)+'</span></div><div class="lvg">'+it.map(function(x){return '<div><span>'+esc(x[0])+'</span><b>'+esc(x[1])+'</b></div>'}).join('')+'</div>';el.hidden=false}
+function loadLive(){
+  Promise.all([fetch('markets.json?'+Math.floor(Date.now()/600000)).then(function(r){return r.json()}),fetch('lectures/live.json').then(function(r){return r.json()}).catch(function(){return {}})]).then(function(a){
+    LV=liveCalc(a[0],a[1]);liveStrip();if(DECK&&CUR>0)show(CUR)
+  }).catch(function(){})}
+loadLive();setInterval(loadLive,600000);
 $('lq').addEventListener('input',function(){Q=this.value;drawList()});
 window.addEventListener('hashchange',route);
 fetch('lectures/index.json').then(function(r){return r.json()}).then(function(j){IDX=j;drawList();route()}).catch(function(){$('lall').innerHTML='<p class="lempty">Не удалось загрузить список лекций. Проверь сеть и обнови страницу.</p>'});

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Лекции: колоды из src/lectures/decks/*.json → lectures/<id>.json + lectures/index.json.
 Проверяет формат (тип слайдов, последний слайд — итог, группа из списка, пустые строки). Запуск из корня: python3 src/lectures/build.py"""
-import os, re, json, glob, ast, sys
+import re, os, re, json, glob, ast, sys
 
 HERE = os.path.dirname(os.path.abspath(__file__)); ROOT = os.path.abspath(os.path.join(HERE, '..', '..'))
 GROUPS = ['M&A и сделки', 'LBO, левфин и слияния', 'Модели и Excel', 'Оценка', 'Кейсы M&A', 'Отчётность и учёт', 'Налоги', 'PE и венчур', 'Нефть и газ', 'Металлы и добыча', 'TMT и медиа', 'Телеком',
@@ -90,10 +90,18 @@ def _stext(s):
 sr = []
 for d in decks:
     for i, sl in enumerate(d['slides']):
-        sr.append([d['id'], i + 2, sl.get('h') or sl.get('q') or '', _stext(sl)])
+        sr.append([d['id'], i + 2, sl.get('h') or sl.get('q') or '', re.sub(r'\{\{\w+\}\}', '', _stext(sl))])
 json.dump(sr, open(os.path.join(out, 'search.json'), 'w', encoding='utf-8'), ensure_ascii=False, separators=(',', ':'))
 idx.sort(key=lambda x: (GROUPS.index(x['group']), x['id']))
 hubused = sorted({h for d in decks for h in d['hub']})
 json.dump({'decks': idx, 'hub': {h: HUB[h] for h in hubused}}, open(os.path.join(out, 'index.json'), 'w', encoding='utf-8'), ensure_ascii=False, separators=(',', ':'))
+# живые ставки (ключевая, инфляция) из разбора рынка; остальное страница берёт из markets.json
+try:
+    _c = json.load(open(os.path.join(ROOT, 'src', 'rynok', 'content.json'), encoding='utf-8'))
+    _k = {x['id']: x['value'] for x in _c.get('kpi', [])}
+    json.dump({'key': _k.get('key'), 'cpi': _k.get('cpi'), 'fed': _k.get('fed')}, open(os.path.join(out, 'live.json'), 'w', encoding='utf-8'), ensure_ascii=False)
+except Exception as ex:
+    print('live.json не собран', ex)
 print('ok lectures: %d колод, %d слайдов, ошибок %d' % (len(decks), sum(len(d['slides']) for d in decks), bad))
 sys.exit(1 if bad and os.environ.get('LEC_STRICT') else 0)
+
