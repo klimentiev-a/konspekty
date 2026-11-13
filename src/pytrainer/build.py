@@ -4,8 +4,8 @@
 import io, os, sys, json, contextlib, importlib.util
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-VARS = [('A', 'tasks_a.py', 'Вариант А', 'Библиотека и банк'), ('B', 'tasks_b.py', 'Вариант Б', 'Школа и турагентство'),
-        ('C', 'tasks_c.py', 'Вариант В', 'Транспорт и онлайн-магазин')]
+VARS = [('A', 'tasks_a.py', 'Вариант А', 'Кино и кафе'), ('B', 'tasks_b.py', 'Вариант Б', 'Спорт и зоопарк'),
+        ('C', 'tasks_c.py', 'Вариант В', 'Университет и склад')]
 
 def run(pre, code, lines):
     g = {}
