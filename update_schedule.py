@@ -153,6 +153,20 @@ def main():
     if not ok or not lessons:
         print("Не удалось получить пары — schedule.json не менялся.")
         return 0
+    # Недели, по которым вышка вернула пусто (расписание сняли или обновляют), не стираем:
+    # оставляем прежние пары этих недель, чтобы сайт не терял расписание.
+    def wk(ds):
+        d0 = datetime.date.fromisoformat(ds)
+        return d0 - datetime.timedelta(days=d0.weekday())
+    try:
+        prev = json.load(open(OUT, encoding="utf-8")).get("list") or []
+    except Exception:
+        prev = []
+    got_weeks = {wk(l["d"]) for l in lessons}
+    kept = [l for l in prev if wk(l["d"]) not in got_weeks]
+    if kept and not os.environ.get("LOCAL_HTML"):
+        print(f"Сохранено прежних пар за недели, где вышка вернула пусто: {len(kept)}")
+        lessons = lessons + kept
     seen, uniq = set(), []
     for l in sorted(lessons, key=lambda l: (l["d"], l["b"], l["n"])):
         key = (l["d"], l["b"], l["n"], l["r"])
