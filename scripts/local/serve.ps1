@@ -17,13 +17,17 @@ $mime = @{ '.html'='text/html; charset=utf-8'; '.js'='text/javascript; charset=u
   '.ico'='image/x-icon'; '.webmanifest'='application/manifest+json'; '.txt'='text/plain; charset=utf-8';
   '.woff2'='font/woff2'; '.woff'='font/woff'; '.mp3'='audio/mpeg'; '.wav'='audio/wav' }
 $port = 8765
+$url = "http://localhost:$port/artem.html"
+function Open-Site { try { Start-Process 'chrome' $url } catch { Start-Process $url } }
 $l = New-Object System.Net.HttpListener
 $l.Prefixes.Add("http://localhost:$port/")
-$l.Start()
-Write-Host "Сайт: http://localhost:$port/artem.html  (закрой это окно, чтобы остановить)"
-Start-Process "http://localhost:$port/artem.html"
+try { $l.Start() } catch { Open-Site; exit }   # сервер уже запущен: просто открыть сайт
+Open-Site
+$last = Get-Date
 while ($l.IsListening) {
-  $c = $l.GetContext()
+  $t = $l.GetContextAsync()
+  while (-not $t.Wait(60000)) { if (((Get-Date) - $last).TotalHours -gt 4) { $l.Stop(); exit } }   # сам выключается через 4 часа без запросов
+  $c = $t.Result; $last = Get-Date
   try {
     $p = [Uri]::UnescapeDataString($c.Request.Url.AbsolutePath)
     if ($p.EndsWith('/')) { $p += 'index.html' }
