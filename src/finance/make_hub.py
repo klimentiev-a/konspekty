@@ -175,6 +175,12 @@ index_html = page('Hub', index_body)
 cards_artem = re.search(r'<div class="cards">.*?\n  </div>', TPL, re.S).group(0)
 # «Финансы» на главной — одна карточка; нажатие открывает выбор из трёх разделов (#fin), «← Артем» возвращает назад
 cards_artem = cards_artem.replace('<div class="cards">', '<div class="cards" data-group="">', 1).replace('<a class="cover" href="finance.html#learn" aria-label="Финансы">', '<a class="cover" href="#fin" aria-label="Финансы">', 1)
+cards_artem = cards_artem[:cards_artem.rindex('\n  </div>')] + """
+    <div class="card u"><a class="cover" href="studio.html" aria-label="Студия"></a>
+      <div class="ic">▶</div><b>Студия</b><span>Короткие вертикальные видео: сценарий, персонажи, сцены, музыка, нейроголос, запись в MP4</span>
+      <div class="links"><a href="studio.html">Открыть</a></div>
+    </div>
+  </div>"""
 cards_artem += ('''
   <div class="cards" data-group="fin" hidden>
     <div class="card f"><a class="cover" href="finance.html#learn" aria-label="Учебник финансов"></a>
@@ -401,6 +407,12 @@ search_html = page('Hub · Поиск', search_body, 'artem').replace('</head>',
 # замок для страниц Артема (ucheba.html, finance.html) — его вставляют make_ucheba.py и build_finance.py
 open(os.path.join(ROOT, 'src', 'finance', 'gate_artem.html'), 'w', encoding='utf-8').write(gate('artem'))
 
-for name, html in (('index.html', index_html), ('artem.html', artem_html), ('nastya.html', nastya_html), ('nastya-ucheba.html', nu_html), ('nastya-klava.html', kl_html), ('search.html', search_html), ('lectures.html', lec_html)):
+# ---------------- studio.html: Студия видео (src/studio/) ----------------
+_sp = os.path.join(ROOT, 'src', 'studio')
+_sr = lambda n: open(os.path.join(_sp, n), encoding='utf-8').read()
+st_body = _sr('body.html').replace('<!--TOPBAR-->', topbar('artem.html', 'Артём') + '\n  ', 1) + '<script>\n' + '\n'.join(_sr(n) for n in ('engine.js', 'data.js', 'audio.js', 'net.js', 'ui.js')) + '\n</script>'
+st_html = page('Студия · Hub', st_body, 'artem').replace('</head>', '<style>\n' + _sr('studio.css') + '</style></head>', 1)
+
+for name, html in (('index.html', index_html), ('artem.html', artem_html), ('nastya.html', nastya_html), ('nastya-ucheba.html', nu_html), ('nastya-klava.html', kl_html), ('search.html', search_html), ('lectures.html', lec_html), ('studio.html', st_html)):
     open(os.path.join(ROOT, name), 'w', encoding='utf-8').write(html)
     print('ok', name, len(html))

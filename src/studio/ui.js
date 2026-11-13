@@ -1,0 +1,187 @@
+/* Студия: интерфейс, проигрыватель, запись в видео */
+(function (G) {
+'use strict';
+const E = G.StudioEngine, A = G.StudioAudio, N = G.StudioNet, D = G.StudioData, $ = id => document.getElementById(id);
+const cv = $('cv'), cx = cv.getContext('2d'); let P, sel = 0, tab = 'script', t = 0, playing = false, clips = {}, raf = 0, t0w = 0, tFrom = 0, recording = null;
+
+function load() { try { const s = localStorage.getItem('studio:project'); if (s) { const p = JSON.parse(s); if (p && p.scenes && p.scenes.length) return p; } } catch (e) {} return D.T.bunker(); }
+let svT = 0; function save() { clearTimeout(svT); svT = setTimeout(() => { try { localStorage.setItem('studio:project', JSON.stringify(P)); } catch (e) {} }, 400); }
+function fmt(s) { s = Math.max(0, s); return ((s / 60) | 0) + ':' + String((s % 60) | 0).padStart(2, '0'); }
+function total() { return E.total(P); }
+
+function frame() { cx.setTransform(cv.width / E.W, 0, 0, cv.height / E.H, 0, 0); E.drawScene(cx, P, Math.min(Math.max(t, playing || recording ? 0 : .35), Math.max(0, total() - .001))); }
+function hud() { const T = total(); $('ttime').textContent = fmt(t) + ' / ' + fmt(T); $('scrub').value = T ? Math.round(t / T * 1000) : 0; const ph = $('tl').querySelector('.s-ph'); if (ph) ph.style.left = (T ? t / T * 100 : 0) + '%'; const S = E.sceneAt(P, t); [...$('tl').querySelectorAll('.s-tk')].forEach((b, i) => b.classList.toggle('on', S && i === S.i)); $('bpi').setAttribute('d', playing ? 'M6 5h4v14H6zM14 5h4v14h-4z' : 'M8 5v14l11-7z'); $('pplay').classList.toggle('off', playing); }
+function tlBuild() { const T = total(), el = $('tl'); el.innerHTML = ''; P.scenes.forEach((s, i) => { const b = document.createElement('button'); b.type = 'button'; b.className = 's-tk'; b.style.flex = s.dur + ' 1 0'; b.textContent = (i + 1) + '. ' + s.name; b.title = s.name + ' · ' + s.dur + ' с'; b.onclick = () => { const tl = E.timeline(P); seek(tl[i].s + .01); sel = i; if (tab === 'scenes') pane(); }; el.appendChild(b); }); const ph = document.createElement('i'); ph.className = 's-ph'; el.appendChild(ph); }
+function touch(structural) { if (structural) tlBuild(); frame(); hud(); save(); }
+
+async function refreshClips() { try { clips = await N.TTS.cached(P); } catch (e) { clips = {}; } }
+async function play() { if (playing) return; if (t >= total() - .05) t = 0; await refreshClips(); playing = true; tFrom = t; A.start(P, t, clips); t0w = performance.now(); loop(); hud(); }
+function pause() { playing = false; A.stop(); cancelAnimationFrame(raf); hud(); }
+function loop() { raf = requestAnimationFrame(() => { if (!playing) return; t = tFrom + (performance.now() - t0w) / 1000; if (t >= total()) { t = total(); frame(); pause(); t = 0; frame(); hud(); return; } frame(); hud(); loop(); }); }
+async function seek(x) { const was = playing; if (was) pause(); t = Math.max(0, Math.min(total() - .01, x)); frame(); hud(); if (was) play(); }
+$('bplay').onclick = $('pplay').onclick = () => playing ? pause() : play();
+$('scrub').oninput = e => seek(e.target.value / 1000 * total());
+cv.onclick = () => playing ? pause() : play();
+document.addEventListener('keydown', e => { if (/INPUT|TEXTAREA|SELECT/.test((e.target.tagName || ''))) return; if (e.code === 'Space') { e.preventDefault(); playing ? pause() : play(); } else if (e.key === 'ArrowRight') seek(t + 1); else if (e.key === 'ArrowLeft') seek(t - 1); });
+
+// ---------- мини-конструктор форм ----------
+function h(tag, a, ...k) { const e = document.createElement(tag); if (a) for (const [x, y] of Object.entries(a)) { if (x === 'class') e.className = y; else if (x.startsWith('on')) e[x] = y; else if (y !== false && y != null) e.setAttribute(x, y === true ? '' : y); } k.flat().forEach(c => c != null && e.append(c.nodeType ? c : document.createTextNode(c))); return e; }
+function fld(label, input, cls) { return h('label', { class: 's-fld ' + (cls || '') }, h('span', 0, label), input); }
+const F = {
+  text(o, k, label, opt = {}) { const i = h(opt.area ? 'textarea' : 'input', { type: 'text', placeholder: opt.ph || '', rows: opt.rows }); i.value = o[k] == null ? '' : o[k]; i.oninput = () => { o[k] = i.value; opt.on ? opt.on(i.value) : touch(opt.struct); }; return fld(label, i, opt.cls); },
+  num(o, k, label, opt = {}) { const i = h('input', { type: 'number', min: opt.min, max: opt.max, step: opt.step || .1 }); i.value = o[k] == null ? '' : o[k]; i.oninput = () => { const v = parseFloat(i.value); if (isFinite(v)) { o[k] = v; opt.on ? opt.on(v) : touch(opt.struct); } else if (i.value === '' && opt.opt) { delete o[k]; touch(opt.struct); } }; return fld(label, i, opt.cls || 's'); },
+  sel(o, k, label, opts, opt = {}) { const i = h('select'); const ent = Array.isArray(opts) ? opts.map(x => [x, x]) : Object.entries(opts); ent.forEach(([v, n]) => i.append(h('option', { value: v }, n))); i.value = o[k] == null ? ent[0][0] : o[k]; i.onchange = () => { o[k] = i.value; opt.on ? opt.on(i.value) : touch(opt.struct); }; return fld(label, i, opt.cls); },
+  col(o, k, label, d) { const i = h('input', { type: 'color' }); i.value = o[k] || d || '#888888'; i.oninput = () => { o[k] = i.value; touch(); }; return fld(label, i, 's'); },
+  chk(o, k, label, on) { const c = h('span', { class: 's-chip' + (o[k] ? ' on' : '') }, label); c.onclick = () => { o[k] = !o[k]; c.classList.toggle('on', !!o[k]); on ? on() : touch(); }; return c; }
+};
+const btn = (txt, fn, cls) => h('button', { type: 'button', class: 's-btn ' + (cls || ''), onclick: fn }, txt);
+const keysStr = k => (k || []).map(x => x[0] + ':' + x[1]).join(', ');
+const parseKeys = s => String(s).split(/[,;\n]/).map(x => x.trim().split(':').map(Number)).filter(a => a.length === 2 && a.every(isFinite));
+function move(arr, i, d) { const j = i + d; if (j < 0 || j >= arr.length) return false; [arr[i], arr[j]] = [arr[j], arr[i]]; return true; }
+
+// ---------- вкладки ----------
+const TABS = { script: 'Сценарий', scenes: 'Сцены', chars: 'Персонажи', theme: 'Тема и HUD', voice: 'Голос', sound: 'Звук', export: 'Экспорт' };
+function tabs() { const el = $('tabs'); el.innerHTML = ''; for (const [k, n] of Object.entries(TABS)) el.append(h('button', { type: 'button', class: k === tab ? 'on' : '', role: 'tab', onclick: () => { tab = k; stopCharPv(); tabs(); pane(); } }, n)); }
+function pane() { const el = $('pane'); el.innerHTML = ''; stopCharPv(); ({ script: pScript, scenes: pScenes, chars: pChars, theme: pTheme, voice: pVoice, sound: pSound, export: pExport })[tab](el); }
+function setProject(p, keepTab) { pause(); P = p; sel = 0; t = 0; clips = {}; tlBuild(); frame(); hud(); save(); if (!keepTab) { } pane(); }
+
+// --- Сценарий ---
+let aiMsg = ''; let aiOpt = { topic: '', tone: 'напряжённый, как тревожный репортаж', len: 30, scenes: 6, lang: 'русский', hud: true, extra: '', model: 'claude-sonnet-5-5' };
+function pScript(el) {
+  el.append(h('h3', 0, 'Придумать сценарий с Claude'));
+  el.append(h('p', { class: 's-note' }, 'Опиши тему — Claude соберёт сцены, персонажей, фразы, звуки и счётчики. Нужен твой ключ Claude API: он хранится только в этом браузере и уходит только на api.anthropic.com.'));
+  const kb = h('div', { class: 's-kbox' }); const ki = h('input', { type: 'password', placeholder: 'sk-ant-…', autocomplete: 'off' }); ki.value = N.Keys.get('anthropic'); ki.oninput = () => N.Keys.set('anthropic', ki.value.trim()); kb.append(fld('Ключ Claude API', ki, 'w')); el.append(kb);
+  el.append(F.text(aiOpt, 'topic', 'О чём видео', { area: true, rows: 3, ph: 'Например: за 47 минут до ядерного удара ты узнаёшь, что в бункере 12 мест, а людей 31', on: () => { }, cls: 'w' }));
+  el.append(h('div', { class: 's-row' }, F.sel(aiOpt, 'tone', 'Тон', ['напряжённый, как тревожный репортаж', 'познавательный, с фактами и цифрами', 'смешной, с абсурдным поворотом', 'хоррор, нарастающий страх', 'мотивационный, энергичный', 'драма с неожиданной развязкой'], { on: () => { } }), F.sel(aiOpt, 'len', 'Длина, с', { 15: '15', 30: '30', 45: '45', 60: '60' }, { cls: 's', on: v => { aiOpt.len = +v; } }), F.num(aiOpt, 'scenes', 'Сцен', { min: 3, max: 12, step: 1, on: () => { } }), F.sel(aiOpt, 'lang', 'Язык', ['русский', 'English'], { on: () => { } })));
+  el.append(h('div', { class: 's-row' }, F.chk(aiOpt, 'hud', 'Счётчики (HUD)', () => { })));
+  el.append(F.text(aiOpt, 'extra', 'Пожелания (необязательно)', { ph: 'герой — девушка, финал с вопросом, больше цифр', on: () => { }, cls: 'w' }));
+  el.append(F.text(aiOpt, 'model', 'Модель', { on: () => { }, cls: 'w' }));
+  const st = h('div', { class: 's-msg' }); const go = btn('Сгенерировать', async () => { go.disabled = true; st.className = 's-msg'; try { if (!aiOpt.topic.trim()) throw new Error('Напиши тему'); aiOpt.len = +aiOpt.len; const p = await N.AI.generate(aiOpt, s => st.textContent = s); aiMsg = 'Готово: ' + p.scenes.length + ' сцен. Нажми ▶ и поправь во вкладках «Сцены», «Персонажи».'; setProject(p); tab = 'script'; tabs(); pane(); } catch (e) { st.textContent = e.message; st.className = 's-msg err'; } go.disabled = false; }, 'pri'); if (aiMsg) { st.textContent = aiMsg; st.className = 's-msg ok'; } el.append(h('div', { class: 's-row' }, go)); el.append(st);
+  el.append(h('h3', 0, 'Шаблоны')); const g = h('div', { class: 's-grid' }); const sub = { bunker: 'Тревога, очередь, люк, 30 с', chat: 'Переписка и дверь, 18 с', finance: 'Формула и цифры, 18 с', blank: 'Одна сцена' };
+  for (const k of Object.keys(D.T)) g.append(h('button', { type: 'button', class: 's-tpl', onclick: () => { if (confirm('Заменить текущий проект шаблоном «' + D.TNAMES[k] + '»?')) setProject(D.T[k]()); } }, D.TNAMES[k], h('small', 0, sub[k]))); el.append(g);
+  el.append(h('h3', 0, 'Проект')); el.append(F.text(P, 'title', 'Название', { on: () => save(), cls: 'w' }));
+  const fi = h('input', { type: 'file', accept: '.json,application/json', hidden: true }); fi.onchange = async () => { try { const p = JSON.parse(await fi.files[0].text()); if (!p.scenes || !p.scenes.length) throw 0; setProject(p); } catch (e) { alert('Это не файл проекта Студии'); } };
+  el.append(h('div', { class: 's-row' }, btn('Скачать проект (.json)', () => dl(new Blob([JSON.stringify(P, null, 1)], { type: 'application/json' }), slug() + '.json')), btn('Открыть проект', () => fi.click()), fi));
+}
+const slug = () => (P.title || 'video').replace(/[^\p{L}\p{N}]+/gu, '_').slice(0, 40) || 'video';
+function dl(blob, name) { const a = h('a', { href: URL.createObjectURL(blob), download: name }); document.body.append(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 4000); }
+
+// --- Сцены ---
+function pScenes(el) {
+  el.append(h('p', { class: 's-note' }, 'Нажми на сцену, чтобы править. Время субтитров, предметов и звуков — в секундах от начала сцены.'));
+  const list = h('div', { class: 's-sc-list' });
+  P.scenes.forEach((s, i) => { const c = h('div', { class: 's-card' + (i === sel ? ' on' : '') }); const hd = h('div', { class: 's-ch' }, h('b', 0, (i + 1) + '. ' + s.name + ' · ' + s.dur + ' с'), btn('↑', e => { e.stopPropagation(); if (move(P.scenes, i, -1)) { sel = i - 1; touch(1); pane(); } }, 'sm'), btn('↓', e => { e.stopPropagation(); if (move(P.scenes, i, 1)) { sel = i + 1; touch(1); pane(); } }, 'sm'), btn('Копия', e => { e.stopPropagation(); P.scenes.splice(i + 1, 0, JSON.parse(JSON.stringify(s))); sel = i + 1; touch(1); pane(); }, 'sm'), btn('✕', e => { e.stopPropagation(); if (P.scenes.length < 2) return; if (confirm('Удалить сцену «' + s.name + '»?')) { P.scenes.splice(i, 1); sel = Math.max(0, i - 1); touch(1); pane(); } }, 'sm dng')); c.append(hd); c.onclick = () => { if (sel !== i) { sel = i; seek(E.timeline(P)[i].s + .3); pane(); } }; list.append(c); if (i === sel) c.append(sceneEditor(s)); });
+  el.append(list); el.append(h('div', { class: 's-row' }, btn('+ Сцена', () => { P.scenes.splice(sel + 1, 0, D.newScene()); sel++; touch(1); pane(); }, 'pri')));
+}
+function sceneEditor(s) {
+  const w = h('div', { onclick: e => e.stopPropagation() });
+  w.append(h('div', { class: 's-row' }, F.text(s, 'name', 'Название', { on: () => { touch(1); }, cls: '' }), F.num(s, 'dur', 'Длит., с', { min: 1, max: 40, struct: 1 }), F.sel(s, 'bg', 'Фон', E.BGNAMES, {}), F.num(s.zoom = s.zoom || [1, 1.06], 0, 'Зум с', { min: .8, max: 2 }), F.num(s.zoom, 1, 'Зум до', { min: .8, max: 2 })));
+  w.append(h('h3', 0, 'Эффекты')); const fc = h('div', { class: 's-chips' }); s.fx = s.fx || []; for (const [k, n] of Object.entries(E.FXN)) { const c = h('span', { class: 's-chip' + (s.fx.includes(k) ? ' on' : '') }, n); c.onclick = () => { const j = s.fx.indexOf(k); j < 0 ? s.fx.push(k) : s.fx.splice(j, 1); c.classList.toggle('on', j < 0); touch(); }; fc.append(c); } w.append(fc);
+  // персонажи
+  w.append(h('h3', 0, 'Персонажи в сцене')); s.cast = s.cast || []; const ids = Object.fromEntries(Object.entries(P.chars).map(([k, v]) => [k, v.name || k]));
+  s.cast.forEach((m, i) => { const c = h('div', { class: 's-card' }); c.append(h('div', { class: 's-row' }, F.sel(m, 'c', 'Кто', ids, {}), F.sel(m, 'anim', 'Действие', E.ANIMS, {}), F.sel(m, 'expr', 'Эмоция', E.EXPR, {}), btn('✕', () => { s.cast.splice(i, 1); touch(); pane(); }, 'sm dng')), h('div', { class: 's-row' }, F.num(m, 'x', 'X 0–1', { min: 0, max: 1, step: .05 }), F.num(m, 'y', 'Y 0–1', { min: .3, max: 1.1, step: .05 }), F.num(m, 's', 'Размер', { min: .3, max: 1.6, step: .05 }), F.num(m, 'tx', 'Идёт к X', { min: 0, max: 1, step: .05, opt: 1 }), F.num(m, 'enter', 'Входит, с', { min: 0, max: 20, opt: 1 }), F.chk(m, 'flip', 'Отразить'))); w.append(c); });
+  w.append(h('div', { class: 's-row' }, btn('+ Персонаж', () => { s.cast.push({ c: Object.keys(P.chars)[0], x: .5, y: .88, s: .95, anim: 'idle', expr: 'calm' }); touch(); pane(); }, 'sm')));
+  // предметы
+  w.append(h('h3', 0, 'Предметы на экране')); s.props = s.props || [];
+  s.props.forEach((p, i) => { const c = h('div', { class: 's-card' }); const rows = [h('div', { class: 's-row' }, F.sel(p, 'type', 'Что', E.PROPS, { on: () => { touch(); pane(); } }), F.num(p, 'x', 'X', { min: 0, max: 1, step: .05 }), F.num(p, 'y', 'Y', { min: 0, max: 1, step: .05 }), F.num(p, 's', 'Масштаб', { min: .3, max: 3, step: .1, opt: 1 }), F.num(p, 'at', 'С, с', { min: 0, max: 40 }), F.num(p, 'dur', 'Длит.', { min: .2, max: 40, opt: 1 }), btn('✕', () => { s.props.splice(i, 1); touch(); pane(); }, 'sm dng'))];
+    const ty = p.type; const r2 = h('div', { class: 's-row' });
+    if (['popup', 'text', 'timer', 'counter', 'bar', 'math', 'sign', 'emoji', 'icon'].includes(ty)) r2.append(F.text(p, 'text', ty === 'emoji' ? 'Эмодзи' : 'Текст', { cls: '' }));
+    if (ty === 'popup') r2.append(F.text(p, 'text2', 'Вторая строка'));
+    if (ty === 'icon') r2.append(F.sel(p, 'icon', 'Иконка', E.ICONNAMES, {}));
+    if (['timer', 'counter', 'bar'].includes(ty)) r2.append(F.num(p, 'from', 'От', { step: 1, opt: 1 }), F.num(p, 'to', 'До', { step: 1, opt: 1 }), F.num(p, 'span', 'За, с', { opt: 1 }));
+    if (ty === 'counter') r2.append(F.text(p, 'suffix', 'Подпись числа', { cls: 's' }));
+    if (['text', 'emoji', 'icon', 'counter'].includes(ty)) r2.append(F.num(p, 'size', 'Размер', { step: 10, opt: 1 }));
+    if (p.type !== 'text') r2.append(F.col(p, 'color', 'Цвет', E.THEMES[P.theme].a));
+    rows.push(r2);
+    if (ty === 'cards') { const ta = h('textarea', { rows: 4 }); ta.value = (p.items || []).map(o => [o.icon, o.label, o.value || ''].join(' | ')).join('\n'); ta.oninput = () => { p.items = ta.value.split('\n').filter(x => x.trim()).map(l => { const [a, b, c] = l.split('|').map(x => x.trim()); return { icon: E.ICONNAMES.includes(a) ? a : 'star', label: b || '', value: c || '' }; }); touch(); }; rows.push(fld('Карточки: иконка | подпись | значение (иконки: ' + E.ICONNAMES.join(', ') + ')', ta, 'w')); }
+    if (ty === 'chat') { const ta = h('textarea', { rows: 4 }); ta.value = (p.items || []).map(o => (o.who === 'me' ? 'я: ' : 'он: ') + o.text).join('\n'); ta.oninput = () => { p.items = ta.value.split('\n').filter(x => x.trim()).map(l => { const m = /^(я|me|он|они|them)\s*:\s*(.*)$/i.exec(l); return { who: m && /^(я|me)$/i.test(m[1]) ? 'me' : 'them', text: m ? m[2] : l }; }); touch(); }; rows.push(fld('Сообщения: «я: …» или «он: …», по строке', ta, 'w'), h('div', { class: 's-row' }, F.num(p, 'gap', 'Пауза между, с', { opt: 1 }))); }
+    c.append(...rows); w.append(c); });
+  w.append(h('div', { class: 's-row' }, btn('+ Предмет', () => { s.props.push({ type: 'popup', text: 'ТЕКСТ', x: .5, y: .35, at: 0.5 }); touch(); pane(); }, 'sm')));
+  // субтитры
+  w.append(h('h3', 0, 'Субтитры и голос')); w.append(h('p', { class: 's-note' }, 'Слова в *звёздочках* выделяются цветом. Эти же фразы озвучивает нейроголос.')); s.caps = s.caps || [];
+  s.caps.forEach((cp, i) => { w.append(h('div', { class: 's-row' }, F.text(cp, 'text', 'Фраза ' + (i + 1), { cls: 'w' }), F.num(cp, 'at', 'С, с', { min: 0 }), F.num(cp, 'dur', 'Длит.', { min: .3 }), btn('✕', () => { s.caps.splice(i, 1); touch(); pane(); }, 'sm dng'))); });
+  w.append(h('div', { class: 's-row' }, btn('+ Фраза', () => { const last = s.caps[s.caps.length - 1]; s.caps.push({ at: last ? +(last.at + last.dur).toFixed(2) : 0, dur: 1.5, text: 'НОВАЯ *ФРАЗА*' }); touch(); pane(); }, 'sm'), btn('Разложить по сцене поровну', () => { const n = s.caps.length; if (!n) return; const d = s.dur / n; s.caps.forEach((cp, i) => { cp.at = +(i * d).toFixed(2); cp.dur = +(d - .05).toFixed(2); }); touch(); pane(); }, 'sm')));
+  // звуки
+  w.append(h('h3', 0, 'Звуки сцены')); s.sfx = s.sfx || [];
+  s.sfx.forEach((x, i) => w.append(h('div', { class: 's-row' }, F.sel(x, 'n', 'Звук', A.SFX_NAMES, {}), F.num(x, 'at', 'С, с', { min: 0 }), F.num(x, 'dur', 'Длит.', { min: .3, opt: 1 }), F.num(x, 'v', 'Громк.', { min: 0, max: 2, step: .1, opt: 1 }), btn('▶', () => A.playSfx(x.n, x.v), 'sm'), btn('✕', () => { s.sfx.splice(i, 1); touch(); pane(); }, 'sm dng'))));
+  w.append(h('div', { class: 's-row' }, btn('+ Звук', () => { s.sfx.push({ n: 'whoosh', at: 0 }); touch(); pane(); }, 'sm')));
+  return w;
+}
+
+// --- Персонажи ---
+let cpRaf = 0; function stopCharPv() { cancelAnimationFrame(cpRaf); cpRaf = 0; }
+const rnd = a => a[Math.floor(Math.random() * a.length)];
+function pChars(el) {
+  let cur = Object.keys(P.chars)[0]; const wrap = h('div'); el.append(wrap);
+  const draw = () => {
+    wrap.innerHTML = ''; stopCharPv(); const ids = Object.keys(P.chars); if (!P.chars[cur]) cur = ids[0]; const ch = P.chars[cur];
+    wrap.append(h('div', { class: 's-row' }, F.sel({ v: cur }, 'v', 'Персонаж', Object.fromEntries(ids.map(k => [k, P.chars[k].name || k])), { on: v => { cur = v; draw(); } }), btn('+ Новый', () => { const id = 'c' + Date.now().toString(36).slice(-4); P.chars[id] = Object.assign({}, D.hero, { name: 'Персонаж ' + (ids.length + 1), hood: rnd(['#e53935', '#1e88e5', '#8e24aa', '#fb8c00', '#00897b']), hair: rnd(['#222', '#6d4c41', '#c9a227', '#b0381a']) }); cur = id; save(); draw(); }, 'sm'), btn('Удалить', () => { if (ids.length < 2) return; if (confirm('Удалить персонажа? Он пропадёт из сцен.')) { delete P.chars[cur]; P.scenes.forEach(s => s.cast = (s.cast || []).filter(m => m.c !== cur)); cur = Object.keys(P.chars)[0]; touch(); draw(); } }, 'sm dng')));
+    const pv = h('canvas', { width: 380, height: 520 }), an = { v: 'idle' }, ex = { v: 'calm' }; const fs = h('div', { class: 's-fs' });
+    fs.append(h('div', { class: 's-row' }, F.text(ch, 'name', 'Имя', { on: () => save(), cls: '' }), F.sel(ch, 'hairStyle', 'Причёска', E.HAIR, { on: () => touch() }), F.sel(ch, 'acc', 'Аксессуар', E.ACC, { on: () => touch() })), h('div', { class: 's-row' }, F.col(ch, 'hood', 'Одежда'), F.col(ch, 'pants', 'Брюки'), F.col(ch, 'hair', 'Волосы'), F.col(ch, 'skin', 'Кожа')), h('div', { class: 's-row' }, F.sel(an, 'v', 'Анимация (показ)', E.ANIMS, { on: () => { } }), F.sel(ex, 'v', 'Эмоция (показ)', E.EXPR, { on: () => { } }), F.chk(ch, 'phoneHold', 'Телефон в руке', () => { ch.hold = ch.phoneHold ? 'phone' : undefined; touch(); })), h('div', { class: 's-row' }, btn('Случайный вид', () => { Object.assign(ch, { hood: rnd(['#e53935', '#1e88e5', '#8e24aa', '#fb8c00', '#00897b', '#546e7a', '#f06292']), pants: rnd(['#283046', '#37474f', '#4e342e', '#212121']), hair: rnd(['#222', '#6d4c41', '#c9a227', '#b0381a', '#5d4037', '#9e9e9e']), skin: rnd(['#f7c8a0', '#e0a878', '#c68a5c', '#8d5a3a', '#fde0c8']), hairStyle: rnd(Object.keys(E.HAIR)), acc: rnd(Object.keys(E.ACC)) }); touch(); draw(); }, 'sm')));
+    wrap.append(h('div', { class: 's-cpv' }, pv, fs)); const c2 = pv.getContext('2d'); const T0 = performance.now();
+    const lp = () => { if (!pv.isConnected) return; const tt = (performance.now() - T0) / 1000; c2.clearRect(0, 0, 380, 520); c2.fillStyle = '#10131c'; c2.fillRect(0, 0, 380, 520); c2.save(); E.drawChar(c2, ch, 190, 500, .82, tt, an.v, ex.v, false); c2.restore(); cpRaf = requestAnimationFrame(lp); }; lp();
+  }; draw();
+}
+
+// --- Тема и HUD ---
+function pTheme(el) {
+  el.append(h('h3', 0, 'Палитра')); const g = h('div', { class: 's-grid' }); for (const [k, th] of Object.entries(E.THEMES)) { const b = h('button', { type: 'button', class: 's-thm' + (P.theme === k ? ' on' : ''), onclick: () => { P.theme = k; touch(); pane(); } }, th.name, h('i', { style: `background:linear-gradient(90deg,${th.sky[0]},${th.a} 40%,${th.b} 70%,${th.hl})` })); g.append(b); } el.append(g);
+  el.append(h('h3', 0, 'Субтитры')); P.cap = P.cap || { size: 104, y: .8 }; el.append(h('div', { class: 's-row' }, F.num(P.cap, 'size', 'Размер', { min: 50, max: 160, step: 4 }), F.num(P.cap, 'y', 'Высота 0–1', { min: .2, max: .95, step: .02 }), F.col(P.cap, 'hl', 'Цвет выделения', E.THEMES[P.theme].hl)));
+  el.append(h('div', { class: 's-row' }, F.chk(P, 'vignette', 'Виньетка', () => touch())));
+  el.append(h('h3', 0, 'HUD: плашки и полоса')); P.hud = P.hud || { on: false, plates: [], bar: null }; const H = P.hud;
+  el.append(h('p', { class: 's-note' }, 'Значения меняются по ключевым точкам «секунда:значение» на всём видео. Время — формат мм:сс.'));
+  el.append(h('div', { class: 's-row' }, F.chk(H, 'on', 'Показывать HUD', () => touch())));
+  for (let i = 0; i < 2; i++) { const p = H.plates[i]; const c = h('div', { class: 's-card' }); if (!p) { c.append(btn('+ Плашка ' + (i + 1), () => { H.plates[i] = { label: 'МЕТКА', fmt: 'num', keys: [[0, 0], [30, 100]] }; H.on = true; touch(); pane(); }, 'sm')); } else { const ks = { v: keysStr(p.keys) }; c.append(h('div', { class: 's-row' }, F.text(p, 'label', 'Подпись ' + (i + 1), {}), F.sel(p, 'fmt', 'Формат', { num: 'Число', time: 'Время мм:сс' }, {}), F.text(p, 'suffix', 'Суффикс', { cls: 's' }), F.col(p, 'color', 'Цвет', i ? E.THEMES[P.theme].b : E.THEMES[P.theme].a), btn('✕', () => { H.plates.splice(i, 1); touch(); pane(); }, 'sm dng')), h('div', { class: 's-row' }, F.text(ks, 'v', 'Точки (сек:значение, через запятую)', { cls: 'w', on: v => { const k = parseKeys(v); if (k.length) { p.keys = k; touch(); } } }))); } el.append(c); }
+  const c = h('div', { class: 's-card' }); if (!H.bar) c.append(btn('+ Полоса', () => { H.bar = { label: 'ПОЛОСА', max: 100, mark: null, keys: [[0, 0], [30, 100]] }; H.on = true; touch(); pane(); }, 'sm')); else { const b = H.bar, ks = { v: keysStr(b.keys) }; c.append(h('div', { class: 's-row' }, F.text(b, 'label', 'Подпись полосы', {}), F.num(b, 'max', 'Максимум', { step: 1 }), F.num(b, 'mark', 'Отметка', { step: 1, opt: 1 }), btn('✕', () => { H.bar = null; touch(); pane(); }, 'sm dng')), h('div', { class: 's-row' }, F.text(ks, 'v', 'Точки (сек:значение)', { cls: 'w', on: v => { const k = parseKeys(v); if (k.length) { b.keys = k; touch(); } } }))); } el.append(c);
+}
+
+// --- Голос ---
+function pVoice(el) {
+  const V = P.voice = P.voice || { on: false, provider: 'elevenlabs', voiceId: '', model: '', speed: 1 }; delete V.key;
+  el.append(h('p', { class: 's-note' }, 'Нейроголос озвучивает субтитры. Нужен ключ сервиса: он хранится только в этом браузере и уходит только в сам сервис. Каждая фраза заказывается один раз и кэшируется на устройстве. Услуга платная по тарифу сервиса.'));
+  el.append(h('div', { class: 's-row' }, F.chk(V, 'on', 'Озвучивать ролик', () => { touch(); }), F.sel(V, 'provider', 'Сервис', { elevenlabs: 'ElevenLabs', openai: 'OpenAI TTS' }, { on: () => { V.voiceId = ''; V.model = ''; save(); pane(); }, cls: '' })));
+  const kn = V.provider === 'openai' ? 'openai' : 'eleven'; const kb = h('div', { class: 's-kbox' }); const ki = h('input', { type: 'password', placeholder: V.provider === 'openai' ? 'sk-…' : 'ключ ElevenLabs', autocomplete: 'off' }); ki.value = N.Keys.get(kn); ki.oninput = () => N.Keys.set(kn, ki.value.trim()); kb.append(fld('Ключ ' + (V.provider === 'openai' ? 'OpenAI' : 'ElevenLabs'), ki, 'w')); el.append(kb);
+  const st = h('div', { class: 's-msg' });
+  if (V.provider === 'openai') { el.append(h('div', { class: 's-row' }, F.sel(V, 'voiceId', 'Голос', ['', ...N.OPENAI_VOICES].map(x => x || 'onyx').filter((x, i, a) => a.indexOf(x) === i), { on: () => save() }), F.sel(V, 'model', 'Модель', { '': 'gpt-4o-mini-tts', 'tts-1': 'tts-1', 'tts-1-hd': 'tts-1-hd' }, { on: () => save() }))); if (!V.voiceId) V.voiceId = 'onyx'; el.append(F.text(V, 'tone', 'Манера речи (только gpt-4o-mini-tts)', { ph: 'Говори тревожно, быстро, как диктор новостей', cls: 'w', on: () => save() })); }
+  else { const sv = h('select'); sv.append(h('option', { value: V.voiceId || '' }, V.voiceId || 'Голос не выбран')); sv.value = V.voiceId || ''; sv.onchange = () => { V.voiceId = sv.value; save(); }; el.append(h('div', { class: 's-row' }, fld('Голос', sv, ''), btn('Загрузить мои голоса', async () => { st.className = 's-msg'; st.textContent = 'Загружаю…'; try { const vs = await N.TTS.voices(); sv.innerHTML = ''; vs.forEach(v => sv.append(h('option', { value: v.id }, v.name + (v.lang ? ' · ' + v.lang : '')))); sv.value = V.voiceId && vs.some(v => v.id === V.voiceId) ? V.voiceId : (vs[0] && vs[0].id) || ''; V.voiceId = sv.value; save(); st.textContent = 'Голосов: ' + vs.length; st.className = 's-msg ok'; } catch (e) { st.textContent = e.message; st.className = 's-msg err'; } }, 'sm'))); el.append(h('div', { class: 's-row' }, F.text(V, 'voiceId', 'или вставь ID голоса', { on: () => save(), cls: '' }), F.sel(V, 'model', 'Модель', { '': 'eleven_multilingual_v2', eleven_turbo_v2_5: 'eleven_turbo_v2_5', eleven_flash_v2_5: 'eleven_flash_v2_5' }, { on: () => save() }))); }
+  el.append(h('div', { class: 's-row' }, F.num(V, 'speed', 'Скорость', { min: .7, max: 1.3, step: .05, on: () => save() })));
+  const pr = h('div', { class: 's-prog' }, h('i')); pr.hidden = true;
+  el.append(h('div', { class: 's-row' }, btn('Проба голоса', async () => { st.className = 's-msg'; st.textContent = 'Синтез…'; try { const b = await N.TTS.clip(V, 'Через три минуты дверь закроется сама.', true); const ctx = A.init(), s = ctx.createBufferSource(); s.buffer = b; s.connect(ctx.destination); s.start(); st.textContent = 'Играет'; st.className = 's-msg ok'; } catch (e) { st.textContent = e.message; st.className = 's-msg err'; } }, 'sm'), btn('Озвучить весь ролик и подогнать тайминги', async function () { st.className = 's-msg'; pr.hidden = false; try { V.on = true; await N.TTS.all(P, (n, m, tx) => { pr.firstChild.style.width = (m ? n / m * 100 : 0) + '%'; st.textContent = n + ' из ' + m + (tx ? ': ' + tx : ''); }); st.textContent = 'Готово. Длительность сцен подогнана под речь, ролик ' + total().toFixed(1) + ' с.'; st.className = 's-msg ok'; tlBuild(); frame(); hud(); save(); await refreshClips(); } catch (e) { st.textContent = e.message; st.className = 's-msg err'; } }, 'sm pri'), btn('Очистить кэш озвучки', async () => { await N.DB.clear(); N.TTS.buf = {}; clips = {}; st.textContent = 'Кэш очищен'; }, 'sm dng')));
+  el.append(pr, st);
+}
+
+// --- Звук ---
+function pSound(el) {
+  P.music = P.music || { style: 'none', vol: .5 };
+  el.append(h('h3', 0, 'Музыка')); el.append(h('div', { class: 's-row' }, F.sel(P.music, 'style', 'Стиль', A.MUSIC_NAMES, { on: () => save() }), F.num(P.music, 'vol', 'Громкость 0–1', { min: 0, max: 1, step: .05, on: () => save() }), F.chk(P.music, 'duck', 'Приглушать под голос', () => save())));
+  if (P.music.duck === undefined) P.music.duck = true;
+  el.append(h('div', { class: 's-row' }, btn('▶ Послушать стиль', () => A.playMusic(P.music.style, P.music.vol), 'sm'), btn('■ Стоп', () => A.stopPreview(), 'sm')));
+  el.append(h('h3', 0, 'Библиотека звуков')); el.append(h('p', { class: 's-note' }, 'Нажми, чтобы послушать. Добавлять в сцену — во вкладке «Сцены», блок «Звуки сцены».')); const g = h('div', { class: 's-sfx' }); for (const [k, n] of Object.entries(A.SFX_NAMES)) g.append(btn('▶ ' + n, () => A.playSfx(k), 'sm')); el.append(g);
+}
+
+// --- Экспорт ---
+function pExport(el) {
+  const o = { res: '720', fps: 30 }; el.append(h('p', { class: 's-note' }, 'Запись идёт в реальном времени: ролик проигрывается и записывается вместе со звуком, поэтому не сворачивай вкладку, пока идёт запись. Chrome и Edge дают MP4 или WebM; Safari — MP4.'));
+  el.append(h('div', { class: 's-row' }, F.sel(o, 'res', 'Размер', { 540: '540×960 (быстро, лёгкий)', 720: '720×1280 (по умолчанию)', 1080: '1080×1920 (максимум)' }, { on: () => { }, cls: '' })));
+  const st = h('div', { class: 's-msg' }), pr = h('div', { class: 's-prog' }, h('i')), res = h('div', { class: 's-res' }); pr.hidden = true;
+  const go = btn('Записать видео', async () => { go.disabled = true; res.innerHTML = ''; pr.hidden = false; st.className = 's-msg'; try { const out = await record(+o.res, 30, p => { pr.firstChild.style.width = p * 100 + '%'; st.textContent = 'Запись… ' + Math.round(p * 100) + '%'; }); const ext = /mp4/.test(out.type) ? 'mp4' : 'webm'; const url = URL.createObjectURL(out); res.append(h('video', { src: url, controls: true, playsinline: true }), h('div', { class: 's-row' }, btn('Скачать .' + ext + ' (' + (out.size / 1e6).toFixed(1) + ' МБ)', () => dl(out, slug() + '.' + ext), 'pri'))); st.textContent = 'Готово'; st.className = 's-msg ok'; } catch (e) { st.textContent = e.message || String(e); st.className = 's-msg err'; } pr.hidden = true; go.disabled = false; frame(); hud(); }, 'pri');
+  el.append(h('div', { class: 's-row' }, go, btn('Сохранить текущий кадр (PNG)', () => { const c = document.createElement('canvas'); c.width = 1080; c.height = 1920; const x = c.getContext('2d'); E.drawScene(x, P, Math.min(t, total() - .01)); c.toBlob(b => dl(b, slug() + '_' + t.toFixed(1) + 's.png')); })), pr, st, res);
+}
+function pickMime() { const c = ['video/mp4;codecs=avc1.42E01E,mp4a.40.2', 'video/mp4', 'video/webm;codecs=vp9,opus', 'video/webm;codecs=vp8,opus', 'video/webm']; return c.find(m => G.MediaRecorder && MediaRecorder.isTypeSupported(m)) || ''; }
+async function record(width, fps, onp) {
+  if (!G.MediaRecorder) throw new Error('Этот браузер не умеет записывать видео');
+  pause(); await refreshClips(); const hgt = Math.round(width * 16 / 9), c = document.createElement('canvas'); c.width = width; c.height = hgt; const x = c.getContext('2d'); const T = total();
+  const vs = c.captureStream(fps), as = A.recStream; const stream = new MediaStream([...vs.getVideoTracks(), ...as.getAudioTracks()]); const mime = pickMime(); const rec = new MediaRecorder(stream, { mimeType: mime || undefined, videoBitsPerSecond: width >= 1080 ? 10e6 : 6e6, audioBitsPerSecond: 160000 }); const chunks = []; rec.ondataavailable = e => e.data && e.data.size && chunks.push(e.data);
+  const done = new Promise((res, rej) => { rec.onstop = res; rec.onerror = e => rej(e.error || new Error('Ошибка записи')); });
+  const draw = tt => { x.setTransform(width / E.W, 0, 0, hgt / E.H, 0, 0); E.drawScene(x, P, Math.min(tt, T - .001)); };
+  draw(0); rec.start(250); recording = true; t = 0; A.start(P, 0, clips); const w0 = performance.now();
+  await new Promise(res => { const step = () => { const tt = (performance.now() - w0) / 1000; draw(tt); t = Math.min(tt, T); frame(); hud(); onp && onp(Math.min(1, tt / (T + .4))); if (tt >= T + .4) return res(); setTimeout(step, 1000 / fps - 2); }; step(); });
+  A.stop(); await new Promise(r => setTimeout(r, 250)); rec.stop(); await done; recording = false; t = 0;
+  return new Blob(chunks, { type: (rec.mimeType || mime || 'video/webm').split(';')[0] });
+}
+
+// ---------- старт ----------
+P = load(); tabs(); tlBuild(); frame(); hud(); pane();
+$('sbadge').textContent = 'проект сохраняется в браузере';
+G.Studio = { get P() { return P; }, setProject, seek, play, pause, frame, record, N };
+})(window);
