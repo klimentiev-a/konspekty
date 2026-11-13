@@ -45,7 +45,7 @@ const EN = {
 'Тряска камеры':'Camera shake','Вспышки':'Flashes','Красная пульсация':'Red pulse','Мигалка':'Beacon','Дождь':'Rain','Снег':'Snow','Пыль':'Dust','Строки ТВ':'TV scanlines','Зерно':'Grain','Затемнение':'Darkening','Ударная волна':'Shockwave',
 'Нет ключа ElevenLabs':'No ElevenLabs key','Нет ключа OpenAI':'No OpenAI key','Не выбран голос ElevenLabs':'No ElevenLabs voice selected','Нет ключа Claude API (вкладка «Сценарий»)':'No Claude API key (step “Idea”)','Запрос к Claude…':'Asking Claude…','Ответ без JSON':'Reply has no JSON','В ответе нет сцен':'The reply has no scenes','Видео':'Video','Сцена ':'Scene ',
 /* новый интерфейс */
-'Идея ':'Idea ','Вид':'Look','Выпуск':'Publish','Музыка и звуки':'Music & sounds','Рамка Instagram':'Instagram frame','Чистый кадр':'Clean frame',
+'Сюжетная линия':'Storyline','Часть':'Part','Идея ':'Idea ','Вид':'Look','Выпуск':'Publish','Музыка и звуки':'Music & sounds','Рамка Instagram':'Instagram frame','Чистый кадр':'Clean frame',
 'От идеи до готового Reels: пять шагов, сверху вниз.':'From idea to finished Reel in five steps.','Назад':'Back','Дальше':'Next','Скрыть подсказки':'Hide tips'
 };
 let lang = 'ru'; try { lang = localStorage.getItem('studio:lang') || ((navigator.language || '').toLowerCase().startsWith('ru') ? 'ru' : 'en'); } catch (e) {}

@@ -66,6 +66,17 @@ const AI = {
  "sfx":[{"n":"${Object.keys(A.SFX_NAMES).join('|')}","at":сек,"dur":сек для steps/siren/tick/crowd/riser/geiger}]}]}
 Правила: субтитры КАПСОМ, 2–5 слов, одна мысль, ключевое слово в *звёздочках*; сцены 3–6 секунд, фразы внутри сцены подряд без разрывов; первая фраза — крючок, последняя — вопрос или поворот; у каждой сцены свой фон и 2–5 звуков; сумма dur сцен = запрошенной длине. Предметы: cards.items=[{"icon","label","value","color"}], chat.items=[{"who":"me|them","text"}], timer from/to в секундах, counter from/to. Пиши на запрошенном языке, коротко и конкретно, без воды.`;
   },
+  async ideas(ctx, lang, model) {
+    const k = Keys.get('anthropic'); if (!k) throw new Error('Нет ключа Claude API (вкладка «Сценарий»)');
+    const en = lang === 'en';
+    const sys = (en ? 'You are a showrunner for short vertical videos (Reels). Reply with ONE JSON array only, no markdown. ' : 'Ты — шоураннер коротких вертикальных видео (Reels). Верни ТОЛЬКО один JSON-массив, без markdown. ') + (en ? 'Exactly 4 different continuation ideas, each {"kind":"twist|escalation|flashback|other-side|ending|choice","title":"short title of the next episode","logline":"1-2 sentences what happens","hook":"first on-screen line, ALL CAPS, 2-5 words"}. Ideas must differ in direction, follow from the last scene and keep the heroes.' : 'Ровно 4 разных идеи продолжения, каждая {"kind":"twist|escalation|flashback|other-side|ending|choice","title":"короткое название следующей серии","logline":"1–2 предложения, что происходит","hook":"первая фраза на экране КАПСОМ, 2–5 слов"}. Идеи должны идти в разные стороны, вытекать из последней сцены и сохранять героев.');
+    const user = (en ? 'Episode: ' : 'Серия: ') + ctx.title + '\n' + (en ? 'Characters: ' : 'Герои: ') + ctx.names + '\n' + (en ? 'What happened:\n' : 'Что было:\n') + ctx.sc;
+    const r = await fetch('https://api.anthropic.com/v1/messages', { method: 'POST', headers: { 'x-api-key': k, 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true', 'content-type': 'application/json' }, body: JSON.stringify({ model: model || 'claude-sonnet-5-5', max_tokens: 1800, system: sys, messages: [{ role: 'user', content: user }] }) });
+    if (!r.ok) throw new Error('Claude API: ' + r.status + ' ' + (await r.text()).slice(0, 200));
+    const j = await r.json(); const text = (j.content || []).map(b => b.text || '').join(''); const a = text.indexOf('['), b = text.lastIndexOf(']'); if (a < 0 || b < a) throw new Error('Ответ без JSON');
+    let arr; try { arr = JSON.parse(text.slice(a, b + 1)); } catch (e) { throw new Error('Не удалось разобрать JSON: ' + e.message); }
+    return arr.slice(0, 4).map(x => ({ kind: String(x.kind || 'other').slice(0, 20), title: String(x.title || '').slice(0, 80), logline: String(x.logline || '').slice(0, 300), hook: String(x.hook || '').slice(0, 60) })).filter(x => x.title);
+  },
   async generate(opt, onStatus) {
     const k = Keys.get('anthropic'); if (!k) throw new Error('Нет ключа Claude API (вкладка «Сценарий»)');
     const user = `Тема: ${opt.topic}\nТон/жанр: ${opt.tone}\nДлительность: ${opt.len} секунд\nЯзык: ${opt.lang}\nСцен: примерно ${opt.scenes}\nHUD (плашки со счётчиками): ${opt.hud ? 'нужен, если подходит теме' : 'не нужен'}\n${opt.extra ? 'Пожелания: ' + opt.extra : ''}`;

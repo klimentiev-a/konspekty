@@ -5,8 +5,21 @@ const E = G.StudioEngine, A = G.StudioAudio, N = G.StudioNet, D = G.StudioData, 
 const I = G.StudioI18n, tt = I.tt, TR = I.T;
 const cv = $('cv'), cx = cv.getContext('2d'); let P, sel = 0, tab = 'script', t = 0, playing = false, clips = {}, raf = 0, t0w = 0, tFrom = 0, recording = null;
 
-function load() { try { const s = localStorage.getItem('studio:project'); if (s) { const p = JSON.parse(s); if (p && p.scenes && p.scenes.length) return p; } } catch (e) {} return D.T.bunker(); }
-let svT = 0; function save() { clearTimeout(svT); svT = setTimeout(() => { try { localStorage.setItem('studio:project', JSON.stringify(P)); } catch (e) {} }, 400); }
+const LIBK = 'studio:lib', pk = id => 'studio:p:' + id, uid = () => Math.random().toString(36).slice(2, 9);
+let lib = { active: '', items: [] }, pid = '';
+function libLoad() { try { const l = JSON.parse(localStorage.getItem(LIBK)); if (l && Array.isArray(l.items)) lib = l; } catch (e) {} }
+function libSave() { try { localStorage.setItem(LIBK, JSON.stringify(lib)); } catch (e) {} }
+function addLib(p) { pid = uid(); lib.items.push({ id: pid, title: p.title, series: p.series || '', part: p.part || 1, upd: Date.now(), n: p.scenes.length, dur: E.total(p) }); lib.active = pid; libSave(); try { localStorage.setItem(pk(pid), JSON.stringify(p)); } catch (e) {} }
+function load() {
+  libLoad(); let body = null;
+  if (lib.active && lib.items.some(x => x.id === lib.active)) { try { body = JSON.parse(localStorage.getItem(pk(lib.active))); } catch (e) {} }
+  if (body && body.scenes && body.scenes.length) { pid = lib.active; return body; }
+  let p = null; try { const s = localStorage.getItem('studio:project'); if (s) { p = JSON.parse(s); if (!(p && p.scenes && p.scenes.length)) p = null; } } catch (e) {}
+  p = p || D.T.bunker(); addLib(p); return p;
+}
+let svT = 0; function save() { clearTimeout(svT); svT = setTimeout(saveNow, 400); }
+function saveNow() { clearTimeout(svT); try { localStorage.setItem(pk(pid), JSON.stringify(P)); const m = lib.items.find(x => x.id === pid); if (m) { m.title = P.title; m.series = P.series || ''; m.part = P.part || 1; m.upd = Date.now(); m.n = P.scenes.length; m.dur = E.total(P); } lib.active = pid; libSave(); } catch (e) {} hdr(); }
+function hdr() { const b = $('libbtn'); if (!b) return; b.querySelector('.n').textContent = ((P.series ? tt('Ч', 'P') + (P.part || 1) + ' · ' : '') + (P.title || tt('Без названия', 'Untitled'))); $('sbadge').textContent = '✓ ' + tt('сохранено', 'saved'); }
 function fmt(s) { s = Math.max(0, s); return ((s / 60) | 0) + ':' + String((s % 60) | 0).padStart(2, '0'); }
 function total() { return E.total(P); }
 
@@ -62,8 +75,72 @@ function tabs() {
 }
 function pane() { const el = $('pane'); el.innerHTML = ''; stopCharPv(); ({ script: pScript, scenes: pScenes, chars: pChars, theme: pTheme, voice: pVoice, sound: pSound, publish: pPublish })[tab](el); }
 function setProject(p, keepTab) { pause(); P = p; sel = 0; t = 0; clips = {}; tlBuild(); frame(); hud(); save(); pane(); }
+function openNew(p, o) { saveNow(); o = o || {}; if (o.series != null) { p.series = o.series; p.part = o.part || 1; } addLib(p); setProject(p); hdr(); }
+function openId(id) { saveNow(); let p = null; try { p = JSON.parse(localStorage.getItem(pk(id))); } catch (e) {} if (!p || !p.scenes || !p.scenes.length) { lib.items = lib.items.filter(x => x.id !== id); libSave(); return false; } pid = id; lib.active = id; libSave(); setProject(p); hdr(); return true; }
+function delId(id) { lib.items = lib.items.filter(x => x.id !== id); try { localStorage.removeItem(pk(id)); } catch (e) {} libSave(); if (id === pid) { const nx = lib.items.slice().sort((a, b) => b.upd - a.upd)[0]; if (!(nx && openId(nx.id))) { pid = ''; const p = D.T.blank(); addLib(p); setProject(p); hdr(); } } }
+// --- окна ---
+function closeModal() { const m = document.querySelector('.s-modal'); if (m) m.remove(); document.removeEventListener('keydown', escM); }
+function escM(e) { if (e.key === 'Escape') closeModal(); }
+function modal(title, build) { closeModal(); const bg = h('div', { class: 's-modal', onclick: e => { if (e.target === bg) closeModal(); } }); const body = h('div', { class: 's-mb' }); bg.append(h('div', { class: 's-mbox', role: 'dialog' }, h('div', { class: 's-mh' }, h('b', 0, title), h('button', { type: 'button', class: 's-x', 'aria-label': 'Close', onclick: closeModal }, '×')), body)); $('sw').append(bg); document.addEventListener('keydown', escM); build(body); return body; }
+const dtf = ts => new Date(ts).toLocaleDateString(I.lang === 'en' ? 'en-US' : 'ru-RU', { day: 'numeric', month: 'short' });
+function openLib() {
+  saveNow();
+  modal(tt('Проекты', 'Projects'), body => {
+    const render = () => {
+      body.innerHTML = '';
+      body.append(h('div', { class: 's-row' }, btn(tt('+ Новый проект', '+ New project'), () => { closeModal(); goStep(0); }, 'pri'), btn(tt('+ Сюжетная линия', '+ Storyline'), () => { const n = prompt(tt('Название сюжетной линии', 'Storyline name')); if (n && n.trim()) { const p = D.T.blank(); p.title = n.trim() + tt(' · часть 1', ' · part 1'); openNew(p, { series: n.trim(), part: 1 }); closeModal(); goStep(0); } })));
+      const gr = {}; lib.items.forEach(m => (gr[m.series || ''] = gr[m.series || ''] || []).push(m));
+      const keys = Object.keys(gr).sort((a, b) => (a === '') - (b === '') || Math.max(...gr[b].map(x => x.upd)) - Math.max(...gr[a].map(x => x.upd)));
+      for (const k of keys) {
+        body.append(h('div', { class: 's-gh' }, h('b', 0, k || tt('Без сюжетной линии', 'No storyline')), gr[k].length > 1 || k ? h('small', 0, gr[k].length + ' ' + tt('шт.', 'items')) : null));
+        gr[k].sort((a, b) => (a.part - b.part) || (a.upd - b.upd)).forEach(m => body.append(h('div', { class: 's-pj' + (m.id === pid ? ' on' : '') },
+          h('div', { class: 's-pt' }, h('b', 0, (k ? tt('Часть ', 'Part ') + m.part + ' · ' : '') + m.title), h('small', 0, m.n + ' ' + tt('сцен', 'scenes') + ' · ' + fmt(m.dur) + ' · ' + dtf(m.upd))),
+          m.id === pid ? h('span', { class: 's-cur' }, tt('открыт', 'open')) : btn(tt('Открыть', 'Open'), () => { if (openId(m.id)) { closeModal(); goStep(1); } else render(); }, 'sm pri'),
+          btn(tt('Копия', 'Copy'), () => { saveNow(); let p = null; try { p = JSON.parse(localStorage.getItem(pk(m.id))); } catch (e) {} if (p) { p.title += tt(' (копия)', ' (copy)'); openNew(p, k ? { series: k, part: m.part } : undefined); } render(); }, 'sm'),
+          btn('×', () => { if (confirm(tt('Удалить проект «' + m.title + '»? Это нельзя отменить.', 'Delete project “' + m.title + '”? This cannot be undone.'))) { delId(m.id); render(); } }, 'sm dng'))));
+      }
+    }; render();
+  });
+}
+// --- Креатив: продолжения ---
+function storyCtx() { return { title: P.title, names: Object.values(P.chars || {}).map(c => c.name).join(', '), sc: P.scenes.map((x, i) => (i + 1) + '. ' + x.name + ': ' + (x.caps || []).map(c => E.stripCap(c.text)).join(' / ')).join('\n') }; }
+function lastLine() { for (let i = P.scenes.length - 1; i >= 0; i--) { const c = (P.scenes[i].caps || []).filter(x => x.text && x.text !== '...'); if (c.length) return E.stripCap(c[c.length - 1].text); } return ''; }
+function contPrompt(idea) { const c = storyCtx(), part = (P.part || 1) + 1; return tt('Продолжение ролика «' + c.title + '» (часть ' + part + '). Герои: ' + c.names + '. Что было:\n' + c.sc + '\n\nИдея продолжения: ' + idea.title + '. ' + idea.logline + (idea.hook ? ' Первая фраза: ' + idea.hook + '.' : '') + '\nНачни с крючка, связанного с последней сценой; сохрани героев и тон.', 'Continuation of the video “' + c.title + '” (part ' + part + '). Characters: ' + c.names + '. What happened:\n' + c.sc + '\n\nContinuation idea: ' + idea.title + '. ' + idea.logline + (idea.hook ? ' First line: ' + idea.hook + '.' : '') + '\nStart with a hook tied to the last scene; keep the characters and the tone.'); }
+function patterns() {
+  const hero = (Object.values(P.chars || {})[0] || {}).name || tt('герой', 'the hero'), last = lastLine();
+  return [
+    { ico: '↯', t: tt('Поворот', 'Plot twist'), l: tt('Выясняется, что ' + hero + ' понял всё неправильно: последняя сцена («' + last + '») значит совсем другое.', hero + ' got it wrong: the last scene (“' + last + '”) means something else entirely.'), hook: tt('ЭТО БЫЛО НЕ ТАК', 'IT WAS NOT SO') },
+    { ico: '▲', t: tt('Эскалация', 'Escalation'), l: tt('Ставки растут: времени меньше, угроза ближе, выбор для ' + hero + ' тяжелее.', 'Stakes rise: less time, closer threat, a harder choice for ' + hero + '.'), hook: tt('СТАЛО ХУЖЕ', 'IT GOT WORSE') },
+    { ico: '↺', t: tt('Флэшбэк', 'Flashback'), l: tt('Как всё началось: сцена до первой серии, которая объясняет её финал.', 'How it began: a scene before episode one that explains its ending.'), hook: tt('ЗА ЧАС ДО ЭТОГО', 'ONE HOUR EARLIER') },
+    { ico: '⇄', t: tt('Другой взгляд', 'Other side'), l: tt('Та же история глазами второго героя: он знает то, чего не знает зритель.', 'The same story through a second character who knows what the viewer does not.'), hook: tt('А ТЕПЕРЬ — ЕГО ВЕРСИЯ', 'NOW, HIS VERSION') },
+    { ico: '⚑', t: tt('Развязка', 'Ending'), l: tt('Финал истории: чем закончилось, цена выбора и последняя фраза.', 'The finale: how it ended, the price of the choice and a last line.'), hook: tt('ВОТ ЧЕМ ВСЁ КОНЧИЛОСЬ', 'THIS IS HOW IT ENDED') },
+    { ico: '☑', t: tt('Выбор зрителей', 'Viewers choose'), l: tt('Два варианта продолжения, зрители голосуют в комментариях, победивший вариант — следующая серия.', 'Two ways forward; viewers vote in comments and the winner becomes the next episode.'), hook: tt('ВЫБИРАЕШЬ ТЫ', 'YOU CHOOSE') }
+  ];
+}
+async function makePart(idea, st, done) {
+  const old = P, series = P.series || P.title, part = (P.part || 1) + 1, topic = contPrompt(idea), key = N.Keys.get('anthropic');
+  const keep = p => { for (const id of Object.keys(old.chars || {})) if (!p.chars[id] && Object.keys(p.chars).length < 6) p.chars[id] = JSON.parse(JSON.stringify(old.chars[id])); for (const id of Object.keys(p.chars)) if (old.chars[id]) p.chars[id] = JSON.parse(JSON.stringify(old.chars[id])); p.theme = old.theme; p.cap = Object.assign({}, old.cap); p.vignette = old.vignette; p.voice = Object.assign({}, old.voice); return p; };
+  if (!key) { const p = keep(D.T.blank()); p.title = series + tt(' · часть ', ' · part ') + part; p.scenes[0].name = idea.title.slice(0, 40); p.scenes[0].caps[0].text = idea.hook || p.scenes[0].caps[0].text; aiOpt.topic = topic; openNew(p, { series, part }); aiMsg = tt('Запрос на продолжение подставлен в поле «О чём видео». Добавь ключ Claude API и нажми «Сгенерировать» — или скопируй запрос и отправь мне в чат.', 'The continuation request is in “What is the video about”. Add a Claude API key and press Generate — or copy it and send it to me in chat.'); closeModal(); goStep(0); return; }
+  st.className = 's-msg'; st.textContent = tt('Claude пишет часть ' + part + '…', 'Claude is writing part ' + part + '…');
+  const opt = Object.assign({}, aiOpt, { topic, lang: I.lang === 'en' ? 'English' : 'русский', len: Math.max(15, Math.min(60, Math.round(total() / 5) * 5 || 30)) });
+  const p = keep(await N.AI.generate(opt, s => { st.textContent = tt(s, s); })); openNew(p, { series, part }); closeModal(); goStep(1);
+}
+function openCreative() {
+  saveNow();
+  modal('✦ ' + tt('Креатив: что дальше?', 'Creative: what next?'), body => {
+    const st = h('div', { class: 's-msg' }); const hasKey = !!N.Keys.get('anthropic');
+    const card = (ico, t, l, hook, idea) => h('div', { class: 's-idea' }, h('i', 0, ico), h('div', { class: 's-it' }, h('b', 0, t), h('p', 0, l), hook ? h('small', 0, tt('Крючок: ', 'Hook: ') + hook) : null, h('div', { class: 's-row' }, btn(tt('Сделать часть ', 'Make part ') + ((P.part || 1) + 1), async e => { const b = e.currentTarget; b.disabled = true; try { await makePart(idea, st); } catch (er) { st.textContent = er.message; st.className = 's-msg err'; } b.disabled = false; }, 'sm pri'), btn(tt('Скопировать запрос', 'Copy prompt'), async () => { try { await navigator.clipboard.writeText(contPrompt(idea)); st.textContent = tt('Скопировано — вставь в чат со мной', 'Copied — paste it into the chat with me'); st.className = 's-msg ok'; } catch (er) { st.textContent = contPrompt(idea); } }, 'sm'))));
+    body.append(h('p', { class: 's-lead' }, tt('Варианты продолжения «' + P.title + '». Выбери, и Студия создаст следующую часть в той же сюжетной линии: герои и стиль сохранятся.', 'Ways to continue “' + P.title + '”. Pick one and the Studio creates the next part in the same storyline, keeping characters and style.')));
+    body.append(h('h3', 0, tt('Идеи под твой сюжет', 'Ideas for your story')));
+    const box = h('div', { class: 's-ideas' }); body.append(box);
+    const gen = btn(hasKey ? tt('✦ Придумать с Claude', '✦ Ask Claude') : tt('Нужен ключ Claude API (шаг «Идея»)', 'Claude API key needed (step “Idea”)'), async () => { gen.disabled = true; st.className = 's-msg'; st.textContent = tt('Claude думает…', 'Claude is thinking…'); try { const arr = await N.AI.ideas(storyCtx(), I.lang, aiOpt.model); box.innerHTML = ''; arr.forEach(x => box.append(card('✦', x.title, x.logline, x.hook, x))); st.textContent = ''; } catch (er) { st.textContent = er.message; st.className = 's-msg err'; } gen.disabled = !N.Keys.get('anthropic'); }, 'pri'); gen.disabled = !hasKey; body.insertBefore(h('div', { class: 's-row' }, gen), box);
+    body.append(h('h3', 0, tt('Ходы сюжета', 'Story moves')), h('p', { class: 's-note' }, tt('Работает без ключа: подставляется шаблон продолжения, текст пишешь сам или просишь меня в чате.', 'Works without a key: a continuation template is set up; you write the text yourself or ask me in chat.')));
+    const pb = h('div', { class: 's-ideas' }); patterns().forEach(x => pb.append(card(x.ico, x.t, x.l, x.hook, { title: x.t, logline: x.l, hook: x.hook }))); body.append(pb, st);
+  });
+}
 function staticApply() { document.querySelectorAll('[data-r]').forEach(e => { e.textContent = tt(e.dataset.r, e.dataset.e); }); document.title = 'Reel Studio · Hub'; }
 function switchLang(l) { if (l === I.lang) return; pause(); P = I.mapProject(P, l); I.setLang(l); aiOpt.lang = l === 'en' ? 'English' : 'русский'; staticApply(); tlBuild(); frame(); hud(); save(); tabs(); pane(); }
+$('libbtn').onclick = openLib; $('crbtn').onclick = openCreative;
 document.querySelectorAll('.s-lang [data-l]').forEach(b => b.onclick = () => switchLang(b.dataset.l));
 $('igbtn').onclick = () => { const on = $('ig').hidden; $('ig').hidden = !on; $('igbtn').classList.toggle('on', on); try { localStorage.setItem('studio:ig', on ? '1' : ''); } catch (e) {} };
 
@@ -72,7 +149,7 @@ let aiMsg = ''; let aiOpt = { topic: '', tone: 'напряжённый, как �
 function pScript(el) {
   el.append(h('p', { class: 's-lead' }, tt('Выбери, с чего начать. Дальше четыре шага — и ролик готов для Reels.', 'Pick a starting point. Four more steps and the video is ready for Reels.')));
   el.append(h('h3', 0, 'Шаблоны')); const g = h('div', { class: 's-hero' }); const sub = { bunker: 'Тревога, очередь, люк, 30 с', chat: 'Переписка и дверь, 18 с', finance: 'Формула и цифры, 18 с', blank: 'Одна сцена' };
-  for (const k of Object.keys(D.T)) g.append(h('button', { type: 'button', class: 's-tpl', onclick: () => { if (confirm(TR('Заменить текущий проект шаблоном «' + TR(D.TNAMES[k]) + '»?'))) { setProject(D.T[k]()); goStep(1); } } }, D.TNAMES[k], h('small', 0, sub[k]))); el.append(g);
+  for (const k of Object.keys(D.T)) g.append(h('button', { type: 'button', class: 's-tpl', onclick: () => { { openNew(D.T[k]()); goStep(1); } } }, D.TNAMES[k], h('small', 0, sub[k]))); el.append(g);
   el.append(h('h3', 0, 'Придумать сценарий с Claude'));
   el.append(h('p', { class: 's-note' }, 'Опиши тему — Claude соберёт сцены, персонажей, фразы, звуки и счётчики. Нужен твой ключ Claude API: он хранится только в этом браузере и уходит только на api.anthropic.com.'));
   const kb = h('div', { class: 's-kbox' }); const ki = h('input', { type: 'password', placeholder: 'sk-ant-…', autocomplete: 'off' }); ki.value = N.Keys.get('anthropic'); ki.oninput = () => N.Keys.set('anthropic', ki.value.trim()); kb.append(fld('Ключ Claude API', ki, 'w')); el.append(kb);
@@ -81,9 +158,9 @@ function pScript(el) {
   el.append(h('div', { class: 's-row' }, F.chk(aiOpt, 'hud', 'Счётчики (HUD)', () => { })));
   el.append(F.text(aiOpt, 'extra', 'Пожелания (необязательно)', { ph: 'герой — девушка, финал с вопросом, больше цифр', on: () => { }, cls: 'w' }));
   el.append(F.text(aiOpt, 'model', 'Модель', { on: () => { }, cls: 'w' }));
-  const st = h('div', { class: 's-msg' }); const go = btn('Сгенерировать', async () => { go.disabled = true; st.className = 's-msg'; try { if (!aiOpt.topic.trim()) throw new Error('Напиши тему'); aiOpt.len = +aiOpt.len; const p = await N.AI.generate(aiOpt, s => st.textContent = s); aiMsg = 'Готово: ' + p.scenes.length + ' сцен. Нажми ▶ и поправь во вкладках «Сцены», «Персонажи».'; setProject(p); goStep(1); } catch (e) { st.textContent = e.message; st.className = 's-msg err'; } go.disabled = false; }, 'pri'); if (aiMsg) { st.textContent = aiMsg; st.className = 's-msg ok'; } el.append(h('div', { class: 's-row' }, go)); el.append(st);
-  el.append(h('h3', 0, 'Проект')); el.append(F.text(P, 'title', 'Название', { on: () => save(), cls: 'w' }));
-  const fi = h('input', { type: 'file', accept: '.json,application/json', hidden: true }); fi.onchange = async () => { try { const p = JSON.parse(await fi.files[0].text()); if (!p.scenes || !p.scenes.length) throw 0; setProject(p); } catch (e) { alert(TR('Это не файл проекта Студии')); } };
+  const st = h('div', { class: 's-msg' }); const go = btn('Сгенерировать', async () => { go.disabled = true; st.className = 's-msg'; try { if (!aiOpt.topic.trim()) throw new Error('Напиши тему'); aiOpt.len = +aiOpt.len; const p = await N.AI.generate(aiOpt, s => st.textContent = s); aiMsg = 'Готово: ' + p.scenes.length + ' сцен. Нажми ▶ и поправь во вкладках «Сцены», «Персонажи».'; openNew(p); goStep(1); } catch (e) { st.textContent = e.message; st.className = 's-msg err'; } go.disabled = false; }, 'pri'); if (aiMsg) { st.textContent = aiMsg; st.className = 's-msg ok'; } el.append(h('div', { class: 's-row' }, go)); el.append(st);
+  el.append(h('h3', 0, 'Проект')); el.append(F.text(P, 'title', 'Название', { on: () => save(), cls: 'w' }), h('div', { class: 's-row' }, F.text(P, 'series', 'Сюжетная линия', { on: () => save() }), F.num(P, 'part', 'Часть', { min: 1, max: 99, step: 1, cls: 's', on: () => save() })));
+  const fi = h('input', { type: 'file', accept: '.json,application/json', hidden: true }); fi.onchange = async () => { try { const p = JSON.parse(await fi.files[0].text()); if (!p.scenes || !p.scenes.length) throw 0; openNew(p); } catch (e) { alert(TR('Это не файл проекта Студии')); } };
   el.append(h('div', { class: 's-row' }, btn('Скачать проект (.json)', () => dl(new Blob([JSON.stringify(P, null, 1)], { type: 'application/json' }), slug() + '.json')), btn('Открыть проект', () => fi.click()), fi));
 }
 const slug = () => (P.title || 'video').replace(/[^\p{L}\p{N}]+/gu, '_').slice(0, 40) || 'video';
@@ -209,6 +286,7 @@ function pPublish(el) {
   el.append(h('h3', 0, tt('Текст для поста', 'Post text')));
   const ta = h('textarea', { class: 's-post', rows: 6 }); ta.value = postText();
   el.append(ta, h('div', { class: 's-row' }, btn(tt('Скопировать', 'Copy'), async () => { try { await navigator.clipboard.writeText(ta.value); } catch (e) { ta.select(); document.execCommand('copy'); } }, 'sm'), btn(tt('Обновить', 'Regenerate'), () => { ta.value = postText(); }, 'sm')));
+  el.append(h('h3', 0, tt('Что дальше?', 'What next?')), h('div', { class: 's-row' }, btn('✦ ' + tt('Креатив: варианты продолжения', 'Creative: ways to continue'), openCreative, 'pri')));
   el.append(h('p', { class: 's-note' }, tt('Загрузи файл в Instagram: «Создать» → Reels → выбери видео из галереи. Проект хранится в этом браузере; сохрани его файлом на вкладке «Идея».', 'Upload the file in Instagram: Create → Reels → pick the video from your gallery. The project lives in this browser; save it as a file in the “Idea” step.')));
 }
 function pickMime() { const c = ['video/mp4;codecs=avc1.42E01E,mp4a.40.2', 'video/mp4', 'video/webm;codecs=vp9,opus', 'video/webm;codecs=vp8,opus', 'video/webm']; return c.find(m => G.MediaRecorder && MediaRecorder.isTypeSupported(m)) || ''; }
@@ -225,7 +303,7 @@ async function record(width, fps, onp) {
 }
 
 // ---------- старт ----------
-P = load(); staticApply(); tabs(); tlBuild(); frame(); hud(); pane(); I.trNode($('sw')); I.watch($('sw'));
+P = load(); hdr(); staticApply(); tabs(); tlBuild(); frame(); hud(); pane(); I.trNode($('sw')); I.watch($('sw'));
 try { if (localStorage.getItem('studio:ig') === '1') { $('ig').hidden = false; $('igbtn').classList.add('on'); } } catch (e) {}
-G.Studio = { get P() { return P; }, setProject, seek, play, pause, frame, record, N };
+G.Studio = { get P() { return P; }, get lib() { return lib; }, openNew, openId, setProject, seek, play, pause, frame, record, N };
 })(window);

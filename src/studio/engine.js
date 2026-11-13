@@ -218,7 +218,7 @@ function drawFx(c, fx, t, th, dur) {
 function keyval(keys, t) { if (!keys || !keys.length) return 0; if (t <= keys[0][0]) return keys[0][1]; for (let i = 1; i < keys.length; i++) if (t <= keys[i][0]) return lerp(keys[i - 1][1], keys[i][1], (t - keys[i - 1][0]) / Math.max(1e-6, keys[i][0] - keys[i - 1][0])); return keys[keys.length - 1][1]; }
 function drawHud(c, hud, t, th) {
   if (!hud || hud.on === false) return;
-  const pl = (hud.plates || []).slice(0, 2), y0 = hud.y == null ? 150 : hud.y;
+  const pl = (hud.plates || []).slice(0, 2), y0 = hud.y == null ? 250 : hud.y;
   pl.forEach((p, i) => {
     const x = i ? 560 : 40, v = keyval(p.keys, t), col = p.color || (i ? th.b : th.a);
     fillRR(c, x, y0, 480, 150, 26, 'rgba(8,11,22,.92)', col, 4); txt(c, p.label || '', x + 240, y0 + 28, 30, '#c8cde0', { w: 700 });
