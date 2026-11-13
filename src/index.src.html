@@ -1745,7 +1745,7 @@ function artLinkify(c,def){
       var gs=start+m.index,ge=gs+m[0].length;
       var code=artCode(full.slice(Math.max(0,gs-60),gs),full.slice(ge,ge+50),def);
       if(!code)continue;
-      var pm=/ч\.\s?(\d+)\s*$/.exec(full.slice(Math.max(0,gs-12),gs))||/^\s*\(?ч\.\s?(\d+)/.exec(full.slice(ge,ge+14)),part=pm?pm[1]:'';
+      var part=refParse(full.slice(Math.max(0,gs-48),gs),full.slice(ge,ge+16));
       var seg=m[0],ki=seg.search(/\d/),out=document.createDocumentFragment(),any=false;
       out.appendChild(document.createTextNode(seg.slice(0,ki)));
       var re2=/\(([^)]*)\)|(\d{1,4}(?:\.\d{1,2})?)/g,l2=ki,m2;
@@ -1851,6 +1851,31 @@ function artDrag(e){
   }
   el.addEventListener('pointermove',mv);el.addEventListener('pointerup',up);el.addEventListener('pointercancel',up);
 }
+/* «абз. 2 п. «г» ч. 3 ст. 125»: что именно открыть внутри статьи → строка «parts=3;pt=г;abz=2» (artOpen подсвечивает этот пункт/часть/абзац) */
+function refParse(pre,post){
+  var m=/(?:абз\.\s?(\d+)\s+)?(?:пп?\.\s?[«"]?([а-яё])[»"]?\s+)?(?:(?:ч|пп?)\.\s?(\d+(?:\s*(?:,|и|–|—|-)\s*\d+)*)\s+)?$/i.exec(pre),abz='',pt='',parts='';
+  if(m){abz=m[1]||'';pt=m[2]||'';parts=m[3]||''}
+  if(!parts){var q=/^\s*\(?(?:ч|п)\.\s?(\d+(?:\s*(?:,|и|–|—|-)\s*\d+)*)/.exec(post);if(q)parts=q[1]}
+  if(!parts&&!pt&&!abz)return '';
+  var nums=[];(parts.replace(/\s+/g,'').replace(/и/g,',').split(',')).forEach(function(x){var r=/^(\d+)[–—-](\d+)$/.exec(x);if(r){for(var k=+r[1];k<=+r[2]&&k-r[1]<20;k++)nums.push(k)}else if(/^\d+$/.test(x))nums.push(+x)});
+  return 'parts='+nums.join(',')+';pt='+pt+';abz='+abz}
+function refPick(a,spec){
+  var o={};(spec||'').split(';').forEach(function(x){var k=x.split('=');o[k[0]]=k[1]||''});
+  if(!/=/.test(spec||'')&&spec){o={parts:spec,pt:'',abz:''}}   // старый формат: просто номер части
+  var ps=(o.parts||'').split(',').filter(Boolean).map(Number),hit={},n=a.p.length;
+  function isNote(t){return /^(О выявлении|О признании|Постановление|Определение|См\.|Федеральн|Информация|Примечание|Утратил|Положения)/.test(t)}
+  function blockEnd(i){for(var k=i+1;k<n;k++){if(/^\d+(?:\.\d+)?\.\s/.test(a.p[k])||isNote(a.p[k]))return k}return n}
+  function startOf(num){for(var i=0;i<n;i++){if(a.p[i].indexOf(num+'. ')===0)return i}return -1}
+  var blocks=[];
+  if(ps.length){ps.forEach(function(num){var i=startOf(num);if(i>=0)blocks.push([i,blockEnd(i)])})}
+  else if(o.pt||o.abz){blocks.push([0,n])}
+  blocks.forEach(function(b){
+    var i0=b[0],i1=b[1];
+    if(o.pt){var ok=false;for(var i=i0;i<i1;i++){if(a.p[i].replace(/^\d+\.\s/,'').toLowerCase().indexOf(o.pt+') ')===0){hit[i]=1;ok=true}}if(ok)return}
+    if(o.abz&&!ps.length)return;
+    if(o.abz){var abs=[];for(var j=i0;j<i1;j++){if(!/^[а-яё0-9.]{1,4}\)\s/i.test(a.p[j])&&!isNote(a.p[j]))abs.push(j)}var t=abs[+o.abz-1];if(t!=null){hit[t]=1;return}}
+    for(var i=i0;i<i1;i++)hit[i]=1});
+  return hit}
 function artOpen(code,n,part,anchor,only){
   if(!artSheet){
     artSheet=document.createElement('div');artSheet.id='artsheet';artSheet.hidden=true;
@@ -1866,8 +1891,9 @@ function artOpen(code,n,part,anchor,only){
   artLoad(code).then(function(L){
     var a=L[n];if(!a)throw 0;
     $('.at',artSheet).textContent='Статья '+n+' '+nm+(a.t?'. '+a.t:'');
-    var s0=-1,s1=-1;if(part){a.p.forEach(function(t,i){if(s0<0&&t.indexOf(part+'. ')===0)s0=i});if(s0>=0){s1=a.p.length;for(var k=s0+1;k<a.p.length;k++){if(/^\d+(?:\.\d+)?\.\s/.test(a.p[k])){s1=k;break}}}}
-    b.innerHTML=a.p.map(function(t,i){return (i===s0?'<div class="on">':'')+'<p>'+esc(t)+'</p>'+(i===s1-1&&s0>=0?'</div>':'')}).join('');
+    var hit=part?refPick(a,part):{},first=-1,h='',i,inOn=false;
+    for(i=0;i<a.p.length;i++){var on1=!!hit[i];if(on1&&first<0)first=i;if(on1&&!inOn){h+='<div class="on">';inOn=true}if(!on1&&inOn){h+='</div>';inOn=false}h+='<p>'+esc(a.p[i])+'</p>'}
+    if(inOn)h+='</div>';b.innerHTML=h;
     var on=$('.on',b);b.scrollTop=on?Math.max(0,on.offsetTop-60):0;artPlace(anchor);
   }).catch(function(){b.innerHTML='<p class="src">Не удалось загрузить текст статьи. Проверь соединение и попробуй ещё раз.</p>'});
 }
