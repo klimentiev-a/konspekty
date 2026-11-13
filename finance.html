@@ -2211,6 +2211,19 @@ function fbPool(tic){var f=fbFile(tic);if(!f)return [];
   if(ENEWS[f]===undefined&&!FBL[f]){FBL[f]=1;loadEN(f).then(function(){CNC={};if(PC.tic===tic&&PC.d&&PC.kind!=='idx'){PC.marks=pcMarks(tic,PC.d,!isWk(CARD.range));drawPC()}})}
   var pe=fbPeers(tic),a=((M.news&&M.news.items)||[]).filter(function(x){return !x.dup&&(x.tags||[]).some(function(t){return pe[t]})}).concat(ENEWS[f]||[]);
   a.forEach(function(x){x._n=0});return a}
+/* связь новости и движения: новость должна быть ПРО эту бумагу и не противоречить направлению (на падении не «взлетела»), а не просто иметь готовый пересказ */
+var ENTXC={NVDA:['huang','хуанг'],TSLA:['musk','маск'],META:['zuckerberg'],AAPL:['iphone'],SBER:['сбер','греф'],VTBR:['втб','костин'],YDEX:['яндекс','yandex']};
+var UPW=/рост|вырос|выросл|подскоч|взлет|взмыл|рекорд|превзош|повысил|повышен|одобр|сделк|прибыль выросла|surge|jump|soar|rall|climb|gain|beat|rise|rose|record|upgrad|boost|win/i,DNW=/упал|упали|падени|снизил|снижен|обвал|рухн|просел|провал|отставк|уход|расследован|иск\b|санкц|убыт|плох|слабее|plung|drop|fall|fell|slump|tumbl|slid|sink|miss|cut|resign|step down|probe|lawsuit|downgrad|warn|loss/i;
+function entRel(tic){var n=(typeof tname==='function'?String(tname(tic)||''):'').toLowerCase().replace(/[«»"()]/g,'').split(/\s+/)[0]||'',o=[];if(n.length>=6)o.push(n.slice(0,n.length>8?5:4));else if(n.length>=3)o.push(n);if(tic.length>2)o.push(tic.toLowerCase());return o.concat(ENTXC[tic]||[])}
+function relScore(x,ent,mv){var t=(x.to||x.t||'').toLowerCase(),sc=0,ix=-1;
+  ent.forEach(function(e){var k=t.indexOf(e);if(k>=0&&(ix<0||k<ix))ix=k});
+  if(ix<0)sc-=6;else{var caus=/(из-за|из за|because of|after|amid|на фоне|following|вслед за|due to)\s+[^,.:;]{0,25}$/.test(t.slice(Math.max(0,ix-30),ix));
+    sc+=caus?-3:(ix<=30?7:2)}
+  var u=UPW.test(t),d=DNW.test(t);if(mv>0){if(u&&!d)sc+=3;if(d&&!u)sc-=4}else{if(d&&!u)sc+=3;if(u&&!d)sc-=4}
+  return sc}
+function pickNews(nn,tic,mv,own){if(!own||!nn.length)return {nn:nn,weak:0};var ent=entRel(tic),sc=nn.map(function(x,i){return {x:x,s:relScore(x,ent,mv)+(nscore(x)||0)*0.15+(x.sum?0.5:0)-i*0.01}});sc.sort(function(a,b){return b.s-a.s});
+  var good=sc.filter(function(e){return e.s>=3});if(good.length)return {nn:good.map(function(e){return e.x}),weak:0};
+  return {nn:sc.map(function(e){return e.x}),weak:1}}
 function pcMarks(tic,d,daily){
   var out=[],ev=evFor(tic);if(!d||d.length<2)return out;var t0=d[0][0],t1=d[d.length-1][0]+864e5;
   function near(t){var lo=0,hi=d.length-1;while(hi-lo>1){var m=(lo+hi)>>1;if(d[m][0]<t)lo=m;else hi=m}return Math.abs(d[lo][0]-t)<=Math.abs(d[hi][0]-t)?lo:hi}
@@ -2218,21 +2231,21 @@ function pcMarks(tic,d,daily){
   var NI=cardNews(tic,PC.nf),thr=pcThr();PC.NI=NI;
   var wk=isWk(CARD.range);
   for(var i=1;i<d.length;i++){var r=d[i][1]/d[i-1][1]-1;if(Math.abs(r)<thr)continue;var dt=d[i][0];if(out.some(function(m){return m.e&&Math.abs(new Date(m.e.date+'T12:00:00')-dt)<(wk?7:2)*864e5}))continue;
-    var nn=wk?newsInWeek(NI,dt):newsOnDay(NI,dt),fb=0;if(!nn.length&&PC.kind!=='idx'){var fp=fbPool(tic);nn=wk?newsInWeek(fp,dt):newsOnDay(fp,dt);fb=nn.length?1:0}if(nn.length)out.push({i:i,mv:r,n:nn[0],nn:nn,wk:wk,fb:fb})}
+    var nn=wk?newsInWeek(NI,dt):newsOnDay(NI,dt),fb=0;if(!nn.length&&PC.kind!=='idx'){var fp=fbPool(tic);nn=wk?newsInWeek(fp,dt):newsOnDay(fp,dt);fb=nn.length?1:0}var own=!fb&&PC.kind!=='idx'&&PC.kind!=='cr'&&nn.length,pk=pickNews(nn,tic,r,own);if(nn.length)out.push({i:i,mv:r,n:pk.nn[0],nn:pk.nn,wk:wk,fb:fb,weak:pk.weak})}
   return out;
 }
-function dayMark(i){if(i==null||!PC.d||!PC.NI)return null;if(PC.dm&&PC.dm.i===i)return PC.dm;var d=PC.d,wk=isWk(CARD.range),nn=wk?newsInWeek(PC.NI,d[i][0]):newsOnDay(PC.NI,d[i][0]),fb=0;if(!nn.length&&PC.kind!=='idx'){var fp=fbPool(PC.tic);nn=wk?newsInWeek(fp,d[i][0]):newsOnDay(fp,d[i][0]);fb=nn.length?1:0}if(!nn.length)return null;PC.dm={i:i,mv:i?d[i][1]/d[i-1][1]-1:0,n:nn[0],nn:nn,day:1,fb:fb};return PC.dm}
+function dayMark(i){if(i==null||!PC.d||!PC.NI)return null;if(PC.dm&&PC.dm.i===i)return PC.dm;var d=PC.d,wk=isWk(CARD.range),nn=wk?newsInWeek(PC.NI,d[i][0]):newsOnDay(PC.NI,d[i][0]),fb=0;if(!nn.length&&PC.kind!=='idx'){var fp=fbPool(PC.tic);nn=wk?newsInWeek(fp,d[i][0]):newsOnDay(fp,d[i][0]);fb=nn.length?1:0}if(!nn.length)return null;var mv0=i?d[i][1]/d[i-1][1]-1:0,pk=(!fb&&PC.kind!=='idx'&&PC.kind!=='cr')?pickNews(nn,PC.tic,mv0,1):{nn:nn,weak:0};PC.dm={i:i,mv:mv0,n:pk.nn[0],nn:pk.nn,day:1,fb:fb,weak:pk.weak};return PC.dm}
 /* под графиком — сама новость дня: заголовок и подробный пересказ; остальные новости дня — свёрнутым списком */
 function storyText(x){return (TEXTS&&TEXTS[x.id])||(x.sum&&x.sum.length?x.sum:null)}
 function pcStory(m){
-  var nn=m.nn||[],main=nn.filter(function(x){return TEXTS&&TEXTS[x.id]})[0]||nn.filter(function(x){return x.sum&&x.sum.join(' ').length>200})[0]||nn.filter(function(x){return x.sum&&x.sum.length})[0]||nn[0];
+  var nn=m.nn||[],main=nn[0];
   var paras=storyText(main)||(main.x?[main.x]:[]),out=[],len=0;
   paras.forEach(function(q){if(len<1100){out.push(len+q.length>1300?q.slice(0,1300-len).replace(/\s+\S*$/,'')+'…':q);len+=q.length}});
   var waiting=false;
   if(!TEXTS){waiting=true;loadTexts().then(function(){if(PC.mk===m)drawPC()})}
   else if(!TEXTA&&!out.length&&main.d<hoursAgo(40)){waiting=true;loadTextsArch().then(function(){if(PC.mk===m)drawPC()})}
   var rest=nn.filter(function(x){return x!==main}).slice(0,6);
-  return '<div class="pcst">'+(m.fb?'<p class="pcwhy"><b>Своих новостей в этот день нет.</b> Причина — рынок и отрасль: ниже новости коллег по отрасли и индекса.</p>':'')+whyLine(nn)+'<a class="pcst-t" href="#markets/news/'+main.id+'">'+esc(main.t)+'</a>'+
+  return '<div class="pcst">'+(m.weak?'<p class="pcwhy"><b>Прямой причины в новостях не нашли.</b> Новостей именно про эту бумагу, подходящих по смыслу и направлению движения, в этот день нет; ниже то, что было рядом, и это может быть не связано с движением.</p>':'')+(m.fb?'<p class="pcwhy"><b>Своих новостей в этот день нет.</b> Причина — рынок и отрасль: ниже новости коллег по отрасли и индекса.</p>':'')+whyLine(nn)+'<a class="pcst-t" href="#markets/news/'+main.id+'">'+esc(main.t)+'</a>'+
     (out.length?out.map(function(q){return '<p>'+esc(q)+'</p>'}).join(''):'<p class="mut">'+(waiting?'Подгружаю подробности…':'Пересказа этой новости нет — подробности по ссылке ниже.')+'</p>')+
     '<p class="pcst-s">'+esc(main.s)+' · '+fmtDT(main.d)+' · <a href="#markets/news/'+main.id+'">читать целиком →</a></p></div>'+
     (rest.length?'<details class="pcmore"><summary>Ещё новости этого дня ('+rest.length+')</summary>'+rest.map(function(x){return '<div class="pcn"><a href="#markets/news/'+x.id+'">'+esc(x.t)+'</a><span class="mut"> · '+esc(x.s)+'</span></div>'}).join('')+'</details>':'');
