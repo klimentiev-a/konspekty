@@ -1869,14 +1869,14 @@ function artLinkify(c,def){
       var gs=start+m.index,ge=gs+m[0].length;
       var code=artCode(full.slice(Math.max(0,gs-60),gs),full.slice(ge,ge+50),def);
       if(!code)continue;
-      var part=refParse(full.slice(Math.max(0,gs-48),gs),full.slice(ge,ge+16));
+      var part=refParse(full.slice(Math.max(0,gs-48),gs),full.slice(ge,ge+16)),ctx=refCtx(full.slice(Math.max(0,gs-260),gs),full.slice(ge,ge+90));
       var seg=m[0],ki=seg.search(/\d/),out=document.createDocumentFragment(),any=false;
       out.appendChild(document.createTextNode(seg.slice(0,ki)));
       var re2=/\(([^)]*)\)|(\d{1,4}(?:\.\d{1,2})?)/g,l2=ki,m2;
       while((m2=re2.exec(seg.slice(ki)))){
         var a=ki+m2.index;
         if(a>l2)out.appendChild(document.createTextNode(seg.slice(l2,a)));
-        if(m2[2]!==undefined&&artHas(code,m2[2])){var an=document.createElement('a');an.className='art';an.href='#';an.setAttribute('data-art',m2[2]);an.setAttribute('data-code',code);if(part)an.setAttribute('data-part',part);an.textContent=m2[2];out.appendChild(an);any=true}
+        if(m2[2]!==undefined&&artHas(code,m2[2])){var an=document.createElement('a');an.className='art';an.href='#';an.setAttribute('data-art',m2[2]);an.setAttribute('data-code',code);if(part)an.setAttribute('data-part',part);else if(ctx)an.setAttribute('data-ctx',ctx);an.textContent=m2[2];out.appendChild(an);any=true}
         else out.appendChild(document.createTextNode(m2[0]));
         l2=a+m2[0].length;
       }
@@ -1983,11 +1983,11 @@ function refParse(pre,post){
   if(!parts&&!pt&&!abz)return '';
   var nums=[];(parts.replace(/\s+/g,'').replace(/и/g,',').split(',')).forEach(function(x){var r=/^(\d+)[–—-](\d+)$/.exec(x);if(r){for(var k=+r[1];k<=+r[2]&&k-r[1]<20;k++)nums.push(k)}else if(/^\d+$/.test(x))nums.push(+x)});
   return 'parts='+nums.join(',')+';pt='+pt+';abz='+abz}
+function isNote(t){return /^(-\s|О выявлении|О признании|Постановление|Определение|См\.|Федеральн|Информация|Примечание|Утратил|Положения)/.test(t)}
 function refPick(a,spec){
   var o={};(spec||'').split(';').forEach(function(x){var k=x.split('=');o[k[0]]=k[1]||''});
   if(!/=/.test(spec||'')&&spec){o={parts:spec,pt:'',abz:''}}   // старый формат: просто номер части
   var ps=(o.parts||'').split(',').filter(Boolean).map(Number),hit={},n=a.p.length;
-  function isNote(t){return /^(О выявлении|О признании|Постановление|Определение|См\.|Федеральн|Информация|Примечание|Утратил|Положения)/.test(t)}
   function blockEnd(i){for(var k=i+1;k<n;k++){if(/^\d+(?:\.\d+)?\.\s/.test(a.p[k])||isNote(a.p[k]))return k}return n}
   function startOf(num){for(var i=0;i<n;i++){if(a.p[i].indexOf(num+'. ')===0)return i}return -1}
   var blocks=[];
@@ -2000,6 +2000,21 @@ function refPick(a,spec){
     if(o.abz){var abs=[];for(var j=i0;j<i1;j++){if(!/^[а-яё0-9.]{1,4}\)\s/i.test(a.p[j])&&!isNote(a.p[j]))abs.push(j)}var t=abs[+o.abz-1];if(t!=null){hit[t]=1;return}}
     for(var i=i0;i<i1;i++)hit[i]=1});
   return hit}
+/* ссылка без части («ст. 808 ГК»): ищем в статье абзац, который по смыслу совпадает с фразой вокруг ссылки */
+var SEM_STOP=/^(стать|статьи|статье|статью|кодекс|закон|только|может|могут|должн|также|когда|если|чтобы|этот|этой|этого|которы|такой|такие|какие|любо|между|после|перед|через|более|менее|можно|нужно|нельз|сверит|ответ|вопрос|задач|решени|иск|суд|суда|истец|ответч|ответс|сторон|случа|право|права|прав)/;
+function semStems(t){var o={};(t.toLowerCase().match(/[а-яё]{4,}/g)||[]).forEach(function(w){var k=w.slice(0,5);if(!SEM_STOP.test(w))o[k]=1});return Object.keys(o)}
+function refCtx(pre,post){var tail=pre.split(/[;\n]|\.\s|:\s/).pop();if(tail.length<30)tail=pre.slice(-170);var h=post.split(/[;\n]|\.\s|\)/)[0];return (tail+' '+h).replace(/\s+/g,' ').trim().slice(-260)}
+function semPick(a,ctx){
+  if(!ctx)return {};var n=a.p.length,bl=[],cur=null;
+  for(var i=0;i<n;i++){var t=a.p[i];if(isNote(t)||/^-\s/.test(t)){cur=null;continue}
+    if(/^\d+(?:\.\d+)?\.\s/.test(t)||/^[а-яё](?:\.\d+)?\)\s/i.test(t)||!cur){cur={i0:i,i1:i+1,t:t};bl.push(cur)}else{cur.i1=i+1;cur.t+=' '+t}}
+  if(bl.length<2)return {};
+  var st=semStems(ctx);if(st.length<2)return {};
+  var df={};bl.forEach(function(b){b.s={};semStems(b.t).forEach(function(k){b.s[k]=1;df[k]=(df[k]||0)+1})});
+  bl.forEach(function(b){b.sc=0;st.forEach(function(k){if(b.s[k])b.sc+=1/df[k]})});
+  bl.sort(function(x,y){return y.sc-x.sc});
+  var b0=bl[0],b1=bl[1];if(b0.sc<1||(b1&&b0.sc<b1.sc*1.4))return {};
+  var hit={};for(var j=b0.i0;j<b0.i1;j++)hit[j]=1;return hit}
 function artOpen(code,n,part,anchor,only){
   if(!artSheet){
     artSheet=document.createElement('div');artSheet.id='artsheet';artSheet.hidden=true;
@@ -2015,7 +2030,7 @@ function artOpen(code,n,part,anchor,only){
   artLoad(code).then(function(L){
     var a=L[n];if(!a)throw 0;
     $('.at',artSheet).textContent='Статья '+n+' '+nm+(a.t?'. '+a.t:'');
-    var hit=part?refPick(a,part):{},first=-1,h='',i,inOn=false;
+    var hit=part?refPick(a,part):semPick(a,anchor&&anchor.getAttribute&&anchor.getAttribute('data-ctx')),first=-1,h='',i,inOn=false;
     for(i=0;i<a.p.length;i++){var on1=!!hit[i];if(on1&&first<0)first=i;if(on1&&!inOn){h+='<div class="on">';inOn=true}if(!on1&&inOn){h+='</div>';inOn=false}h+='<p>'+esc(a.p[i])+'</p>'}
     if(inOn)h+='</div>';b.innerHTML=h;
     var on=$('.on',b);b.scrollTop=on?Math.max(0,on.offsetTop-60):0;artPlace(anchor);
