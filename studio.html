@@ -4,7 +4,7 @@
 <meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="Hub">
 <link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="favicon.svg?v=31" type="image/svg+xml"><link rel="icon" href="icon-192.png?v=31" sizes="192x192"><link rel="apple-touch-icon" href="apple-touch-icon.png?v=31">
 <link rel="apple-touch-startup-image" href="splash/1320x2868.png?v=31" media="(device-width: 440px) and (device-height: 956px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)"><link rel="apple-touch-startup-image" href="splash/1206x2622.png?v=31" media="(device-width: 402px) and (device-height: 874px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)"><link rel="apple-touch-startup-image" href="splash/1290x2796.png?v=31" media="(device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)"><link rel="apple-touch-startup-image" href="splash/1179x2556.png?v=31" media="(device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)"><link rel="apple-touch-startup-image" href="splash/1170x2532.png?v=31" media="(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)"><link rel="apple-touch-startup-image" href="splash/1284x2778.png?v=31" media="(device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)"><link rel="apple-touch-startup-image" href="splash/1242x2688.png?v=31" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)"><link rel="apple-touch-startup-image" href="splash/828x1792.png?v=31" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)"><link rel="apple-touch-startup-image" href="splash/1125x2436.png?v=31" media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)"><link rel="apple-touch-startup-image" href="splash/750x1334.png?v=31" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
-<title>Студия · Hub</title>
+<title>Reel Studio · Hub</title>
 <script>(function(){
 var Z=[0.8,0.9,1,1.1,1.2,1.3,1.45,1.6];
 function g(){try{if(!localStorage.getItem('siteZoomLocal')){localStorage.removeItem('siteZoom');localStorage.setItem('siteZoomLocal','1')}var v=parseFloat(localStorage.getItem('siteZoom'));return v>0?v:1}catch(e){return 1}}
@@ -207,29 +207,82 @@ h1.brand{line-height:0;margin:4px 0 14px}h1.brand .wm{height:clamp(52px,12vw,76p
 .pin.bad input{animation:shake .45s}
 @media (prefers-reduced-motion:reduce){.pin,.pin .sh{transition:none}.pin.bad input{animation:none}}
 </style><style>
-.sw{max-width:1280px;margin:0 auto}
+.sw{--bg:#0a0a10;--p1:#13131d;--p2:#1b1b29;--line:rgba(255,255,255,.1);--surface:#181824;--fg:#f4f4fa;--muted:#9a9ab2;--a1:#ff3d81;--a2:#ff5c93;--g:linear-gradient(135deg,#ff3d81 0%,#ff8a3d 58%,#ffcf4a 100%);--v:#7c5cff;
+ max-width:1320px;margin:0 auto;color:var(--fg);font-family:'Inter','Segoe UI',system-ui,-apple-system,sans-serif}
+html,body{background:#07070c!important}
 .sw [hidden]{display:none!important}
-.sh h1{margin-bottom:4px}
-.sbadge{display:inline-block;margin-left:6px;padding:2px 9px;border:1px solid var(--line);border-radius:99px;font-size:12px;color:var(--muted)}
-.sg{display:grid;grid-template-columns:minmax(300px,420px) minmax(0,1fr);gap:22px;align-items:start;margin-top:14px}
-.sl{position:sticky;top:12px}
-.s-pv{position:relative;background:#000;border-radius:18px;overflow:hidden;border:1px solid var(--line);aspect-ratio:9/16;max-height:calc(100vh - 190px);margin:0 auto}
+.sw *{box-sizing:border-box}
+.s-top{display:flex;align-items:center;gap:12px;padding:6px 0 14px}
+.s-back{flex:none;width:38px;height:38px;border-radius:12px;border:1px solid var(--line);background:var(--p1);color:var(--fg);display:flex;align-items:center;justify-content:center;text-decoration:none}
+.s-back:hover{border-color:var(--a1)}
+.s-brand{display:flex;align-items:center;gap:10px;min-width:0;flex:1}
+.s-logo{flex:none;width:34px;height:34px;border-radius:11px;background:var(--g);display:flex;align-items:center;justify-content:center;box-shadow:0 6px 22px rgba(255,61,129,.35)}
+.s-brand b{font-size:20px;letter-spacing:-.02em;font-weight:800}
+.s-sub{font-size:13px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sbadge{display:none}
+.s-lang{flex:none;display:flex;padding:3px;border-radius:12px;background:var(--p1);border:1px solid var(--line)}
+.s-lang button{border:0;background:none;color:var(--muted);font:700 13px 'Inter',system-ui,sans-serif;padding:7px 12px;border-radius:9px;cursor:pointer}
+html[data-slang=ru] .s-lang [data-l=ru],html[data-slang=en] .s-lang [data-l=en]{background:var(--g);color:#fff}
+.s-steps{display:flex;gap:6px;margin:0 0 16px;overflow-x:auto;scrollbar-width:none;counter-reset:st}
+.s-steps::-webkit-scrollbar{display:none}
+.s-step{flex:1 1 0;min-width:118px;display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:14px;border:1px solid var(--line);background:var(--p1);color:var(--muted);font:700 14px 'Inter',system-ui,sans-serif;cursor:pointer;text-align:left;position:relative}
+.s-step i{flex:none;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-style:normal;font-size:13px;background:var(--p2);color:var(--muted)}
+.s-step.done i{background:rgba(124,92,255,.25);color:#c9bdff}
+.s-step.on{color:#fff;border-color:transparent;background:linear-gradient(var(--p2),var(--p2)) padding-box,var(--g) border-box;border:1.5px solid transparent}
+.s-step.on i{background:var(--g);color:#fff}
+.s-step:hover{border-color:rgba(255,92,147,.5)}
+.s-main{display:grid;grid-template-columns:minmax(300px,400px) minmax(0,1fr);gap:24px;align-items:start}
+.s-stage{position:sticky;top:12px}
+.s-phone{padding:9px;border-radius:40px;background:linear-gradient(160deg,#2a2a3b,#101018);box-shadow:0 30px 70px rgba(0,0,0,.55),0 0 0 1px rgba(255,255,255,.07) inset;margin:0 auto;max-width:max(250px,min(100%,calc((100vh - 270px)*9/16 + 18px)))}
+.s-pv{position:relative;background:#000;border-radius:32px;overflow:hidden;aspect-ratio:9/16}
 .s-pv canvas{display:block;width:100%;height:100%}
-.pplay{position:absolute;inset:0;margin:auto;width:78px;height:78px;border-radius:50%;border:0;background:rgba(0,0,0,.55);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;backdrop-filter:blur(6px);transition:opacity .2s}
+.pplay{position:absolute;inset:0;margin:auto;width:76px;height:76px;border-radius:50%;border:0;background:rgba(0,0,0,.5);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;backdrop-filter:blur(8px);transition:opacity .2s,transform .2s}
+.pplay:hover{transform:scale(1.06)}
 .pplay.off{opacity:0;pointer-events:none}
-.s-tr{display:flex;align-items:center;gap:10px;margin-top:10px}
-.s-tb{flex:none;width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:var(--surface);color:var(--fg);display:flex;align-items:center;justify-content:center;cursor:pointer}
-.s-tb:hover{border-color:var(--a2)}
-.s-tr input[type=range]{flex:1;min-width:0;accent-color:var(--a2)}
-.s-tt{flex:none;font:600 13px 'IBM Plex Sans',system-ui,sans-serif;color:var(--muted);font-variant-numeric:tabular-nums;min-width:84px;text-align:right}
-.s-tl{position:relative;display:flex;gap:3px;margin-top:8px;height:46px}
-.s-tl .s-tk{position:relative;min-width:0;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--muted);font:600 11px 'IBM Plex Sans',system-ui,sans-serif;padding:4px 6px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;cursor:pointer;text-align:left}
-.s-tl .s-tk.on{border-color:var(--a2);color:var(--fg);background:color-mix(in srgb,var(--a2) 14%,var(--surface))}
-.s-tl .s-ph{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--a1);pointer-events:none;border-radius:2px}
-.s-tabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px;scrollbar-width:thin}
-.s-tabs button{flex:none;height:38px;padding:0 15px;border:1px solid var(--line);border-radius:99px;background:var(--surface);color:var(--muted);font:600 14px 'IBM Plex Sans',system-ui,sans-serif;cursor:pointer}
-.s-tabs button.on{background:var(--a2);border-color:var(--a2);color:var(--bg)}
-.s-pane{margin-top:8px}
+.s-ig{position:absolute;inset:0;pointer-events:none;color:#fff;font:600 11px 'Inter',system-ui,sans-serif;overflow:hidden}
+.ig-zone{position:absolute;left:0;right:12%;top:13%;bottom:24%;border:1.5px dashed rgba(80,230,255,.85);box-shadow:0 0 0 999px rgba(5,5,12,.5);border-radius:6px}
+.ig-zone::after{content:'safe';position:absolute;left:6px;top:4px;font:700 9px 'Inter',sans-serif;color:rgba(80,230,255,.95);letter-spacing:.08em;text-transform:uppercase}
+.ig-top{position:absolute;left:0;right:0;top:0;padding:14px 14px 0;display:flex;justify-content:space-between;align-items:center;font-size:16px;font-weight:800;text-shadow:0 1px 6px rgba(0,0,0,.6)}
+.ig-side{position:absolute;right:8px;bottom:19%;display:flex;flex-direction:column;gap:14px;align-items:center}
+.ig-side span{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:10px;text-shadow:0 1px 5px rgba(0,0,0,.7)}
+.ig-side .dots{font-size:22px;line-height:1}
+.ig-bot{position:absolute;left:10px;right:56px;bottom:10px;text-shadow:0 1px 6px rgba(0,0,0,.7)}
+.ig-user{display:flex;align-items:center;gap:7px}
+.ig-av{width:26px;height:26px;border-radius:50%;background:var(--g);border:2px solid #fff;flex:none}
+.ig-user em{font-style:normal;border:1px solid #fff;border-radius:7px;padding:2px 8px;font-size:10px}
+.ig-bot p{margin:7px 0 5px;font-weight:500;opacity:.92}
+.ig-aud{opacity:.85;font-weight:500}
+.s-igbtn{display:flex;align-items:center;gap:8px;margin:12px auto 0;padding:7px 14px;border-radius:99px;border:1px solid var(--line);background:var(--p1);color:var(--muted);font:600 13px 'Inter',system-ui,sans-serif;cursor:pointer}
+.s-igbtn .d{width:30px;height:18px;border-radius:99px;background:var(--p2);position:relative;transition:.2s}
+.s-igbtn .d::after{content:'';position:absolute;left:2px;top:2px;width:14px;height:14px;border-radius:50%;background:#777;transition:.2s}
+.s-igbtn.on{color:var(--fg);border-color:rgba(80,230,255,.6)}
+.s-igbtn.on .d{background:rgba(80,230,255,.35)}
+.s-igbtn.on .d::after{left:14px;background:#50e6ff}
+.s-tr{display:flex;align-items:center;gap:10px;margin-top:14px}
+.s-tb{flex:none;width:42px;height:42px;border-radius:50%;border:0;background:var(--g);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 6px 18px rgba(255,61,129,.35)}
+.s-tr input[type=range]{flex:1;min-width:0;accent-color:var(--a1)}
+.s-tt{flex:none;font:600 13px 'Inter',system-ui,sans-serif;color:var(--muted);font-variant-numeric:tabular-nums;min-width:84px;text-align:right}
+.s-tl{position:relative;display:flex;gap:3px;margin-top:10px;height:44px}
+.s-tl .s-tk{position:relative;min-width:0;border:1px solid var(--line);border-radius:10px;background:var(--p1);color:var(--muted);font:600 11px 'Inter',system-ui,sans-serif;padding:4px 7px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;cursor:pointer;text-align:left}
+.s-tl .s-tk.on{border-color:var(--a1);color:#fff;background:rgba(255,61,129,.16)}
+.s-tl .s-ph{position:absolute;top:-4px;bottom:-4px;width:2px;background:#fff;pointer-events:none;border-radius:2px;box-shadow:0 0 8px #fff}
+.s-panel{background:var(--p1);border:1px solid var(--line);border-radius:22px;padding:16px 18px 18px;min-width:0}
+.s-tabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:10px;scrollbar-width:none;border-bottom:1px solid var(--line);margin-bottom:6px}
+.s-tabs:empty{display:none}
+.s-tabs button{flex:none;height:34px;padding:0 15px;border:0;border-radius:99px;background:var(--p2);color:var(--muted);font:700 13px 'Inter',system-ui,sans-serif;cursor:pointer}
+.s-tabs button.on{background:var(--g);color:#fff}
+.s-pane{margin-top:6px;min-height:320px}
+.s-nav{display:flex;justify-content:space-between;gap:10px;margin-top:20px;padding-top:14px;border-top:1px solid var(--line)}
+.s-lead{font-size:15px;line-height:1.5;margin:2px 0 14px;color:var(--fg)}
+.s-lead b{background:var(--g);-webkit-background-clip:text;background-clip:text;color:transparent}
+.s-ck{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;background:var(--p2);margin:6px 0;font-size:14px}
+.s-ck .ic{flex:none;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;background:rgba(46,204,113,.2);color:#2ecc71}
+.s-ck.bad .ic{background:rgba(255,170,0,.2);color:#ffb020}
+.s-ck span.t{flex:1;min-width:0}
+.s-post{width:100%;min-height:150px}
+.s-hero{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px}
+.s-tpl{position:relative;overflow:hidden;min-height:92px}
+.s-tpl::before{content:'';position:absolute;right:-18px;top:-18px;width:70px;height:70px;border-radius:50%;background:var(--g);opacity:.18}
 .s-pane h3{margin:18px 0 8px;font-size:15px}
 .s-pane h3:first-child{margin-top:4px}
 .s-pane .s-note{font-size:13px;color:var(--muted);line-height:1.5;margin:6px 0}
@@ -272,44 +325,167 @@ h1.brand{line-height:0;margin:4px 0 14px}h1.brand .wm{height:clamp(52px,12vw,76p
 .s-sfx{display:flex;flex-wrap:wrap;gap:6px}
 .s-kbox{padding:10px 12px;border:1px dashed var(--line);border-radius:12px;margin:8px 0}
 .s-res video{width:100%;max-width:300px;border-radius:12px;border:1px solid var(--line);background:#000;display:block;margin:8px 0}
-@media(max-width:860px){
- .sg{grid-template-columns:minmax(0,1fr);gap:10px}
- .sl{position:sticky;top:0;z-index:5;background:var(--bg);padding:6px 0 6px;display:grid;grid-template-columns:34vw minmax(0,1fr);gap:8px 12px;align-items:start;align-content:start;grid-auto-rows:min-content}
- .s-pv{width:34vw;max-height:none;grid-row:1/3;margin:0}
- .s-tr,.s-tl{margin-top:0;grid-column:2;min-width:0}
+.s-pane input[type=range]{accent-color:var(--a1)}
+.s-btn{border-radius:12px;background:var(--p2)}
+.s-btn.pri{background:var(--g);border:0;color:#fff;box-shadow:0 6px 18px rgba(255,61,129,.28)}
+.s-btn.pri:hover{filter:brightness(1.08)}
+.s-btn.big{height:46px;padding:0 22px;font-size:15px}
+.s-chip.on{border-color:var(--a1);background:rgba(255,61,129,.15)}
+.s-prog i{background:var(--g)}
+.s-msg.ok{color:#2ecc71}
+@media(max-width:900px){
+ .s-main{grid-template-columns:minmax(0,1fr);gap:12px}
+ .s-sub{display:none}
+ .s-stage{position:sticky;top:0;z-index:5;background:var(--bg,#0a0a10);background:#07070c;padding:6px 0 8px;display:grid;grid-template-columns:31vw minmax(0,1fr);gap:8px 12px;align-items:start;align-content:start;grid-auto-rows:min-content}
+ .s-phone{grid-row:1/4;width:31vw;max-width:none;padding:4px;border-radius:20px;margin:0}
+ .s-pv{border-radius:16px}
+ .s-tr,.s-tl,.s-igbtn{grid-column:2;min-width:0;margin-top:0}
  .s-tr{flex-wrap:wrap}.s-tt{text-align:left;min-width:0}
- .s-tb{min-width:40px}
- .s-tr input[type=range]{flex:1 1 60%}
- .s-tl{height:auto;flex-wrap:wrap;gap:4px}.s-tl .s-tk{height:30px;flex:1 1 70px!important}
- .s-tl .s-ph{display:none}
- .pplay{width:48px;height:48px}.pplay svg{width:24px;height:24px}
+ .s-tb{width:38px;height:38px}
+ .s-tl{height:auto;flex-wrap:wrap;gap:4px}.s-tl .s-tk{height:28px;flex:1 1 70px!important}.s-tl .s-ph{display:none}
+ .s-igbtn{margin:0;justify-self:start;padding:5px 10px;font-size:12px}
+ .pplay{width:44px;height:44px}.pplay svg{width:22px;height:22px}
+ .s-ig{font-size:6px}.ig-top{font-size:8px;padding:6px 6px 0}.ig-side span{font-size:5px}.ig-side svg{width:10px;height:10px}.ig-av{width:12px;height:12px;border-width:1px}.ig-user em{display:none}.ig-bot{left:5px;right:20px}.ig-top svg{width:10px;height:10px}
+ .s-step{min-width:0;flex:0 0 auto;padding:8px 12px}
+ .s-step span{display:none}.s-step.on span{display:inline}
+ .s-panel{padding:12px 12px 14px;border-radius:18px}
 }
-@media(max-width:520px){.s-fld.s{flex:1 1 70px}}
+@media(max-width:520px){.s-fld.s{flex:1 1 70px}.s-brand b{font-size:17px}.s-nav .s-btn.big{padding:0 16px}}
 </style></head><body>
 <div class="sw" id="sw">
-  <div class="top"><a href="artem.html"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg>Артём</a><div class="tr"><button type="button" class="thm" id="thm" aria-label="Оформление" title="Оформление"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 0 0 16z" fill="currentColor"/></svg></button></div></div>
-  
-  <div class="sh"><h1>Студия</h1><p class="lead">Короткие вертикальные видео: сценарий, персонажи, сцены, музыка и голос. Всё собирается в браузере, проект хранится у тебя на устройстве. <span class="sbadge" id="sbadge"></span></p></div>
-  <div class="sg">
-    <div class="sl" id="sl">
-      <div class="s-pv" id="pv"><canvas id="cv" width="540" height="960"></canvas><button type="button" class="pplay" id="pplay" aria-label="Играть"><svg viewBox="0 0 24 24" width="34" height="34"><path d="M8 5v14l11-7z" fill="currentColor"/></svg></button></div>
+  <header class="s-top">
+    <a class="s-back" href="artem.html" aria-label="Hub"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+    <div class="s-brand"><i class="s-logo"><svg viewBox="0 0 24 24" width="16" height="16"><path d="M8 5v14l11-7z" fill="#fff"/></svg></i><b>Reel Studio</b><span class="s-sub" data-r="вертикальное видео для Instagram" data-e="vertical video for Instagram"></span></div>
+    <span class="sbadge" id="sbadge"></span>
+    <div class="s-lang" role="group" aria-label="Language"><button type="button" data-l="ru">RU</button><button type="button" data-l="en">EN</button></div>
+  </header>
+  <nav class="s-steps" id="steps" aria-label="Steps"></nav>
+  <div class="s-main">
+    <section class="s-stage" id="sl">
+      <div class="s-phone">
+        <div class="s-pv" id="pv"><canvas id="cv" width="540" height="960"></canvas>
+          <div class="s-ig" id="ig" hidden>
+            <div class="ig-zone"></div>
+            <div class="ig-top"><b>Reels</b><svg viewBox="0 0 24 24" width="20" height="20"><path d="M4 8h3l1.5-2h7L17 8h3v11H4z" fill="none" stroke="#fff" stroke-width="1.8" stroke-linejoin="round"/><circle cx="12" cy="13" r="3.2" fill="none" stroke="#fff" stroke-width="1.8"/></svg></div>
+            <div class="ig-side"><span><svg viewBox="0 0 24 24" width="22" height="22"><path d="M12 20s-7-4.4-7-10a4 4 0 017-2.6A4 4 0 0119 10c0 5.6-7 10-7 10z" fill="none" stroke="#fff" stroke-width="1.8" stroke-linejoin="round"/></svg>12,4K</span><span><svg viewBox="0 0 24 24" width="22" height="22"><path d="M5 5h14v10H10l-5 4z" fill="none" stroke="#fff" stroke-width="1.8" stroke-linejoin="round"/></svg>318</span><span><svg viewBox="0 0 24 24" width="22" height="22"><path d="M4 11l16-7-6 16-3-6z" fill="none" stroke="#fff" stroke-width="1.8" stroke-linejoin="round"/></svg>2,1K</span><span class="dots">⋯</span></div>
+            <div class="ig-bot"><div class="ig-user"><i class="ig-av"></i><b>your_account</b><em data-r="Подписаться" data-e="Follow"></em></div><p data-r="Подпись к видео… ещё" data-e="Video caption… more"></p><div class="ig-aud">♪ <span data-r="Оригинальное аудио" data-e="Original audio"></span></div></div>
+          </div>
+          <button type="button" class="pplay" id="pplay" aria-label="Play"><svg viewBox="0 0 24 24" width="34" height="34"><path d="M8 5v14l11-7z" fill="currentColor"/></svg></button>
+        </div>
+      </div>
       <div class="s-tr">
-        <button type="button" class="s-tb" id="bplay" aria-label="Играть / пауза"><svg viewBox="0 0 24 24" width="20" height="20"><path id="bpi" d="M8 5v14l11-7z" fill="currentColor"/></svg></button>
-        <input type="range" id="scrub" min="0" max="1000" value="0" aria-label="Перемотка">
+        <button type="button" class="s-tb" id="bplay" aria-label="Play / pause"><svg viewBox="0 0 24 24" width="20" height="20"><path id="bpi" d="M8 5v14l11-7z" fill="currentColor"/></svg></button>
+        <input type="range" id="scrub" min="0" max="1000" value="0" aria-label="Seek">
         <span class="s-tt" id="ttime">0:00 / 0:00</span>
       </div>
-      <div class="s-tl" id="tl" aria-label="Сцены"></div>
-    </div>
-    <div class="sr">
+      <div class="s-tl" id="tl" aria-label="Scenes"></div>
+      <button type="button" class="s-igbtn" id="igbtn"><span class="d"></span><span data-r="Рамка Instagram" data-e="Instagram frame"></span></button>
+    </section>
+    <section class="s-panel">
       <div class="s-tabs" id="tabs" role="tablist"></div>
       <div class="s-pane" id="pane"></div>
-    </div>
+      <div class="s-nav" id="nav"></div>
+    </section>
   </div>
 </div>
 <script>
+/* Студия: язык интерфейса RU / EN. Словарь RU→EN, перевод готового DOM, перевод содержимого проекта */
+(function (G) {
+'use strict';
+const EN = {
+'с':'s','Сценарий':'Script','Сцены':'Scenes','Персонажи':'Characters','Тема и HUD':'Theme & HUD','Голос':'Voice','Звук':'Sound','Экспорт':'Export',
+'напряжённый, как тревожный репортаж':'tense, like a breaking-news report','русский':'Russian','Придумать сценарий с Claude':'Write a script with Claude',
+'Опиши тему — Claude соберёт сцены, персонажей, фразы, звуки и счётчики. Нужен твой ключ Claude API: он хранится только в этом браузере и уходит только на api.anthropic.com.':'Describe the topic and Claude builds scenes, characters, captions, sounds and counters. Needs your Claude API key: it stays in this browser and is sent only to api.anthropic.com.',
+'Ключ Claude API':'Claude API key','О чём видео':'What is the video about',
+'Например: за 47 минут до ядерного удара ты узнаёшь, что в бункере 12 мест, а людей 31':'e.g. 47 minutes before the strike you learn the bunker has 12 places and 31 people',
+'Тон':'Tone','познавательный, с фактами и цифрами':'educational, with facts and numbers','смешной, с абсурдным поворотом':'funny, with an absurd twist','хоррор, нарастающий страх':'horror, rising dread','мотивационный, энергичный':'motivational, energetic','драма с неожиданной развязкой':'drama with a twist ending',
+'Длина, с':'Length, s','Сцен':'Scenes','Язык':'Language','Счётчики (HUD)':'Counters (HUD)','Пожелания (необязательно)':'Wishes (optional)','герой — девушка, финал с вопросом, больше цифр':'heroine is a girl, ending with a question, more numbers','Модель':'Model','Сгенерировать':'Generate','Напиши тему':'Write a topic',
+'Шаблоны':'Templates','Тревога, очередь, люк, 30 с':'Alarm, queue, hatch, 30 s','Переписка и дверь, 18 с':'Chat and a door, 18 s','Формула и цифры, 18 с':'Formula and numbers, 18 s','Одна сцена':'One scene',
+'Проект':'Project','Название':'Title','Это не файл проекта Студии':'This is not a Studio project file','Скачать проект (.json)':'Download project (.json)','Открыть проект':'Open project',
+'Нажми на сцену, чтобы править. Время субтитров, предметов и звуков — в секундах от начала сцены.':'Tap a scene to edit it. Times of captions, props and sounds are in seconds from the scene start.',
+'Копия':'Copy','+ Сцена':'+ Scene','Длит., с':'Dur., s','Фон':'Background','Зум с':'Zoom from','Зум до':'Zoom to','Эффекты':'Effects','Персонажи в сцене':'Characters in scene','Кто':'Who','Действие':'Action','Эмоция':'Emotion','Размер':'Size','Идёт к X':'Walks to X','Входит, с':'Enters, s','Отразить':'Flip','+ Персонаж':'+ Character',
+'Предметы на экране':'On-screen props','Что':'What','Масштаб':'Scale','С, с':'From, s','Длит.':'Dur.','Эмодзи':'Emoji','Текст':'Text','Вторая строка':'Second line','Иконка':'Icon','От':'From','До':'To','За, с':'Over, s','Подпись числа':'Number label','Цвет':'Color',
+'Сообщения: «я: …» или «он: …», по строке':'Messages: “me: …” or “them: …”, one per line','Пауза между, с':'Pause between, s','+ Предмет':'+ Prop','ТЕКСТ':'TEXT',
+'Субтитры и голос':'Captions & voice','Слова в *звёздочках* выделяются цветом. Эти же фразы озвучивает нейроголос.':'Words in *asterisks* get the highlight color. The same lines are read by the AI voice.',
+'Фраза ':'Line ','+ Фраза':'+ Line','НОВАЯ *ФРАЗА*':'NEW *LINE*','Разложить по сцене поровну':'Spread evenly over the scene','Звуки сцены':'Scene sounds','Громк.':'Vol.','+ Звук':'+ Sound',
+'Персонаж':'Character','+ Новый':'+ New','Персонаж ':'Character ','Удалить':'Delete','Имя':'Name','Причёска':'Hair style','Аксессуар':'Accessory','Одежда':'Hoodie','Брюки':'Pants','Волосы':'Hair','Кожа':'Skin','Анимация (показ)':'Animation (preview)','Эмоция (показ)':'Emotion (preview)','Телефон в руке':'Phone in hand','Случайный вид':'Randomize','Палитра':'Palette',
+'Субтитры':'Captions','Высота 0–1':'Height 0–1','Цвет выделения':'Highlight color','Виньетка':'Vignette','HUD: плашки и полоса':'HUD: plates and bar',
+'Значения меняются по ключевым точкам «секунда:значение» на всём видео. Время — формат мм:сс.':'Values change along keypoints “second:value” across the whole video. Time uses the mm:ss format.',
+'Показывать HUD':'Show HUD','+ Плашка ':'+ Plate ','МЕТКА':'LABEL','Подпись ':'Label ','Формат':'Format','Число':'Number','Время мм:сс':'Time mm:ss','Суффикс':'Suffix','Точки (сек:значение, через запятую)':'Points (sec:value, comma-separated)','+ Полоса':'+ Bar','ПОЛОСА':'BAR','Подпись полосы':'Bar label','Максимум':'Maximum','Отметка':'Mark','Точки (сек:значение)':'Points (sec:value)',
+'Нейроголос озвучивает субтитры. Нужен ключ сервиса: он хранится только в этом браузере и уходит только в сам сервис. Каждая фраза заказывается один раз и кэшируется на устройстве. Услуга платная по тарифу сервиса.':'An AI voice reads the captions. Needs a service key: it is stored only in this browser and sent only to the service. Each line is ordered once and cached on your device. The service is paid per its own plan.',
+'Озвучивать ролик':'Voice the video','Сервис':'Service','ключ ElevenLabs':'ElevenLabs key','Ключ ':'Key ','Манера речи (только gpt-4o-mini-tts)':'Delivery style (gpt-4o-mini-tts only)','Говори тревожно, быстро, как диктор новостей':'Speak anxiously and fast, like a news anchor','Голос не выбран':'No voice selected','Загрузить мои голоса':'Load my voices','Загружаю…':'Loading…','или вставь ID голоса':'or paste a voice ID','Скорость':'Speed','Проба голоса':'Voice test','Синтез…':'Synthesizing…','Через три минуты дверь закроется сама.':'In three minutes the door will close by itself.','Играет':'Playing',
+'Озвучить весь ролик и подогнать тайминги':'Voice the whole video and fit the timing','Очистить кэш озвучки':'Clear voice cache','Кэш очищен':'Cache cleared',
+'Музыка':'Music','Стиль':'Style','Громкость 0–1':'Volume 0–1','Приглушать под голос':'Duck under voice','▶ Послушать стиль':'▶ Preview style','■ Стоп':'■ Stop','Библиотека звуков':'Sound library',
+'Нажми, чтобы послушать. Добавлять в сцену — во вкладке «Сцены», блок «Звуки сцены».':'Tap to listen. Add them to a scene in the “Scenes” step, block “Scene sounds”.',
+'Запись идёт в реальном времени: ролик проигрывается и записывается вместе со звуком, поэтому не сворачивай вкладку, пока идёт запись. Chrome и Edge дают MP4 или WebM; Safari — MP4.':'Recording runs in real time: the video plays and is recorded with sound, so keep this tab open while it runs. Chrome and Edge give MP4 or WebM; Safari gives MP4.',
+'540×960 (быстро, лёгкий)':'540×960 (fast, light)','720×1280 (по умолчанию)':'720×1280 (default)','1080×1920 (максимум)':'1080×1920 (maximum)','Записать видео':'Record video','Запись… ':'Recording… ','Готово':'Done','Сохранить текущий кадр (PNG)':'Save current frame (PNG)','Этот браузер не умеет записывать видео':'This browser cannot record video','Ошибка записи':'Recording error',
+'проект сохраняется в браузере':'project is saved in your browser',
+'Герой':'Hero','Бункер за 30 секунд':'Bunker in 30 seconds','ДО УДАРА':'UNTIL IMPACT','МЕСТ В УБЕЖИЩЕ':'PLACES IN SHELTER','ЛЮДЕЙ':'PEOPLE','Сосед':'Neighbor','Ночь, сигнал':'Night, alert','*3:07* НОЧИ':'*3:07* AM','ПРИШЁЛ СИГНАЛ *ТРЕВОГИ*':'AN *ALERT* ARRIVED','ДО УДАРА — *47 МИНУТ*':'IMPACT IN *47 MINUTES*',
+'Бег по коридору':'Running down the hall','В ПОДВАЛЕ ЕСТЬ *УБЕЖИЩЕ*':'THE BASEMENT HAS A *SHELTER*','ОДНО НА ВЕСЬ ДОМ':'ONE FOR THE WHOLE BUILDING','И БЕЖИТ ТУДА *ВСЕ*':'AND *EVERYONE* RUNS THERE','Очередь':'The queue','ЛЮДЕЙ У ДВЕРИ':'PEOPLE AT THE DOOR','МЕСТ — *12*':'PLACES — *12*','ЛЮДЕЙ — *31*':'PEOPLE — *31*','ТЫ — *ТРИНАДЦАТЫЙ*':'YOU ARE *THIRTEENTH*',
+'Запас':'Supplies','ВОДА':'WATER','3 дня':'3 days','ЕДА':'FOOD','ФИЛЬТР':'FILTER','1 шт':'1 pc','ВНУТРИ ЗАПАС НА *3 ДНЯ*':'INSIDE: SUPPLIES FOR *3 DAYS*','ВОДА. ЕДА. *ФИЛЬТР*':'WATER. FOOD. *FILTER*','НА *12* ЧЕЛОВЕК':'FOR *12* PEOPLE',
+'Люк':'The hatch','ДВЕРЬ ЗАКРОЕТСЯ':'THE DOOR WILL CLOSE','ДВЕРЬ ЗАКРОЕТСЯ *САМА*':'THE DOOR CLOSES *BY ITSELF*','ЧЕРЕЗ *3 МИНУТЫ*':'IN *3 MINUTES*','ВНУТРИ — ТОЛЬКО *12*':'INSIDE: ONLY *12*','Выбор':'The choice','*ЛИШНИЙ* — ТЫ':'YOU ARE THE *EXTRA ONE*','ЧТО *ДЕЛАЕШЬ?*':'WHAT DO YOU *DO?*',
+'Жуткая переписка':'Creepy chat','Лена':'Lena','Ночь':'Night','НОЧЬЮ ПРИШЛО *СООБЩЕНИЕ*':'A *MESSAGE* CAME AT NIGHT','ОТ ЧЕЛОВЕКА, КОТОРОГО *НЕТ*':'FROM SOMEONE WHO *DOESN’T EXIST*','Чат':'Chat','Ты дома?':'Are you home?','Кто это?':'Who is this?','Не включай свет':'Don’t turn on the light','Я за твоей дверью':'I’m behind your door','ОН ЗНАЛ, ЧТО Я *ОДНА*':'HE KNEW I WAS *ALONE*','СВЕТ ВЫКЛЮЧИЛСЯ *САМ*':'THE LIGHT WENT OUT *BY ITSELF*','Дверь':'The door','ЗА ДВЕРЬЮ *ДЫШАЛИ*':'SOMEONE *BREATHED* BEHIND IT','И ЭТО БЫЛО *УТРОМ*':'AND IT WAS *MORNING*',
+'Сложный процент':'Compound interest','ВЗНОС В МЕСЯЦ':'MONTHLY DEPOSIT','ЛЕТ':'YEARS','КАПИТАЛ, ТЫС ₽':'CAPITAL, K ₽','Инвестор':'Investor','Идея':'Idea','10 000 ₽ В МЕСЯЦ *30 ЛЕТ*':'10,000 ₽ A MONTH FOR *30 YEARS*','ПРИ *10%* ГОДОВЫХ':'AT *10%* A YEAR','Формула':'Formula',' тыс ₽':'k ₽','ИТОГО':'TOTAL','ДЕНЬГИ РАСТУТ *НА ДЕНЬГИ*':'MONEY GROWS *ON MONEY*','ВЛОЖИЛ 3,6 МЛН — ПОЛУЧИЛ *22,8*':'PUT IN 3.6M — GOT *22.8*','Вывод':'Takeaway','ГЛАВНОЕ — *ВРЕМЯ*':'WHAT MATTERS: *TIME*','НАЧНИ *СЕГОДНЯ*':'START *TODAY*',
+'Новое видео':'New video','Сцена 1':'Scene 1','ТВОЙ *ТЕКСТ* ЗДЕСЬ':'YOUR *TEXT* HERE','Бункер: 30 секунд':'Bunker: 30 seconds','Финансы: сложный процент':'Finance: compound interest','Пустой проект':'Blank project','Новая сцена':'New scene','НОВЫЙ *ТЕКСТ*':'NEW *TEXT*',
+'Сигнал тревоги':'Alarm','Сирена':'Siren','Шаги':'Footsteps','Сердцебиение':'Heartbeat','Свист':'Whoosh','Удар':'Hit','Тиканье':'Ticking','Нарастание':'Riser','Скрип двери':'Door creak','Гул толпы':'Crowd murmur','Счётчик Гейгера':'Geiger counter','Писк':'Beep','Взрыв':'Explosion','Уведомление':'Notification','Глитч':'Glitch','Печать':'Stamp','Монеты':'Coins','Победа':'Win','Провал':'Fail','Ветер':'Wind',
+'Без музыки':'No music','Напряжение':'Tension','Спокойная':'Calm','Экшен':'Action','Грустная':'Sad','Тайна':'Mystery','Бункер':'Bunker','Хоррор':'Horror','Финансы':'Finance','Космос':'Space','Неон':'Neon','Светлая':'Light',
+'Короткие':'Short','Ёжик':'Spiky','Длинные':'Long','Пучок':'Bun','Кепка':'Cap','Лысый':'Bald','Кудри':'Curly','Нет':'None','Очки':'Glasses','Маска':'Mask','Каска':'Helmet','Наушники':'Headphones','Борода':'Beard','Галстук':'Tie','Корона':'Crown',
+'Стоит':'Standing','Говорит':'Talking','Идёт':'Walking','Бежит':'Running','Трясётся':'Shaking','Показывает':'Pointing','Машет':'Waving','Сидит':'Sitting','Падает':'Falling','Спокоен':'Calm','Испуган':'Scared','Шок':'Shock','Рад':'Happy','Зол':'Angry','Грустит':'Sad','Спит':'Asleep',
+'УБЕЖИЩЕ':'SHELTER','Градиент':'Gradient','Спальня ночью':'Bedroom at night','Коридор':'Corridor','Зал с толпой':'Crowded hall','Сетка':'Grid','Люк убежища':'Shelter hatch','Дверной проём':'Doorway','Город':'City','Улица':'Street','Офис':'Office','Лаборатория':'Lab','Лес':'Forest',
+'Плашка':'Popup','Карточки':'Cards','Крупный текст':'Big text','Таймер':'Timer','Счётчик':'Counter','Табличка':'Sign','Полоса':'Bar','Стрелка':'Arrow','ДО ЗАКРЫТИЯ':'UNTIL CLOSING',
+'Тряска камеры':'Camera shake','Вспышки':'Flashes','Красная пульсация':'Red pulse','Мигалка':'Beacon','Дождь':'Rain','Снег':'Snow','Пыль':'Dust','Строки ТВ':'TV scanlines','Зерно':'Grain','Затемнение':'Darkening','Ударная волна':'Shockwave',
+'Нет ключа ElevenLabs':'No ElevenLabs key','Нет ключа OpenAI':'No OpenAI key','Не выбран голос ElevenLabs':'No ElevenLabs voice selected','Нет ключа Claude API (вкладка «Сценарий»)':'No Claude API key (step “Idea”)','Запрос к Claude…':'Asking Claude…','Ответ без JSON':'Reply has no JSON','В ответе нет сцен':'The reply has no scenes','Видео':'Video','Сцена ':'Scene ',
+/* новый интерфейс */
+'Идея ':'Idea ','Вид':'Look','Выпуск':'Publish','Музыка и звуки':'Music & sounds','Рамка Instagram':'Instagram frame','Чистый кадр':'Clean frame',
+'От идеи до готового Reels: пять шагов, сверху вниз.':'From idea to finished Reel in five steps.','Назад':'Back','Дальше':'Next','Скрыть подсказки':'Hide tips'
+};
+let lang = 'ru'; try { lang = localStorage.getItem('studio:lang') || ((navigator.language || '').toLowerCase().startsWith('ru') ? 'ru' : 'en'); } catch (e) {}
+const RX = [
+ [/^Готово: (\d+) сцен\. Нажми ▶ и поправь во вкладках «Сцены», «Персонажи»\.$/, 'Done: $1 scenes. Press ▶ and tweak them in the “Scenes” step.'],
+ [/^Голосов: (\d+)$/, 'Voices: $1'], [/^Запись… (\d+)%$/, 'Recording… $1%'], [/^Скачать \.(\w+) \((.+) МБ\)$/, 'Download .$1 ($2 MB)'],
+ [/^Готово\. Длительность сцен подогнана под речь, ролик ([\d.,]+) с\.$/, 'Done. Scene lengths fit the speech; the video is $1 s.'],
+ [/^(\d+) из (\d+)$/, '$1 of $2'], [/^Сцена (\d+)$/, 'Scene $1'], [/^Фраза (\d+)$/, 'Line $1'], [/^Персонаж (\d+)$/, 'Character $1'], [/^Ключ (.+)$/, 'Key $1'],
+ [/^Claude API: (.*)$/, 'Claude API: $1'], [/^Не удалось разобрать JSON: (.*)$/, 'Could not parse JSON: $1'], [/^Удалить сцену «(.*)»\?$/, 'Delete scene “$1”?'],
+ [/^Заменить текущий проект шаблоном «(.*)»\?$/, 'Replace the current project with the template “$1”?'], [/^Удалить персонажа\? Он пропадёт из сцен\.$/, 'Delete the character? It will disappear from the scenes.'],
+ [/^Подпись (\d+)$/, 'Label $1'], [/^Карточки: иконка \| подпись \| значение \(иконки: (.*)$/, 'Cards: icon | label | value (icons: $1'],
+ [/^(\d+)\. (.*)$/, null]
+];
+let rev = null;
+function revMap() { if (!rev) { rev = {}; for (const [k, v] of Object.entries(EN)) if (!(v in rev)) rev[v] = k; } return rev; }
+function T(s) {
+  if (lang !== 'en' || typeof s !== 'string') return s;
+  if (EN[s] != null) return EN[s];
+  for (const [re, to] of RX) { if (to && re.test(s)) return s.replace(re, to); }
+  let q; if ((q = /^(\d+)\. (.*) · ([\d.,]+) с$/.exec(s))) return q[1] + '. ' + T(q[2]) + ' · ' + q[3] + ' s'; if ((q = /^▶ (.+)$/.exec(s))) return '▶ ' + T(q[1]);
+  const m = /^(\d+)\. (.+)$/.exec(s); if (m && EN[m[2]] != null) return m[1] + '. ' + EN[m[2]];
+  return s;
+}
+function tt(ru, en) { return lang === 'en' ? en : ru; }
+function deep(o, f) { if (typeof o === 'string') return f(o); if (Array.isArray(o)) return o.map(x => deep(x, f)); if (o && typeof o === 'object') { const r = {}; for (const k of Object.keys(o)) r[k] = deep(o[k], f); return r; } return o; }
+/* содержимое проекта: строки по словарю в нужную сторону (для шаблонов и смены языка) */
+function mapProject(P, to) { const m = to === 'en' ? EN : revMap(); const skip = k => k === 'bg' || k === 'type' || k === 'c' || k === 'n' || k === 'theme' || k === 'style' || k === 'fmt' || k === 'icon' || k === 'anim' || k === 'expr' || k === 'who' || k === 'hairStyle' || k === 'acc' || k === 'hold' || k === 'provider' || k === 'voiceId' || k === 'model' || k === 'hood' || k === 'hair' || k === 'skin' || k === 'pants' || k === 'color' || k === 'hl';
+  const w = (o, key) => { if (typeof o === 'string') return !skip(key) && m[o] != null ? m[o] : o; if (Array.isArray(o)) return o.map(x => w(x, key)); if (o && typeof o === 'object') { const r = {}; for (const k of Object.keys(o)) r[k] = w(o[k], k); return r; } return o; };
+  return w(P, ''); }
+/* DOM */
+function trNode(n) {
+  if (lang !== 'en') return;
+  if (n.nodeType === 3) { const v = n.nodeValue, t = v.trim(); if (!t) return; const r = T(t); if (r !== t) n.nodeValue = v.replace(t, r); return; }
+  if (n.nodeType !== 1) return; if (/^(SCRIPT|STYLE|CANVAS|TEXTAREA)$/.test(n.tagName)) { if (n.tagName === 'TEXTAREA') for (const a of ['placeholder']) { const x = n.getAttribute(a); if (x) n.setAttribute(a, T(x)); } return; }
+  for (const a of ['placeholder', 'title', 'aria-label']) { const x = n.getAttribute && n.getAttribute(a); if (x) { const r = T(x); if (r !== x) n.setAttribute(a, r); } }
+  for (const c of Array.from(n.childNodes)) trNode(c);
+}
+let mo = null;
+function watch(root) { if (mo) mo.disconnect(); mo = new MutationObserver(ms => { mo.disconnect(); for (const m of ms) { if (m.type === 'characterData') trNode(m.target); else m.addedNodes.forEach(trNode); } mo.observe(root, { childList: true, characterData: true, subtree: true }); }); mo.observe(root, { childList: true, characterData: true, subtree: true }); }
+function setLang(l) { lang = l; try { localStorage.setItem('studio:lang', l); } catch (e) {} document.documentElement.setAttribute('data-slang', l); }
+G.StudioI18n = { T, tt, mapProject, deep, setLang, watch, trNode, get lang() { return lang; }, EN };
+G.StudioT = T;
+document.documentElement.setAttribute('data-slang', lang);
+})(window);
+
 /* Студия: движок рисования. draw(ctx, проект, t) — чистая функция времени: один и тот же кадр при предпросмотре и записи. */
 (function (G) {
 'use strict';
+const TT = s => (G.StudioT ? G.StudioT(s) : s);
 const W = 1080, H = 1920;
 const FONT = "'Inter','Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif";
 const TAU = Math.PI * 2;
@@ -436,7 +612,7 @@ const BG = {
     ell(c, cx, cy, 440, 440, '#2a3042', '#475069', 14); ell(c, cx, cy, 380, 380, '#1a1f2e', '#323a52', 8);
     for (let i = 0; i < 12; i++) { const a = i * TAU / 12; ell(c, cx + Math.cos(a) * 410, cy + Math.sin(a) * 410, 14, 14, '#566082'); }
     c.save(); c.translate(cx, cy); c.rotate(Math.sin(t * .8) * .15); ell(c, 0, 0, 90, 90, '#3a4258', '#586284', 10); for (let i = 0; i < 3; i++) { c.rotate(TAU / 3); fillRR(c, -14, -250, 28, 250, 12, '#586284'); ell(c, 0, -250, 28, 28, '#6e7a9e'); } c.restore();
-    fillRR(c, cx - 150, cy + 470, 300, 56, 12, '#e53935'); txt(c, 'УБЕЖИЩЕ', cx, cy + 498, 34, '#fff'); glow(c, cx, cy, 700, 'rgba(229,57,53,.18)', .5 + .3 * Math.sin(t * 5));
+    fillRR(c, cx - 150, cy + 470, 300, 56, 12, '#e53935'); txt(c, TT('УБЕЖИЩЕ'), cx, cy + 498, 34, '#fff'); glow(c, cx, cy, 700, 'rgba(229,57,53,.18)', .5 + .3 * Math.sin(t * 5));
   },
   doorway(c, t, p) { BG.gradient(c, t, { sky: [p.wall, '#05060a'] }); fillRR(c, 270, 380, 540, 1000, 18, '#05060a', '#40486a', 14); const g = c.createLinearGradient(0, 400, 0, 1380); g.addColorStop(0, '#fff6c8'); g.addColorStop(1, '#ffb74d'); fillRR(c, 290, 400, 500, 960, 8, g); glow(c, 540, 880, 600, 'rgba(255,220,140,.5)', .6); c.fillStyle = p.floor; c.fillRect(0, 1380, W, 540); },
   city(c, t, p) {
@@ -491,7 +667,7 @@ function drawProp(c, p, t, th, sc) {
     case 'popup': { c.font = `900 56px ${FONT}`; const w = Math.max(520, Math.min(900, c.measureText(T).width + 120)), h = T2 ? 200 : 130; glow(c, 0, 0, 480, col, .25); fillRR(c, -w / 2, -h / 2, w, h, 28, 'rgba(8,11,22,.94)', col, 6); txt(c, T, 0, T2 ? -34 : 0, 56, th.ink); if (T2) txt(c, T2, 0, 42, 38, col, { w: 800 }); break; }
     case 'cards': { const it = p.items || [], n = it.length || 1, cw = Math.min(300, (940 - (n - 1) * 24) / n), tw = n * cw + (n - 1) * 24; it.forEach((o, i) => { const bx = -tw / 2 + i * (cw + 24), k = easeBack((lt - i * .12) / .3); c.save(); c.translate(bx + cw / 2, 0); c.scale(.6 + .4 * k, .6 + .4 * k); c.globalAlpha = clamp(k); fillRR(c, -cw / 2, -150, cw, 300, 26, 'rgba(8,11,22,.92)', o.color || col, 5); icon(c, o.icon || 'star', 0, -50, cw * .22, o.color); txt(c, o.label || '', 0, 70, 32, th.ink, { w: 800 }); if (o.value) txt(c, o.value, 0, 118, 44, o.color || th.hl); c.restore(); }); break; }
     case 'text': { c.font = `900 ${p.size || 110}px ${FONT}`; const ls = wrapLines(c, T, 940); ls.forEach((l, i) => txt(c, l, 0, (i - (ls.length - 1) / 2) * (p.size || 110) * 1.1, p.size || 110, p.color || th.ink, { stroke: '#000', sw: 14 })); break; }
-    case 'timer': { const v = Math.max(0, lerp(p.from == null ? 180 : p.from, p.to == null ? 0 : p.to, lt / Math.max(.1, Math.min(dur, p.span || dur)))) | 0; fillRR(c, -270, -110, 540, 220, 30, 'rgba(8,11,22,.94)', col, 6); txt(c, T || 'ДО ЗАКРЫТИЯ', 0, -66, 34, '#c8cde0', { w: 800 }); txt(c, String((v / 60) | 0).padStart(2, '0') + ':' + String(v % 60).padStart(2, '0'), 0, 20, 124, (v < 30 && ((lt * 4) | 0) % 2) ? '#ff8a80' : col); break; }
+    case 'timer': { const v = Math.max(0, lerp(p.from == null ? 180 : p.from, p.to == null ? 0 : p.to, lt / Math.max(.1, Math.min(dur, p.span || dur)))) | 0; fillRR(c, -270, -110, 540, 220, 30, 'rgba(8,11,22,.94)', col, 6); txt(c, T || TT('ДО ЗАКРЫТИЯ'), 0, -66, 34, '#c8cde0', { w: 800 }); txt(c, String((v / 60) | 0).padStart(2, '0') + ':' + String(v % 60).padStart(2, '0'), 0, 20, 124, (v < 30 && ((lt * 4) | 0) % 2) ? '#ff8a80' : col); break; }
     case 'counter': { const v = Math.round(lerp(p.from || 0, p.to == null ? 100 : p.to, easeOut(lt / (p.span || 1.6)))); txt(c, (p.prefix || '') + v.toLocaleString('ru-RU') + (p.suffix || ''), 0, 0, p.size || 190, col, { stroke: '#000', sw: 18 }); if (T) txt(c, T, 0, (p.size || 190) * .65, 50, th.ink, { stroke: '#000', sw: 10 }); break; }
     case 'chat': { const ms = p.items || []; let yy = -(ms.length * 130) / 2; ms.forEach((m, i) => { const k = easeBack((lt - i * (p.gap || .9)) / .3); if (k <= 0) { yy += 130; return; } const me = m.who === 'me'; c.font = `700 40px ${FONT}`; const w = Math.min(760, c.measureText(m.text).width + 70); c.save(); c.globalAlpha = clamp(k); c.translate(me ? 440 : -440, yy); c.scale(.7 + .3 * k, .7 + .3 * k); fillRR(c, me ? -w : 0, -52, w, 104, 40, me ? '#2f7cf6' : '#2a2f40'); txt(c, m.text, me ? -w / 2 : w / 2, 0, 40, '#fff', { w: 700 }); c.restore(); yy += 130; }); break; }
     case 'sign': { fillRR(c, -20, 40, 40, 360, 8, '#4b4f60'); c.font = `900 70px ${FONT}`; const w = c.measureText(T).width + 110; fillRR(c, -w / 2, -80, w, 150, 18, col, '#fff', 8); txt(c, T, 0, -5, 70, '#fff'); break; }
@@ -596,7 +772,7 @@ T.bunker = () => ({ v: 1, title: 'Бункер за 30 секунд', theme: 'bu
     { label: 'МЕСТ В УБЕЖИЩЕ', fmt: 'num', keys: [[0, 12]], color: '#2ecc71' }],
     bar: { label: 'ЛЮДЕЙ', max: 31, mark: 12, keys: [[0, 1], [4.5, 1], [9, 9], [11.2, 31], [30, 31]] } },
   chars: { hero, neighbor: { name: 'Сосед', hood: '#ef6c00', hair: '#222', skin: '#e0a878', pants: '#37474f', hairStyle: 'bald', acc: 'beard' } },
-  cap: { size: 104, y: .8 }, music: { style: 'tension', vol: .55 }, voice: { on: false, provider: 'elevenlabs', voiceId: '', model: '', speed: 1, key: '' },
+  cap: { size: 104, y: .66 }, music: { style: 'tension', vol: .55 }, voice: { on: false, provider: 'elevenlabs', voiceId: '', model: '', speed: 1, key: '' },
   scenes: [
     { name: 'Ночь, сигнал', dur: 4.5, bg: 'bedroom', zoom: [1, 1.12], fx: ['redpulse', 'dust'],
       cast: [{ c: 'hero', x: .38, y: .86, s: .95, anim: 'shake', expr: 'shock' }],
@@ -622,7 +798,7 @@ T.bunker = () => ({ v: 1, title: 'Бункер за 30 секунд', theme: 'bu
   ] });
 T.chat = () => ({ v: 1, title: 'Жуткая переписка', theme: 'horror', vignette: true,
   hud: { on: false, plates: [], bar: null }, chars: { hero: { name: 'Лена', hood: '#7e57c2', hair: '#2b1a12', skin: '#f3c9a5', pants: '#263042', hairStyle: 'long', acc: 'none', hold: 'phone' } },
-  cap: { size: 100, y: .8 }, music: { style: 'mystery', vol: .5 }, voice: { on: false, provider: 'elevenlabs', voiceId: '', model: '', speed: 1, key: '' },
+  cap: { size: 100, y: .66 }, music: { style: 'mystery', vol: .5 }, voice: { on: false, provider: 'elevenlabs', voiceId: '', model: '', speed: 1, key: '' },
   scenes: [
     { name: 'Ночь', dur: 5, bg: 'bedroom', zoom: [1, 1.1], fx: ['noise', 'dust'], cast: [{ c: 'hero', x: .4, y: .9, s: 1, anim: 'idle', expr: 'calm' }], caps: [cap(0, 2.4, 'НОЧЬЮ ПРИШЛО *СООБЩЕНИЕ*'), cap(2.4, 2.4, 'ОТ ЧЕЛОВЕКА, КОТОРОГО *НЕТ*')], sfx: [{ n: 'ding', at: 1 }, { n: 'heartbeat', at: 2 }] },
     { name: 'Чат', dur: 8, bg: 'gradient', zoom: [1, 1.05], fx: ['glitch', 'scan'], props: [{ type: 'chat', y: .38, items: [{ who: 'them', text: 'Ты дома?' }, { who: 'me', text: 'Кто это?' }, { who: 'them', text: 'Не включай свет' }, { who: 'them', text: 'Я за твоей дверью' }], gap: 1.6, at: .3 }], caps: [cap(0, 3.5, 'ОН ЗНАЛ, ЧТО Я *ОДНА*'), cap(3.5, 4, 'СВЕТ ВЫКЛЮЧИЛСЯ *САМ*')], sfx: [{ n: 'ding', at: .4 }, { n: 'ding', at: 2 }, { n: 'ding', at: 3.6 }, { n: 'glitch', at: 5 }, { n: 'riser', at: 4, dur: 4 }] },
@@ -631,15 +807,16 @@ T.chat = () => ({ v: 1, title: 'Жуткая переписка', theme: 'horror
 T.finance = () => ({ v: 1, title: 'Сложный процент', theme: 'finance', vignette: true,
   hud: { on: true, plates: [{ label: 'ВЗНОС В МЕСЯЦ', fmt: 'num', suffix: ' ₽', keys: [[0, 10000]], color: '#26c281' }, { label: 'ЛЕТ', fmt: 'num', keys: [[0, 0], [20, 30]], color: '#ffd600' }], bar: { label: 'КАПИТАЛ, ТЫС ₽', max: 20000, keys: [[0, 0], [20, 17000]] } },
   chars: { hero: { name: 'Инвестор', hood: '#1e88e5', hair: '#3a2a20', skin: '#f2c6a0', pants: '#263042', hairStyle: 'short', acc: 'glasses' } },
-  cap: { size: 100, y: .8 }, music: { style: 'calm', vol: .45 }, voice: { on: false, provider: 'elevenlabs', voiceId: '', model: '', speed: 1, key: '' },
+  cap: { size: 100, y: .66 }, music: { style: 'calm', vol: .45 }, voice: { on: false, provider: 'elevenlabs', voiceId: '', model: '', speed: 1, key: '' },
   scenes: [
     { name: 'Идея', dur: 6, bg: 'office', zoom: [1, 1.08], cast: [{ c: 'hero', x: .5, y: .95, s: 1, anim: 'talk', expr: 'happy' }], props: [{ type: 'icon', icon: 'money', x: .5, y: .24, size: 150, at: 1 }], caps: [cap(0, 3, '10 000 ₽ В МЕСЯЦ *30 ЛЕТ*'), cap(3, 3, 'ПРИ *10%* ГОДОВЫХ')], sfx: [{ n: 'ding', at: 1 }] },
     { name: 'Формула', dur: 7, bg: 'grid', zoom: [1, 1.05], props: [{ type: 'math', text: 'S = P·(1+r)ⁿ', y: .4, at: .4 }, { type: 'counter', x: .5, y: .56, from: 0, to: 22800, suffix: ' тыс ₽', size: 110, text: 'ИТОГО', at: 2, span: 3 }], caps: [cap(0, 3, 'ДЕНЬГИ РАСТУТ *НА ДЕНЬГИ*'), cap(3, 4, 'ВЛОЖИЛ 3,6 МЛН — ПОЛУЧИЛ *22,8*')], sfx: [{ n: 'tick', at: 2, dur: 3 }, { n: 'ding', at: 5 }] },
     { name: 'Вывод', dur: 5, bg: 'city', zoom: [1.05, 1], cast: [{ c: 'hero', x: .5, y: .96, s: 1, anim: 'wave', expr: 'happy' }], caps: [cap(0, 2.5, 'ГЛАВНОЕ — *ВРЕМЯ*'), cap(2.5, 2.5, 'НАЧНИ *СЕГОДНЯ*')], sfx: [{ n: 'whoosh', at: 0 }] }
   ] });
 T.blank = () => ({ v: 1, title: 'Новое видео', theme: 'bunker', vignette: true, hud: { on: false, plates: [], bar: null },
-  chars: { hero }, cap: { size: 104, y: .8 }, music: { style: 'none', vol: .5 }, voice: { on: false, provider: 'elevenlabs', voiceId: '', model: '', speed: 1, key: '' },
+  chars: { hero }, cap: { size: 104, y: .66 }, music: { style: 'none', vol: .5 }, voice: { on: false, provider: 'elevenlabs', voiceId: '', model: '', speed: 1, key: '' },
   scenes: [{ name: 'Сцена 1', dur: 4, bg: 'gradient', zoom: [1, 1.08], cast: [{ c: 'hero', x: .5, y: .9, s: 1, anim: 'talk', expr: 'calm' }], caps: [cap(0, 3.6, 'ТВОЙ *ТЕКСТ* ЗДЕСЬ')], sfx: [] }] });
+for (const k of Object.keys(T)) { const f = T[k]; T[k] = () => { const p = f(); const I = G.StudioI18n; return I && I.lang === 'en' ? I.mapProject(p, 'en') : p; }; }
 G.StudioData = { T, TNAMES: { bunker: 'Бункер: 30 секунд', chat: 'Жуткая переписка', finance: 'Финансы: сложный процент', blank: 'Пустой проект' },
   newScene: () => ({ name: 'Новая сцена', dur: 4, bg: 'gradient', zoom: [1, 1.06], fx: [], cast: [], props: [], caps: [cap(0, 3.6, 'НОВЫЙ *ТЕКСТ*')], sfx: [] }), hero };
 })(window);
@@ -657,7 +834,7 @@ function init() {
   return ctx;
 }
 const SFX_NAMES = { alert: 'Сигнал тревоги', siren: 'Сирена', steps: 'Шаги', heartbeat: 'Сердцебиение', whoosh: 'Свист', hit: 'Удар', tick: 'Тиканье', riser: 'Нарастание', creak: 'Скрип двери', crowd: 'Гул толпы', geiger: 'Счётчик Гейгера', beep: 'Писк', boom: 'Взрыв', ding: 'Уведомление', glitch: 'Глитч', typing: 'Печать', cash: 'Монеты', win: 'Победа', fail: 'Провал', wind: 'Ветер' };
-function osc(o, type, f0, f1, t0, t1, g0, g1, dst) { const g = ctx.createGain(), s = ctx.createOscillator(); s.type = type; s.frequency.setValueAtTime(f0, t0); if (f1 != null) s.frequency.exponentialRampToValueAtTime(Math.max(1, f1), t1); g.gain.setValueAtTime(g0, t0); g.gain.exponentialRampToValueAtTime(Math.max(1e-4, g1), t1); s.connect(g); g.connect(dst); s.start(t0); s.stop(t1 + .05); return { s, g }; }
+function osc(o, type, f0, f1, t0, t1, g0, g1, dst) { t0 = Math.max(0, t0); t1 = Math.max(t0 + .01, t1); const g = ctx.createGain(), s = ctx.createOscillator(); s.type = type; s.frequency.setValueAtTime(f0, t0); if (f1 != null) s.frequency.exponentialRampToValueAtTime(Math.max(1, f1), t1); g.gain.setValueAtTime(g0, t0); g.gain.exponentialRampToValueAtTime(Math.max(1e-4, g1), t1); s.connect(g); g.connect(dst); s.start(t0); s.stop(t1 + .05); return { s, g }; }
 function noise(t0, t1, g0, g1, dst, ftype, f0, f1, q) { const g = ctx.createGain(), s = ctx.createBufferSource(), f = ctx.createBiquadFilter(); s.buffer = noiseBuf; s.loop = true; f.type = ftype || 'lowpass'; f.frequency.setValueAtTime(f0 || 1000, t0); if (f1) f.frequency.exponentialRampToValueAtTime(f1, t1); if (q) f.Q.value = q; g.gain.setValueAtTime(g0, t0); g.gain.exponentialRampToValueAtTime(Math.max(1e-4, g1), t1); s.connect(f); f.connect(g); g.connect(dst); s.start(t0, Math.random()); s.stop(t1 + .05); }
 const SFX = {
   alert(t, d, v, o) { for (let i = 0; i < 3; i++) { osc(0, 'square', 880, 880, t + i * .32, t + i * .32 + .22, .12 * v, .001, o); osc(0, 'square', 1320, 1320, t + i * .32, t + i * .32 + .22, .06 * v, .001, o); } },
@@ -826,6 +1003,7 @@ G.StudioNet = { Keys, DB, TTS, AI, OPENAI_VOICES };
 (function (G) {
 'use strict';
 const E = G.StudioEngine, A = G.StudioAudio, N = G.StudioNet, D = G.StudioData, $ = id => document.getElementById(id);
+const I = G.StudioI18n, tt = I.tt, TR = I.T;
 const cv = $('cv'), cx = cv.getContext('2d'); let P, sel = 0, tab = 'script', t = 0, playing = false, clips = {}, raf = 0, t0w = 0, tFrom = 0, recording = null;
 
 function load() { try { const s = localStorage.getItem('studio:project'); if (s) { const p = JSON.parse(s); if (p && p.scenes && p.scenes.length) return p; } } catch (e) {} return D.T.bunker(); }
@@ -863,15 +1041,39 @@ const keysStr = k => (k || []).map(x => x[0] + ':' + x[1]).join(', ');
 const parseKeys = s => String(s).split(/[,;\n]/).map(x => x.trim().split(':').map(Number)).filter(a => a.length === 2 && a.every(isFinite));
 function move(arr, i, d) { const j = i + d; if (j < 0 || j >= arr.length) return false; [arr[i], arr[j]] = [arr[j], arr[i]]; return true; }
 
-// ---------- вкладки ----------
-const TABS = { script: 'Сценарий', scenes: 'Сцены', chars: 'Персонажи', theme: 'Тема и HUD', voice: 'Голос', sound: 'Звук', export: 'Экспорт' };
-function tabs() { const el = $('tabs'); el.innerHTML = ''; for (const [k, n] of Object.entries(TABS)) el.append(h('button', { type: 'button', class: k === tab ? 'on' : '', role: 'tab', onclick: () => { tab = k; stopCharPv(); tabs(); pane(); } }, n)); }
-function pane() { const el = $('pane'); el.innerHTML = ''; stopCharPv(); ({ script: pScript, scenes: pScenes, chars: pChars, theme: pTheme, voice: pVoice, sound: pSound, export: pExport })[tab](el); }
-function setProject(p, keepTab) { pause(); P = p; sel = 0; t = 0; clips = {}; tlBuild(); frame(); hud(); save(); if (!keepTab) { } pane(); }
+// ---------- шаги и вкладки ----------
+const STEPS = [
+  { id: 'idea', ru: 'Идея', en: 'Idea', subs: [['script', 'Идея', 'Idea']] },
+  { id: 'scenes', ru: 'Сцены', en: 'Scenes', subs: [['scenes', 'Сцены', 'Scenes'], ['chars', 'Персонажи', 'Characters']] },
+  { id: 'look', ru: 'Вид', en: 'Look', subs: [['theme', 'Субтитры, цвета, HUD', 'Captions, colors, HUD']] },
+  { id: 'sound', ru: 'Звук', en: 'Sound', subs: [['voice', 'Голос', 'Voice'], ['sound', 'Музыка и звуки', 'Music & sounds']] },
+  { id: 'publish', ru: 'Выпуск', en: 'Publish', subs: [['publish', 'Выпуск', 'Publish']] }
+];
+let step = 0;
+const stepOf = k => STEPS.findIndex(S => S.subs.some(x => x[0] === k));
+function goStep(i, sk) { stopCharPv(); step = Math.max(0, Math.min(STEPS.length - 1, i)); tab = sk || STEPS[step].subs[0][0]; tabs(); pane(); const sw = $('sw'); if (sw && sw.getBoundingClientRect().top < -40 && matchMedia('(max-width:900px)').matches) $('steps').scrollIntoView({ block: 'start', behavior: 'smooth' }); }
+function tabs() {
+  step = Math.max(0, stepOf(tab)); const el = $('steps'); el.innerHTML = '';
+  STEPS.forEach((S, i) => el.append(h('button', { type: 'button', class: 's-step' + (i === step ? ' on' : i < step ? ' done' : ''), onclick: () => goStep(i) }, h('i', 0, i < step ? '✓' : String(i + 1)), h('span', 0, tt(S.ru, S.en)))));
+  const tb = $('tabs'); tb.innerHTML = ''; const S = STEPS[step];
+  if (S.subs.length > 1) S.subs.forEach(x => tb.append(h('button', { type: 'button', class: x[0] === tab ? 'on' : '', role: 'tab', onclick: () => goStep(step, x[0]) }, tt(x[1], x[2]))));
+  const nv = $('nav'); nv.innerHTML = '';
+  nv.append(step > 0 ? btn('← ' + tt(STEPS[step - 1].ru, STEPS[step - 1].en), () => goStep(step - 1)) : h('span'));
+  nv.append(step < STEPS.length - 1 ? btn(tt(STEPS[step + 1].ru, STEPS[step + 1].en) + ' →', () => goStep(step + 1), 'pri big') : h('span'));
+}
+function pane() { const el = $('pane'); el.innerHTML = ''; stopCharPv(); ({ script: pScript, scenes: pScenes, chars: pChars, theme: pTheme, voice: pVoice, sound: pSound, publish: pPublish })[tab](el); }
+function setProject(p, keepTab) { pause(); P = p; sel = 0; t = 0; clips = {}; tlBuild(); frame(); hud(); save(); pane(); }
+function staticApply() { document.querySelectorAll('[data-r]').forEach(e => { e.textContent = tt(e.dataset.r, e.dataset.e); }); document.title = 'Reel Studio · Hub'; }
+function switchLang(l) { if (l === I.lang) return; pause(); P = I.mapProject(P, l); I.setLang(l); aiOpt.lang = l === 'en' ? 'English' : 'русский'; staticApply(); tlBuild(); frame(); hud(); save(); tabs(); pane(); }
+document.querySelectorAll('.s-lang [data-l]').forEach(b => b.onclick = () => switchLang(b.dataset.l));
+$('igbtn').onclick = () => { const on = $('ig').hidden; $('ig').hidden = !on; $('igbtn').classList.toggle('on', on); try { localStorage.setItem('studio:ig', on ? '1' : ''); } catch (e) {} };
 
-// --- Сценарий ---
-let aiMsg = ''; let aiOpt = { topic: '', tone: 'напряжённый, как тревожный репортаж', len: 30, scenes: 6, lang: 'русский', hud: true, extra: '', model: 'claude-sonnet-5-5' };
+// --- Идея ---
+let aiMsg = ''; let aiOpt = { topic: '', tone: 'напряжённый, как тревожный репортаж', len: 30, scenes: 6, lang: I.lang === 'en' ? 'English' : 'русский', hud: true, extra: '', model: 'claude-sonnet-5-5' };
 function pScript(el) {
+  el.append(h('p', { class: 's-lead' }, tt('Выбери, с чего начать. Дальше четыре шага — и ролик готов для Reels.', 'Pick a starting point. Four more steps and the video is ready for Reels.')));
+  el.append(h('h3', 0, 'Шаблоны')); const g = h('div', { class: 's-hero' }); const sub = { bunker: 'Тревога, очередь, люк, 30 с', chat: 'Переписка и дверь, 18 с', finance: 'Формула и цифры, 18 с', blank: 'Одна сцена' };
+  for (const k of Object.keys(D.T)) g.append(h('button', { type: 'button', class: 's-tpl', onclick: () => { if (confirm(TR('Заменить текущий проект шаблоном «' + TR(D.TNAMES[k]) + '»?'))) { setProject(D.T[k]()); goStep(1); } } }, D.TNAMES[k], h('small', 0, sub[k]))); el.append(g);
   el.append(h('h3', 0, 'Придумать сценарий с Claude'));
   el.append(h('p', { class: 's-note' }, 'Опиши тему — Claude соберёт сцены, персонажей, фразы, звуки и счётчики. Нужен твой ключ Claude API: он хранится только в этом браузере и уходит только на api.anthropic.com.'));
   const kb = h('div', { class: 's-kbox' }); const ki = h('input', { type: 'password', placeholder: 'sk-ant-…', autocomplete: 'off' }); ki.value = N.Keys.get('anthropic'); ki.oninput = () => N.Keys.set('anthropic', ki.value.trim()); kb.append(fld('Ключ Claude API', ki, 'w')); el.append(kb);
@@ -880,11 +1082,9 @@ function pScript(el) {
   el.append(h('div', { class: 's-row' }, F.chk(aiOpt, 'hud', 'Счётчики (HUD)', () => { })));
   el.append(F.text(aiOpt, 'extra', 'Пожелания (необязательно)', { ph: 'герой — девушка, финал с вопросом, больше цифр', on: () => { }, cls: 'w' }));
   el.append(F.text(aiOpt, 'model', 'Модель', { on: () => { }, cls: 'w' }));
-  const st = h('div', { class: 's-msg' }); const go = btn('Сгенерировать', async () => { go.disabled = true; st.className = 's-msg'; try { if (!aiOpt.topic.trim()) throw new Error('Напиши тему'); aiOpt.len = +aiOpt.len; const p = await N.AI.generate(aiOpt, s => st.textContent = s); aiMsg = 'Готово: ' + p.scenes.length + ' сцен. Нажми ▶ и поправь во вкладках «Сцены», «Персонажи».'; setProject(p); tab = 'script'; tabs(); pane(); } catch (e) { st.textContent = e.message; st.className = 's-msg err'; } go.disabled = false; }, 'pri'); if (aiMsg) { st.textContent = aiMsg; st.className = 's-msg ok'; } el.append(h('div', { class: 's-row' }, go)); el.append(st);
-  el.append(h('h3', 0, 'Шаблоны')); const g = h('div', { class: 's-grid' }); const sub = { bunker: 'Тревога, очередь, люк, 30 с', chat: 'Переписка и дверь, 18 с', finance: 'Формула и цифры, 18 с', blank: 'Одна сцена' };
-  for (const k of Object.keys(D.T)) g.append(h('button', { type: 'button', class: 's-tpl', onclick: () => { if (confirm('Заменить текущий проект шаблоном «' + D.TNAMES[k] + '»?')) setProject(D.T[k]()); } }, D.TNAMES[k], h('small', 0, sub[k]))); el.append(g);
+  const st = h('div', { class: 's-msg' }); const go = btn('Сгенерировать', async () => { go.disabled = true; st.className = 's-msg'; try { if (!aiOpt.topic.trim()) throw new Error('Напиши тему'); aiOpt.len = +aiOpt.len; const p = await N.AI.generate(aiOpt, s => st.textContent = s); aiMsg = 'Готово: ' + p.scenes.length + ' сцен. Нажми ▶ и поправь во вкладках «Сцены», «Персонажи».'; setProject(p); goStep(1); } catch (e) { st.textContent = e.message; st.className = 's-msg err'; } go.disabled = false; }, 'pri'); if (aiMsg) { st.textContent = aiMsg; st.className = 's-msg ok'; } el.append(h('div', { class: 's-row' }, go)); el.append(st);
   el.append(h('h3', 0, 'Проект')); el.append(F.text(P, 'title', 'Название', { on: () => save(), cls: 'w' }));
-  const fi = h('input', { type: 'file', accept: '.json,application/json', hidden: true }); fi.onchange = async () => { try { const p = JSON.parse(await fi.files[0].text()); if (!p.scenes || !p.scenes.length) throw 0; setProject(p); } catch (e) { alert('Это не файл проекта Студии'); } };
+  const fi = h('input', { type: 'file', accept: '.json,application/json', hidden: true }); fi.onchange = async () => { try { const p = JSON.parse(await fi.files[0].text()); if (!p.scenes || !p.scenes.length) throw 0; setProject(p); } catch (e) { alert(TR('Это не файл проекта Студии')); } };
   el.append(h('div', { class: 's-row' }, btn('Скачать проект (.json)', () => dl(new Blob([JSON.stringify(P, null, 1)], { type: 'application/json' }), slug() + '.json')), btn('Открыть проект', () => fi.click()), fi));
 }
 const slug = () => (P.title || 'video').replace(/[^\p{L}\p{N}]+/gu, '_').slice(0, 40) || 'video';
@@ -894,7 +1094,7 @@ function dl(blob, name) { const a = h('a', { href: URL.createObjectURL(blob), do
 function pScenes(el) {
   el.append(h('p', { class: 's-note' }, 'Нажми на сцену, чтобы править. Время субтитров, предметов и звуков — в секундах от начала сцены.'));
   const list = h('div', { class: 's-sc-list' });
-  P.scenes.forEach((s, i) => { const c = h('div', { class: 's-card' + (i === sel ? ' on' : '') }); const hd = h('div', { class: 's-ch' }, h('b', 0, (i + 1) + '. ' + s.name + ' · ' + s.dur + ' с'), btn('↑', e => { e.stopPropagation(); if (move(P.scenes, i, -1)) { sel = i - 1; touch(1); pane(); } }, 'sm'), btn('↓', e => { e.stopPropagation(); if (move(P.scenes, i, 1)) { sel = i + 1; touch(1); pane(); } }, 'sm'), btn('Копия', e => { e.stopPropagation(); P.scenes.splice(i + 1, 0, JSON.parse(JSON.stringify(s))); sel = i + 1; touch(1); pane(); }, 'sm'), btn('✕', e => { e.stopPropagation(); if (P.scenes.length < 2) return; if (confirm('Удалить сцену «' + s.name + '»?')) { P.scenes.splice(i, 1); sel = Math.max(0, i - 1); touch(1); pane(); } }, 'sm dng')); c.append(hd); c.onclick = () => { if (sel !== i) { sel = i; seek(E.timeline(P)[i].s + .3); pane(); } }; list.append(c); if (i === sel) c.append(sceneEditor(s)); });
+  P.scenes.forEach((s, i) => { const c = h('div', { class: 's-card' + (i === sel ? ' on' : '') }); const hd = h('div', { class: 's-ch' }, h('b', 0, (i + 1) + '. ' + s.name + ' · ' + s.dur + ' с'), btn('↑', e => { e.stopPropagation(); if (move(P.scenes, i, -1)) { sel = i - 1; touch(1); pane(); } }, 'sm'), btn('↓', e => { e.stopPropagation(); if (move(P.scenes, i, 1)) { sel = i + 1; touch(1); pane(); } }, 'sm'), btn('Копия', e => { e.stopPropagation(); P.scenes.splice(i + 1, 0, JSON.parse(JSON.stringify(s))); sel = i + 1; touch(1); pane(); }, 'sm'), btn('✕', e => { e.stopPropagation(); if (P.scenes.length < 2) return; if (confirm(TR('Удалить сцену «' + s.name + '»?'))) { P.scenes.splice(i, 1); sel = Math.max(0, i - 1); touch(1); pane(); } }, 'sm dng')); c.append(hd); c.onclick = () => { if (sel !== i) { sel = i; seek(E.timeline(P)[i].s + .3); pane(); } }; list.append(c); if (i === sel) c.append(sceneEditor(s)); });
   el.append(list); el.append(h('div', { class: 's-row' }, btn('+ Сцена', () => { P.scenes.splice(sel + 1, 0, D.newScene()); sel++; touch(1); pane(); }, 'pri')));
 }
 function sceneEditor(s) {
@@ -918,7 +1118,7 @@ function sceneEditor(s) {
     if (p.type !== 'text') r2.append(F.col(p, 'color', 'Цвет', E.THEMES[P.theme].a));
     rows.push(r2);
     if (ty === 'cards') { const ta = h('textarea', { rows: 4 }); ta.value = (p.items || []).map(o => [o.icon, o.label, o.value || ''].join(' | ')).join('\n'); ta.oninput = () => { p.items = ta.value.split('\n').filter(x => x.trim()).map(l => { const [a, b, c] = l.split('|').map(x => x.trim()); return { icon: E.ICONNAMES.includes(a) ? a : 'star', label: b || '', value: c || '' }; }); touch(); }; rows.push(fld('Карточки: иконка | подпись | значение (иконки: ' + E.ICONNAMES.join(', ') + ')', ta, 'w')); }
-    if (ty === 'chat') { const ta = h('textarea', { rows: 4 }); ta.value = (p.items || []).map(o => (o.who === 'me' ? 'я: ' : 'он: ') + o.text).join('\n'); ta.oninput = () => { p.items = ta.value.split('\n').filter(x => x.trim()).map(l => { const m = /^(я|me|он|они|them)\s*:\s*(.*)$/i.exec(l); return { who: m && /^(я|me)$/i.test(m[1]) ? 'me' : 'them', text: m ? m[2] : l }; }); touch(); }; rows.push(fld('Сообщения: «я: …» или «он: …», по строке', ta, 'w'), h('div', { class: 's-row' }, F.num(p, 'gap', 'Пауза между, с', { opt: 1 }))); }
+    if (ty === 'chat') { const ta = h('textarea', { rows: 4 }); ta.value = (p.items || []).map(o => (o.who === 'me' ? tt('я: ', 'me: ') : tt('он: ', 'them: ')) + o.text).join('\n'); ta.oninput = () => { p.items = ta.value.split('\n').filter(x => x.trim()).map(l => { const m = /^(я|me|он|они|them)\s*:\s*(.*)$/i.exec(l); return { who: m && /^(я|me)$/i.test(m[1]) ? 'me' : 'them', text: m ? m[2] : l }; }); touch(); }; rows.push(fld('Сообщения: «я: …» или «он: …», по строке', ta, 'w'), h('div', { class: 's-row' }, F.num(p, 'gap', 'Пауза между, с', { opt: 1 }))); }
     c.append(...rows); w.append(c); });
   w.append(h('div', { class: 's-row' }, btn('+ Предмет', () => { s.props.push({ type: 'popup', text: 'ТЕКСТ', x: .5, y: .35, at: 0.5 }); touch(); pane(); }, 'sm')));
   // субтитры
@@ -939,7 +1139,7 @@ function pChars(el) {
   let cur = Object.keys(P.chars)[0]; const wrap = h('div'); el.append(wrap);
   const draw = () => {
     wrap.innerHTML = ''; stopCharPv(); const ids = Object.keys(P.chars); if (!P.chars[cur]) cur = ids[0]; const ch = P.chars[cur];
-    wrap.append(h('div', { class: 's-row' }, F.sel({ v: cur }, 'v', 'Персонаж', Object.fromEntries(ids.map(k => [k, P.chars[k].name || k])), { on: v => { cur = v; draw(); } }), btn('+ Новый', () => { const id = 'c' + Date.now().toString(36).slice(-4); P.chars[id] = Object.assign({}, D.hero, { name: 'Персонаж ' + (ids.length + 1), hood: rnd(['#e53935', '#1e88e5', '#8e24aa', '#fb8c00', '#00897b']), hair: rnd(['#222', '#6d4c41', '#c9a227', '#b0381a']) }); cur = id; save(); draw(); }, 'sm'), btn('Удалить', () => { if (ids.length < 2) return; if (confirm('Удалить персонажа? Он пропадёт из сцен.')) { delete P.chars[cur]; P.scenes.forEach(s => s.cast = (s.cast || []).filter(m => m.c !== cur)); cur = Object.keys(P.chars)[0]; touch(); draw(); } }, 'sm dng')));
+    wrap.append(h('div', { class: 's-row' }, F.sel({ v: cur }, 'v', 'Персонаж', Object.fromEntries(ids.map(k => [k, P.chars[k].name || k])), { on: v => { cur = v; draw(); } }), btn('+ Новый', () => { const id = 'c' + Date.now().toString(36).slice(-4); P.chars[id] = Object.assign({}, D.hero, { name: 'Персонаж ' + (ids.length + 1), hood: rnd(['#e53935', '#1e88e5', '#8e24aa', '#fb8c00', '#00897b']), hair: rnd(['#222', '#6d4c41', '#c9a227', '#b0381a']) }); cur = id; save(); draw(); }, 'sm'), btn('Удалить', () => { if (ids.length < 2) return; if (confirm(TR('Удалить персонажа? Он пропадёт из сцен.'))) { delete P.chars[cur]; P.scenes.forEach(s => s.cast = (s.cast || []).filter(m => m.c !== cur)); cur = Object.keys(P.chars)[0]; touch(); draw(); } }, 'sm dng')));
     const pv = h('canvas', { width: 380, height: 520 }), an = { v: 'idle' }, ex = { v: 'calm' }; const fs = h('div', { class: 's-fs' });
     fs.append(h('div', { class: 's-row' }, F.text(ch, 'name', 'Имя', { on: () => save(), cls: '' }), F.sel(ch, 'hairStyle', 'Причёска', E.HAIR, { on: () => touch() }), F.sel(ch, 'acc', 'Аксессуар', E.ACC, { on: () => touch() })), h('div', { class: 's-row' }, F.col(ch, 'hood', 'Одежда'), F.col(ch, 'pants', 'Брюки'), F.col(ch, 'hair', 'Волосы'), F.col(ch, 'skin', 'Кожа')), h('div', { class: 's-row' }, F.sel(an, 'v', 'Анимация (показ)', E.ANIMS, { on: () => { } }), F.sel(ex, 'v', 'Эмоция (показ)', E.EXPR, { on: () => { } }), F.chk(ch, 'phoneHold', 'Телефон в руке', () => { ch.hold = ch.phoneHold ? 'phone' : undefined; touch(); })), h('div', { class: 's-row' }, btn('Случайный вид', () => { Object.assign(ch, { hood: rnd(['#e53935', '#1e88e5', '#8e24aa', '#fb8c00', '#00897b', '#546e7a', '#f06292']), pants: rnd(['#283046', '#37474f', '#4e342e', '#212121']), hair: rnd(['#222', '#6d4c41', '#c9a227', '#b0381a', '#5d4037', '#9e9e9e']), skin: rnd(['#f7c8a0', '#e0a878', '#c68a5c', '#8d5a3a', '#fde0c8']), hairStyle: rnd(Object.keys(E.HAIR)), acc: rnd(Object.keys(E.ACC)) }); touch(); draw(); }, 'sm')));
     wrap.append(h('div', { class: 's-cpv' }, pv, fs)); const c2 = pv.getContext('2d'); const T0 = performance.now();
@@ -950,7 +1150,7 @@ function pChars(el) {
 // --- Тема и HUD ---
 function pTheme(el) {
   el.append(h('h3', 0, 'Палитра')); const g = h('div', { class: 's-grid' }); for (const [k, th] of Object.entries(E.THEMES)) { const b = h('button', { type: 'button', class: 's-thm' + (P.theme === k ? ' on' : ''), onclick: () => { P.theme = k; touch(); pane(); } }, th.name, h('i', { style: `background:linear-gradient(90deg,${th.sky[0]},${th.a} 40%,${th.b} 70%,${th.hl})` })); g.append(b); } el.append(g);
-  el.append(h('h3', 0, 'Субтитры')); P.cap = P.cap || { size: 104, y: .8 }; el.append(h('div', { class: 's-row' }, F.num(P.cap, 'size', 'Размер', { min: 50, max: 160, step: 4 }), F.num(P.cap, 'y', 'Высота 0–1', { min: .2, max: .95, step: .02 }), F.col(P.cap, 'hl', 'Цвет выделения', E.THEMES[P.theme].hl)));
+  el.append(h('h3', 0, 'Субтитры')); P.cap = P.cap || { size: 104, y: .66 }; el.append(h('div', { class: 's-row' }, F.num(P.cap, 'size', 'Размер', { min: 50, max: 160, step: 4 }), F.num(P.cap, 'y', 'Высота 0–1', { min: .2, max: .95, step: .02 }), F.col(P.cap, 'hl', 'Цвет выделения', E.THEMES[P.theme].hl)));
   el.append(h('div', { class: 's-row' }, F.chk(P, 'vignette', 'Виньетка', () => touch())));
   el.append(h('h3', 0, 'HUD: плашки и полоса')); P.hud = P.hud || { on: false, plates: [], bar: null }; const H = P.hud;
   el.append(h('p', { class: 's-note' }, 'Значения меняются по ключевым точкам «секунда:значение» на всём видео. Время — формат мм:сс.'));
@@ -983,13 +1183,34 @@ function pSound(el) {
   el.append(h('h3', 0, 'Библиотека звуков')); el.append(h('p', { class: 's-note' }, 'Нажми, чтобы послушать. Добавлять в сцену — во вкладке «Сцены», блок «Звуки сцены».')); const g = h('div', { class: 's-sfx' }); for (const [k, n] of Object.entries(A.SFX_NAMES)) g.append(btn('▶ ' + n, () => A.playSfx(k), 'sm')); el.append(g);
 }
 
-// --- Экспорт ---
-function pExport(el) {
-  const o = { res: '720', fps: 30 }; el.append(h('p', { class: 's-note' }, 'Запись идёт в реальном времени: ролик проигрывается и записывается вместе со звуком, поэтому не сворачивай вкладку, пока идёт запись. Chrome и Edge дают MP4 или WebM; Safari — MP4.'));
+// --- Выпуск ---
+function hashtags() { const txt = P.scenes.flatMap(sc => sc.caps.map(c => E.stripCap(c.text))).join(' ').toLowerCase().replace(/[^\p{L}\p{N} ]/gu, ' '); const cnt = {}; txt.split(/\s+/).filter(w => w.length >= 5).forEach(w => cnt[w] = (cnt[w] || 0) + 1); const top = Object.entries(cnt).sort((a, b) => b[1] - a[1]).slice(0, 4).map(x => '#' + x[0]); return top.concat(I.lang === 'en' ? ['#reels', '#fyp'] : ['#рилс', '#рекомендации']).join(' '); }
+function postText() { const first = P.scenes[0] && P.scenes[0].caps[0] ? E.stripCap(P.scenes[0].caps[0].text) : ''; const low = first.charAt(0) + first.slice(1).toLowerCase(); return (P.title || '') + (low ? ' — ' + low + '…' : '') + '\n\n' + tt('Досмотри до конца 👇', 'Watch till the end 👇') + '\n\n' + hashtags(); }
+function checks() {
+  const T = total(), out = [], cap = P.cap || { size: 104, y: .66 };
+  out.push(T > 90 ? [0, tt('Длина ' + T.toFixed(0) + ' с — Reels принимает до 90 с', T.toFixed(0) + ' s — Reels accept up to 90 s')] : T < 7 ? [0, tt('Длина ' + T.toFixed(0) + ' с — коротковато, лучше 7–60 с', T.toFixed(0) + ' s — a bit short, 7–60 s works best')] : [1, tt('Длина ' + T.toFixed(0) + ' с — подходит для Reels', T.toFixed(0) + ' s — good length for Reels')]);
+  const c0 = P.scenes[0] && P.scenes[0].caps[0]; out.push(c0 && c0.at <= 1.5 && c0.text && c0.text !== '...' ? [1, tt('Крючок: фраза появляется в первые 1,5 с', 'Hook: a line appears in the first 1.5 s')] : [0, tt('Крючок: добавь фразу в самом начале (первые 1,5 с)', 'Hook: add a line at the very start (first 1.5 s)')]);
+  const lines = 2, bottom = (cap.y == null ? .72 : cap.y) + (cap.size * 1.12 * lines / 2) / 1920;
+  out.push(bottom <= .74 ? [1, tt('Субтитры в безопасной зоне Instagram', 'Captions are inside the Instagram safe zone')] : [0, tt('Субтитры внизу закроются подписью и кнопками Instagram', 'Bottom captions will be covered by Instagram’s caption and buttons'), () => { cap.y = .62; P.cap = cap; touch(); pane(); }, tt('Поднять', 'Raise')]);
+  const snd = (P.music && P.music.style && P.music.style !== 'none') || (P.voice && P.voice.on); out.push(snd ? [1, tt('Звук: музыка или голос включены', 'Sound: music or voice is on')] : [0, tt('Тишина: добавь музыку или голос', 'Silent: add music or a voice'), () => goStep(3, 'sound'), tt('К звуку', 'To sound')]);
+  const empty = P.scenes.filter(sc => !sc.caps.some(c => c.text && c.text !== '...')).length; out.push(empty ? [0, tt(empty + ' сцен без текста — зритель уйдёт', empty + ' scene(s) without text — viewers may leave'), () => goStep(1, 'scenes'), tt('К сценам', 'To scenes')] : [1, tt('В каждой сцене есть текст', 'Every scene has text')]);
+  return out;
+}
+function pPublish(el) {
+  const o = { res: '720' }; el.append(h('p', { class: 's-lead' }, tt('Проверь ролик, запиши видео и забери текст для поста.', 'Check the video, record it, and grab the post text.')));
+  el.append(h('h3', 0, tt('Проверка перед публикацией', 'Pre-publish check')));
+  const ig = $('ig'); if (ig.hidden) { ig.hidden = false; $('igbtn').classList.add('on'); }
+  for (const [ok, msg, fix, fl] of checks()) el.append(h('div', { class: 's-ck' + (ok ? '' : ' bad') }, h('span', { class: 'ic' }, ok ? '✓' : '!'), h('span', { class: 't' }, msg), fix ? btn(fl, fix, 'sm') : null));
+  el.append(h('h3', 0, tt('Записать видео', 'Record video')));
+  el.append(h('p', { class: 's-note' }, 'Запись идёт в реальном времени: ролик проигрывается и записывается вместе со звуком, поэтому не сворачивай вкладку, пока идёт запись. Chrome и Edge дают MP4 или WebM; Safari — MP4.'));
   el.append(h('div', { class: 's-row' }, F.sel(o, 'res', 'Размер', { 540: '540×960 (быстро, лёгкий)', 720: '720×1280 (по умолчанию)', 1080: '1080×1920 (максимум)' }, { on: () => { }, cls: '' })));
   const st = h('div', { class: 's-msg' }), pr = h('div', { class: 's-prog' }, h('i')), res = h('div', { class: 's-res' }); pr.hidden = true;
-  const go = btn('Записать видео', async () => { go.disabled = true; res.innerHTML = ''; pr.hidden = false; st.className = 's-msg'; try { const out = await record(+o.res, 30, p => { pr.firstChild.style.width = p * 100 + '%'; st.textContent = 'Запись… ' + Math.round(p * 100) + '%'; }); const ext = /mp4/.test(out.type) ? 'mp4' : 'webm'; const url = URL.createObjectURL(out); res.append(h('video', { src: url, controls: true, playsinline: true }), h('div', { class: 's-row' }, btn('Скачать .' + ext + ' (' + (out.size / 1e6).toFixed(1) + ' МБ)', () => dl(out, slug() + '.' + ext), 'pri'))); st.textContent = 'Готово'; st.className = 's-msg ok'; } catch (e) { st.textContent = e.message || String(e); st.className = 's-msg err'; } pr.hidden = true; go.disabled = false; frame(); hud(); }, 'pri');
-  el.append(h('div', { class: 's-row' }, go, btn('Сохранить текущий кадр (PNG)', () => { const c = document.createElement('canvas'); c.width = 1080; c.height = 1920; const x = c.getContext('2d'); E.drawScene(x, P, Math.min(t, total() - .01)); c.toBlob(b => dl(b, slug() + '_' + t.toFixed(1) + 's.png')); })), pr, st, res);
+  const rb = btn('● ' + tt('Записать видео', 'Record video'), async () => { rb.disabled = true; res.innerHTML = ''; pr.hidden = false; $('ig').hidden = true; $('igbtn').classList.remove('on'); st.className = 's-msg'; try { const out = await record(+o.res, 30, p => { pr.firstChild.style.width = p * 100 + '%'; st.textContent = 'Запись… ' + Math.round(p * 100) + '%'; }); const ext = /mp4/.test(out.type) ? 'mp4' : 'webm'; const url = URL.createObjectURL(out); res.append(h('video', { src: url, controls: true, playsinline: true }), btn('Скачать .' + ext + ' (' + (out.size / 1048576).toFixed(1) + ' МБ)', () => dl(out, slug() + '.' + ext), 'pri')); st.textContent = 'Готово'; st.className = 's-msg ok'; } catch (e) { st.textContent = e.message; st.className = 's-msg err'; } pr.hidden = true; rb.disabled = false; }, 'pri big');
+  el.append(h('div', { class: 's-row' }, rb, btn('Сохранить текущий кадр (PNG)', () => { const c = document.createElement('canvas'); c.width = 1080; c.height = 1920; const x = c.getContext('2d'); E.drawScene(x, P, Math.min(t, total() - .01)); c.toBlob(b => dl(b, slug() + '_' + t.toFixed(1) + 's.png')); })), pr, st, res);
+  el.append(h('h3', 0, tt('Текст для поста', 'Post text')));
+  const ta = h('textarea', { class: 's-post', rows: 6 }); ta.value = postText();
+  el.append(ta, h('div', { class: 's-row' }, btn(tt('Скопировать', 'Copy'), async () => { try { await navigator.clipboard.writeText(ta.value); } catch (e) { ta.select(); document.execCommand('copy'); } }, 'sm'), btn(tt('Обновить', 'Regenerate'), () => { ta.value = postText(); }, 'sm')));
+  el.append(h('p', { class: 's-note' }, tt('Загрузи файл в Instagram: «Создать» → Reels → выбери видео из галереи. Проект хранится в этом браузере; сохрани его файлом на вкладке «Идея».', 'Upload the file in Instagram: Create → Reels → pick the video from your gallery. The project lives in this browser; save it as a file in the “Idea” step.')));
 }
 function pickMime() { const c = ['video/mp4;codecs=avc1.42E01E,mp4a.40.2', 'video/mp4', 'video/webm;codecs=vp9,opus', 'video/webm;codecs=vp8,opus', 'video/webm']; return c.find(m => G.MediaRecorder && MediaRecorder.isTypeSupported(m)) || ''; }
 async function record(width, fps, onp) {
@@ -1005,8 +1226,8 @@ async function record(width, fps, onp) {
 }
 
 // ---------- старт ----------
-P = load(); tabs(); tlBuild(); frame(); hud(); pane();
-$('sbadge').textContent = 'проект сохраняется в браузере';
+P = load(); staticApply(); tabs(); tlBuild(); frame(); hud(); pane(); I.trNode($('sw')); I.watch($('sw'));
+try { if (localStorage.getItem('studio:ig') === '1') { $('ig').hidden = false; $('igbtn').classList.add('on'); } } catch (e) {}
 G.Studio = { get P() { return P; }, setProject, seek, play, pause, frame, record, N };
 })(window);
 

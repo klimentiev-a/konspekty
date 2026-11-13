@@ -177,7 +177,7 @@ cards_artem = re.search(r'<div class="cards">.*?\n  </div>', TPL, re.S).group(0)
 cards_artem = cards_artem.replace('<div class="cards">', '<div class="cards" data-group="">', 1).replace('<a class="cover" href="finance.html#learn" aria-label="Финансы">', '<a class="cover" href="#fin" aria-label="Финансы">', 1)
 cards_artem = cards_artem[:cards_artem.rindex('\n  </div>')] + """
     <div class="card u"><a class="cover" href="studio.html" aria-label="Студия"></a>
-      <div class="ic">▶</div><b>Студия</b><span>Короткие вертикальные видео: сценарий, персонажи, сцены, музыка, нейроголос, запись в MP4</span>
+      <div class="ic">▶</div><b>Студия</b><span>Reels с нуля: идея, сцены, голос, музыка, проверка рамки Instagram, запись MP4, RU/EN</span>
       <div class="links"><a href="studio.html">Открыть</a></div>
     </div>
   </div>"""
@@ -410,8 +410,8 @@ open(os.path.join(ROOT, 'src', 'finance', 'gate_artem.html'), 'w', encoding='utf
 # ---------------- studio.html: Студия видео (src/studio/) ----------------
 _sp = os.path.join(ROOT, 'src', 'studio')
 _sr = lambda n: open(os.path.join(_sp, n), encoding='utf-8').read()
-st_body = _sr('body.html').replace('<!--TOPBAR-->', topbar('artem.html', 'Артём') + '\n  ', 1) + '<script>\n' + '\n'.join(_sr(n) for n in ('engine.js', 'data.js', 'audio.js', 'net.js', 'ui.js')) + '\n</script>'
-st_html = page('Студия · Hub', st_body, 'artem').replace('</head>', '<style>\n' + _sr('studio.css') + '</style></head>', 1)
+st_body = _sr('body.html') + '<script>\n' + '\n'.join(_sr(n) for n in ('i18n.js', 'engine.js', 'data.js', 'audio.js', 'net.js', 'ui.js')) + '\n</script>'
+st_html = page('Reel Studio · Hub', st_body, 'artem').replace('</head>', '<style>\n' + _sr('studio.css') + '</style></head>', 1)
 
 for name, html in (('index.html', index_html), ('artem.html', artem_html), ('nastya.html', nastya_html), ('nastya-ucheba.html', nu_html), ('nastya-klava.html', kl_html), ('search.html', search_html), ('lectures.html', lec_html), ('studio.html', st_html)):
     open(os.path.join(ROOT, name), 'w', encoding='utf-8').write(html)

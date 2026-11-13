@@ -1,6 +1,7 @@
 /* Студия: движок рисования. draw(ctx, проект, t) — чистая функция времени: один и тот же кадр при предпросмотре и записи. */
 (function (G) {
 'use strict';
+const TT = s => (G.StudioT ? G.StudioT(s) : s);
 const W = 1080, H = 1920;
 const FONT = "'Inter','Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif";
 const TAU = Math.PI * 2;
@@ -127,7 +128,7 @@ const BG = {
     ell(c, cx, cy, 440, 440, '#2a3042', '#475069', 14); ell(c, cx, cy, 380, 380, '#1a1f2e', '#323a52', 8);
     for (let i = 0; i < 12; i++) { const a = i * TAU / 12; ell(c, cx + Math.cos(a) * 410, cy + Math.sin(a) * 410, 14, 14, '#566082'); }
     c.save(); c.translate(cx, cy); c.rotate(Math.sin(t * .8) * .15); ell(c, 0, 0, 90, 90, '#3a4258', '#586284', 10); for (let i = 0; i < 3; i++) { c.rotate(TAU / 3); fillRR(c, -14, -250, 28, 250, 12, '#586284'); ell(c, 0, -250, 28, 28, '#6e7a9e'); } c.restore();
-    fillRR(c, cx - 150, cy + 470, 300, 56, 12, '#e53935'); txt(c, 'УБЕЖИЩЕ', cx, cy + 498, 34, '#fff'); glow(c, cx, cy, 700, 'rgba(229,57,53,.18)', .5 + .3 * Math.sin(t * 5));
+    fillRR(c, cx - 150, cy + 470, 300, 56, 12, '#e53935'); txt(c, TT('УБЕЖИЩЕ'), cx, cy + 498, 34, '#fff'); glow(c, cx, cy, 700, 'rgba(229,57,53,.18)', .5 + .3 * Math.sin(t * 5));
   },
   doorway(c, t, p) { BG.gradient(c, t, { sky: [p.wall, '#05060a'] }); fillRR(c, 270, 380, 540, 1000, 18, '#05060a', '#40486a', 14); const g = c.createLinearGradient(0, 400, 0, 1380); g.addColorStop(0, '#fff6c8'); g.addColorStop(1, '#ffb74d'); fillRR(c, 290, 400, 500, 960, 8, g); glow(c, 540, 880, 600, 'rgba(255,220,140,.5)', .6); c.fillStyle = p.floor; c.fillRect(0, 1380, W, 540); },
   city(c, t, p) {
@@ -182,7 +183,7 @@ function drawProp(c, p, t, th, sc) {
     case 'popup': { c.font = `900 56px ${FONT}`; const w = Math.max(520, Math.min(900, c.measureText(T).width + 120)), h = T2 ? 200 : 130; glow(c, 0, 0, 480, col, .25); fillRR(c, -w / 2, -h / 2, w, h, 28, 'rgba(8,11,22,.94)', col, 6); txt(c, T, 0, T2 ? -34 : 0, 56, th.ink); if (T2) txt(c, T2, 0, 42, 38, col, { w: 800 }); break; }
     case 'cards': { const it = p.items || [], n = it.length || 1, cw = Math.min(300, (940 - (n - 1) * 24) / n), tw = n * cw + (n - 1) * 24; it.forEach((o, i) => { const bx = -tw / 2 + i * (cw + 24), k = easeBack((lt - i * .12) / .3); c.save(); c.translate(bx + cw / 2, 0); c.scale(.6 + .4 * k, .6 + .4 * k); c.globalAlpha = clamp(k); fillRR(c, -cw / 2, -150, cw, 300, 26, 'rgba(8,11,22,.92)', o.color || col, 5); icon(c, o.icon || 'star', 0, -50, cw * .22, o.color); txt(c, o.label || '', 0, 70, 32, th.ink, { w: 800 }); if (o.value) txt(c, o.value, 0, 118, 44, o.color || th.hl); c.restore(); }); break; }
     case 'text': { c.font = `900 ${p.size || 110}px ${FONT}`; const ls = wrapLines(c, T, 940); ls.forEach((l, i) => txt(c, l, 0, (i - (ls.length - 1) / 2) * (p.size || 110) * 1.1, p.size || 110, p.color || th.ink, { stroke: '#000', sw: 14 })); break; }
-    case 'timer': { const v = Math.max(0, lerp(p.from == null ? 180 : p.from, p.to == null ? 0 : p.to, lt / Math.max(.1, Math.min(dur, p.span || dur)))) | 0; fillRR(c, -270, -110, 540, 220, 30, 'rgba(8,11,22,.94)', col, 6); txt(c, T || 'ДО ЗАКРЫТИЯ', 0, -66, 34, '#c8cde0', { w: 800 }); txt(c, String((v / 60) | 0).padStart(2, '0') + ':' + String(v % 60).padStart(2, '0'), 0, 20, 124, (v < 30 && ((lt * 4) | 0) % 2) ? '#ff8a80' : col); break; }
+    case 'timer': { const v = Math.max(0, lerp(p.from == null ? 180 : p.from, p.to == null ? 0 : p.to, lt / Math.max(.1, Math.min(dur, p.span || dur)))) | 0; fillRR(c, -270, -110, 540, 220, 30, 'rgba(8,11,22,.94)', col, 6); txt(c, T || TT('ДО ЗАКРЫТИЯ'), 0, -66, 34, '#c8cde0', { w: 800 }); txt(c, String((v / 60) | 0).padStart(2, '0') + ':' + String(v % 60).padStart(2, '0'), 0, 20, 124, (v < 30 && ((lt * 4) | 0) % 2) ? '#ff8a80' : col); break; }
     case 'counter': { const v = Math.round(lerp(p.from || 0, p.to == null ? 100 : p.to, easeOut(lt / (p.span || 1.6)))); txt(c, (p.prefix || '') + v.toLocaleString('ru-RU') + (p.suffix || ''), 0, 0, p.size || 190, col, { stroke: '#000', sw: 18 }); if (T) txt(c, T, 0, (p.size || 190) * .65, 50, th.ink, { stroke: '#000', sw: 10 }); break; }
     case 'chat': { const ms = p.items || []; let yy = -(ms.length * 130) / 2; ms.forEach((m, i) => { const k = easeBack((lt - i * (p.gap || .9)) / .3); if (k <= 0) { yy += 130; return; } const me = m.who === 'me'; c.font = `700 40px ${FONT}`; const w = Math.min(760, c.measureText(m.text).width + 70); c.save(); c.globalAlpha = clamp(k); c.translate(me ? 440 : -440, yy); c.scale(.7 + .3 * k, .7 + .3 * k); fillRR(c, me ? -w : 0, -52, w, 104, 40, me ? '#2f7cf6' : '#2a2f40'); txt(c, m.text, me ? -w / 2 : w / 2, 0, 40, '#fff', { w: 700 }); c.restore(); yy += 130; }); break; }
     case 'sign': { fillRR(c, -20, 40, 40, 360, 8, '#4b4f60'); c.font = `900 70px ${FONT}`; const w = c.measureText(T).width + 110; fillRR(c, -w / 2, -80, w, 150, 18, col, '#fff', 8); txt(c, T, 0, -5, 70, '#fff'); break; }

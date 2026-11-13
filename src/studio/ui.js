@@ -2,6 +2,7 @@
 (function (G) {
 'use strict';
 const E = G.StudioEngine, A = G.StudioAudio, N = G.StudioNet, D = G.StudioData, $ = id => document.getElementById(id);
+const I = G.StudioI18n, tt = I.tt, TR = I.T;
 const cv = $('cv'), cx = cv.getContext('2d'); let P, sel = 0, tab = 'script', t = 0, playing = false, clips = {}, raf = 0, t0w = 0, tFrom = 0, recording = null;
 
 function load() { try { const s = localStorage.getItem('studio:project'); if (s) { const p = JSON.parse(s); if (p && p.scenes && p.scenes.length) return p; } } catch (e) {} return D.T.bunker(); }
@@ -39,15 +40,39 @@ const keysStr = k => (k || []).map(x => x[0] + ':' + x[1]).join(', ');
 const parseKeys = s => String(s).split(/[,;\n]/).map(x => x.trim().split(':').map(Number)).filter(a => a.length === 2 && a.every(isFinite));
 function move(arr, i, d) { const j = i + d; if (j < 0 || j >= arr.length) return false; [arr[i], arr[j]] = [arr[j], arr[i]]; return true; }
 
-// ---------- вкладки ----------
-const TABS = { script: 'Сценарий', scenes: 'Сцены', chars: 'Персонажи', theme: 'Тема и HUD', voice: 'Голос', sound: 'Звук', export: 'Экспорт' };
-function tabs() { const el = $('tabs'); el.innerHTML = ''; for (const [k, n] of Object.entries(TABS)) el.append(h('button', { type: 'button', class: k === tab ? 'on' : '', role: 'tab', onclick: () => { tab = k; stopCharPv(); tabs(); pane(); } }, n)); }
-function pane() { const el = $('pane'); el.innerHTML = ''; stopCharPv(); ({ script: pScript, scenes: pScenes, chars: pChars, theme: pTheme, voice: pVoice, sound: pSound, export: pExport })[tab](el); }
-function setProject(p, keepTab) { pause(); P = p; sel = 0; t = 0; clips = {}; tlBuild(); frame(); hud(); save(); if (!keepTab) { } pane(); }
+// ---------- шаги и вкладки ----------
+const STEPS = [
+  { id: 'idea', ru: 'Идея', en: 'Idea', subs: [['script', 'Идея', 'Idea']] },
+  { id: 'scenes', ru: 'Сцены', en: 'Scenes', subs: [['scenes', 'Сцены', 'Scenes'], ['chars', 'Персонажи', 'Characters']] },
+  { id: 'look', ru: 'Вид', en: 'Look', subs: [['theme', 'Субтитры, цвета, HUD', 'Captions, colors, HUD']] },
+  { id: 'sound', ru: 'Звук', en: 'Sound', subs: [['voice', 'Голос', 'Voice'], ['sound', 'Музыка и звуки', 'Music & sounds']] },
+  { id: 'publish', ru: 'Выпуск', en: 'Publish', subs: [['publish', 'Выпуск', 'Publish']] }
+];
+let step = 0;
+const stepOf = k => STEPS.findIndex(S => S.subs.some(x => x[0] === k));
+function goStep(i, sk) { stopCharPv(); step = Math.max(0, Math.min(STEPS.length - 1, i)); tab = sk || STEPS[step].subs[0][0]; tabs(); pane(); const sw = $('sw'); if (sw && sw.getBoundingClientRect().top < -40 && matchMedia('(max-width:900px)').matches) $('steps').scrollIntoView({ block: 'start', behavior: 'smooth' }); }
+function tabs() {
+  step = Math.max(0, stepOf(tab)); const el = $('steps'); el.innerHTML = '';
+  STEPS.forEach((S, i) => el.append(h('button', { type: 'button', class: 's-step' + (i === step ? ' on' : i < step ? ' done' : ''), onclick: () => goStep(i) }, h('i', 0, i < step ? '✓' : String(i + 1)), h('span', 0, tt(S.ru, S.en)))));
+  const tb = $('tabs'); tb.innerHTML = ''; const S = STEPS[step];
+  if (S.subs.length > 1) S.subs.forEach(x => tb.append(h('button', { type: 'button', class: x[0] === tab ? 'on' : '', role: 'tab', onclick: () => goStep(step, x[0]) }, tt(x[1], x[2]))));
+  const nv = $('nav'); nv.innerHTML = '';
+  nv.append(step > 0 ? btn('← ' + tt(STEPS[step - 1].ru, STEPS[step - 1].en), () => goStep(step - 1)) : h('span'));
+  nv.append(step < STEPS.length - 1 ? btn(tt(STEPS[step + 1].ru, STEPS[step + 1].en) + ' →', () => goStep(step + 1), 'pri big') : h('span'));
+}
+function pane() { const el = $('pane'); el.innerHTML = ''; stopCharPv(); ({ script: pScript, scenes: pScenes, chars: pChars, theme: pTheme, voice: pVoice, sound: pSound, publish: pPublish })[tab](el); }
+function setProject(p, keepTab) { pause(); P = p; sel = 0; t = 0; clips = {}; tlBuild(); frame(); hud(); save(); pane(); }
+function staticApply() { document.querySelectorAll('[data-r]').forEach(e => { e.textContent = tt(e.dataset.r, e.dataset.e); }); document.title = 'Reel Studio · Hub'; }
+function switchLang(l) { if (l === I.lang) return; pause(); P = I.mapProject(P, l); I.setLang(l); aiOpt.lang = l === 'en' ? 'English' : 'русский'; staticApply(); tlBuild(); frame(); hud(); save(); tabs(); pane(); }
+document.querySelectorAll('.s-lang [data-l]').forEach(b => b.onclick = () => switchLang(b.dataset.l));
+$('igbtn').onclick = () => { const on = $('ig').hidden; $('ig').hidden = !on; $('igbtn').classList.toggle('on', on); try { localStorage.setItem('studio:ig', on ? '1' : ''); } catch (e) {} };
 
-// --- Сценарий ---
-let aiMsg = ''; let aiOpt = { topic: '', tone: 'напряжённый, как тревожный репортаж', len: 30, scenes: 6, lang: 'русский', hud: true, extra: '', model: 'claude-sonnet-5-5' };
+// --- Идея ---
+let aiMsg = ''; let aiOpt = { topic: '', tone: 'напряжённый, как тревожный репортаж', len: 30, scenes: 6, lang: I.lang === 'en' ? 'English' : 'русский', hud: true, extra: '', model: 'claude-sonnet-5-5' };
 function pScript(el) {
+  el.append(h('p', { class: 's-lead' }, tt('Выбери, с чего начать. Дальше четыре шага — и ролик готов для Reels.', 'Pick a starting point. Four more steps and the video is ready for Reels.')));
+  el.append(h('h3', 0, 'Шаблоны')); const g = h('div', { class: 's-hero' }); const sub = { bunker: 'Тревога, очередь, люк, 30 с', chat: 'Переписка и дверь, 18 с', finance: 'Формула и цифры, 18 с', blank: 'Одна сцена' };
+  for (const k of Object.keys(D.T)) g.append(h('button', { type: 'button', class: 's-tpl', onclick: () => { if (confirm(TR('Заменить текущий проект шаблоном «' + TR(D.TNAMES[k]) + '»?'))) { setProject(D.T[k]()); goStep(1); } } }, D.TNAMES[k], h('small', 0, sub[k]))); el.append(g);
   el.append(h('h3', 0, 'Придумать сценарий с Claude'));
   el.append(h('p', { class: 's-note' }, 'Опиши тему — Claude соберёт сцены, персонажей, фразы, звуки и счётчики. Нужен твой ключ Claude API: он хранится только в этом браузере и уходит только на api.anthropic.com.'));
   const kb = h('div', { class: 's-kbox' }); const ki = h('input', { type: 'password', placeholder: 'sk-ant-…', autocomplete: 'off' }); ki.value = N.Keys.get('anthropic'); ki.oninput = () => N.Keys.set('anthropic', ki.value.trim()); kb.append(fld('Ключ Claude API', ki, 'w')); el.append(kb);
@@ -56,11 +81,9 @@ function pScript(el) {
   el.append(h('div', { class: 's-row' }, F.chk(aiOpt, 'hud', 'Счётчики (HUD)', () => { })));
   el.append(F.text(aiOpt, 'extra', 'Пожелания (необязательно)', { ph: 'герой — девушка, финал с вопросом, больше цифр', on: () => { }, cls: 'w' }));
   el.append(F.text(aiOpt, 'model', 'Модель', { on: () => { }, cls: 'w' }));
-  const st = h('div', { class: 's-msg' }); const go = btn('Сгенерировать', async () => { go.disabled = true; st.className = 's-msg'; try { if (!aiOpt.topic.trim()) throw new Error('Напиши тему'); aiOpt.len = +aiOpt.len; const p = await N.AI.generate(aiOpt, s => st.textContent = s); aiMsg = 'Готово: ' + p.scenes.length + ' сцен. Нажми ▶ и поправь во вкладках «Сцены», «Персонажи».'; setProject(p); tab = 'script'; tabs(); pane(); } catch (e) { st.textContent = e.message; st.className = 's-msg err'; } go.disabled = false; }, 'pri'); if (aiMsg) { st.textContent = aiMsg; st.className = 's-msg ok'; } el.append(h('div', { class: 's-row' }, go)); el.append(st);
-  el.append(h('h3', 0, 'Шаблоны')); const g = h('div', { class: 's-grid' }); const sub = { bunker: 'Тревога, очередь, люк, 30 с', chat: 'Переписка и дверь, 18 с', finance: 'Формула и цифры, 18 с', blank: 'Одна сцена' };
-  for (const k of Object.keys(D.T)) g.append(h('button', { type: 'button', class: 's-tpl', onclick: () => { if (confirm('Заменить текущий проект шаблоном «' + D.TNAMES[k] + '»?')) setProject(D.T[k]()); } }, D.TNAMES[k], h('small', 0, sub[k]))); el.append(g);
+  const st = h('div', { class: 's-msg' }); const go = btn('Сгенерировать', async () => { go.disabled = true; st.className = 's-msg'; try { if (!aiOpt.topic.trim()) throw new Error('Напиши тему'); aiOpt.len = +aiOpt.len; const p = await N.AI.generate(aiOpt, s => st.textContent = s); aiMsg = 'Готово: ' + p.scenes.length + ' сцен. Нажми ▶ и поправь во вкладках «Сцены», «Персонажи».'; setProject(p); goStep(1); } catch (e) { st.textContent = e.message; st.className = 's-msg err'; } go.disabled = false; }, 'pri'); if (aiMsg) { st.textContent = aiMsg; st.className = 's-msg ok'; } el.append(h('div', { class: 's-row' }, go)); el.append(st);
   el.append(h('h3', 0, 'Проект')); el.append(F.text(P, 'title', 'Название', { on: () => save(), cls: 'w' }));
-  const fi = h('input', { type: 'file', accept: '.json,application/json', hidden: true }); fi.onchange = async () => { try { const p = JSON.parse(await fi.files[0].text()); if (!p.scenes || !p.scenes.length) throw 0; setProject(p); } catch (e) { alert('Это не файл проекта Студии'); } };
+  const fi = h('input', { type: 'file', accept: '.json,application/json', hidden: true }); fi.onchange = async () => { try { const p = JSON.parse(await fi.files[0].text()); if (!p.scenes || !p.scenes.length) throw 0; setProject(p); } catch (e) { alert(TR('Это не файл проекта Студии')); } };
   el.append(h('div', { class: 's-row' }, btn('Скачать проект (.json)', () => dl(new Blob([JSON.stringify(P, null, 1)], { type: 'application/json' }), slug() + '.json')), btn('Открыть проект', () => fi.click()), fi));
 }
 const slug = () => (P.title || 'video').replace(/[^\p{L}\p{N}]+/gu, '_').slice(0, 40) || 'video';
@@ -70,7 +93,7 @@ function dl(blob, name) { const a = h('a', { href: URL.createObjectURL(blob), do
 function pScenes(el) {
   el.append(h('p', { class: 's-note' }, 'Нажми на сцену, чтобы править. Время субтитров, предметов и звуков — в секундах от начала сцены.'));
   const list = h('div', { class: 's-sc-list' });
-  P.scenes.forEach((s, i) => { const c = h('div', { class: 's-card' + (i === sel ? ' on' : '') }); const hd = h('div', { class: 's-ch' }, h('b', 0, (i + 1) + '. ' + s.name + ' · ' + s.dur + ' с'), btn('↑', e => { e.stopPropagation(); if (move(P.scenes, i, -1)) { sel = i - 1; touch(1); pane(); } }, 'sm'), btn('↓', e => { e.stopPropagation(); if (move(P.scenes, i, 1)) { sel = i + 1; touch(1); pane(); } }, 'sm'), btn('Копия', e => { e.stopPropagation(); P.scenes.splice(i + 1, 0, JSON.parse(JSON.stringify(s))); sel = i + 1; touch(1); pane(); }, 'sm'), btn('✕', e => { e.stopPropagation(); if (P.scenes.length < 2) return; if (confirm('Удалить сцену «' + s.name + '»?')) { P.scenes.splice(i, 1); sel = Math.max(0, i - 1); touch(1); pane(); } }, 'sm dng')); c.append(hd); c.onclick = () => { if (sel !== i) { sel = i; seek(E.timeline(P)[i].s + .3); pane(); } }; list.append(c); if (i === sel) c.append(sceneEditor(s)); });
+  P.scenes.forEach((s, i) => { const c = h('div', { class: 's-card' + (i === sel ? ' on' : '') }); const hd = h('div', { class: 's-ch' }, h('b', 0, (i + 1) + '. ' + s.name + ' · ' + s.dur + ' с'), btn('↑', e => { e.stopPropagation(); if (move(P.scenes, i, -1)) { sel = i - 1; touch(1); pane(); } }, 'sm'), btn('↓', e => { e.stopPropagation(); if (move(P.scenes, i, 1)) { sel = i + 1; touch(1); pane(); } }, 'sm'), btn('Копия', e => { e.stopPropagation(); P.scenes.splice(i + 1, 0, JSON.parse(JSON.stringify(s))); sel = i + 1; touch(1); pane(); }, 'sm'), btn('✕', e => { e.stopPropagation(); if (P.scenes.length < 2) return; if (confirm(TR('Удалить сцену «' + s.name + '»?'))) { P.scenes.splice(i, 1); sel = Math.max(0, i - 1); touch(1); pane(); } }, 'sm dng')); c.append(hd); c.onclick = () => { if (sel !== i) { sel = i; seek(E.timeline(P)[i].s + .3); pane(); } }; list.append(c); if (i === sel) c.append(sceneEditor(s)); });
   el.append(list); el.append(h('div', { class: 's-row' }, btn('+ Сцена', () => { P.scenes.splice(sel + 1, 0, D.newScene()); sel++; touch(1); pane(); }, 'pri')));
 }
 function sceneEditor(s) {
@@ -94,7 +117,7 @@ function sceneEditor(s) {
     if (p.type !== 'text') r2.append(F.col(p, 'color', 'Цвет', E.THEMES[P.theme].a));
     rows.push(r2);
     if (ty === 'cards') { const ta = h('textarea', { rows: 4 }); ta.value = (p.items || []).map(o => [o.icon, o.label, o.value || ''].join(' | ')).join('\n'); ta.oninput = () => { p.items = ta.value.split('\n').filter(x => x.trim()).map(l => { const [a, b, c] = l.split('|').map(x => x.trim()); return { icon: E.ICONNAMES.includes(a) ? a : 'star', label: b || '', value: c || '' }; }); touch(); }; rows.push(fld('Карточки: иконка | подпись | значение (иконки: ' + E.ICONNAMES.join(', ') + ')', ta, 'w')); }
-    if (ty === 'chat') { const ta = h('textarea', { rows: 4 }); ta.value = (p.items || []).map(o => (o.who === 'me' ? 'я: ' : 'он: ') + o.text).join('\n'); ta.oninput = () => { p.items = ta.value.split('\n').filter(x => x.trim()).map(l => { const m = /^(я|me|он|они|them)\s*:\s*(.*)$/i.exec(l); return { who: m && /^(я|me)$/i.test(m[1]) ? 'me' : 'them', text: m ? m[2] : l }; }); touch(); }; rows.push(fld('Сообщения: «я: …» или «он: …», по строке', ta, 'w'), h('div', { class: 's-row' }, F.num(p, 'gap', 'Пауза между, с', { opt: 1 }))); }
+    if (ty === 'chat') { const ta = h('textarea', { rows: 4 }); ta.value = (p.items || []).map(o => (o.who === 'me' ? tt('я: ', 'me: ') : tt('он: ', 'them: ')) + o.text).join('\n'); ta.oninput = () => { p.items = ta.value.split('\n').filter(x => x.trim()).map(l => { const m = /^(я|me|он|они|them)\s*:\s*(.*)$/i.exec(l); return { who: m && /^(я|me)$/i.test(m[1]) ? 'me' : 'them', text: m ? m[2] : l }; }); touch(); }; rows.push(fld('Сообщения: «я: …» или «он: …», по строке', ta, 'w'), h('div', { class: 's-row' }, F.num(p, 'gap', 'Пауза между, с', { opt: 1 }))); }
     c.append(...rows); w.append(c); });
   w.append(h('div', { class: 's-row' }, btn('+ Предмет', () => { s.props.push({ type: 'popup', text: 'ТЕКСТ', x: .5, y: .35, at: 0.5 }); touch(); pane(); }, 'sm')));
   // субтитры
@@ -115,7 +138,7 @@ function pChars(el) {
   let cur = Object.keys(P.chars)[0]; const wrap = h('div'); el.append(wrap);
   const draw = () => {
     wrap.innerHTML = ''; stopCharPv(); const ids = Object.keys(P.chars); if (!P.chars[cur]) cur = ids[0]; const ch = P.chars[cur];
-    wrap.append(h('div', { class: 's-row' }, F.sel({ v: cur }, 'v', 'Персонаж', Object.fromEntries(ids.map(k => [k, P.chars[k].name || k])), { on: v => { cur = v; draw(); } }), btn('+ Новый', () => { const id = 'c' + Date.now().toString(36).slice(-4); P.chars[id] = Object.assign({}, D.hero, { name: 'Персонаж ' + (ids.length + 1), hood: rnd(['#e53935', '#1e88e5', '#8e24aa', '#fb8c00', '#00897b']), hair: rnd(['#222', '#6d4c41', '#c9a227', '#b0381a']) }); cur = id; save(); draw(); }, 'sm'), btn('Удалить', () => { if (ids.length < 2) return; if (confirm('Удалить персонажа? Он пропадёт из сцен.')) { delete P.chars[cur]; P.scenes.forEach(s => s.cast = (s.cast || []).filter(m => m.c !== cur)); cur = Object.keys(P.chars)[0]; touch(); draw(); } }, 'sm dng')));
+    wrap.append(h('div', { class: 's-row' }, F.sel({ v: cur }, 'v', 'Персонаж', Object.fromEntries(ids.map(k => [k, P.chars[k].name || k])), { on: v => { cur = v; draw(); } }), btn('+ Новый', () => { const id = 'c' + Date.now().toString(36).slice(-4); P.chars[id] = Object.assign({}, D.hero, { name: 'Персонаж ' + (ids.length + 1), hood: rnd(['#e53935', '#1e88e5', '#8e24aa', '#fb8c00', '#00897b']), hair: rnd(['#222', '#6d4c41', '#c9a227', '#b0381a']) }); cur = id; save(); draw(); }, 'sm'), btn('Удалить', () => { if (ids.length < 2) return; if (confirm(TR('Удалить персонажа? Он пропадёт из сцен.'))) { delete P.chars[cur]; P.scenes.forEach(s => s.cast = (s.cast || []).filter(m => m.c !== cur)); cur = Object.keys(P.chars)[0]; touch(); draw(); } }, 'sm dng')));
     const pv = h('canvas', { width: 380, height: 520 }), an = { v: 'idle' }, ex = { v: 'calm' }; const fs = h('div', { class: 's-fs' });
     fs.append(h('div', { class: 's-row' }, F.text(ch, 'name', 'Имя', { on: () => save(), cls: '' }), F.sel(ch, 'hairStyle', 'Причёска', E.HAIR, { on: () => touch() }), F.sel(ch, 'acc', 'Аксессуар', E.ACC, { on: () => touch() })), h('div', { class: 's-row' }, F.col(ch, 'hood', 'Одежда'), F.col(ch, 'pants', 'Брюки'), F.col(ch, 'hair', 'Волосы'), F.col(ch, 'skin', 'Кожа')), h('div', { class: 's-row' }, F.sel(an, 'v', 'Анимация (показ)', E.ANIMS, { on: () => { } }), F.sel(ex, 'v', 'Эмоция (показ)', E.EXPR, { on: () => { } }), F.chk(ch, 'phoneHold', 'Телефон в руке', () => { ch.hold = ch.phoneHold ? 'phone' : undefined; touch(); })), h('div', { class: 's-row' }, btn('Случайный вид', () => { Object.assign(ch, { hood: rnd(['#e53935', '#1e88e5', '#8e24aa', '#fb8c00', '#00897b', '#546e7a', '#f06292']), pants: rnd(['#283046', '#37474f', '#4e342e', '#212121']), hair: rnd(['#222', '#6d4c41', '#c9a227', '#b0381a', '#5d4037', '#9e9e9e']), skin: rnd(['#f7c8a0', '#e0a878', '#c68a5c', '#8d5a3a', '#fde0c8']), hairStyle: rnd(Object.keys(E.HAIR)), acc: rnd(Object.keys(E.ACC)) }); touch(); draw(); }, 'sm')));
     wrap.append(h('div', { class: 's-cpv' }, pv, fs)); const c2 = pv.getContext('2d'); const T0 = performance.now();
@@ -126,7 +149,7 @@ function pChars(el) {
 // --- Тема и HUD ---
 function pTheme(el) {
   el.append(h('h3', 0, 'Палитра')); const g = h('div', { class: 's-grid' }); for (const [k, th] of Object.entries(E.THEMES)) { const b = h('button', { type: 'button', class: 's-thm' + (P.theme === k ? ' on' : ''), onclick: () => { P.theme = k; touch(); pane(); } }, th.name, h('i', { style: `background:linear-gradient(90deg,${th.sky[0]},${th.a} 40%,${th.b} 70%,${th.hl})` })); g.append(b); } el.append(g);
-  el.append(h('h3', 0, 'Субтитры')); P.cap = P.cap || { size: 104, y: .8 }; el.append(h('div', { class: 's-row' }, F.num(P.cap, 'size', 'Размер', { min: 50, max: 160, step: 4 }), F.num(P.cap, 'y', 'Высота 0–1', { min: .2, max: .95, step: .02 }), F.col(P.cap, 'hl', 'Цвет выделения', E.THEMES[P.theme].hl)));
+  el.append(h('h3', 0, 'Субтитры')); P.cap = P.cap || { size: 104, y: .66 }; el.append(h('div', { class: 's-row' }, F.num(P.cap, 'size', 'Размер', { min: 50, max: 160, step: 4 }), F.num(P.cap, 'y', 'Высота 0–1', { min: .2, max: .95, step: .02 }), F.col(P.cap, 'hl', 'Цвет выделения', E.THEMES[P.theme].hl)));
   el.append(h('div', { class: 's-row' }, F.chk(P, 'vignette', 'Виньетка', () => touch())));
   el.append(h('h3', 0, 'HUD: плашки и полоса')); P.hud = P.hud || { on: false, plates: [], bar: null }; const H = P.hud;
   el.append(h('p', { class: 's-note' }, 'Значения меняются по ключевым точкам «секунда:значение» на всём видео. Время — формат мм:сс.'));
@@ -159,13 +182,34 @@ function pSound(el) {
   el.append(h('h3', 0, 'Библиотека звуков')); el.append(h('p', { class: 's-note' }, 'Нажми, чтобы послушать. Добавлять в сцену — во вкладке «Сцены», блок «Звуки сцены».')); const g = h('div', { class: 's-sfx' }); for (const [k, n] of Object.entries(A.SFX_NAMES)) g.append(btn('▶ ' + n, () => A.playSfx(k), 'sm')); el.append(g);
 }
 
-// --- Экспорт ---
-function pExport(el) {
-  const o = { res: '720', fps: 30 }; el.append(h('p', { class: 's-note' }, 'Запись идёт в реальном времени: ролик проигрывается и записывается вместе со звуком, поэтому не сворачивай вкладку, пока идёт запись. Chrome и Edge дают MP4 или WebM; Safari — MP4.'));
+// --- Выпуск ---
+function hashtags() { const txt = P.scenes.flatMap(sc => sc.caps.map(c => E.stripCap(c.text))).join(' ').toLowerCase().replace(/[^\p{L}\p{N} ]/gu, ' '); const cnt = {}; txt.split(/\s+/).filter(w => w.length >= 5).forEach(w => cnt[w] = (cnt[w] || 0) + 1); const top = Object.entries(cnt).sort((a, b) => b[1] - a[1]).slice(0, 4).map(x => '#' + x[0]); return top.concat(I.lang === 'en' ? ['#reels', '#fyp'] : ['#рилс', '#рекомендации']).join(' '); }
+function postText() { const first = P.scenes[0] && P.scenes[0].caps[0] ? E.stripCap(P.scenes[0].caps[0].text) : ''; const low = first.charAt(0) + first.slice(1).toLowerCase(); return (P.title || '') + (low ? ' — ' + low + '…' : '') + '\n\n' + tt('Досмотри до конца 👇', 'Watch till the end 👇') + '\n\n' + hashtags(); }
+function checks() {
+  const T = total(), out = [], cap = P.cap || { size: 104, y: .66 };
+  out.push(T > 90 ? [0, tt('Длина ' + T.toFixed(0) + ' с — Reels принимает до 90 с', T.toFixed(0) + ' s — Reels accept up to 90 s')] : T < 7 ? [0, tt('Длина ' + T.toFixed(0) + ' с — коротковато, лучше 7–60 с', T.toFixed(0) + ' s — a bit short, 7–60 s works best')] : [1, tt('Длина ' + T.toFixed(0) + ' с — подходит для Reels', T.toFixed(0) + ' s — good length for Reels')]);
+  const c0 = P.scenes[0] && P.scenes[0].caps[0]; out.push(c0 && c0.at <= 1.5 && c0.text && c0.text !== '...' ? [1, tt('Крючок: фраза появляется в первые 1,5 с', 'Hook: a line appears in the first 1.5 s')] : [0, tt('Крючок: добавь фразу в самом начале (первые 1,5 с)', 'Hook: add a line at the very start (first 1.5 s)')]);
+  const lines = 2, bottom = (cap.y == null ? .72 : cap.y) + (cap.size * 1.12 * lines / 2) / 1920;
+  out.push(bottom <= .74 ? [1, tt('Субтитры в безопасной зоне Instagram', 'Captions are inside the Instagram safe zone')] : [0, tt('Субтитры внизу закроются подписью и кнопками Instagram', 'Bottom captions will be covered by Instagram’s caption and buttons'), () => { cap.y = .62; P.cap = cap; touch(); pane(); }, tt('Поднять', 'Raise')]);
+  const snd = (P.music && P.music.style && P.music.style !== 'none') || (P.voice && P.voice.on); out.push(snd ? [1, tt('Звук: музыка или голос включены', 'Sound: music or voice is on')] : [0, tt('Тишина: добавь музыку или голос', 'Silent: add music or a voice'), () => goStep(3, 'sound'), tt('К звуку', 'To sound')]);
+  const empty = P.scenes.filter(sc => !sc.caps.some(c => c.text && c.text !== '...')).length; out.push(empty ? [0, tt(empty + ' сцен без текста — зритель уйдёт', empty + ' scene(s) without text — viewers may leave'), () => goStep(1, 'scenes'), tt('К сценам', 'To scenes')] : [1, tt('В каждой сцене есть текст', 'Every scene has text')]);
+  return out;
+}
+function pPublish(el) {
+  const o = { res: '720' }; el.append(h('p', { class: 's-lead' }, tt('Проверь ролик, запиши видео и забери текст для поста.', 'Check the video, record it, and grab the post text.')));
+  el.append(h('h3', 0, tt('Проверка перед публикацией', 'Pre-publish check')));
+  const ig = $('ig'); if (ig.hidden) { ig.hidden = false; $('igbtn').classList.add('on'); }
+  for (const [ok, msg, fix, fl] of checks()) el.append(h('div', { class: 's-ck' + (ok ? '' : ' bad') }, h('span', { class: 'ic' }, ok ? '✓' : '!'), h('span', { class: 't' }, msg), fix ? btn(fl, fix, 'sm') : null));
+  el.append(h('h3', 0, tt('Записать видео', 'Record video')));
+  el.append(h('p', { class: 's-note' }, 'Запись идёт в реальном времени: ролик проигрывается и записывается вместе со звуком, поэтому не сворачивай вкладку, пока идёт запись. Chrome и Edge дают MP4 или WebM; Safari — MP4.'));
   el.append(h('div', { class: 's-row' }, F.sel(o, 'res', 'Размер', { 540: '540×960 (быстро, лёгкий)', 720: '720×1280 (по умолчанию)', 1080: '1080×1920 (максимум)' }, { on: () => { }, cls: '' })));
   const st = h('div', { class: 's-msg' }), pr = h('div', { class: 's-prog' }, h('i')), res = h('div', { class: 's-res' }); pr.hidden = true;
-  const go = btn('Записать видео', async () => { go.disabled = true; res.innerHTML = ''; pr.hidden = false; st.className = 's-msg'; try { const out = await record(+o.res, 30, p => { pr.firstChild.style.width = p * 100 + '%'; st.textContent = 'Запись… ' + Math.round(p * 100) + '%'; }); const ext = /mp4/.test(out.type) ? 'mp4' : 'webm'; const url = URL.createObjectURL(out); res.append(h('video', { src: url, controls: true, playsinline: true }), h('div', { class: 's-row' }, btn('Скачать .' + ext + ' (' + (out.size / 1e6).toFixed(1) + ' МБ)', () => dl(out, slug() + '.' + ext), 'pri'))); st.textContent = 'Готово'; st.className = 's-msg ok'; } catch (e) { st.textContent = e.message || String(e); st.className = 's-msg err'; } pr.hidden = true; go.disabled = false; frame(); hud(); }, 'pri');
-  el.append(h('div', { class: 's-row' }, go, btn('Сохранить текущий кадр (PNG)', () => { const c = document.createElement('canvas'); c.width = 1080; c.height = 1920; const x = c.getContext('2d'); E.drawScene(x, P, Math.min(t, total() - .01)); c.toBlob(b => dl(b, slug() + '_' + t.toFixed(1) + 's.png')); })), pr, st, res);
+  const rb = btn('● ' + tt('Записать видео', 'Record video'), async () => { rb.disabled = true; res.innerHTML = ''; pr.hidden = false; $('ig').hidden = true; $('igbtn').classList.remove('on'); st.className = 's-msg'; try { const out = await record(+o.res, 30, p => { pr.firstChild.style.width = p * 100 + '%'; st.textContent = 'Запись… ' + Math.round(p * 100) + '%'; }); const ext = /mp4/.test(out.type) ? 'mp4' : 'webm'; const url = URL.createObjectURL(out); res.append(h('video', { src: url, controls: true, playsinline: true }), btn('Скачать .' + ext + ' (' + (out.size / 1048576).toFixed(1) + ' МБ)', () => dl(out, slug() + '.' + ext), 'pri')); st.textContent = 'Готово'; st.className = 's-msg ok'; } catch (e) { st.textContent = e.message; st.className = 's-msg err'; } pr.hidden = true; rb.disabled = false; }, 'pri big');
+  el.append(h('div', { class: 's-row' }, rb, btn('Сохранить текущий кадр (PNG)', () => { const c = document.createElement('canvas'); c.width = 1080; c.height = 1920; const x = c.getContext('2d'); E.drawScene(x, P, Math.min(t, total() - .01)); c.toBlob(b => dl(b, slug() + '_' + t.toFixed(1) + 's.png')); })), pr, st, res);
+  el.append(h('h3', 0, tt('Текст для поста', 'Post text')));
+  const ta = h('textarea', { class: 's-post', rows: 6 }); ta.value = postText();
+  el.append(ta, h('div', { class: 's-row' }, btn(tt('Скопировать', 'Copy'), async () => { try { await navigator.clipboard.writeText(ta.value); } catch (e) { ta.select(); document.execCommand('copy'); } }, 'sm'), btn(tt('Обновить', 'Regenerate'), () => { ta.value = postText(); }, 'sm')));
+  el.append(h('p', { class: 's-note' }, tt('Загрузи файл в Instagram: «Создать» → Reels → выбери видео из галереи. Проект хранится в этом браузере; сохрани его файлом на вкладке «Идея».', 'Upload the file in Instagram: Create → Reels → pick the video from your gallery. The project lives in this browser; save it as a file in the “Idea” step.')));
 }
 function pickMime() { const c = ['video/mp4;codecs=avc1.42E01E,mp4a.40.2', 'video/mp4', 'video/webm;codecs=vp9,opus', 'video/webm;codecs=vp8,opus', 'video/webm']; return c.find(m => G.MediaRecorder && MediaRecorder.isTypeSupported(m)) || ''; }
 async function record(width, fps, onp) {
@@ -181,7 +225,7 @@ async function record(width, fps, onp) {
 }
 
 // ---------- старт ----------
-P = load(); tabs(); tlBuild(); frame(); hud(); pane();
-$('sbadge').textContent = 'проект сохраняется в браузере';
+P = load(); staticApply(); tabs(); tlBuild(); frame(); hud(); pane(); I.trNode($('sw')); I.watch($('sw'));
+try { if (localStorage.getItem('studio:ig') === '1') { $('ig').hidden = false; $('igbtn').classList.add('on'); } } catch (e) {}
 G.Studio = { get P() { return P; }, setProject, seek, play, pause, frame, record, N };
 })(window);

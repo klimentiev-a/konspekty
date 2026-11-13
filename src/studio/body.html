@@ -1,19 +1,36 @@
 <div class="sw" id="sw">
-  <!--TOPBAR-->
-  <div class="sh"><h1>Студия</h1><p class="lead">Короткие вертикальные видео: сценарий, персонажи, сцены, музыка и голос. Всё собирается в браузере, проект хранится у тебя на устройстве. <span class="sbadge" id="sbadge"></span></p></div>
-  <div class="sg">
-    <div class="sl" id="sl">
-      <div class="s-pv" id="pv"><canvas id="cv" width="540" height="960"></canvas><button type="button" class="pplay" id="pplay" aria-label="Играть"><svg viewBox="0 0 24 24" width="34" height="34"><path d="M8 5v14l11-7z" fill="currentColor"/></svg></button></div>
+  <header class="s-top">
+    <a class="s-back" href="artem.html" aria-label="Hub"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+    <div class="s-brand"><i class="s-logo"><svg viewBox="0 0 24 24" width="16" height="16"><path d="M8 5v14l11-7z" fill="#fff"/></svg></i><b>Reel Studio</b><span class="s-sub" data-r="вертикальное видео для Instagram" data-e="vertical video for Instagram"></span></div>
+    <span class="sbadge" id="sbadge"></span>
+    <div class="s-lang" role="group" aria-label="Language"><button type="button" data-l="ru">RU</button><button type="button" data-l="en">EN</button></div>
+  </header>
+  <nav class="s-steps" id="steps" aria-label="Steps"></nav>
+  <div class="s-main">
+    <section class="s-stage" id="sl">
+      <div class="s-phone">
+        <div class="s-pv" id="pv"><canvas id="cv" width="540" height="960"></canvas>
+          <div class="s-ig" id="ig" hidden>
+            <div class="ig-zone"></div>
+            <div class="ig-top"><b>Reels</b><svg viewBox="0 0 24 24" width="20" height="20"><path d="M4 8h3l1.5-2h7L17 8h3v11H4z" fill="none" stroke="#fff" stroke-width="1.8" stroke-linejoin="round"/><circle cx="12" cy="13" r="3.2" fill="none" stroke="#fff" stroke-width="1.8"/></svg></div>
+            <div class="ig-side"><span><svg viewBox="0 0 24 24" width="22" height="22"><path d="M12 20s-7-4.4-7-10a4 4 0 017-2.6A4 4 0 0119 10c0 5.6-7 10-7 10z" fill="none" stroke="#fff" stroke-width="1.8" stroke-linejoin="round"/></svg>12,4K</span><span><svg viewBox="0 0 24 24" width="22" height="22"><path d="M5 5h14v10H10l-5 4z" fill="none" stroke="#fff" stroke-width="1.8" stroke-linejoin="round"/></svg>318</span><span><svg viewBox="0 0 24 24" width="22" height="22"><path d="M4 11l16-7-6 16-3-6z" fill="none" stroke="#fff" stroke-width="1.8" stroke-linejoin="round"/></svg>2,1K</span><span class="dots">⋯</span></div>
+            <div class="ig-bot"><div class="ig-user"><i class="ig-av"></i><b>your_account</b><em data-r="Подписаться" data-e="Follow"></em></div><p data-r="Подпись к видео… ещё" data-e="Video caption… more"></p><div class="ig-aud">♪ <span data-r="Оригинальное аудио" data-e="Original audio"></span></div></div>
+          </div>
+          <button type="button" class="pplay" id="pplay" aria-label="Play"><svg viewBox="0 0 24 24" width="34" height="34"><path d="M8 5v14l11-7z" fill="currentColor"/></svg></button>
+        </div>
+      </div>
       <div class="s-tr">
-        <button type="button" class="s-tb" id="bplay" aria-label="Играть / пауза"><svg viewBox="0 0 24 24" width="20" height="20"><path id="bpi" d="M8 5v14l11-7z" fill="currentColor"/></svg></button>
-        <input type="range" id="scrub" min="0" max="1000" value="0" aria-label="Перемотка">
+        <button type="button" class="s-tb" id="bplay" aria-label="Play / pause"><svg viewBox="0 0 24 24" width="20" height="20"><path id="bpi" d="M8 5v14l11-7z" fill="currentColor"/></svg></button>
+        <input type="range" id="scrub" min="0" max="1000" value="0" aria-label="Seek">
         <span class="s-tt" id="ttime">0:00 / 0:00</span>
       </div>
-      <div class="s-tl" id="tl" aria-label="Сцены"></div>
-    </div>
-    <div class="sr">
+      <div class="s-tl" id="tl" aria-label="Scenes"></div>
+      <button type="button" class="s-igbtn" id="igbtn"><span class="d"></span><span data-r="Рамка Instagram" data-e="Instagram frame"></span></button>
+    </section>
+    <section class="s-panel">
       <div class="s-tabs" id="tabs" role="tablist"></div>
       <div class="s-pane" id="pane"></div>
-    </div>
+      <div class="s-nav" id="nav"></div>
+    </section>
   </div>
 </div>
