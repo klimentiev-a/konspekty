@@ -9,9 +9,10 @@ function fmt(n){return (Math.round(n*100)/100).toString().replace('.',',')}
 function inl(s){return esc(s).replace(/`([^`]+)`/g,'<code>$1</code>').replace(/\*\*([^*]+)\*\*/g,'<b>$1</b>')}
 function paras(s){return String(s).split(/\n\n+/).map(function(p){return '<p>'+inl(p).replace(/\n/g,'<br>')+'</p>'}).join('')}
 /* ---------- хранилище ---------- */
-var P={code:{},tr:{},ex:{}};
-try{var raw=JSON.parse(localStorage.getItem(LS)||'null');if(raw&&typeof raw==='object'){P.code=raw.code||{};P.tr=raw.tr||{};P.ex=raw.ex||{}}}catch(e){}
-function save(){try{localStorage.setItem(LS,JSON.stringify(P))}catch(e){}}
+var SETV='2026-11-13';/* версия набора задач: при смене прогресс и код старых задач сбрасываются */
+var P={code:{},tr:{},ex:{},setv:SETV};
+try{var raw=JSON.parse(localStorage.getItem(LS)||'null');if(raw&&typeof raw==='object'&&raw.setv===SETV){P.code=raw.code||{};P.tr=raw.tr||{};P.ex=raw.ex||{}}}catch(e){}
+function save(){try{P.setv=SETV;localStorage.setItem(LS,JSON.stringify(P))}catch(e){}}
 /* ---------- подсветка кода ---------- */
 var KW={and:1,as:1,break:1,class:1,continue:1,def:1,elif:1,else:1,except:1,False:1,finally:1,for:1,from:1,if:1,import:1,in:1,is:1,lambda:1,None:1,not:1,or:1,pass:1,return:1,True:1,try:1,while:1,with:1};
 var BI={print:1,input:1,int:1,len:1,range:1,set:1,list:1,dict:1,str:1,float:1,sum:1,min:1,max:1,sorted:1,map:1,abs:1,round:1,type:1,enumerate:1,zip:1};
