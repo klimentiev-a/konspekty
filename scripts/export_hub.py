@@ -13,7 +13,7 @@ subprocess.check_call(['git', 'archive', '--format=zip', '-o', OUT + '/hub-repo.
 shutil.copy(ROOT + '/CLAUDE.md', OUT + '/CLAUDE.md')
 # локальный запуск: двойной щелчок по «Открыть сайт.bat» (PowerShell есть в любой Windows, Python не нужен)
 open(OUT + '/serve.ps1', 'w', encoding='utf-8-sig', newline='\r\n').write(open(ROOT + '/scripts/local/serve.ps1', encoding='utf-8').read())
-open(OUT + '/Открыть сайт.bat', 'w', encoding='ascii', newline='\r\n').write('@echo off\npowershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0serve.ps1"\npause\n')
+open(OUT + '/Открыть сайт.bat', 'w', encoding='ascii', newline='\r\n').write('@echo off\nset "S=%~dp0serve.ps1"\nif not exist "%S%" for /d %%D in ("%~dp0*") do if exist "%%D\\serve.ps1" set "S=%%D\\serve.ps1"\nif not exist "%S%" (echo serve.ps1 not found & pause & exit /b)\npowershell -NoProfile -ExecutionPolicy Bypass -File "%S%"\npause\n')
 ver = re.search(r"hub-v(\d+)", open(ROOT + '/sw.js', encoding='utf-8').read()).group(0)
 open(OUT + '/README.txt', 'w', encoding='utf-8').write(
     f"Выгрузка Hub Артёма, {datetime.date.today()}, версия сайта {ver}.\n"
