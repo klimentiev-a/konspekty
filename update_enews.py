@@ -92,8 +92,22 @@ DRIVER = [(re.compile(r'переговор|перемири|мирн\w* (?:пл�
 CAUSAL = re.compile(r'на фоне|из-за|после того|благодаря|в ожидании|ожидани|надежд|опасени|amid|on hopes|on fears|hopes|fears', re.I)
 GENERIC = re.compile(r'итоги торгов|закрылся|закрыл|закрытие торгов|торги на Мосбирже|обзор рынка|прибавил|потерял|\bвырос|\bупал|снизился|рынок акций РФ|stocks (?:close|end)|Wall Street (?:closes|ends)', re.I)
 def junk(t): return len(t) < 28 or t.endswith('..') or re.match(r'Москва\.\s*\d', t) is not None
-def score(t, ix=False):
+EVENT = re.compile(r'отставк|уход\w* с поста|уволь|resign|steps? down|ousted|\bexit|\bCEO\b|генеральн\w+ директор|расследован|шпион|probe|investigat|банкрот|bankrupt|поглощ|слияни|acqui|merger|дивиденд|dividend|guidance|прогноз|downgrad|upgrad|понизил рейтинг|повысил рейтинг|санкц|sanction|иск\b|lawsuit|IPO|отч[её]т|earnings|прибыл|profit|выручк|revenue', re.I)
+ENTX = {'NVDA': ['huang', 'хуанг'], 'TSLA': ['musk', 'маск'], 'META': ['zuckerberg'], 'AAPL': ['iphone'], 'SBER': ['сбер', 'греф'], 'VTBR': ['втб', 'костин'], 'YDEX': ['яндекс', 'yandex']}
+def entterms(f):
+    """слова, по которым видно, что новость ПРО эту бумагу (а не про соседей по отрасли)"""
+    if not f or f.startswith('ix-'): return None
+    k = f.split('-', 1)[1]; q = next((x[1] for x in ENT if x[0] == f), '') or ''
+    w = re.findall(r'[A-Za-zА-Яа-яЁё0-9\-]{3,}', q.split(' OR ')[0].replace('"', ''))
+    out = [w[0].lower()] if w else []
+    out += [k.lower()] if len(k) > 2 else []
+    return out + ENTX.get(k, [])
+def score(t, ix=False, ent=None):
     sc = len(KEYW.findall(t)) * 2 - (3 if NOISE.search(t) else 0) - (9 if junk(t) else 0)
+    if ent:   # новость про саму бумагу важнее новости про её соседей: «Micron упал из-за Nvidia» — не причина движения Nvidia
+        tl = t.lower(); first = tl[:50]
+        sc += 7 if any(e in first for e in ent) else (2 if any(e in tl for e in ent) else -5)
+        if EVENT.search(t): sc += 4
     if ix:   # для индексов важна ПРИЧИНА движения, а не пересказ «индекс вырос на 1%»
         sc += sum(w for r, w in DRIVER if r.search(t)) + (3 if CAUSAL.search(t) else 0) - (4 if GENERIC.search(t) else 0)
     return sc
@@ -125,13 +139,14 @@ def toks(t):
     t = re.sub(r'(?i)\bЦОД\w*', 'дата центр', t); t = re.sub(r'(?i)БПЛА|дрон\w*', 'беспилотник', t)
     return {(w[:4] if re.match('[а-яё]', w) else w[:5]) for w in re.findall(r'[a-zа-яё0-9]{4,}', t.lower())}
 def norm(t): return re.sub(r'\W+', ' ', t.lower()).strip()[:70]
-def merge(db, found, ix=False):
+def merge(db, found, ix=False, f=None):
     have = {norm(x.get('to') or x['t']) for x in db['items']}
     n = 0
     for x in found:
         k = norm(x['t'])
         if k in have: continue
         have.add(k); x['id'] = hashlib.md5(x['g'].encode()).hexdigest()[:10]; db['items'].append(x); n += 1
+    ent = entterms(f)
     # не больше 5 лучших на день, храним ~5 лет
     cut = iso(TODAY - datetime.timedelta(days=1840))
     byday = {}
@@ -139,7 +154,7 @@ def merge(db, found, ix=False):
         if x['d'][:10] >= cut: byday.setdefault(x['d'][:10], []).append(x)
     keep = []
     for day, a in byday.items():
-        a.sort(key=lambda x: (bool(x.get('sum')), score(x.get('to') or x['t'], ix)), reverse=True)
+        a.sort(key=lambda x: (score(x.get('to') or x['t'], ix, ent), bool(x.get('sum'))), reverse=True)
         pick = []   # до 5 разных сюжетов за день: почти одинаковые заголовки не дублируем
         for x in a:
             tk = toks(x.get('to') or x['t'])
@@ -173,7 +188,7 @@ for f, q, lang, thr, src in ENT:
     if db.get('rq') and (NOW - datetime.datetime.strptime(db['rq'], '%Y-%m-%dT%H:%MZ').replace(tzinfo=datetime.timezone.utc)).total_seconds() < (12 if f in EXTRA else 3) * 3600: continue
     found = gsearch(q + ' when:2d', lang); used += 1
     if found or not STOP['gn']:
-        merge(db, found, f.startswith('ix-')); db['rq'] = NOW.strftime('%Y-%m-%dT%H:%MZ'); changed.add(f)
+        merge(db, found, f.startswith('ix-'), f); db['rq'] = NOW.strftime('%Y-%m-%dT%H:%MZ'); changed.add(f)
 # 2) дни с заметным движением цены — от новых к старым
 moves.sort(key=lambda m: (m[0], m[1]), reverse=True)
 for day, ar, f, q, lang in moves:
@@ -189,7 +204,7 @@ for day, ar, f, q, lang in moves:
     if not found and kk in RU_EN and used < GN_BUDGET:   # по-русски ничего — пробуем международную прессу
         alt = gsearch('%s after:%s before:%s' % (RU_EN[kk], iso(d - datetime.timedelta(days=2)), iso(d + datetime.timedelta(days=2))), 'en'); used += 1
         found = [x for x in alt if iso(d - datetime.timedelta(days=1)) <= x['d'][:10] <= day or (x['d'][:10] == nxt and x['d'][11:13] < '06')]
-    merge(dbs[f], found, f.startswith('ix-')); dbs[f]['qd'][day] = len(found); changed.add(f)
+    merge(dbs[f], found, f.startswith('ix-'), f); dbs[f]['qd'][day] = len(found); changed.add(f)
 print('google news queries', used, 'moves left', max(0, len(moves) - used), 'stopped' if STOP['gn'] else '')
 
 # 3) перевод англоязычных заголовков (пакетами)
@@ -212,15 +227,16 @@ print('translate batches', nb)
 
 # 4) пересказ главной новости каждого дня (сначала свежие); если у главной не вышло — берём следующую по важности
 LOWSRC = {'The Motley Fool', 'Motley Fool', 'Zacks', 'Zacks Investment Research', 'InvestorPlace', 'Simply Wall St', 'Simply Wall Street', 'MarketBeat', 'Benzinga', 'Stocktwits'}
-def rank(x, ix=False): return score(x.get('to') or x['t'], ix) - (3 if x.get('s') in LOWSRC else 0)
+def rank(x, ix=False, f=None): return score(x.get('to') or x['t'], ix, entterms(f)) - (3 if x.get('s') in LOWSRC else 0)
 cand = []
 for f, db in dbs.items():
     byday = {}
     for x in db['items']: byday.setdefault(x['d'][:10], []).append(x)
     for day, a in byday.items():
-        if any(x.get('sum') for x in a): continue
+        top = max(a, key=lambda x: rank(x, f.startswith('ix-'), f))
+        if top.get('sum'): continue
         a = [x for x in a if x.get('sf', 0) < 2]
-        if a: cand.append((day, f, max(a, key=lambda x: rank(x, f.startswith('ix-')))))
+        if a: cand.append((day, f, max(a, key=lambda x: rank(x, f.startswith('ix-'), f))))
 cand.sort(key=lambda c: c[0], reverse=True)
 cand = cand[:DEC_BUDGET]
 from concurrent.futures import ThreadPoolExecutor
