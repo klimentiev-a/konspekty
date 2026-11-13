@@ -175,7 +175,7 @@ main{min-width:0;padding-inline:var(--gut);padding-bottom:96px}
 .hlrow em{display:block;margin-top:2px;font:400 13.5px/1.4 var(--sans);font-style:normal;color:var(--accent)}
 .prose a.art{color:inherit;text-decoration:none;border:0;cursor:pointer;border-radius:4px;transition:background .15s}
 .prose .artg{cursor:pointer;border-radius:4px;transition:background .15s}.prose .artg:hover{background:color-mix(in srgb,var(--accent) 18%,transparent)}
-.prose a.trm{color:inherit;text-decoration:none;border-bottom:1px dotted currentColor;cursor:help;border-radius:3px}.prose a.trm:hover{background:color-mix(in srgb,var(--accent) 18%,transparent)}
+.prose a.trm{color:inherit;text-decoration:none;border:0;cursor:pointer;border-radius:4px;transition:background .15s}.prose a.trm:hover{background:color-mix(in srgb,var(--accent) 18%,transparent)}
 .prose a.art:hover,.prose a.art:focus-visible{background:color-mix(in srgb,var(--accent) 18%,transparent);outline:0}
 #artsheet{position:fixed;inset:0;z-index:96;zoom:var(--iz,1);background:rgba(0,0,0,0);transition:background .22s ease}
 #artsheet[hidden]{display:none}
@@ -1767,7 +1767,7 @@ function termMark(root){
     if(!hits.length)return;
     hits.sort(function(a,b){return a[0]-b[0]||b[1]-a[1]});
     var frag=document.createDocumentFragment(),last=0;
-    hits.forEach(function(h){if(h[0]<last||seen[h[2]])return;seen[h[2]]=1;if(h[0]>last)frag.appendChild(document.createTextNode(v.slice(last,h[0])));var a=document.createElement('a');a.className='trm';a.href='#';a.setAttribute('data-trm',h[2]);a.textContent=v.slice(h[0],h[1]);frag.appendChild(a);last=h[1]});
+    hits.forEach(function(h){if(h[0]<last)return;if(h[0]>last)frag.appendChild(document.createTextNode(v.slice(last,h[0])));var a=document.createElement('a');a.className='trm';a.href='#';a.setAttribute('data-trm',h[2]);a.textContent=v.slice(h[0],h[1]);frag.appendChild(a);last=h[1]});
     if(last<v.length)frag.appendChild(document.createTextNode(v.slice(last)));
     pn.replaceChild(frag,node);
   });
