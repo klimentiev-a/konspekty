@@ -11,6 +11,9 @@ ids = set(sys.argv[1:])
 shutil.rmtree(OUT, ignore_errors=True); os.makedirs(OUT + '/Конспекты')
 subprocess.check_call(['git', 'archive', '--format=zip', '-o', OUT + '/hub-repo.zip', 'HEAD'], cwd=ROOT)
 shutil.copy(ROOT + '/CLAUDE.md', OUT + '/CLAUDE.md')
+# локальный запуск: двойной щелчок по «Открыть сайт.bat» (PowerShell есть в любой Windows, Python не нужен)
+open(OUT + '/serve.ps1', 'w', encoding='utf-8-sig', newline='\r\n').write(open(ROOT + '/scripts/local/serve.ps1', encoding='utf-8').read())
+open(OUT + '/Открыть сайт.bat', 'w', encoding='ascii', newline='\r\n').write('@echo off\npowershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0serve.ps1"\npause\n')
 ver = re.search(r"hub-v(\d+)", open(ROOT + '/sw.js', encoding='utf-8').read()).group(0)
 open(OUT + '/README.txt', 'w', encoding='utf-8').write(
     f"Выгрузка Hub Артёма, {datetime.date.today()}, версия сайта {ver}.\n"
@@ -19,7 +22,7 @@ open(OUT + '/README.txt', 'w', encoding='utf-8').write(
     "Конспекты/: отдельные md, обновляются только изменённые.\nCLAUDE.md: правила работы с репозиторием.\n")
 safe = lambda s: re.sub(r'[\\/:*?"<>|]+', '-', s).strip()[:80]
 d = json.load(open(ROOT + '/src/data.json', encoding='utf-8'))
-items = [OUT + '/' + f for f in ('hub-repo.zip', 'CLAUDE.md', 'README.txt')]
+items = [OUT + '/' + f for f in ('hub-repo.zip', 'CLAUDE.md', 'README.txt', 'serve.ps1', 'Открыть сайт.bat')]
 zf = zipfile.ZipFile(OUT + '/Конспекты.zip', 'w', zipfile.ZIP_DEFLATED)
 items.append(OUT + '/Конспекты.zip')
 for s in d['subjects']:
