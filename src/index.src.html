@@ -1745,7 +1745,7 @@ function artLinkify(c,def){
       var gs=start+m.index,ge=gs+m[0].length;
       var code=artCode(full.slice(Math.max(0,gs-60),gs),full.slice(ge,ge+50),def);
       if(!code)continue;
-      var part=refParse(full.slice(Math.max(0,gs-48),gs),full.slice(ge,ge+16)),ctx=refCtx(full.slice(Math.max(0,gs-260),gs),full.slice(ge,ge+90));
+      var part=refParse(full.slice(Math.max(0,gs-48),gs),full.slice(ge,ge+16)),ctx=refCtx(full.slice(Math.max(0,gs-460),gs),full.slice(ge,ge+160));
       var seg=m[0],ki=seg.search(/\d/),out=document.createDocumentFragment(),any=false;
       out.appendChild(document.createTextNode(seg.slice(0,ki)));
       var re2=/\(([^)]*)\)|(\d{1,4}(?:\.\d{1,2})?)/g,l2=ki,m2;
@@ -1879,17 +1879,20 @@ function refPick(a,spec){
 /* ссылка без части («ст. 808 ГК»): ищем в статье абзац, который по смыслу совпадает с фразой вокруг ссылки */
 var SEM_STOP=/^(стать|статьи|статье|статью|кодекс|закон|только|может|могут|должн|также|когда|если|чтобы|этот|этой|этого|которы|такой|такие|какие|любо|между|после|перед|через|более|менее|можно|нужно|нельз|сверит|ответ|вопрос|задач|решени|иск|суд|суда|истец|ответч|ответс|сторон|случа|право|права|прав)/;
 function semStems(t){var o={};(t.toLowerCase().match(/[а-яё]{4,}/g)||[]).forEach(function(w){var k=w.slice(0,5);if(!SEM_STOP.test(w))o[k]=1});return Object.keys(o)}
-function refCtx(pre,post){var tail=pre.split(/[;\n]|\.\s|:\s/).pop();if(tail.length<30)tail=pre.slice(-170);var h=post.split(/[;\n]|\.\s|\)/)[0];return (tail+' '+h).replace(/\s+/g,' ').trim().slice(-260)}
+function refCtx(pre,post){var tail=pre.split(/[;\n]|\.\s|:\s/).pop();if(tail.length<30)tail=pre.slice(-170);var h=post.split(/[;\n]|\.\s|\)/)[0],cl=(tail+' '+h).replace(/\s+/g,' ').trim().slice(-260),sn=(pre.split(/\.\s|\n/).pop()+' '+post.split(/\.\s|\n/)[0]).replace(/\s+/g,' ').trim().slice(-420);return cl+'|'+sn}
 function semPick(a,ctx){
-  if(!ctx)return {};var n=a.p.length,bl=[],cur=null;
-  for(var i=0;i<n;i++){var t=a.p[i];if(isNote(t)||/^-\s/.test(t)){cur=null;continue}
-    if(/^\d+(?:\.\d+)?\.\s/.test(t)||/^[а-яё](?:\.\d+)?\)\s/i.test(t)||!cur){cur={i0:i,i1:i+1,t:t};bl.push(cur)}else{cur.i1=i+1;cur.t+=' '+t}}
+  if(!ctx)return {};var n=a.p.length,bl=[],cur=null,st0=0;
+  for(var q=0;q<n;q++){if(/^1\.\s/.test(a.p[q])){st0=q;break}}   // всё до «1. …» — справочные строки практики, не текст статьи
+  for(var i=st0;i<n;i++){var t=a.p[i];if(isNote(t)||/^-\s/.test(t)||/^П\.\s?\d+\sст\./.test(t)){cur=null;continue}
+    if(/^\d+(?:\.\d+)?\.\s/.test(t)||/^(?:[а-яё]|\d+)(?:\.\d+)?\)\s/i.test(t)||!cur){cur={i0:i,i1:i+1,t:t};bl.push(cur)}else{cur.i1=i+1;cur.t+=' '+t}}
   if(bl.length<2)return {};
-  var st=semStems(ctx);if(st.length<2)return {};
+  var parts=ctx.split('|'),w={};semStems(parts[1]||'').forEach(function(k){w[k]=1});semStems(parts[0]).forEach(function(k){w[k]=2.2});
+  var st=Object.keys(w);if(!st.length)return {};
   var df={};bl.forEach(function(b){b.s={};semStems(b.t).forEach(function(k){b.s[k]=1;df[k]=(df[k]||0)+1})});
-  bl.forEach(function(b){b.sc=0;st.forEach(function(k){if(b.s[k])b.sc+=1/df[k]})});
+  bl.forEach(function(b){b.sc=0;b.m=0;st.forEach(function(k){if(b.s[k]){b.sc+=w[k]/df[k];b.m++}})});
   bl.sort(function(x,y){return y.sc-x.sc});
-  var b0=bl[0],b1=bl[1];if(b0.sc<1||(b1&&b0.sc<b1.sc*1.4))return {};
+  var b0=bl[0],b1=bl[1];if(b0.m<1||b0.sc<1.5||(b0.m<2&&b0.sc<2.5))return {};
+  if(b1&&b0.sc<b1.sc*1.3){var tie=bl.filter(function(x){return x.sc>=b0.sc/1.3}).sort(function(x,y){return x.i0-y.i0});b0=tie[0]}   // несколько частей про одно и то же — берём первую, где сформулировано общее правило
   var hit={};for(var j=b0.i0;j<b0.i1;j++)hit[j]=1;return hit}
 function artOpen(code,n,part,anchor,only){
   if(!artSheet){
