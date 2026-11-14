@@ -241,10 +241,15 @@ function drawCap(c, cap, lt, th, P) {
   const o = P.cap || {}, size = o.size || 104, words = parseCap(cap.text);
   c.font = `900 ${size}px ${FONT}`; const maxW = 960, lines = []; let cur = [];
   for (const w of words) { const test = cur.concat(w).map(x => x.w).join(' '); if (c.measureText(test).width > maxW && cur.length) { lines.push(cur); cur = [w]; } else cur.push(w); } if (cur.length) lines.push(cur);
-  const sc = lt < .14 ? .88 + .12 * easeBack(lt / .14) : 1, cy = (o.y == null ? .72 : o.y) * H, lh = size * 1.12;
+  const byWord = o.pop === 'word', sc = byWord ? 1 : lt < .14 ? .88 + .12 * easeBack(lt / .14) : 1, cy = (o.y == null ? .72 : o.y) * H, lh = size * 1.12;
+  const nW = words.length, step = byWord ? Math.min(.22, (cap.dur || 1) * .6 / Math.max(1, nW)) : 0; let wi = 0;
   c.save(); c.translate(W / 2, cy); c.scale(sc, sc);
   lines.forEach((ln, li) => { const yy = (li - (lines.length - 1) / 2) * lh, full = ln.map(x => x.w).join(' '), wid = c.measureText(full).width; let x = -wid / 2; const sp = c.measureText(' ').width;
-    for (const w of ln) { c.textAlign = 'left'; c.textBaseline = 'middle'; c.lineJoin = 'round'; c.lineWidth = size * .1; c.strokeStyle = '#000'; c.strokeText(w.w, x, yy); c.fillStyle = w.hl ? (o.hl || th.hl) : th.ink; c.fillText(w.w, x, yy); x += c.measureText(w.w).width + sp; } });
+    for (const w of ln) { const ww = c.measureText(w.w).width, d = lt - wi * step; wi++;
+      if (byWord && d < 0) { x += ww + sp; continue; }
+      const k = byWord ? easeOut(d / .14) : 1, big = 1;
+      c.save(); c.translate(x + ww / 2, yy); c.translate(0, (1 - k) * size * .25); c.scale(.75 + .25 * k, .75 + .25 * k); if (byWord) c.globalAlpha = clamp(d / .08);
+      c.textAlign = 'center'; c.textBaseline = 'middle'; c.lineJoin = 'round'; c.lineWidth = size * .12; c.strokeStyle = '#000'; c.strokeText(w.w, 0, 0); c.fillStyle = w.hl ? (o.hl || th.hl) : th.ink; c.fillText(w.w, 0, 0); c.restore(); x += ww + sp; } });
   c.restore();
 }
 
@@ -257,20 +262,35 @@ function drawScene(c, P, t) {
   const th = THEMES[P.theme] || THEMES.bunker, S = sceneAt(P, t); if (!S) { c.fillStyle = '#000'; c.fillRect(0, 0, W, H); return; }
   const sc = S.sc, lt = S.lt;
   c.save();
+  const caps = sc.caps || [], capAt = i => ((caps[i] || {}).at || 0);
   const z = lerp((sc.zoom || [1, 1])[0], (sc.zoom || [1, 1])[1], lt / Math.max(.1, sc.dur)); let sx = 0, sy = 0;
   if ((sc.fx || []).includes('shake')) { sx = Math.sin(t * 61) * 9; sy = Math.cos(t * 53) * 9; }
-  c.translate(W / 2 + sx, H / 2 + sy); c.scale(z, z); c.translate(-W / 2, -H / 2);
+  // удары камеры: на фразах с kick и в sc.kicks — короткий толчок зума и тряска
+  let kz = 0, ks = 0; for (const k of (sc.kicks || []).concat(caps.filter(cp => cp.kick).map(cp => cp.at))) { const d = lt - k; if (d >= 0 && d < .4) { const e = 1 - d / .4; kz = Math.max(kz, .07 * e * e); ks = Math.max(ks, e * e); } }
+  // переход в сцену: punch — влёт зумом, whip — смахивание вбок
+  const tr = sc.tr || 'fade'; let tx = 0, tz = 1;
+  if (tr === 'punch' && lt < .32) tz = 1 + .22 * (1 - easeOut(lt / .32));
+  if (tr === 'whip' && lt < .26) tx = (1 - easeOut(lt / .26)) * W * (S.i % 2 ? -1 : 1);
+  // «ручная камера»: лёгкое живое покачивание
+  const hh = P.handheld === false ? 0 : 1, hr = hh * Math.sin(t * .9) * .006;
+  sx += hh * (Math.sin(t * 1.3) * 7 + Math.sin(t * 2.9) * 3) + ks * Math.sin(t * 70) * 18; sy += hh * (Math.cos(t * 1.1) * 6 + Math.sin(t * 2.3) * 3) + ks * Math.cos(t * 63) * 18;
+  const zz = z * tz * (1 + kz);
+  c.translate(W / 2 + sx + tx, H / 2 + sy); c.rotate(hr); c.scale(zz, zz); c.translate(-W / 2, -H / 2);
   (BG[sc.bg] || BG.gradient)(c, lt, th, sc);
   for (const m of (sc.cast || [])) { const ch = (P.chars || {})[m.c]; let x = (m.x == null ? .5 : m.x), y = (m.y == null ? .78 : m.y); if (m.tx != null) { const k = easeOut(lt / Math.max(.3, sc.dur * (m.span || 1))); x = lerp(x, m.tx, k); } if (m.ty != null) { const k = easeOut(lt / Math.max(.3, sc.dur * (m.span || 1))); y = lerp(y, m.ty, k); }
     let anim = m.anim || 'idle'; const enter = m.enter == null ? 0 : m.enter; if (lt < enter) continue; drawChar(c, ch, x * W, y * H, (m.s || .9) * (m.pop === false ? 1 : .6 + .4 * easeBack((lt - enter) / .3)), lt, anim, m.expr || 'calm', m.flip); }
-  for (const p of (sc.props || [])) drawProp(c, p, lt, th, sc);
+  for (const p of (sc.props || [])) drawProp(c, p.cap != null ? Object.assign({}, p, { at: capAt(p.cap) + (p.off || 0) }) : p, lt, th, sc);
   c.restore();
   drawFx(c, sc.fx, t, th, sc.dur);
   // виньетка
   if (P.vignette !== false) { const g = c.createRadialGradient(W / 2, H / 2, W * .45, W / 2, H / 2, H * .72); g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(1, 'rgba(0,0,0,.62)'); c.fillStyle = g; c.fillRect(0, 0, W, H); }
   drawHud(c, P.hud, t, th);
   for (const cp of (sc.caps || [])) if (lt >= cp.at && lt < cp.at + cp.dur) { drawCap(c, cp, lt - cp.at, th, P); break; }
-  if (lt < .16) { c.fillStyle = `rgba(0,0,0,${1 - lt / .16})`; c.fillRect(0, 0, W, H); }
+  if (tr === 'flash' && lt < .22) { c.fillStyle = `rgba(255,255,255,${.9 * (1 - lt / .22)})`; c.fillRect(0, 0, W, H); }
+  else if (tr === 'whip' && lt < .26) { const k = 1 - lt / .26, R = rng(7); c.fillStyle = `rgba(255,255,255,${.12 * k})`; for (let i = 0; i < 26; i++) c.fillRect(0, R() * H, W, 4 + R() * 26); }
+  else if (tr === 'punch' && lt < .12) { c.fillStyle = `rgba(0,0,0,${.7 * (1 - lt / .12)})`; c.fillRect(0, 0, W, H); }
+  else if (tr === 'fade' && lt < .16) { c.fillStyle = `rgba(0,0,0,${1 - lt / .16})`; c.fillRect(0, 0, W, H); }
+  if (ks > .5) { c.fillStyle = `rgba(255,255,255,${.18 * (ks - .5)})`; c.fillRect(0, 0, W, H); }
   if (S.i === P.scenes.length - 1 && P.outFade !== false && t > total(P) - .3) { c.fillStyle = `rgba(0,0,0,${clamp((t - (total(P) - .3)) / .3)})`; c.fillRect(0, 0, W, H); }
 }
 

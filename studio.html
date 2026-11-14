@@ -759,10 +759,15 @@ function drawCap(c, cap, lt, th, P) {
   const o = P.cap || {}, size = o.size || 104, words = parseCap(cap.text);
   c.font = `900 ${size}px ${FONT}`; const maxW = 960, lines = []; let cur = [];
   for (const w of words) { const test = cur.concat(w).map(x => x.w).join(' '); if (c.measureText(test).width > maxW && cur.length) { lines.push(cur); cur = [w]; } else cur.push(w); } if (cur.length) lines.push(cur);
-  const sc = lt < .14 ? .88 + .12 * easeBack(lt / .14) : 1, cy = (o.y == null ? .72 : o.y) * H, lh = size * 1.12;
+  const byWord = o.pop === 'word', sc = byWord ? 1 : lt < .14 ? .88 + .12 * easeBack(lt / .14) : 1, cy = (o.y == null ? .72 : o.y) * H, lh = size * 1.12;
+  const nW = words.length, step = byWord ? Math.min(.22, (cap.dur || 1) * .6 / Math.max(1, nW)) : 0; let wi = 0;
   c.save(); c.translate(W / 2, cy); c.scale(sc, sc);
   lines.forEach((ln, li) => { const yy = (li - (lines.length - 1) / 2) * lh, full = ln.map(x => x.w).join(' '), wid = c.measureText(full).width; let x = -wid / 2; const sp = c.measureText(' ').width;
-    for (const w of ln) { c.textAlign = 'left'; c.textBaseline = 'middle'; c.lineJoin = 'round'; c.lineWidth = size * .1; c.strokeStyle = '#000'; c.strokeText(w.w, x, yy); c.fillStyle = w.hl ? (o.hl || th.hl) : th.ink; c.fillText(w.w, x, yy); x += c.measureText(w.w).width + sp; } });
+    for (const w of ln) { const ww = c.measureText(w.w).width, d = lt - wi * step; wi++;
+      if (byWord && d < 0) { x += ww + sp; continue; }
+      const k = byWord ? easeOut(d / .14) : 1, big = 1;
+      c.save(); c.translate(x + ww / 2, yy); c.translate(0, (1 - k) * size * .25); c.scale(.75 + .25 * k, .75 + .25 * k); if (byWord) c.globalAlpha = clamp(d / .08);
+      c.textAlign = 'center'; c.textBaseline = 'middle'; c.lineJoin = 'round'; c.lineWidth = size * .12; c.strokeStyle = '#000'; c.strokeText(w.w, 0, 0); c.fillStyle = w.hl ? (o.hl || th.hl) : th.ink; c.fillText(w.w, 0, 0); c.restore(); x += ww + sp; } });
   c.restore();
 }
 
@@ -775,20 +780,35 @@ function drawScene(c, P, t) {
   const th = THEMES[P.theme] || THEMES.bunker, S = sceneAt(P, t); if (!S) { c.fillStyle = '#000'; c.fillRect(0, 0, W, H); return; }
   const sc = S.sc, lt = S.lt;
   c.save();
+  const caps = sc.caps || [], capAt = i => ((caps[i] || {}).at || 0);
   const z = lerp((sc.zoom || [1, 1])[0], (sc.zoom || [1, 1])[1], lt / Math.max(.1, sc.dur)); let sx = 0, sy = 0;
   if ((sc.fx || []).includes('shake')) { sx = Math.sin(t * 61) * 9; sy = Math.cos(t * 53) * 9; }
-  c.translate(W / 2 + sx, H / 2 + sy); c.scale(z, z); c.translate(-W / 2, -H / 2);
+  // удары камеры: на фразах с kick и в sc.kicks — короткий толчок зума и тряска
+  let kz = 0, ks = 0; for (const k of (sc.kicks || []).concat(caps.filter(cp => cp.kick).map(cp => cp.at))) { const d = lt - k; if (d >= 0 && d < .4) { const e = 1 - d / .4; kz = Math.max(kz, .07 * e * e); ks = Math.max(ks, e * e); } }
+  // переход в сцену: punch — влёт зумом, whip — смахивание вбок
+  const tr = sc.tr || 'fade'; let tx = 0, tz = 1;
+  if (tr === 'punch' && lt < .32) tz = 1 + .22 * (1 - easeOut(lt / .32));
+  if (tr === 'whip' && lt < .26) tx = (1 - easeOut(lt / .26)) * W * (S.i % 2 ? -1 : 1);
+  // «ручная камера»: лёгкое живое покачивание
+  const hh = P.handheld === false ? 0 : 1, hr = hh * Math.sin(t * .9) * .006;
+  sx += hh * (Math.sin(t * 1.3) * 7 + Math.sin(t * 2.9) * 3) + ks * Math.sin(t * 70) * 18; sy += hh * (Math.cos(t * 1.1) * 6 + Math.sin(t * 2.3) * 3) + ks * Math.cos(t * 63) * 18;
+  const zz = z * tz * (1 + kz);
+  c.translate(W / 2 + sx + tx, H / 2 + sy); c.rotate(hr); c.scale(zz, zz); c.translate(-W / 2, -H / 2);
   (BG[sc.bg] || BG.gradient)(c, lt, th, sc);
   for (const m of (sc.cast || [])) { const ch = (P.chars || {})[m.c]; let x = (m.x == null ? .5 : m.x), y = (m.y == null ? .78 : m.y); if (m.tx != null) { const k = easeOut(lt / Math.max(.3, sc.dur * (m.span || 1))); x = lerp(x, m.tx, k); } if (m.ty != null) { const k = easeOut(lt / Math.max(.3, sc.dur * (m.span || 1))); y = lerp(y, m.ty, k); }
     let anim = m.anim || 'idle'; const enter = m.enter == null ? 0 : m.enter; if (lt < enter) continue; drawChar(c, ch, x * W, y * H, (m.s || .9) * (m.pop === false ? 1 : .6 + .4 * easeBack((lt - enter) / .3)), lt, anim, m.expr || 'calm', m.flip); }
-  for (const p of (sc.props || [])) drawProp(c, p, lt, th, sc);
+  for (const p of (sc.props || [])) drawProp(c, p.cap != null ? Object.assign({}, p, { at: capAt(p.cap) + (p.off || 0) }) : p, lt, th, sc);
   c.restore();
   drawFx(c, sc.fx, t, th, sc.dur);
   // виньетка
   if (P.vignette !== false) { const g = c.createRadialGradient(W / 2, H / 2, W * .45, W / 2, H / 2, H * .72); g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(1, 'rgba(0,0,0,.62)'); c.fillStyle = g; c.fillRect(0, 0, W, H); }
   drawHud(c, P.hud, t, th);
   for (const cp of (sc.caps || [])) if (lt >= cp.at && lt < cp.at + cp.dur) { drawCap(c, cp, lt - cp.at, th, P); break; }
-  if (lt < .16) { c.fillStyle = `rgba(0,0,0,${1 - lt / .16})`; c.fillRect(0, 0, W, H); }
+  if (tr === 'flash' && lt < .22) { c.fillStyle = `rgba(255,255,255,${.9 * (1 - lt / .22)})`; c.fillRect(0, 0, W, H); }
+  else if (tr === 'whip' && lt < .26) { const k = 1 - lt / .26, R = rng(7); c.fillStyle = `rgba(255,255,255,${.12 * k})`; for (let i = 0; i < 26; i++) c.fillRect(0, R() * H, W, 4 + R() * 26); }
+  else if (tr === 'punch' && lt < .12) { c.fillStyle = `rgba(0,0,0,${.7 * (1 - lt / .12)})`; c.fillRect(0, 0, W, H); }
+  else if (tr === 'fade' && lt < .16) { c.fillStyle = `rgba(0,0,0,${1 - lt / .16})`; c.fillRect(0, 0, W, H); }
+  if (ks > .5) { c.fillStyle = `rgba(255,255,255,${.18 * (ks - .5)})`; c.fillRect(0, 0, W, H); }
   if (S.i === P.scenes.length - 1 && P.outFade !== false && t > total(P) - .3) { c.fillStyle = `rgba(0,0,0,${clamp((t - (total(P) - .3)) / .3)})`; c.fillRect(0, 0, W, H); }
 }
 
@@ -801,39 +821,38 @@ G.StudioEngine = { W, H, THEMES, HAIR, ACC, ANIMS, EXPR, BG, BGNAMES, ICONNAMES,
 const cap = (at, dur, text) => ({ at, dur, text });
 const hero = { name: 'Герой', hood: '#4caf50', hair: '#46281e', skin: '#f7c8a0', pants: '#283046', hairStyle: 'short', acc: 'none' };
 const T = {};
-T.bunker = () => ({ v: 1, title: 'Ты тринадцатый', theme: 'bunker', vignette: true, outFade: false,
-  hud: { on: true, plates: [
-    { label: 'ДО УДАРА', fmt: 'time', keys: [[0, 2700], [7.9, 2640], [26.1, 200], [31.7, 180]], color: '#e53935' },
-    { label: 'МЕСТ В БУНКЕРЕ', fmt: 'num', keys: [[0, 12]], color: '#2ecc71' }],
-    bar: { label: 'ЛЮДЕЙ', max: 30, mark: 12, keys: [[0, 1], [11.6, 1], [14.2, 30], [31.7, 30]] } },
+T.bunker = () => ({ v: 1, title: 'Ты тринадцатый', theme: 'bunker', vignette: true, outFade: false, handheld: true,
+  hud: { on: true, plates: [],
+    bar: { label: 'ЛЮДЕЙ У ДВЕРИ', max: 30, mark: 12, keys: [[0, 0], [11.4, 1], [13.4, 30], [40, 30]] } },
   chars: { hero: { name: 'Ты', hood: '#5c6bc0', hair: '#3b2a22', skin: '#f2c6a0', pants: '#263042', hairStyle: 'short', acc: 'tie' }, guard: { name: 'Охранник', hood: '#37474f', hair: '#222', skin: '#e0a878', pants: '#263238', hairStyle: 'cap', acc: 'beard' } },
-  cap: { size: 104, y: .66 }, music: { style: 'tension', vol: .55 }, voice: { on: false, provider: 'elevenlabs', voiceId: '', model: '', speed: 1, key: '' },
+  cap: { size: 104, y: .66, pop: 'word' }, music: { style: 'thriller', vol: .5 }, voice: { on: false, provider: 'elevenlabs', voiceId: '', model: '', speed: 1, key: '' },
   scenes: [
-    { name: 'Офис', dur: 3.9, bg: 'office', zoom: [1, 1.1], fx: ['dust'],
+    { name: 'Офис', dur: 3, bg: 'office', zoom: [1.12, 1], tr: 'fade', fx: ['dust'],
       cast: [{ c: 'hero', x: .5, y: .93, s: .95, anim: 'sit', expr: 'calm' }],
-      caps: [cap(0, 1.6, 'ОБЫЧНЫЙ *ВТОРНИК*'), cap(1.6, 1.8, 'ТЫ В *ОФИСЕ*')], sfx: [{ n: 'typing', at: 0, dur: 2.5 }] },
-    { name: 'Сирена', dur: 4, bg: 'office', zoom: [1, 1.14], fx: ['redpulse', 'shake', 'siren'],
+      caps: [cap(0, 1.4, 'ОБЫЧНЫЙ *ВТОРНИК*'), cap(1.4, 1.6, 'ТЫ СИДИШЬ В *ОФИСЕ*')], sfx: [{ n: 'typing', at: 0, dur: 2.8 }] },
+    { name: 'Сирена', dur: 3.6, bg: 'office', zoom: [1, 1.18], tr: 'flash', fx: ['redpulse', 'shake', 'siren'],
       cast: [{ c: 'hero', x: .5, y: .93, s: 1, anim: 'shake', expr: 'scared' }],
-      props: [{ type: 'sign', text: 'ВОЗДУШНАЯ ТРЕВОГА', x: .5, y: .44, at: .2, dur: 3.6, color: '#e53935' }],
-      caps: [cap(0, 1.6, 'ВДРУГ — *СИРЕНА*'), cap(1.6, 1.9, 'ЭТО *НЕ* УЧЕНИЕ')], sfx: [{ n: 'siren', at: 0, dur: 3.8 }, { n: 'alert', at: 0 }, { n: 'heartbeat', at: 1 }] },
-    { name: 'Бег', dur: 3.7, bg: 'corridor', zoom: [1, 1.1], fx: ['shake', 'redpulse'],
+      props: [{ type: 'sign', text: 'ВОЗДУШНАЯ ТРЕВОГА', x: .5, y: .42, at: .1, dur: 3.4, color: '#e53935' }],
+      caps: [Object.assign(cap(0, 1.6, 'И ВДРУГ — *СИРЕНА*'), { kick: true }), cap(1.6, 1.8, 'ЭТО *НЕ* УЧЕНИЯ')], sfx: [{ n: 'siren', at: 0, dur: 3.6 }, { n: 'alert', at: 0 }, { n: 'hit', at: 0 }, { n: 'heartbeat', cap: 1, dur: 2 }] },
+    { name: 'Бег', dur: 4.5, bg: 'corridor', zoom: [1, 1.14], tr: 'whip', fx: ['shake', 'redpulse'],
       cast: [{ c: 'hero', x: .5, y: .95, s: 1, anim: 'run', expr: 'scared' }],
-      caps: [cap(0, 1.7, 'ОДНО *УБЕЖИЩЕ* НА ЗДАНИЕ'), cap(1.7, 1.6, 'ЛИФТ СТОИТ — *БЕГОМ*')], sfx: [{ n: 'steps', at: 0, dur: 3.6 }, { n: 'whoosh', at: 0 }] },
-    { name: 'Очередь', dur: 5.1, bg: 'hall', zoom: [1, 1.08], fx: ['redpulse'],
+      caps: [cap(0, 2.3, 'ОДНО *УБЕЖИЩЕ* НА ВСЁ ЗДАНИЕ'), Object.assign(cap(2.3, 2, 'ЛИФТ СТОИТ — *БЕГОМ*'), { kick: true })], sfx: [{ n: 'whoosh', at: 0 }, { n: 'steps', cap: 1, dur: 2.2 }] },
+    { name: 'Очередь', dur: 4.8, bg: 'hall', zoom: [1.06, 1], tr: 'punch', fx: ['redpulse'],
       cast: [{ c: 'hero', x: .3, y: .93, s: .85, anim: 'idle', expr: 'scared' }],
-      props: [{ type: 'counter', x: .5, y: .37, from: 1, to: 30, size: 200, text: 'ЛЮДЕЙ У ДВЕРИ', at: .4, dur: 4.4, color: '#ff5252', span: 1.6 }],
-      caps: [cap(0, 1.5, 'У ДВЕРИ — *30*'), cap(1.5, 1.6, 'МЕСТ — ТОЛЬКО *12*'), cap(3.1, 1.5, 'ОХРАНА *СЧИТАЕТ*')], sfx: [{ n: 'crowd', at: 0, dur: 5 }, { n: 'hit', at: 3.1 }] },
-    { name: 'Тринадцатый', dur: 5.1, bg: 'doorway', zoom: [1, 1.1], fx: ['redpulse'],
+      props: [{ type: 'counter', x: .5, y: .36, from: 1, to: 30, size: 220, text: 'ЛЮДЕЙ У ДВЕРИ', cap: 0, off: .2, dur: 2.2, color: '#ff5252', span: 1.2 },
+              { type: 'counter', x: .5, y: .36, from: 30, to: 12, size: 220, text: 'МЕСТ ВНУТРИ', cap: 1, dur: 4, color: '#2ecc71', span: .7 }],
+      caps: [cap(0, 1.7, 'У ДВЕРИ — *30* ЧЕЛОВЕК'), Object.assign(cap(1.7, 1.4, 'А МЕСТ — *12*'), { kick: true }), cap(3.1, 1.6, 'ОХРАНА *СЧИТАЕТ*...')], sfx: [{ n: 'crowd', at: 0, dur: 4.6 }, { n: 'hit', cap: 1 }, { n: 'tick', cap: 2, dur: 1.5 }] },
+    { name: 'Тринадцатый', dur: 4.6, bg: 'doorway', zoom: [1, 1.16], tr: 'punch', fx: ['redpulse'],
       cast: [{ c: 'hero', x: .32, y: .93, s: .9, anim: 'shake', expr: 'shock' }, { c: 'guard', x: .7, y: .93, s: .9, anim: 'point', expr: 'angry', flip: true }],
-      props: [{ type: 'emoji', text: '✋', x: .7, y: .3, size: 210, at: 1.5 }],
-      caps: [cap(0, 1.5, '*ДВЕНАДЦАТЫЙ* ПРОШЁЛ'), cap(1.5, 1.8, 'ТЫ — *ТРИНАДЦАТЫЙ*'), cap(3.3, 1.3, 'МЕСТА *НЕТ*')], sfx: [{ n: 'hit', at: 1.5 }, { n: 'heartbeat', at: 0 }, { n: 'boom', at: 3.3 }] },
-    { name: 'Люк', dur: 4.3, bg: 'hatch', zoom: [1, 1.12], fx: ['redpulse', 'shake'],
-      props: [{ type: 'timer', x: .5, y: .38, from: 180, to: 0, text: 'ДВЕРЬ ЗАКРОЕТСЯ', at: .3, dur: 3.7, span: 3.7 }],
-      caps: [cap(0, 1.7, 'ДВЕРЬ ЗАКРОЕТСЯ *САМА*'), cap(1.7, 2, 'ЧЕРЕЗ *3 МИНУТЫ*')], sfx: [{ n: 'creak', at: .2 }, { n: 'tick', at: .3, dur: 3.7 }] },
-    { name: 'Выбор', dur: 6.5, bg: 'doorway', zoom: [1.06, 1],
+      props: [{ type: 'text', text: '13', x: .5, y: .35, size: 420, color: '#ff3b3b', cap: 1, off: .35, dur: 3 }, { type: 'emoji', text: '✋', x: .72, y: .52, size: 170, cap: 2 }],
+      caps: [cap(0, 1.6, '*ДВЕНАДЦАТЫЙ* — ПРОШЁЛ'), Object.assign(cap(1.6, 1.6, 'А ТЫ... *ТРИНАДЦАТЫЙ*'), { cut: 1.6, kick: true }), Object.assign(cap(3.2, 1.2, 'МЕСТА *НЕТ*'), { kick: true })], sfx: [{ n: 'heartbeat', cap: 1, dur: 1.6 }, { n: 'boom', cap: 1, at: .35 }, { n: 'hit', cap: 2 }] },
+    { name: 'Люк', dur: 3.6, bg: 'hatch', zoom: [1, 1.12], tr: 'whip', fx: ['redpulse', 'shake'],
+      props: [{ type: 'timer', x: .5, y: .36, from: 180, to: 171, text: 'ДВЕРЬ ЗАКРОЕТСЯ', at: .2, dur: 3.4, span: 9 }],
+      caps: [cap(0, 1.8, 'ДВЕРЬ ЗАКРОЕТСЯ *САМА*'), cap(1.8, 1.6, 'ЧЕРЕЗ *3 МИНУТЫ*')], sfx: [{ n: 'creak', at: .1 }, { n: 'tick', at: .2, dur: 3.4 }] },
+    { name: 'Выбор', dur: 4.7, bg: 'doorway', zoom: [1.1, 1], tr: 'flash', fx: ['dust'],
       cast: [{ c: 'hero', x: .5, y: .98, s: .78, anim: 'shake', expr: 'scared' }],
-      props: [{ type: 'choice', y: .46, at: 1.5, text: 'ЧТО ДЕЛАЕШЬ?', text2: 'ПИШИ A, B ИЛИ C', items: [{ k: 'A', text: 'Отдать место коллеге' }, { k: 'B', text: 'Протолкнуться силой' }, { k: 'C', text: 'Искать другое укрытие' }] }],
-      caps: [cap(0, 1.4, '*ЛИШНИЙ* — ТЫ')], sfx: [{ n: 'riser', at: 0, dur: 5 }, { n: 'ding', at: 1.9 }, { n: 'ding', at: 2.25 }, { n: 'ding', at: 2.6 }] }
+      props: [{ type: 'choice', y: .47, cap: 0, off: 1.7, text: 'ЧТО ДЕЛАЕШЬ?', text2: 'ПИШИ A, B ИЛИ C', items: [{ k: 'A', text: 'Отдать место коллеге' }, { k: 'B', text: 'Протолкнуться силой' }, { k: 'C', text: 'Искать другое укрытие' }] }],
+      caps: [Object.assign(cap(0, 1.4, 'И ЛИШНИЙ ЗДЕСЬ — *ТЫ*'), { kick: true })], sfx: [{ n: 'boom', at: 0 }, { n: 'ding', cap: 0, at: 1.4 }, { n: 'ding', cap: 0, at: 1.75 }, { n: 'ding', cap: 0, at: 2.1 }] }
   ] });
 T.chat = () => ({ v: 1, title: 'Жуткая переписка', theme: 'horror', vignette: true,
   hud: { on: false, plates: [], bar: null }, chars: { hero: { name: 'Лена', hood: '#7e57c2', hair: '#2b1a12', skin: '#f3c9a5', pants: '#263042', hairStyle: 'long', acc: 'none', hold: 'phone' } },
@@ -897,9 +916,19 @@ const SFX = {
   fail(t, d, v, o) { [392, 330, 262, 196].forEach((f, i) => osc(0, 'sawtooth', f, f, t + i * .2, t + i * .2 + .5, .1 * v, .001, o)); },
   wind(t, d, v, o) { const L = d || 4; noise(t, t + L / 2, .02, .25 * v, o, 'bandpass', 300, 900, 2); noise(t + L / 2, t + L, .25 * v, .02, o, 'bandpass', 900, 300, 2); }
 };
-const MUSIC_NAMES = { none: 'Без музыки', tension: 'Напряжение', calm: 'Спокойная', action: 'Экшен', sad: 'Грустная', mystery: 'Тайна' };
+const MUSIC_NAMES = { none: 'Без музыки', thriller: 'Триллер (нарастает)', tension: 'Напряжение', calm: 'Спокойная', action: 'Экшен', sad: 'Грустная', mystery: 'Тайна' };
 function pad(t, L, freqs, vol, o, type) { for (const f of freqs) { const s = ctx.createOscillator(), g = ctx.createGain(), fl = ctx.createBiquadFilter(); s.type = type || 'sawtooth'; s.frequency.value = f; s.detune.value = (Math.random() - .5) * 14; fl.type = 'lowpass'; fl.frequency.value = 600; g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(vol, t + Math.min(1.5, L / 3)); g.gain.setValueAtTime(vol, t + L - .8); g.gain.linearRampToValueAtTime(0, t + L); s.connect(fl); fl.connect(g); g.connect(o); s.start(t); s.stop(t + L + .1); } }
 const MUSIC = {
+  // триллер: пульс баса восьмыми, бочка, хэты подключаются со второй трети, диссонанс в пэде, нарастание к концу
+  thriller(t, L, o) { const b = 60 / 112, n = Math.floor(L / b); pad(t, L, [55, 58.3, 82.4], .045, o);
+    for (let i = 0; i < n; i++) { const tt = t + i * b, k = i * b / L;
+      osc(0, 'sine', 120, 38, tt, tt + .28, .55 + .25 * k, .001, o);
+      for (let h = 0; h < 2; h++) { const f = [55, 55, 65.4, 61.7][((i / 4) | 0) % 4] * 2; osc(0, 'sawtooth', f, f, tt + h * b / 2, tt + h * b / 2 + b * .42, .05 + .05 * k, .001, o); }
+      if (k > .3) { noise(tt + b / 2, tt + b / 2 + .04, .08 + .1 * k, .001, o, 'highpass', 7000); if (k > .55) noise(tt + b / 4, tt + b / 4 + .03, .06, .001, o, 'highpass', 8000); }
+      if (i % 8 === 4) noise(tt, tt + .18, .18 + .15 * k, .001, o, 'bandpass', 1600, 900, 1);
+      if (i % 16 === 0 && i) { osc(0, 'sine', 70, 30, tt, tt + 1.2, .6, .001, o); noise(tt, tt + .8, .25, .001, o, 'lowpass', 3000, 100); } }
+    for (let i = 0; i < L / 4; i++) osc(0, 'triangle', 880 + (i % 3) * 52, 870, t + 2 + i * 4, t + 4.6 + i * 4, .012, .0001, o);
+    osc(0, 'sawtooth', 110, 660, t + L - 6, t + L - .2, .002, .05, o); noise(t + L - 6, t + L - .2, .005, .12, o, 'bandpass', 300, 6000, 1); },
   tension(t, L, o) { pad(t, L, [55, 55.4, 82.4, 110.3], .05, o); const lf = ctx.createOscillator(), lg = ctx.createGain(); lf.frequency.value = .25; lg.gain.value = .02; lf.connect(lg); lg.connect(o.gain); lf.start(t); lf.stop(t + L); for (let i = 0; i < L / .52; i++) osc(0, 'sine', 62, 44, t + i * .52, t + i * .52 + .14, .14, .001, o); for (let i = 0; i < L / 4; i++) osc(0, 'sine', 740 + (i % 2) * 40, 740, t + 1 + i * 4, t + 3.2 + i * 4, .006, .0001, o); osc(0, 'sawtooth', 220, 880, t + L - 5, t + L, .001, .02, o); },
   calm(t, L, o) { const ch = [[261.6, 329.6, 392], [220, 277.2, 329.6], [174.6, 220, 261.6], [196, 246.9, 293.7]]; for (let i = 0; i * 4 < L; i++) pad(t + i * 4, Math.min(4.4, L - i * 4 + .4), ch[i % 4], .035, o, 'triangle'); for (let i = 0; i < L / .5; i++) { const n = ch[((i / 8) | 0) % 4]; osc(0, 'sine', n[i % 3] * 2, n[i % 3] * 2, t + i * .5, t + i * .5 + .45, .03, .0001, o); } },
   action(t, L, o) { const bpm = 128, b = 60 / bpm, bass = [55, 55, 65.4, 49]; for (let i = 0; i * b < L; i++) { const tt = t + i * b; osc(0, 'sine', 130, 45, tt, tt + .22, .5, .001, o); if (i % 2) noise(tt + b / 2, tt + b / 2 + .05, .12, .001, o, 'highpass', 6000); if (i % 4 === 2) noise(tt, tt + .12, .22, .001, o, 'bandpass', 1800, 1500, 1); osc(0, 'sawtooth', bass[((i / 8) | 0) % 4] * 2, bass[((i / 8) | 0) % 4] * 2, tt + b / 2, tt + b * .95, .08, .001, o); } },
@@ -914,15 +943,17 @@ function stopPreview() { if (preview) { try { preview.disconnect(); } catch (e) 
 // запуск всего проекта с момента from (сек)
 function start(P, from, clips) {
   init(); stop(); const t0 = ctx.currentTime + .08, tot = E.total(P); bus = ctx.createGain(); bus.gain.value = 1; bus.connect(master);
-  const mus = ctx.createGain(), vol = (P.music && P.music.vol != null ? P.music.vol : .5); mus.gain.value = vol; mus.connect(bus);
+  const mus = ctx.createGain(), cutG = ctx.createGain(), vol = (P.music && P.music.vol != null ? P.music.vol : .5); mus.gain.value = vol; mus.connect(cutG); cutG.connect(bus);
   const sfxBus = ctx.createGain(); sfxBus.gain.value = 1; sfxBus.connect(bus);
   const rem = Math.max(.1, tot - from);
   if (P.music && MUSIC[P.music.style]) MUSIC[P.music.style](t0, rem, mus);
   const tl = E.timeline(P); const voiceIv = [];
   tl.forEach(({ s, sc }, si) => {
-    (sc.sfx || []).forEach(x => { const at = s + (x.at || 0) - from; if (at < -.05 && !(x.dur && at + x.dur > 0)) return; const tt = t0 + Math.max(0, at), d = x.dur ? (at < 0 ? x.dur + at : x.dur) : 0; if (SFX[x.n]) SFX[x.n](tt, d, x.v == null ? 1 : x.v, sfxBus); });
+    (sc.sfx || []).forEach(x => { const at = s + (x.cap != null ? ((sc.caps || [])[x.cap] || {}).at || 0 : 0) + (x.at || 0) - from; if (at < -.05 && !(x.dur && at + x.dur > 0)) return; const tt = t0 + Math.max(0, at), d = x.dur ? (at < 0 ? x.dur + at : x.dur) : 0; if (SFX[x.n]) SFX[x.n](tt, d, x.v == null ? 1 : x.v, sfxBus); });
     (sc.caps || []).forEach((cp, ci) => { const buf = clips && clips[si + ':' + ci]; if (!buf) return; const at = s + cp.at - from; if (at + buf.duration < 0) return; const src = ctx.createBufferSource(), g = ctx.createGain(); src.buffer = buf; g.gain.value = 1.35; src.connect(g); g.connect(bus); const off = Math.max(0, -at); src.start(t0 + Math.max(0, at), off); voiceIv.push([Math.max(0, at), Math.max(0, at) + buf.duration - off]); });
   });
+  // провалы музыки: фраза с cut: N — музыка замолкает на N секунд с начала фразы (тишина перед ударом)
+  tl.forEach(({ s, sc }) => (sc.caps || []).forEach(cp => { if (!cp.cut) return; const a = s + cp.at - from; if (a + cp.cut < 0) return; cutG.gain.setTargetAtTime(0, t0 + Math.max(0, a) - .02, .03); cutG.gain.setTargetAtTime(1, t0 + Math.max(0, a + cp.cut), .08); }));
   if (voiceIv.length && P.music && (P.music.duck !== false)) { const lo = vol * .3; mus.gain.setValueAtTime(vol, t0); voiceIv.forEach(([a, b]) => { mus.gain.setTargetAtTime(lo, t0 + a - .05, .08); mus.gain.setTargetAtTime(vol, t0 + b + .05, .25); }); }
   return { t0, ctx };
 }

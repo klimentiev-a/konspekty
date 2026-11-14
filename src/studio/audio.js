@@ -35,9 +35,19 @@ const SFX = {
   fail(t, d, v, o) { [392, 330, 262, 196].forEach((f, i) => osc(0, 'sawtooth', f, f, t + i * .2, t + i * .2 + .5, .1 * v, .001, o)); },
   wind(t, d, v, o) { const L = d || 4; noise(t, t + L / 2, .02, .25 * v, o, 'bandpass', 300, 900, 2); noise(t + L / 2, t + L, .25 * v, .02, o, 'bandpass', 900, 300, 2); }
 };
-const MUSIC_NAMES = { none: 'Без музыки', tension: 'Напряжение', calm: 'Спокойная', action: 'Экшен', sad: 'Грустная', mystery: 'Тайна' };
+const MUSIC_NAMES = { none: 'Без музыки', thriller: 'Триллер (нарастает)', tension: 'Напряжение', calm: 'Спокойная', action: 'Экшен', sad: 'Грустная', mystery: 'Тайна' };
 function pad(t, L, freqs, vol, o, type) { for (const f of freqs) { const s = ctx.createOscillator(), g = ctx.createGain(), fl = ctx.createBiquadFilter(); s.type = type || 'sawtooth'; s.frequency.value = f; s.detune.value = (Math.random() - .5) * 14; fl.type = 'lowpass'; fl.frequency.value = 600; g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(vol, t + Math.min(1.5, L / 3)); g.gain.setValueAtTime(vol, t + L - .8); g.gain.linearRampToValueAtTime(0, t + L); s.connect(fl); fl.connect(g); g.connect(o); s.start(t); s.stop(t + L + .1); } }
 const MUSIC = {
+  // триллер: пульс баса восьмыми, бочка, хэты подключаются со второй трети, диссонанс в пэде, нарастание к концу
+  thriller(t, L, o) { const b = 60 / 112, n = Math.floor(L / b); pad(t, L, [55, 58.3, 82.4], .045, o);
+    for (let i = 0; i < n; i++) { const tt = t + i * b, k = i * b / L;
+      osc(0, 'sine', 120, 38, tt, tt + .28, .55 + .25 * k, .001, o);
+      for (let h = 0; h < 2; h++) { const f = [55, 55, 65.4, 61.7][((i / 4) | 0) % 4] * 2; osc(0, 'sawtooth', f, f, tt + h * b / 2, tt + h * b / 2 + b * .42, .05 + .05 * k, .001, o); }
+      if (k > .3) { noise(tt + b / 2, tt + b / 2 + .04, .08 + .1 * k, .001, o, 'highpass', 7000); if (k > .55) noise(tt + b / 4, tt + b / 4 + .03, .06, .001, o, 'highpass', 8000); }
+      if (i % 8 === 4) noise(tt, tt + .18, .18 + .15 * k, .001, o, 'bandpass', 1600, 900, 1);
+      if (i % 16 === 0 && i) { osc(0, 'sine', 70, 30, tt, tt + 1.2, .6, .001, o); noise(tt, tt + .8, .25, .001, o, 'lowpass', 3000, 100); } }
+    for (let i = 0; i < L / 4; i++) osc(0, 'triangle', 880 + (i % 3) * 52, 870, t + 2 + i * 4, t + 4.6 + i * 4, .012, .0001, o);
+    osc(0, 'sawtooth', 110, 660, t + L - 6, t + L - .2, .002, .05, o); noise(t + L - 6, t + L - .2, .005, .12, o, 'bandpass', 300, 6000, 1); },
   tension(t, L, o) { pad(t, L, [55, 55.4, 82.4, 110.3], .05, o); const lf = ctx.createOscillator(), lg = ctx.createGain(); lf.frequency.value = .25; lg.gain.value = .02; lf.connect(lg); lg.connect(o.gain); lf.start(t); lf.stop(t + L); for (let i = 0; i < L / .52; i++) osc(0, 'sine', 62, 44, t + i * .52, t + i * .52 + .14, .14, .001, o); for (let i = 0; i < L / 4; i++) osc(0, 'sine', 740 + (i % 2) * 40, 740, t + 1 + i * 4, t + 3.2 + i * 4, .006, .0001, o); osc(0, 'sawtooth', 220, 880, t + L - 5, t + L, .001, .02, o); },
   calm(t, L, o) { const ch = [[261.6, 329.6, 392], [220, 277.2, 329.6], [174.6, 220, 261.6], [196, 246.9, 293.7]]; for (let i = 0; i * 4 < L; i++) pad(t + i * 4, Math.min(4.4, L - i * 4 + .4), ch[i % 4], .035, o, 'triangle'); for (let i = 0; i < L / .5; i++) { const n = ch[((i / 8) | 0) % 4]; osc(0, 'sine', n[i % 3] * 2, n[i % 3] * 2, t + i * .5, t + i * .5 + .45, .03, .0001, o); } },
   action(t, L, o) { const bpm = 128, b = 60 / bpm, bass = [55, 55, 65.4, 49]; for (let i = 0; i * b < L; i++) { const tt = t + i * b; osc(0, 'sine', 130, 45, tt, tt + .22, .5, .001, o); if (i % 2) noise(tt + b / 2, tt + b / 2 + .05, .12, .001, o, 'highpass', 6000); if (i % 4 === 2) noise(tt, tt + .12, .22, .001, o, 'bandpass', 1800, 1500, 1); osc(0, 'sawtooth', bass[((i / 8) | 0) % 4] * 2, bass[((i / 8) | 0) % 4] * 2, tt + b / 2, tt + b * .95, .08, .001, o); } },
@@ -52,15 +62,17 @@ function stopPreview() { if (preview) { try { preview.disconnect(); } catch (e) 
 // запуск всего проекта с момента from (сек)
 function start(P, from, clips) {
   init(); stop(); const t0 = ctx.currentTime + .08, tot = E.total(P); bus = ctx.createGain(); bus.gain.value = 1; bus.connect(master);
-  const mus = ctx.createGain(), vol = (P.music && P.music.vol != null ? P.music.vol : .5); mus.gain.value = vol; mus.connect(bus);
+  const mus = ctx.createGain(), cutG = ctx.createGain(), vol = (P.music && P.music.vol != null ? P.music.vol : .5); mus.gain.value = vol; mus.connect(cutG); cutG.connect(bus);
   const sfxBus = ctx.createGain(); sfxBus.gain.value = 1; sfxBus.connect(bus);
   const rem = Math.max(.1, tot - from);
   if (P.music && MUSIC[P.music.style]) MUSIC[P.music.style](t0, rem, mus);
   const tl = E.timeline(P); const voiceIv = [];
   tl.forEach(({ s, sc }, si) => {
-    (sc.sfx || []).forEach(x => { const at = s + (x.at || 0) - from; if (at < -.05 && !(x.dur && at + x.dur > 0)) return; const tt = t0 + Math.max(0, at), d = x.dur ? (at < 0 ? x.dur + at : x.dur) : 0; if (SFX[x.n]) SFX[x.n](tt, d, x.v == null ? 1 : x.v, sfxBus); });
+    (sc.sfx || []).forEach(x => { const at = s + (x.cap != null ? ((sc.caps || [])[x.cap] || {}).at || 0 : 0) + (x.at || 0) - from; if (at < -.05 && !(x.dur && at + x.dur > 0)) return; const tt = t0 + Math.max(0, at), d = x.dur ? (at < 0 ? x.dur + at : x.dur) : 0; if (SFX[x.n]) SFX[x.n](tt, d, x.v == null ? 1 : x.v, sfxBus); });
     (sc.caps || []).forEach((cp, ci) => { const buf = clips && clips[si + ':' + ci]; if (!buf) return; const at = s + cp.at - from; if (at + buf.duration < 0) return; const src = ctx.createBufferSource(), g = ctx.createGain(); src.buffer = buf; g.gain.value = 1.35; src.connect(g); g.connect(bus); const off = Math.max(0, -at); src.start(t0 + Math.max(0, at), off); voiceIv.push([Math.max(0, at), Math.max(0, at) + buf.duration - off]); });
   });
+  // провалы музыки: фраза с cut: N — музыка замолкает на N секунд с начала фразы (тишина перед ударом)
+  tl.forEach(({ s, sc }) => (sc.caps || []).forEach(cp => { if (!cp.cut) return; const a = s + cp.at - from; if (a + cp.cut < 0) return; cutG.gain.setTargetAtTime(0, t0 + Math.max(0, a) - .02, .03); cutG.gain.setTargetAtTime(1, t0 + Math.max(0, a + cp.cut), .08); }));
   if (voiceIv.length && P.music && (P.music.duck !== false)) { const lo = vol * .3; mus.gain.setValueAtTime(vol, t0); voiceIv.forEach(([a, b]) => { mus.gain.setTargetAtTime(lo, t0 + a - .05, .08); mus.gain.setTargetAtTime(vol, t0 + b + .05, .25); }); }
   return { t0, ctx };
 }
