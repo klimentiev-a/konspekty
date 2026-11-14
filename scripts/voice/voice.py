@@ -80,7 +80,7 @@ def style(words_file, vid=None):
     gs, gc = [], []
     for i in range(len(W) - 1):
         g = (W[i + 1]['start_ms'] - W[i]['end_ms']) / 1000
-        if g < 0 or g > 3: continue
+        if g < 0 or g > 3 or W[i].get('brk'): continue  # brk: дальше говорит другой голос — это не пауза
         (gs if END.search(W[i]['text']) else gc if MID.search(W[i]['text']) else []).append(g)
     def rate(s):  # слогов в секунду: русская речь считается по гласным
         syl = sum(len(re.findall(r'[аеёиоуыэюяaeiouy]', w['text'].lower())) for w in s)
