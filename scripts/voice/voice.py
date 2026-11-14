@@ -92,11 +92,12 @@ def style(words_file, vid=None):
     med = st.median(allr)
     prof = {
         'syl_per_sec': round(med, 2),
-        'speed': round(max(0.75, min(1.3, med / 4.2)), 2),          # 4,2 слога/с — Cartesia при speed=1 (замер 14.11)
+        'speed': round(max(0.75, min(1.4, med / 4.2)), 2),          # 4,2 слога/с — Cartesia при speed=1 (замер 14.11)
         'short_slow': round(max(0.85, min(1.0, (st.median(short) / st.median(long)) if short and long else 0.92)), 2),
         'pause_sentence': round(st.median(gs), 2) if gs else 0.45,
         'pause_comma': round(st.median(gc), 2) if gc else 0.15,
-        'pause_long': round(max(gs), 2) if gs else 0.8,              # самая драматичная пауза примера
+        'pause_long': round(min(1.3, st.median(sorted(gs)[-3:])), 2) if len(gs) >= 3 else 0.8,  # пауза перед добивкой: медиана трёх самых длинных
+        'pause_q3': round(st.quantiles(gs, n=4)[2], 2) if len(gs) >= 4 else 0.55,               # заметная пауза (75-й перцентиль)
         'spread': round((max(allr) - min(allr)) / med, 2) if len(allr) > 1 else 0,
         'sentences': len(S), 'words': len(W)}
     if vid:
@@ -119,7 +120,7 @@ def script(text_file, vid):
     out = []
     for l in lines:
         n = len(re.findall(r'\w+', l))
-        r = P['short_slow'] if n <= 3 else 1.0
+        r = P['speed'] * (P['short_slow'] if n <= 3 else 1.0)  # тег задаёт скорость целиком (общий speed он перебивает, замер 14.11)
         if not END.search(l): l += '.'
         out.append(f'<speed ratio="{r:.2f}"/>{l}')  # тег держится до следующего, поэтому ставим у каждой фразы
     print(json.dumps({'text': ' '.join(out), 'speed': P['speed']}, ensure_ascii=False))
@@ -146,24 +147,28 @@ def cut(voice, words_file, lines_file, vid, outd):
         s = max(0, a - 60); e = min(T, b + min(120, (nxt - b) / 2))
         last = i == len(bounds) - 1
         txt = L[i].strip()
-        pause = P['pause_long'] if (last or len(re.findall(r'\w+', txt)) <= 3 and END.search(txt)) else \
-                P['pause_sentence'] if END.search(txt) else P['pause_comma']
+        # длинная пауза — перед последней фразой (добивка) и после неё; после вопроса/восклицания — заметная; иначе обычная из примера
+        q3 = P.get('pause_q3', P['pause_sentence'])
+        pause = P['pause_long'] if (last or i == len(bounds) - 2) else \
+                q3 if (txt.endswith('?') or txt.endswith('!')) else \
+                P['pause_sentence'] if END.search(txt) else max(P['pause_comma'], 0.12)
         pause = max(0.12, min(1.2, pause))
         sh('ffmpeg', '-y', '-v', 'error', '-ss', f'{s/1000:.3f}', '-to', f'{e/1000:.3f}', '-i', voice,
            '-af', f'afade=t=in:d=0.01,areverse,afade=t=in:d=0.03,areverse,apad=pad_dur={pause:.2f}',
            os.path.join(outd, f'c{i:02d}.wav'))
     print(json.dumps({'lines': len(L), 'words_used': k, 'words_total': len(W)}, ensure_ascii=False))
 
-def add(vid, name, pvid, desc=''):
+def add(vid, name, pvid, desc='', provider='cartesia'):
     lib = json.load(open(LIB, encoding='utf-8')) if os.path.exists(LIB) else []
     lib = [v for v in lib if v['id'] != vid]
     d = os.path.join(WORK, vid)
     prof = json.load(open(os.path.join(d, 'style.json')))
+    ex = os.path.exists(os.path.join(d, 'example.mp3'))  # чужой звук без прав не публикуем: example только для своих/разрешённых
     os.makedirs(os.path.dirname(LIB), exist_ok=True)
     for f, to in (('example.mp3', f'{vid}-example.mp3'), ('test.mp3', f'{vid}-test.mp3')):
         if os.path.exists(os.path.join(d, f)): subprocess.run(['cp', os.path.join(d, f), os.path.join(ROOT, 'voices', to)])
-    lib.append({'id': vid, 'name': name, 'desc': desc, 'provider': 'cartesia', 'voice': pvid, 'style': prof,
-                'example': f'voices/{vid}-example.mp3', 'test': f'voices/{vid}-test.mp3'})
+    lib.append({'id': vid, 'name': name, 'desc': desc, 'provider': provider, 'voice': pvid, 'style': prof,
+                'example': f'voices/{vid}-example.mp3' if ex else '', 'test': f'voices/{vid}-test.mp3'})
     json.dump(lib, open(LIB, 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
     print('ok', len(lib))
 

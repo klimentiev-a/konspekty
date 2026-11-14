@@ -18,5 +18,26 @@
   },
   "example": "voices/sergei-example.mp3",
   "test": "voices/sergei-test.mp3"
+ },
+ {
+  "id": "taxi",
+  "name": "Таксист — быстрая сухая подача",
+  "desc": "Манера из ролика про таксиста-смерть: быстро (×1,4), короткие паузы 0,4 с, длинная пауза перед добивкой. Тембр — каталожный Cartesia «Алексей» (чужой голос без прав не клонировали).",
+  "provider": "cartesia",
+  "voice": "069ff31a-5524-4945-a403-f746ee617507",
+  "style": {
+   "syl_per_sec": 6.36,
+   "speed": 1.4,
+   "short_slow": 0.9,
+   "pause_sentence": 0.4,
+   "pause_comma": 0.0,
+   "pause_long": 0.8,
+   "pause_q3": 0.57,
+   "spread": 0.93,
+   "sentences": 33,
+   "words": 118
+  },
+  "example": "",
+  "test": "voices/taxi-test.mp3"
  }
 ]
