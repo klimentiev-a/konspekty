@@ -11,6 +11,8 @@
 Рабочая папка: /tmp/voices/<id>. Образец для клона кладётся в ветку voices-data (см. CLAUDE.md, 4и)."""
 import sys, os, re, json, subprocess, statistics as st
 
+NATURAL = '--natural' in sys.argv
+if NATURAL: sys.argv.remove('--natural')
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 LIB = os.path.join(ROOT, 'voices', 'index.json')
 WORK = '/tmp/voices'
@@ -114,16 +116,12 @@ def load_prof(vid):
     raise SystemExit('нет профиля ' + vid)
 
 def script(text_file, vid):
-    """Строки ролика → один текст. Короткие (≤3 слова) фразы медленнее, как в примере."""
+    """Текст для озвучки — живая речь, а не субтитры (Артём 14.11: «читает каждую букву»): строки — фразы рассказа
+    со связками («и вдруг», «а», «значит»), многоточия и тире для пауз. Одна строка = один кусок нарезки (= субтитр).
+    Темп — один на весь дубль (параметр speed), теги <speed> не ставим: они выравнивают интонацию."""
     P = load_prof(vid)
     lines = [l.strip() for l in open(text_file, encoding='utf-8') if l.strip()]
-    out = []
-    for l in lines:
-        n = len(re.findall(r'\w+', l))
-        r = P['speed'] * (P['short_slow'] if n <= 3 else 1.0)  # тег задаёт скорость целиком (общий speed он перебивает, замер 14.11)
-        if not END.search(l): l += '.'
-        out.append(f'<speed ratio="{r:.2f}"/>{l}')  # тег держится до следующего, поэтому ставим у каждой фразы
-    print(json.dumps({'text': ' '.join(out), 'speed': P['speed']}, ensure_ascii=False))
+    print(json.dumps({'text': ' '.join(lines), 'speed': round(min(P['speed'], 1.2), 2)}, ensure_ascii=False))
 
 def norm(s): return re.sub(r'[^\wё]', '', s.lower().replace('ё', 'е'))
 
@@ -145,6 +143,8 @@ def cut(voice, words_file, lines_file, vid, outd):
     for i, (a, b) in enumerate(bounds):
         nxt = bounds[i + 1][0] if i + 1 < len(bounds) else T
         s = max(0, a - 60); e = min(T, b + min(120, (nxt - b) / 2))
+        if NATURAL:  # живой дубль: режем ровно до начала следующей фразы, его паузы и есть интонация
+            e = min(T, nxt - 30) if i + 1 < len(bounds) else T
         last = i == len(bounds) - 1
         txt = L[i].strip()
         # длинная пауза — перед последней фразой (добивка) и после неё; после вопроса/восклицания — заметная; иначе обычная из примера
@@ -153,8 +153,9 @@ def cut(voice, words_file, lines_file, vid, outd):
                 q3 if (txt.endswith('?') or txt.endswith('!')) else \
                 P['pause_sentence'] if END.search(txt) else max(P['pause_comma'], 0.12)
         pause = max(0.12, min(1.2, pause))
+        if NATURAL: pause = 0.0 if i + 1 < len(bounds) else 0.4
         sh('ffmpeg', '-y', '-v', 'error', '-ss', f'{s/1000:.3f}', '-to', f'{e/1000:.3f}', '-i', voice,
-           '-af', f'afade=t=in:d=0.01,areverse,afade=t=in:d=0.03,areverse,apad=pad_dur={pause:.2f}',
+           '-af', f'afade=t=in:d=0.01,areverse,afade=t=in:d=0.03,areverse,apad=pad_dur={pause:.2f}' if pause > 0 else 'afade=t=in:d=0.01',
            os.path.join(outd, f'c{i:02d}.wav'))
     print(json.dumps({'lines': len(L), 'words_used': k, 'words_total': len(W)}, ensure_ascii=False))
 

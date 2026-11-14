@@ -986,7 +986,9 @@ const TTS = {
     const lens = {}; let n = 0;
     for (const [si, ci, cp] of items) { onProgress && onProgress(n, items.length, cp.text); const b = await this.clip(v, cp.text, true); lens[si + ':' + ci] = b.duration; n++; }
     onProgress && onProgress(n, items.length, '');
-    P.scenes.forEach((sc, si) => { let at = .15; (sc.caps || []).forEach((cp, ci) => { const d = lens[si + ':' + ci]; cp.at = +at.toFixed(2); cp.dur = +(d + .25).toFixed(2); at += d + .3; }); sc.dur = +Math.max(sc.dur, at + .3).toFixed(2); });
+    // flow — живой дубль, нарезанный по фразам: паузы уже внутри клипов, сцены встык, длина сцены = голос (кроме последней)
+    const flow = !!v.flow, last = P.scenes.length - 1;
+    P.scenes.forEach((sc, si) => { let at = flow ? .02 : .15; (sc.caps || []).forEach((cp, ci) => { const d = lens[si + ':' + ci]; cp.at = +at.toFixed(2); cp.dur = +(d + (flow ? 0 : .25)).toFixed(2); at += d + (flow ? 0 : .3); }); sc.dur = +(flow && si < last && (sc.caps || []).length ? at + .02 : Math.max(sc.dur, at + .3)).toFixed(2); });
     return lens;
   }
 };
