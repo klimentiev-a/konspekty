@@ -468,7 +468,7 @@ const EN = {
 'Тряска камеры':'Camera shake','Вспышки':'Flashes','Красная пульсация':'Red pulse','Мигалка':'Beacon','Дождь':'Rain','Снег':'Snow','Пыль':'Dust','Строки ТВ':'TV scanlines','Зерно':'Grain','Затемнение':'Darkening','Ударная волна':'Shockwave',
 'Нет ключа ElevenLabs':'No ElevenLabs key','Нет ключа OpenAI':'No OpenAI key','Не выбран голос ElevenLabs':'No ElevenLabs voice selected','Нет ключа Claude API (вкладка «Сценарий»)':'No Claude API key (step “Idea”)','Запрос к Claude…':'Asking Claude…','Ответ без JSON':'Reply has no JSON','В ответе нет сцен':'The reply has no scenes','Видео':'Video','Сцена ':'Scene ',
 /* новый интерфейс */
-'Сюжетная линия':'Storyline','Часть':'Part','Идея ':'Idea ','Вид':'Look','Выпуск':'Publish','Музыка и звуки':'Music & sounds','Рамка Instagram':'Instagram frame','Чистый кадр':'Clean frame',
+'Сюжетная линия':'Storyline','Часть':'Part','Выбор A/B/C':'Choice A/B/C','Варианты: буква | текст':'Options: letter | text','Бункер: ты тринадцатый':'Bunker: you are number 13','Ты тринадцатый':'You are number 13','Ты':'You','Охранник':'Guard','Офис':'Office','Сирена':'Siren','Бег':'Run','Тринадцатый':'Thirteenth','МЕСТ В БУНКЕРЕ':'PLACES IN BUNKER','ОБЫЧНЫЙ *ВТОРНИК*':'JUST A NORMAL *TUESDAY*','ТЫ В *ОФИСЕ*':'YOU ARE AT THE *OFFICE*','ВОЗДУШНАЯ ТРЕВОГА':'AIR RAID ALERT','ВДРУГ — *СИРЕНА*':'SUDDENLY — A *SIREN*','ЭТО *НЕ* УЧЕНИЕ':'THIS IS *NOT* A DRILL','ОДНО *УБЕЖИЩЕ* НА ЗДАНИЕ':'ONE *SHELTER* PER BUILDING','ЛИФТ СТОИТ — *БЕГОМ*':'LIFT IS DOWN — *RUN*','У ДВЕРИ — *30*':'*30* AT THE DOOR','МЕСТ — ТОЛЬКО *12*':'ONLY *12* PLACES','ОХРАНА *СЧИТАЕТ*':'THE GUARD IS *COUNTING*','*ДВЕНАДЦАТЫЙ* ПРОШЁЛ':'THE *TWELFTH* WENT IN','ТЫ — *ТРИНАДЦАТЫЙ*':'YOU ARE *THIRTEENTH*','МЕСТА *НЕТ*':'NO *ROOM* LEFT','ЧТО ДЕЛАЕШЬ?':'WHAT DO YOU DO?','ПИШИ A, B ИЛИ C':'COMMENT A, B OR C','Отдать место коллеге':'Give the spot to a colleague','Протолкнуться силой':'Push through by force','Искать другое укрытие':'Find another shelter','ДВЕРЬ ЗАКРОЕТСЯ *САМА*':'THE DOOR CLOSES *BY ITSELF*','ЧЕРЕЗ *3 МИНУТЫ*':'IN *3 MINUTES*','*ЛИШНИЙ* — ТЫ':'YOU ARE THE *EXTRA ONE*','ЧТО *ДЕЛАЕШЬ?*':'WHAT DO YOU *DO?*','Идея ':'Idea ','Вид':'Look','Выпуск':'Publish','Музыка и звуки':'Music & sounds','Рамка Instagram':'Instagram frame','Чистый кадр':'Clean frame',
 'От идеи до готового Reels: пять шагов, сверху вниз.':'From idea to finished Reel in five steps.','Назад':'Back','Дальше':'Next','Скрыть подсказки':'Hide tips'
 };
 let lang = 'ru'; try { lang = localStorage.getItem('studio:lang') || ((navigator.language || '').toLowerCase().startsWith('ru') ? 'ru' : 'en'); } catch (e) {}
@@ -687,7 +687,7 @@ const ICONS = {
 };
 const ICONNAMES = Object.keys(ICONS);
 function icon(c, name, x, y, s, col) { c.save(); c.translate(x, y); (ICONS[name] || ICONS.star)(c, s, col); c.restore(); }
-const PROPS = { popup: 'Плашка', cards: 'Карточки', text: 'Крупный текст', timer: 'Таймер', counter: 'Счётчик', chat: 'Чат', sign: 'Табличка', emoji: 'Эмодзи', icon: 'Иконка', bar: 'Полоса', math: 'Формула', arrow: 'Стрелка' };
+const PROPS = { popup: 'Плашка', cards: 'Карточки', text: 'Крупный текст', timer: 'Таймер', counter: 'Счётчик', chat: 'Чат', sign: 'Табличка', emoji: 'Эмодзи', icon: 'Иконка', bar: 'Полоса', math: 'Формула', arrow: 'Стрелка', choice: 'Выбор A/B/C' };
 
 function drawProp(c, p, t, th, sc) {
   const at = p.at || 0, dur = p.dur == null ? 999 : p.dur, lt = t - at;
@@ -707,6 +707,7 @@ function drawProp(c, p, t, th, sc) {
     case 'icon': { icon(c, p.icon || 'star', 0, Math.sin(lt * 3) * 8, p.size || 200, p.color); if (T) txt(c, T, 0, (p.size || 200) + 70, 50, th.ink, { stroke: '#000', sw: 10 }); break; }
     case 'bar': { const k = clamp(lerp(p.from || 0, p.to == null ? 1 : p.to, lt / (p.span || dur > 100 ? 3 : p.span || dur))); fillRR(c, -420, -30, 840, 60, 28, 'rgba(8,11,22,.92)', '#46506e', 4); fillRR(c, -412, -22, Math.max(24, 824 * k), 44, 22, col); txt(c, T, 0, -66, 40, th.ink, { w: 800 }); txt(c, Math.round(k * 100) + '%', 0, 0, 34, '#fff'); break; }
     case 'math': { c.font = `800 ${p.size || 84}px ui-monospace,Consolas,monospace`; const w = c.measureText(T).width + 100; fillRR(c, -w / 2, -80, w, 160, 24, 'rgba(8,11,22,.94)', col, 5); txt(c, T, 0, 0, p.size || 84, th.ink, { f: 'ui-monospace,Consolas,monospace', w: 800 }); break; }
+    case 'choice': { const it = p.items || [], n = Math.max(1, it.length), ch = 150, gap = 26, tot = n * ch + (n - 1) * gap, cols = ['#ff5a7d', '#4fc3f7', '#ffd54a', '#7ddc8a']; if (T) txt(c, T, 0, -tot / 2 - 80, 56, th.ink, { w: 900 }); it.forEach((o, i) => { const k = easeBack((lt - .3 - i * .35) / .32), cc = o.color || cols[i % 4], by = -tot / 2 + i * (ch + gap) + ch / 2, s2 = o.text || ''; c.save(); c.translate(0, by); c.scale(.7 + .3 * k, .7 + .3 * k); c.globalAlpha = clamp(k); fillRR(c, -470, -ch / 2, 940, ch, 30, 'rgba(8,11,22,.94)', cc, 6); c.fillStyle = cc; c.beginPath(); c.arc(-375, 0, 52, 0, 7); c.fill(); txt(c, o.k || String.fromCharCode(65 + i), -375, 3, 64, '#0b0e18', { w: 900 }); txt(c, s2, -305, 0, s2.length > 30 ? 38 : s2.length > 22 ? 44 : 52, th.ink, { al: 'left', w: 800 }); c.restore(); }); if (T2) { const k = clamp((lt - .3 - n * .35) / .3), pul = 1 + Math.sin(lt * 5) * .04; c.save(); c.globalAlpha = k; c.translate(0, tot / 2 + 90); c.scale(pul, pul); c.font = `900 48px ${FONT}`; const tw2 = c.measureText(T2).width + 70; fillRR(c, -tw2 / 2, -46, tw2, 92, 46, 'rgba(8,11,22,.92)', th.hl, 4); txt(c, T2, 0, 2, 48, th.hl, { w: 900 }); c.restore(); } break; }
     case 'arrow': { c.translate(0, Math.sin(lt * 6) * 14); poly(c, [[0, 120], [-90, 10], [-34, 10], [-34, -120], [34, -120], [34, 10], [90, 10]], col); break; }
   }
   c.restore();
@@ -798,35 +799,39 @@ G.StudioEngine = { W, H, THEMES, HAIR, ACC, ANIMS, EXPR, BG, BGNAMES, ICONNAMES,
 const cap = (at, dur, text) => ({ at, dur, text });
 const hero = { name: 'Герой', hood: '#4caf50', hair: '#46281e', skin: '#f7c8a0', pants: '#283046', hairStyle: 'short', acc: 'none' };
 const T = {};
-T.bunker = () => ({ v: 1, title: 'Бункер за 30 секунд', theme: 'bunker', vignette: true,
+T.bunker = () => ({ v: 1, title: 'Ты тринадцатый', theme: 'bunker', vignette: true, outFade: false,
   hud: { on: true, plates: [
-    { label: 'ДО УДАРА', fmt: 'time', keys: [[0, 2820], [4.5, 2760], [25.5, 180], [30, 150]], color: '#e53935' },
-    { label: 'МЕСТ В УБЕЖИЩЕ', fmt: 'num', keys: [[0, 12]], color: '#2ecc71' }],
-    bar: { label: 'ЛЮДЕЙ', max: 31, mark: 12, keys: [[0, 1], [4.5, 1], [9, 9], [11.2, 31], [30, 31]] } },
-  chars: { hero, neighbor: { name: 'Сосед', hood: '#ef6c00', hair: '#222', skin: '#e0a878', pants: '#37474f', hairStyle: 'bald', acc: 'beard' } },
+    { label: 'ДО УДАРА', fmt: 'time', keys: [[0, 2700], [7.9, 2640], [26.1, 200], [31.7, 180]], color: '#e53935' },
+    { label: 'МЕСТ В БУНКЕРЕ', fmt: 'num', keys: [[0, 12]], color: '#2ecc71' }],
+    bar: { label: 'ЛЮДЕЙ', max: 30, mark: 12, keys: [[0, 1], [11.6, 1], [14.2, 30], [31.7, 30]] } },
+  chars: { hero: { name: 'Ты', hood: '#5c6bc0', hair: '#3b2a22', skin: '#f2c6a0', pants: '#263042', hairStyle: 'short', acc: 'tie' }, guard: { name: 'Охранник', hood: '#37474f', hair: '#222', skin: '#e0a878', pants: '#263238', hairStyle: 'cap', acc: 'beard' } },
   cap: { size: 104, y: .66 }, music: { style: 'tension', vol: .55 }, voice: { on: false, provider: 'elevenlabs', voiceId: '', model: '', speed: 1, key: '' },
   scenes: [
-    { name: 'Ночь, сигнал', dur: 4.5, bg: 'bedroom', zoom: [1, 1.12], fx: ['redpulse', 'dust'],
-      cast: [{ c: 'hero', x: .38, y: .86, s: .95, anim: 'shake', expr: 'shock' }],
-      props: [{ type: 'icon', icon: 'phone', x: .78, y: .55, size: 150, at: 1.2 }, { type: 'emoji', text: '⚠️', x: .5, y: .3, size: 220, at: 1.4, dur: 3 }],
-      caps: [cap(0, 1.4, '*3:07* НОЧИ'), cap(1.4, 1.5, 'ПРИШЁЛ СИГНАЛ *ТРЕВОГИ*'), cap(2.9, 1.6, 'ДО УДАРА — *47 МИНУТ*')], sfx: [{ n: 'alert', at: 1.3 }, { n: 'siren', at: 2.4 }, { n: 'heartbeat', at: 0 }] },
-    { name: 'Бег по коридору', dur: 4.5, bg: 'corridor', zoom: [1, 1.1], fx: ['shake', 'redpulse'],
+    { name: 'Офис', dur: 3.9, bg: 'office', zoom: [1, 1.1], fx: ['dust'],
+      cast: [{ c: 'hero', x: .5, y: .93, s: .95, anim: 'sit', expr: 'calm' }],
+      caps: [cap(0, 1.6, 'ОБЫЧНЫЙ *ВТОРНИК*'), cap(1.6, 1.8, 'ТЫ В *ОФИСЕ*')], sfx: [{ n: 'typing', at: 0, dur: 2.5 }] },
+    { name: 'Сирена', dur: 4, bg: 'office', zoom: [1, 1.14], fx: ['redpulse', 'shake', 'siren'],
+      cast: [{ c: 'hero', x: .5, y: .93, s: 1, anim: 'shake', expr: 'scared' }],
+      props: [{ type: 'sign', text: 'ВОЗДУШНАЯ ТРЕВОГА', x: .5, y: .44, at: .2, dur: 3.6, color: '#e53935' }],
+      caps: [cap(0, 1.6, 'ВДРУГ — *СИРЕНА*'), cap(1.6, 1.9, 'ЭТО *НЕ* УЧЕНИЕ')], sfx: [{ n: 'siren', at: 0, dur: 3.8 }, { n: 'alert', at: 0 }, { n: 'heartbeat', at: 1 }] },
+    { name: 'Бег', dur: 3.7, bg: 'corridor', zoom: [1, 1.1], fx: ['shake', 'redpulse'],
       cast: [{ c: 'hero', x: .5, y: .95, s: 1, anim: 'run', expr: 'scared' }],
-      caps: [cap(0, 1.5, 'В ПОДВАЛЕ ЕСТЬ *УБЕЖИЩЕ*'), cap(1.5, 1.5, 'ОДНО НА ВЕСЬ ДОМ'), cap(3, 1.5, 'И БЕЖИТ ТУДА *ВСЕ*')], sfx: [{ n: 'steps', at: 0, dur: 4.5 }, { n: 'whoosh', at: 0 }] },
-    { name: 'Очередь', dur: 5.5, bg: 'hall', zoom: [1, 1.08], fx: ['redpulse'],
-      cast: [{ c: 'hero', x: .32, y: .93, s: .85, anim: 'idle', expr: 'scared' }, { c: 'neighbor', x: .68, y: .93, s: .85, anim: 'point', expr: 'angry', flip: true }],
-      props: [{ type: 'counter', x: .5, y: .3, from: 1, to: 31, size: 200, text: 'ЛЮДЕЙ У ДВЕРИ', at: 1.5, dur: 4, color: '#ff5252', span: 2.2 }],
-      caps: [cap(0, 1.5, 'МЕСТ — *12*'), cap(1.5, 1.5, 'ЛЮДЕЙ — *31*'), cap(3, 2.5, 'ТЫ — *ТРИНАДЦАТЫЙ*')], sfx: [{ n: 'crowd', at: 0, dur: 5.5 }, { n: 'hit', at: 3 }] },
-    { name: 'Запас', dur: 5.5, bg: 'grid', zoom: [1, 1.06],
-      props: [{ type: 'cards', y: .42, items: [{ icon: 'water', label: 'ВОДА', value: '3 дня', color: '#4fc3f7' }, { icon: 'food', label: 'ЕДА', value: '3 дня', color: '#ffb74d' }, { icon: 'filter', label: 'ФИЛЬТР', value: '1 шт', color: '#81c784' }], at: 1.5 }],
-      caps: [cap(0, 1.5, 'ВНУТРИ ЗАПАС НА *3 ДНЯ*'), cap(1.5, 2, 'ВОДА. ЕДА. *ФИЛЬТР*'), cap(3.5, 2, 'НА *12* ЧЕЛОВЕК')], sfx: [{ n: 'ding', at: 1.6 }, { n: 'ding', at: 1.9 }, { n: 'ding', at: 2.2 }] },
-    { name: 'Люк', dur: 5.5, bg: 'hatch', zoom: [1, 1.12], fx: ['redpulse', 'shake'],
-      props: [{ type: 'timer', x: .5, y: .3, from: 180, to: 0, text: 'ДВЕРЬ ЗАКРОЕТСЯ', at: 1.5, dur: 4, span: 4 }],
-      caps: [cap(0, 1.6, 'ДВЕРЬ ЗАКРОЕТСЯ *САМА*'), cap(1.6, 2, 'ЧЕРЕЗ *3 МИНУТЫ*'), cap(3.6, 1.9, 'ВНУТРИ — ТОЛЬКО *12*')], sfx: [{ n: 'creak', at: 0.3 }, { n: 'tick', at: 1.5, dur: 4 }] },
-    { name: 'Выбор', dur: 4.5, bg: 'doorway', zoom: [1.1, 1],
-      cast: [{ c: 'hero', x: .5, y: .9, s: 1.05, anim: 'shake', expr: 'scared' }],
-      props: [{ type: 'emoji', text: '❓', x: .5, y: .22, size: 240, at: 2 }],
-      caps: [cap(0, 2, '*ЛИШНИЙ* — ТЫ'), cap(2, 2.5, 'ЧТО *ДЕЛАЕШЬ?*')], sfx: [{ n: 'riser', at: 0, dur: 4 }, { n: 'boom', at: 3.9 }] }
+      caps: [cap(0, 1.7, 'ОДНО *УБЕЖИЩЕ* НА ЗДАНИЕ'), cap(1.7, 1.6, 'ЛИФТ СТОИТ — *БЕГОМ*')], sfx: [{ n: 'steps', at: 0, dur: 3.6 }, { n: 'whoosh', at: 0 }] },
+    { name: 'Очередь', dur: 5.1, bg: 'hall', zoom: [1, 1.08], fx: ['redpulse'],
+      cast: [{ c: 'hero', x: .3, y: .93, s: .85, anim: 'idle', expr: 'scared' }],
+      props: [{ type: 'counter', x: .5, y: .3, from: 1, to: 30, size: 200, text: 'ЛЮДЕЙ У ДВЕРИ', at: .4, dur: 4.4, color: '#ff5252', span: 1.6 }],
+      caps: [cap(0, 1.5, 'У ДВЕРИ — *30*'), cap(1.5, 1.6, 'МЕСТ — ТОЛЬКО *12*'), cap(3.1, 1.5, 'ОХРАНА *СЧИТАЕТ*')], sfx: [{ n: 'crowd', at: 0, dur: 5 }, { n: 'hit', at: 3.1 }] },
+    { name: 'Тринадцатый', dur: 5.1, bg: 'doorway', zoom: [1, 1.1], fx: ['redpulse'],
+      cast: [{ c: 'hero', x: .32, y: .93, s: .9, anim: 'shake', expr: 'shock' }, { c: 'guard', x: .7, y: .93, s: .9, anim: 'point', expr: 'angry', flip: true }],
+      props: [{ type: 'emoji', text: '✋', x: .7, y: .3, size: 210, at: 1.5 }],
+      caps: [cap(0, 1.5, '*ДВЕНАДЦАТЫЙ* ПРОШЁЛ'), cap(1.5, 1.8, 'ТЫ — *ТРИНАДЦАТЫЙ*'), cap(3.3, 1.3, 'МЕСТА *НЕТ*')], sfx: [{ n: 'hit', at: 1.5 }, { n: 'heartbeat', at: 0 }, { n: 'boom', at: 3.3 }] },
+    { name: 'Люк', dur: 4.3, bg: 'hatch', zoom: [1, 1.12], fx: ['redpulse', 'shake'],
+      props: [{ type: 'timer', x: .5, y: .3, from: 180, to: 0, text: 'ДВЕРЬ ЗАКРОЕТСЯ', at: .3, dur: 3.7, span: 3.7 }],
+      caps: [cap(0, 1.7, 'ДВЕРЬ ЗАКРОЕТСЯ *САМА*'), cap(1.7, 2, 'ЧЕРЕЗ *3 МИНУТЫ*')], sfx: [{ n: 'creak', at: .2 }, { n: 'tick', at: .3, dur: 3.7 }] },
+    { name: 'Выбор', dur: 6.5, bg: 'doorway', zoom: [1.06, 1],
+      cast: [{ c: 'hero', x: .5, y: .98, s: .78, anim: 'shake', expr: 'scared' }],
+      props: [{ type: 'choice', y: .46, at: 1.5, text: 'ЧТО ДЕЛАЕШЬ?', text2: 'ПИШИ A, B ИЛИ C', items: [{ k: 'A', text: 'Отдать место коллеге' }, { k: 'B', text: 'Протолкнуться силой' }, { k: 'C', text: 'Искать другое укрытие' }] }],
+      caps: [cap(0, 1.4, '*ЛИШНИЙ* — ТЫ')], sfx: [{ n: 'riser', at: 0, dur: 5 }, { n: 'ding', at: 1.9 }, { n: 'ding', at: 2.25 }, { n: 'ding', at: 2.6 }] }
   ] });
 T.chat = () => ({ v: 1, title: 'Жуткая переписка', theme: 'horror', vignette: true,
   hud: { on: false, plates: [], bar: null }, chars: { hero: { name: 'Лена', hood: '#7e57c2', hair: '#2b1a12', skin: '#f3c9a5', pants: '#263042', hairStyle: 'long', acc: 'none', hold: 'phone' } },
@@ -849,7 +854,7 @@ T.blank = () => ({ v: 1, title: 'Новое видео', theme: 'bunker', vignet
   chars: { hero }, cap: { size: 104, y: .66 }, music: { style: 'none', vol: .5 }, voice: { on: false, provider: 'elevenlabs', voiceId: '', model: '', speed: 1, key: '' },
   scenes: [{ name: 'Сцена 1', dur: 4, bg: 'gradient', zoom: [1, 1.08], cast: [{ c: 'hero', x: .5, y: .9, s: 1, anim: 'talk', expr: 'calm' }], caps: [cap(0, 3.6, 'ТВОЙ *ТЕКСТ* ЗДЕСЬ')], sfx: [] }] });
 for (const k of Object.keys(T)) { const f = T[k]; T[k] = () => { const p = f(); const I = G.StudioI18n; return I && I.lang === 'en' ? I.mapProject(p, 'en') : p; }; }
-G.StudioData = { T, TNAMES: { bunker: 'Бункер: 30 секунд', chat: 'Жуткая переписка', finance: 'Финансы: сложный процент', blank: 'Пустой проект' },
+G.StudioData = { T, TNAMES: { bunker: 'Бункер: ты тринадцатый', chat: 'Жуткая переписка', finance: 'Финансы: сложный процент', blank: 'Пустой проект' },
   newScene: () => ({ name: 'Новая сцена', dur: 4, bg: 'gradient', zoom: [1, 1.06], fx: [], cast: [], props: [], caps: [cap(0, 3.6, 'НОВЫЙ *ТЕКСТ*')], sfx: [] }), hero };
 })(window);
 
@@ -989,7 +994,7 @@ const AI = {
  "props":[{"type":"${Object.keys(E.PROPS).join('|')}","text":"...","text2":"...","x":0..1,"y":0.2..0.5,"at":сек от начала сцены,"dur":сек,"icon":"${E.ICONNAMES.join('|')}","items":[...],"from":0,"to":0}],
  "caps":[{"at":сек от начала сцены,"dur":сек,"text":"КОРОТКАЯ ФРАЗА С *ВЫДЕЛЕННЫМ* СЛОВОМ"}],
  "sfx":[{"n":"${Object.keys(A.SFX_NAMES).join('|')}","at":сек,"dur":сек для steps/siren/tick/crowd/riser/geiger}]}]}
-Правила: субтитры КАПСОМ, 2–5 слов, одна мысль, ключевое слово в *звёздочках*; сцены 3–6 секунд, фразы внутри сцены подряд без разрывов; первая фраза — крючок, последняя — вопрос или поворот; у каждой сцены свой фон и 2–5 звуков; сумма dur сцен = запрошенной длине. Предметы: cards.items=[{"icon","label","value","color"}], chat.items=[{"who":"me|them","text"}], timer from/to в секундах, counter from/to. Пиши на запрошенном языке, коротко и конкретно, без воды.`;
+Правила: субтитры КАПСОМ, 2–5 слов, одна мысль, ключевое слово в *звёздочках*; сцены 3–6 секунд, фразы внутри сцены подряд без разрывов; первая фраза — крючок, последняя — вопрос или поворот; у каждой сцены свой фон и 2–5 звуков; сумма dur сцен = запрошенной длине. Если уместно, финал — выбор зрителей: prop choice с text «ЧТО ДЕЛАЕШЬ?», text2 «ПИШИ A, B ИЛИ C», items=[{"k":"A","text":"..."},…] из 2–3 вариантов. Предметы: cards.items=[{"icon","label","value","color"}], chat.items=[{"who":"me|them","text"}], timer from/to в секундах, counter from/to. Пиши на запрошенном языке, коротко и конкретно, без воды.`;
   },
   async ideas(ctx, lang, model) {
     const k = Keys.get('anthropic'); if (!k) throw new Error('Нет ключа Claude API (вкладка «Сценарий»)');
@@ -1152,14 +1157,16 @@ function lastLine() { for (let i = P.scenes.length - 1; i >= 0; i--) { const c =
 function contPrompt(idea) { const c = storyCtx(), part = (P.part || 1) + 1; return tt('Продолжение ролика «' + c.title + '» (часть ' + part + '). Герои: ' + c.names + '. Что было:\n' + c.sc + '\n\nИдея продолжения: ' + idea.title + '. ' + idea.logline + (idea.hook ? ' Первая фраза: ' + idea.hook + '.' : '') + '\nНачни с крючка, связанного с последней сценой; сохрани героев и тон.', 'Continuation of the video “' + c.title + '” (part ' + part + '). Characters: ' + c.names + '. What happened:\n' + c.sc + '\n\nContinuation idea: ' + idea.title + '. ' + idea.logline + (idea.hook ? ' First line: ' + idea.hook + '.' : '') + '\nStart with a hook tied to the last scene; keep the characters and the tone.'); }
 function patterns() {
   const hero = (Object.values(P.chars || {})[0] || {}).name || tt('герой', 'the hero'), last = lastLine();
-  return [
+  const ls = P.scenes[P.scenes.length - 1], chp = ls && (ls.props || []).find(p => p.type === 'choice');
+  const br = chp ? (chp.items || []).map(o => ({ ico: o.k, t: tt('Вариант ' + o.k, 'Option ' + o.k), l: tt('Зрители выбрали «' + o.text + '»: что происходит дальше и чем это оборачивается.', 'Viewers picked “' + o.text + '”: what happens next and what it costs.'), hook: tt('ТЫ ВЫБРАЛ ' + o.k, 'YOU PICKED ' + o.k) })) : [];
+  return br.concat([
     { ico: '↯', t: tt('Поворот', 'Plot twist'), l: tt('Выясняется, что ' + hero + ' понял всё неправильно: последняя сцена («' + last + '») значит совсем другое.', hero + ' got it wrong: the last scene (“' + last + '”) means something else entirely.'), hook: tt('ЭТО БЫЛО НЕ ТАК', 'IT WAS NOT SO') },
     { ico: '▲', t: tt('Эскалация', 'Escalation'), l: tt('Ставки растут: времени меньше, угроза ближе, выбор для ' + hero + ' тяжелее.', 'Stakes rise: less time, closer threat, a harder choice for ' + hero + '.'), hook: tt('СТАЛО ХУЖЕ', 'IT GOT WORSE') },
     { ico: '↺', t: tt('Флэшбэк', 'Flashback'), l: tt('Как всё началось: сцена до первой серии, которая объясняет её финал.', 'How it began: a scene before episode one that explains its ending.'), hook: tt('ЗА ЧАС ДО ЭТОГО', 'ONE HOUR EARLIER') },
     { ico: '⇄', t: tt('Другой взгляд', 'Other side'), l: tt('Та же история глазами второго героя: он знает то, чего не знает зритель.', 'The same story through a second character who knows what the viewer does not.'), hook: tt('А ТЕПЕРЬ — ЕГО ВЕРСИЯ', 'NOW, HIS VERSION') },
     { ico: '⚑', t: tt('Развязка', 'Ending'), l: tt('Финал истории: чем закончилось, цена выбора и последняя фраза.', 'The finale: how it ended, the price of the choice and a last line.'), hook: tt('ВОТ ЧЕМ ВСЁ КОНЧИЛОСЬ', 'THIS IS HOW IT ENDED') },
     { ico: '☑', t: tt('Выбор зрителей', 'Viewers choose'), l: tt('Два варианта продолжения, зрители голосуют в комментариях, победивший вариант — следующая серия.', 'Two ways forward; viewers vote in comments and the winner becomes the next episode.'), hook: tt('ВЫБИРАЕШЬ ТЫ', 'YOU CHOOSE') }
-  ];
+  ]);
 }
 async function makePart(idea, st, done) {
   const old = P, series = P.series || P.title, part = (P.part || 1) + 1, topic = contPrompt(idea), key = N.Keys.get('anthropic');
@@ -1188,6 +1195,9 @@ $('libbtn').onclick = openLib; $('crbtn').onclick = openCreative;
 document.querySelectorAll('.s-lang [data-l]').forEach(b => b.onclick = () => switchLang(b.dataset.l));
 $('igbtn').onclick = () => { const on = $('ig').hidden; $('ig').hidden = !on; $('igbtn').classList.toggle('on', on); try { localStorage.setItem('studio:ig', on ? '1' : ''); } catch (e) {} };
 
+function sceneEnd(sc) { let end = 0; (sc.caps || []).forEach(c => { end = Math.max(end, (c.at || 0) + (c.dur || 0)); }); (sc.props || []).forEach(p => { const at = p.at || 0; end = Math.max(end, p.type === 'choice' ? at + 1.2 + (p.items || []).length * .35 + 2.5 : p.dur != null && p.dur < 100 ? at + p.dur : at + 1.2); }); return end; }
+function slack() { return P.scenes.filter(sc => sc.dur - sceneEnd(sc) > 1.3).length; }
+function tighten() { let ch = 0; P.scenes.forEach(sc => { const nd = +Math.max(2, sceneEnd(sc) + .5).toFixed(2); if (nd < sc.dur - .05) { sc.dur = nd; ch++; } }); touch(); return ch; }
 // --- Идея ---
 let aiMsg = ''; let aiOpt = { topic: '', tone: 'напряжённый, как тревожный репортаж', len: 30, scenes: 6, lang: I.lang === 'en' ? 'English' : 'русский', hud: true, extra: '', model: 'claude-sonnet-5-5' };
 function pScript(el) {
@@ -1196,7 +1206,12 @@ function pScript(el) {
   for (const k of Object.keys(D.T)) g.append(h('button', { type: 'button', class: 's-tpl', onclick: () => { { openNew(D.T[k]()); goStep(1); } } }, D.TNAMES[k], h('small', 0, sub[k]))); el.append(g);
   el.append(h('h3', 0, 'Придумать сценарий с Claude'));
   el.append(h('p', { class: 's-note' }, 'Опиши тему — Claude соберёт сцены, персонажей, фразы, звуки и счётчики. Нужен твой ключ Claude API: он хранится только в этом браузере и уходит только на api.anthropic.com.'));
-  const kb = h('div', { class: 's-kbox' }); const ki = h('input', { type: 'password', placeholder: 'sk-ant-…', autocomplete: 'off' }); ki.value = N.Keys.get('anthropic'); ki.oninput = () => N.Keys.set('anthropic', ki.value.trim()); kb.append(fld('Ключ Claude API', ki, 'w')); el.append(kb);
+  const kb = h('div', { class: 's-kbox' }); const ki = h('input', { type: 'password', placeholder: 'sk-ant-…', autocomplete: 'off' }); ki.value = N.Keys.get('anthropic'); const ks = h('div', { class: 's-msg' });
+    const kshow = (ok, msg) => { ks.className = 's-msg ' + (ok === true ? 'ok' : ok === false ? 'err' : ''); ks.textContent = msg; };
+    const kcheck = async () => { const v = ki.value.trim(); N.Keys.set('anthropic', v); if (!v) return kshow(null, ''); if (!/^sk-ant-/.test(v)) return kshow(false, tt('Ключ должен начинаться с sk-ant-', 'The key must start with sk-ant-')); kshow(null, tt('Проверяю ключ…', 'Checking the key…')); try { const r = await fetch('https://api.anthropic.com/v1/models?limit=1', { headers: { 'x-api-key': v, 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' } }); if (r.ok) kshow(true, tt('✓ API подключён', '✓ API connected')); else if (r.status === 401 || r.status === 403) kshow(false, tt('✗ Ключ не подошёл (' + r.status + ')', '✗ The key was rejected (' + r.status + ')')); else kshow(false, tt('✗ Ответ сервиса ' + r.status, '✗ Service replied ' + r.status)); } catch (e) { kshow(false, tt('✗ Нет связи с api.anthropic.com', '✗ Cannot reach api.anthropic.com')); } };
+    ki.oninput = () => { N.Keys.set('anthropic', ki.value.trim()); kshow(null, ki.value.trim() ? tt('Ключ сохранён · нажми Enter, чтобы проверить', 'Key saved · press Enter to check') : ''); }; ki.onkeydown = e => { if (e.key === 'Enter') { e.preventDefault(); kcheck(); } }; ki.onchange = kcheck;
+    if (ki.value) kshow(null, tt('Ключ сохранён · нажми Enter, чтобы проверить', 'Key saved · press Enter to check'));
+    kb.append(fld('Ключ Claude API', ki, 'w'), ks); el.append(kb);
   el.append(F.text(aiOpt, 'topic', 'О чём видео', { area: true, rows: 3, ph: 'Например: за 47 минут до ядерного удара ты узнаёшь, что в бункере 12 мест, а людей 31', on: () => { }, cls: 'w' }));
   el.append(h('div', { class: 's-row' }, F.sel(aiOpt, 'tone', 'Тон', ['напряжённый, как тревожный репортаж', 'познавательный, с фактами и цифрами', 'смешной, с абсурдным поворотом', 'хоррор, нарастающий страх', 'мотивационный, энергичный', 'драма с неожиданной развязкой'], { on: () => { } }), F.sel(aiOpt, 'len', 'Длина, с', { 15: '15', 30: '30', 45: '45', 60: '60' }, { cls: 's', on: v => { aiOpt.len = +v; } }), F.num(aiOpt, 'scenes', 'Сцен', { min: 3, max: 12, step: 1, on: () => { } }), F.sel(aiOpt, 'lang', 'Язык', ['русский', 'English'], { on: () => { } })));
   el.append(h('div', { class: 's-row' }, F.chk(aiOpt, 'hud', 'Счётчики (HUD)', () => { })));
@@ -1213,6 +1228,7 @@ function dl(blob, name) { const a = h('a', { href: URL.createObjectURL(blob), do
 // --- Сцены ---
 function pScenes(el) {
   el.append(h('p', { class: 's-note' }, 'Нажми на сцену, чтобы править. Время субтитров, предметов и звуков — в секундах от начала сцены.'));
+  el.append(h('div', { class: 's-row' }, btn(tt('Подогнать паузы', 'Trim dead time'), () => { const n = tighten(); tlBuild(); frame(); pane(); const m = h('div', { class: 's-msg ok' }, n ? tt('Подогнано сцен: ' + n + ', ролик ' + total().toFixed(1) + ' с', 'Trimmed ' + n + ' scene(s); video is ' + total().toFixed(1) + ' s') : tt('Лишних пауз нет', 'No dead time')); $('pane').prepend(m); setTimeout(() => m.remove(), 3500); }, 'sm')));
   const list = h('div', { class: 's-sc-list' });
   P.scenes.forEach((s, i) => { const c = h('div', { class: 's-card' + (i === sel ? ' on' : '') }); const hd = h('div', { class: 's-ch' }, h('b', 0, (i + 1) + '. ' + s.name + ' · ' + s.dur + ' с'), btn('↑', e => { e.stopPropagation(); if (move(P.scenes, i, -1)) { sel = i - 1; touch(1); pane(); } }, 'sm'), btn('↓', e => { e.stopPropagation(); if (move(P.scenes, i, 1)) { sel = i + 1; touch(1); pane(); } }, 'sm'), btn('Копия', e => { e.stopPropagation(); P.scenes.splice(i + 1, 0, JSON.parse(JSON.stringify(s))); sel = i + 1; touch(1); pane(); }, 'sm'), btn('✕', e => { e.stopPropagation(); if (P.scenes.length < 2) return; if (confirm(TR('Удалить сцену «' + s.name + '»?'))) { P.scenes.splice(i, 1); sel = Math.max(0, i - 1); touch(1); pane(); } }, 'sm dng')); c.append(hd); c.onclick = () => { if (sel !== i) { sel = i; seek(E.timeline(P)[i].s + .3); pane(); } }; list.append(c); if (i === sel) c.append(sceneEditor(s)); });
   el.append(list); el.append(h('div', { class: 's-row' }, btn('+ Сцена', () => { P.scenes.splice(sel + 1, 0, D.newScene()); sel++; touch(1); pane(); }, 'pri')));
@@ -1229,14 +1245,15 @@ function sceneEditor(s) {
   w.append(h('h3', 0, 'Предметы на экране')); s.props = s.props || [];
   s.props.forEach((p, i) => { const c = h('div', { class: 's-card' }); const rows = [h('div', { class: 's-row' }, F.sel(p, 'type', 'Что', E.PROPS, { on: () => { touch(); pane(); } }), F.num(p, 'x', 'X', { min: 0, max: 1, step: .05 }), F.num(p, 'y', 'Y', { min: 0, max: 1, step: .05 }), F.num(p, 's', 'Масштаб', { min: .3, max: 3, step: .1, opt: 1 }), F.num(p, 'at', 'С, с', { min: 0, max: 40 }), F.num(p, 'dur', 'Длит.', { min: .2, max: 40, opt: 1 }), btn('✕', () => { s.props.splice(i, 1); touch(); pane(); }, 'sm dng'))];
     const ty = p.type; const r2 = h('div', { class: 's-row' });
-    if (['popup', 'text', 'timer', 'counter', 'bar', 'math', 'sign', 'emoji', 'icon'].includes(ty)) r2.append(F.text(p, 'text', ty === 'emoji' ? 'Эмодзи' : 'Текст', { cls: '' }));
-    if (ty === 'popup') r2.append(F.text(p, 'text2', 'Вторая строка'));
+    if (['popup', 'text', 'timer', 'counter', 'bar', 'math', 'sign', 'emoji', 'icon', 'choice'].includes(ty)) r2.append(F.text(p, 'text', ty === 'emoji' ? 'Эмодзи' : 'Текст', { cls: '' }));
+    if (ty === 'popup' || ty === 'choice') r2.append(F.text(p, 'text2', 'Вторая строка'));
     if (ty === 'icon') r2.append(F.sel(p, 'icon', 'Иконка', E.ICONNAMES, {}));
     if (['timer', 'counter', 'bar'].includes(ty)) r2.append(F.num(p, 'from', 'От', { step: 1, opt: 1 }), F.num(p, 'to', 'До', { step: 1, opt: 1 }), F.num(p, 'span', 'За, с', { opt: 1 }));
     if (ty === 'counter') r2.append(F.text(p, 'suffix', 'Подпись числа', { cls: 's' }));
     if (['text', 'emoji', 'icon', 'counter'].includes(ty)) r2.append(F.num(p, 'size', 'Размер', { step: 10, opt: 1 }));
     if (p.type !== 'text') r2.append(F.col(p, 'color', 'Цвет', E.THEMES[P.theme].a));
     rows.push(r2);
+    if (ty === 'choice') { const ta = h('textarea', { rows: 4 }); ta.value = (p.items || []).map(o => [o.k, o.text].join(' | ')).join('\n'); ta.oninput = () => { p.items = ta.value.split('\n').filter(x => x.trim()).slice(0, 4).map((l, i) => { const a = l.split('|'); const b = a.slice(1).join('|').trim(); return b ? { k: (a[0] || '').trim().slice(0, 2) || String.fromCharCode(65 + i), text: b } : { k: String.fromCharCode(65 + i), text: l.trim() }; }); touch(); }; rows.push(fld('Варианты: буква | текст', ta, 'w')); }
     if (ty === 'cards') { const ta = h('textarea', { rows: 4 }); ta.value = (p.items || []).map(o => [o.icon, o.label, o.value || ''].join(' | ')).join('\n'); ta.oninput = () => { p.items = ta.value.split('\n').filter(x => x.trim()).map(l => { const [a, b, c] = l.split('|').map(x => x.trim()); return { icon: E.ICONNAMES.includes(a) ? a : 'star', label: b || '', value: c || '' }; }); touch(); }; rows.push(fld('Карточки: иконка | подпись | значение (иконки: ' + E.ICONNAMES.join(', ') + ')', ta, 'w')); }
     if (ty === 'chat') { const ta = h('textarea', { rows: 4 }); ta.value = (p.items || []).map(o => (o.who === 'me' ? tt('я: ', 'me: ') : tt('он: ', 'them: ')) + o.text).join('\n'); ta.oninput = () => { p.items = ta.value.split('\n').filter(x => x.trim()).map(l => { const m = /^(я|me|он|они|them)\s*:\s*(.*)$/i.exec(l); return { who: m && /^(я|me)$/i.test(m[1]) ? 'me' : 'them', text: m ? m[2] : l }; }); touch(); }; rows.push(fld('Сообщения: «я: …» или «он: …», по строке', ta, 'w'), h('div', { class: 's-row' }, F.num(p, 'gap', 'Пауза между, с', { opt: 1 }))); }
     c.append(...rows); w.append(c); });
@@ -1313,6 +1330,7 @@ function checks() {
   const lines = 2, bottom = (cap.y == null ? .72 : cap.y) + (cap.size * 1.12 * lines / 2) / 1920;
   out.push(bottom <= .74 ? [1, tt('Субтитры в безопасной зоне Instagram', 'Captions are inside the Instagram safe zone')] : [0, tt('Субтитры внизу закроются подписью и кнопками Instagram', 'Bottom captions will be covered by Instagram’s caption and buttons'), () => { cap.y = .62; P.cap = cap; touch(); pane(); }, tt('Поднять', 'Raise')]);
   const snd = (P.music && P.music.style && P.music.style !== 'none') || (P.voice && P.voice.on); out.push(snd ? [1, tt('Звук: музыка или голос включены', 'Sound: music or voice is on')] : [0, tt('Тишина: добавь музыку или голос', 'Silent: add music or a voice'), () => goStep(3, 'sound'), tt('К звуку', 'To sound')]);
+  const sl = slack(); out.push(sl ? [0, tt(sl + ' сцен с паузой дольше 1,3 с в конце — ролик тянется', sl + ' scene(s) end with a pause over 1.3 s — the video drags'), () => { tighten(); frame(); tlBuild(); pane(); }, tt('Подогнать', 'Tighten')] : [1, tt('Темп: без мёртвых пауз', 'Pace: no dead pauses')]);
   const empty = P.scenes.filter(sc => !sc.caps.some(c => c.text && c.text !== '...')).length; out.push(empty ? [0, tt(empty + ' сцен без текста — зритель уйдёт', empty + ' scene(s) without text — viewers may leave'), () => goStep(1, 'scenes'), tt('К сценам', 'To scenes')] : [1, tt('В каждой сцене есть текст', 'Every scene has text')]);
   return out;
 }

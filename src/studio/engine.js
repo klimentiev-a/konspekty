@@ -171,7 +171,7 @@ const ICONS = {
 };
 const ICONNAMES = Object.keys(ICONS);
 function icon(c, name, x, y, s, col) { c.save(); c.translate(x, y); (ICONS[name] || ICONS.star)(c, s, col); c.restore(); }
-const PROPS = { popup: 'Плашка', cards: 'Карточки', text: 'Крупный текст', timer: 'Таймер', counter: 'Счётчик', chat: 'Чат', sign: 'Табличка', emoji: 'Эмодзи', icon: 'Иконка', bar: 'Полоса', math: 'Формула', arrow: 'Стрелка' };
+const PROPS = { popup: 'Плашка', cards: 'Карточки', text: 'Крупный текст', timer: 'Таймер', counter: 'Счётчик', chat: 'Чат', sign: 'Табличка', emoji: 'Эмодзи', icon: 'Иконка', bar: 'Полоса', math: 'Формула', arrow: 'Стрелка', choice: 'Выбор A/B/C' };
 
 function drawProp(c, p, t, th, sc) {
   const at = p.at || 0, dur = p.dur == null ? 999 : p.dur, lt = t - at;
@@ -191,6 +191,7 @@ function drawProp(c, p, t, th, sc) {
     case 'icon': { icon(c, p.icon || 'star', 0, Math.sin(lt * 3) * 8, p.size || 200, p.color); if (T) txt(c, T, 0, (p.size || 200) + 70, 50, th.ink, { stroke: '#000', sw: 10 }); break; }
     case 'bar': { const k = clamp(lerp(p.from || 0, p.to == null ? 1 : p.to, lt / (p.span || dur > 100 ? 3 : p.span || dur))); fillRR(c, -420, -30, 840, 60, 28, 'rgba(8,11,22,.92)', '#46506e', 4); fillRR(c, -412, -22, Math.max(24, 824 * k), 44, 22, col); txt(c, T, 0, -66, 40, th.ink, { w: 800 }); txt(c, Math.round(k * 100) + '%', 0, 0, 34, '#fff'); break; }
     case 'math': { c.font = `800 ${p.size || 84}px ui-monospace,Consolas,monospace`; const w = c.measureText(T).width + 100; fillRR(c, -w / 2, -80, w, 160, 24, 'rgba(8,11,22,.94)', col, 5); txt(c, T, 0, 0, p.size || 84, th.ink, { f: 'ui-monospace,Consolas,monospace', w: 800 }); break; }
+    case 'choice': { const it = p.items || [], n = Math.max(1, it.length), ch = 150, gap = 26, tot = n * ch + (n - 1) * gap, cols = ['#ff5a7d', '#4fc3f7', '#ffd54a', '#7ddc8a']; if (T) txt(c, T, 0, -tot / 2 - 80, 56, th.ink, { w: 900 }); it.forEach((o, i) => { const k = easeBack((lt - .3 - i * .35) / .32), cc = o.color || cols[i % 4], by = -tot / 2 + i * (ch + gap) + ch / 2, s2 = o.text || ''; c.save(); c.translate(0, by); c.scale(.7 + .3 * k, .7 + .3 * k); c.globalAlpha = clamp(k); fillRR(c, -470, -ch / 2, 940, ch, 30, 'rgba(8,11,22,.94)', cc, 6); c.fillStyle = cc; c.beginPath(); c.arc(-375, 0, 52, 0, 7); c.fill(); txt(c, o.k || String.fromCharCode(65 + i), -375, 3, 64, '#0b0e18', { w: 900 }); txt(c, s2, -305, 0, s2.length > 30 ? 38 : s2.length > 22 ? 44 : 52, th.ink, { al: 'left', w: 800 }); c.restore(); }); if (T2) { const k = clamp((lt - .3 - n * .35) / .3), pul = 1 + Math.sin(lt * 5) * .04; c.save(); c.globalAlpha = k; c.translate(0, tot / 2 + 90); c.scale(pul, pul); c.font = `900 48px ${FONT}`; const tw2 = c.measureText(T2).width + 70; fillRR(c, -tw2 / 2, -46, tw2, 92, 46, 'rgba(8,11,22,.92)', th.hl, 4); txt(c, T2, 0, 2, 48, th.hl, { w: 900 }); c.restore(); } break; }
     case 'arrow': { c.translate(0, Math.sin(lt * 6) * 14); poly(c, [[0, 120], [-90, 10], [-34, 10], [-34, -120], [34, -120], [34, 10], [90, 10]], col); break; }
   }
   c.restore();
