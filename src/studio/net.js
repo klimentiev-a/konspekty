@@ -14,6 +14,7 @@ const DB = {
   async set(k, v) { try { const db = await this.open(); await new Promise(res => { const tx = db.transaction('tts', 'readwrite'); tx.objectStore('tts').put(v, k); tx.oncomplete = res; tx.onerror = res; }); } catch (e) {} },
   async clear() { try { const db = await this.open(); await new Promise(res => { const tx = db.transaction('tts', 'readwrite'); tx.objectStore('tts').clear(); tx.oncomplete = res; tx.onerror = res; }); } catch (e) {} }
 };
+const PIPER_VOICES = { 'ru_RU-irina-medium': 'Ирина (рус.)', 'ru_RU-denis-medium': 'Денис (рус.)', 'ru_RU-dmitri-medium': 'Дмитрий (рус.)', 'ru_RU-ruslan-medium': 'Руслан (рус.)', 'en_US-lessac-medium': 'Lessac (EN)', 'en_GB-alan-medium': 'Alan (EN-GB)' };
 const OPENAI_VOICES = ['alloy', 'ash', 'ballad', 'coral', 'echo', 'fable', 'nova', 'onyx', 'sage', 'shimmer', 'verse'];
 const TTS = {
   buf: {},
@@ -21,6 +22,11 @@ const TTS = {
   async voices() { const k = Keys.get('eleven'); if (!k) throw new Error('Нет ключа ElevenLabs'); const r = await fetch('https://api.elevenlabs.io/v1/voices', { headers: { 'xi-api-key': k } }); if (!r.ok) throw new Error('ElevenLabs: ' + r.status + ' ' + (await r.text()).slice(0, 160)); const j = await r.json(); return (j.voices || []).map(x => ({ id: x.voice_id, name: x.name, lang: (x.labels && (x.labels.language || x.labels.accent)) || '' })); },
   async fetchAudio(v, text) {
     text = E.stripCap(text);
+    if (v.provider === 'piper') {
+      const m = await import('https://cdn.jsdelivr.net/npm/@diffusionstudio/vits-web@1.0.3/+esm');
+      const wav = await m.predict({ text, voiceId: v.voiceId || 'ru_RU-irina-medium' });
+      return wav.arrayBuffer();
+    }
     if (v.provider === 'openai') {
       const k = Keys.get('openai'); if (!k) throw new Error('Нет ключа OpenAI');
       const body = { model: v.model || 'gpt-4o-mini-tts', voice: v.voiceId || 'onyx', input: text, response_format: 'mp3', speed: v.speed || 1 };
@@ -114,5 +120,5 @@ const AI = {
     return P;
   }
 };
-G.StudioNet = { Keys, DB, TTS, AI, OPENAI_VOICES };
+G.StudioNet = { Keys, DB, TTS, AI, OPENAI_VOICES, PIPER_VOICES };
 })(window);

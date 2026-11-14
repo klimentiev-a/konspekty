@@ -468,7 +468,7 @@ const EN = {
 'Тряска камеры':'Camera shake','Вспышки':'Flashes','Красная пульсация':'Red pulse','Мигалка':'Beacon','Дождь':'Rain','Снег':'Snow','Пыль':'Dust','Строки ТВ':'TV scanlines','Зерно':'Grain','Затемнение':'Darkening','Ударная волна':'Shockwave',
 'Нет ключа ElevenLabs':'No ElevenLabs key','Нет ключа OpenAI':'No OpenAI key','Не выбран голос ElevenLabs':'No ElevenLabs voice selected','Нет ключа Claude API (вкладка «Сценарий»)':'No Claude API key (step “Idea”)','Запрос к Claude…':'Asking Claude…','Ответ без JSON':'Reply has no JSON','В ответе нет сцен':'The reply has no scenes','Видео':'Video','Сцена ':'Scene ',
 /* новый интерфейс */
-'Сюжетная линия':'Storyline','Часть':'Part','Выбор A/B/C':'Choice A/B/C','Варианты: буква | текст':'Options: letter | text','Бункер: ты тринадцатый':'Bunker: you are number 13','Ты тринадцатый':'You are number 13','Ты':'You','Охранник':'Guard','Офис':'Office','Сирена':'Siren','Бег':'Run','Тринадцатый':'Thirteenth','МЕСТ В БУНКЕРЕ':'PLACES IN BUNKER','ОБЫЧНЫЙ *ВТОРНИК*':'JUST A NORMAL *TUESDAY*','ТЫ В *ОФИСЕ*':'YOU ARE AT THE *OFFICE*','ВОЗДУШНАЯ ТРЕВОГА':'AIR RAID ALERT','ВДРУГ — *СИРЕНА*':'SUDDENLY — A *SIREN*','ЭТО *НЕ* УЧЕНИЕ':'THIS IS *NOT* A DRILL','ОДНО *УБЕЖИЩЕ* НА ЗДАНИЕ':'ONE *SHELTER* PER BUILDING','ЛИФТ СТОИТ — *БЕГОМ*':'LIFT IS DOWN — *RUN*','У ДВЕРИ — *30*':'*30* AT THE DOOR','МЕСТ — ТОЛЬКО *12*':'ONLY *12* PLACES','ОХРАНА *СЧИТАЕТ*':'THE GUARD IS *COUNTING*','*ДВЕНАДЦАТЫЙ* ПРОШЁЛ':'THE *TWELFTH* WENT IN','ТЫ — *ТРИНАДЦАТЫЙ*':'YOU ARE *THIRTEENTH*','МЕСТА *НЕТ*':'NO *ROOM* LEFT','ЧТО ДЕЛАЕШЬ?':'WHAT DO YOU DO?','ПИШИ A, B ИЛИ C':'COMMENT A, B OR C','Отдать место коллеге':'Give the spot to a colleague','Протолкнуться силой':'Push through by force','Искать другое укрытие':'Find another shelter','ДВЕРЬ ЗАКРОЕТСЯ *САМА*':'THE DOOR CLOSES *BY ITSELF*','ЧЕРЕЗ *3 МИНУТЫ*':'IN *3 MINUTES*','*ЛИШНИЙ* — ТЫ':'YOU ARE THE *EXTRA ONE*','ЧТО *ДЕЛАЕШЬ?*':'WHAT DO YOU *DO?*','Идея ':'Idea ','Вид':'Look','Выпуск':'Publish','Музыка и звуки':'Music & sounds','Рамка Instagram':'Instagram frame','Чистый кадр':'Clean frame',
+'Сюжетная линия':'Storyline','Часть':'Part','Выбор A/B/C':'Choice A/B/C','Варианты: буква | текст':'Options: letter | text','Бункер: ты тринадцатый':'Bunker: you are number 13','Ты тринадцатый':'You are number 13','Ты':'You','Охранник':'Guard','Офис':'Office','Сирена':'Siren','Бег':'Run','Тринадцатый':'Thirteenth','МЕСТ В БУНКЕРЕ':'PLACES IN BUNKER','ОБЫЧНЫЙ *ВТОРНИК*':'JUST A NORMAL *TUESDAY*','ТЫ В *ОФИСЕ*':'YOU ARE AT THE *OFFICE*','ВОЗДУШНАЯ ТРЕВОГА':'AIR RAID ALERT','ВДРУГ — *СИРЕНА*':'SUDDENLY — A *SIREN*','ЭТО *НЕ* УЧЕНИЕ':'THIS IS *NOT* A DRILL','ОДНО *УБЕЖИЩЕ* НА ЗДАНИЕ':'ONE *SHELTER* PER BUILDING','ЛИФТ СТОИТ — *БЕГОМ*':'LIFT IS DOWN — *RUN*','У ДВЕРИ — *30*':'*30* AT THE DOOR','МЕСТ — ТОЛЬКО *12*':'ONLY *12* PLACES','ОХРАНА *СЧИТАЕТ*':'THE GUARD IS *COUNTING*','*ДВЕНАДЦАТЫЙ* ПРОШЁЛ':'THE *TWELFTH* WENT IN','ТЫ — *ТРИНАДЦАТЫЙ*':'YOU ARE *THIRTEENTH*','МЕСТА *НЕТ*':'NO *ROOM* LEFT','ЧТО ДЕЛАЕШЬ?':'WHAT DO YOU DO?','ПИШИ A, B ИЛИ C':'COMMENT A, B OR C','Отдать место коллеге':'Give the spot to a colleague','Протолкнуться силой':'Push through by force','Искать другое укрытие':'Find another shelter','ДВЕРЬ ЗАКРОЕТСЯ *САМА*':'THE DOOR CLOSES *BY ITSELF*','ЧЕРЕЗ *3 МИНУТЫ*':'IN *3 MINUTES*','*ЛИШНИЙ* — ТЫ':'YOU ARE THE *EXTRA ONE*','ЧТО *ДЕЛАЕШЬ?*':'WHAT DO YOU *DO?*','Бесплатный (в браузере)':'Free (in browser)','Ирина (рус.)':'Irina (RU)','Денис (рус.)':'Denis (RU)','Дмитрий (рус.)':'Dmitri (RU)','Руслан (рус.)':'Ruslan (RU)','Идея ':'Idea ','Вид':'Look','Выпуск':'Publish','Музыка и звуки':'Music & sounds','Рамка Instagram':'Instagram frame','Чистый кадр':'Clean frame',
 'От идеи до готового Reels: пять шагов, сверху вниз.':'From idea to finished Reel in five steps.','Назад':'Back','Дальше':'Next','Скрыть подсказки':'Hide tips'
 };
 let lang = 'ru'; try { lang = localStorage.getItem('studio:lang') || ((navigator.language || '').toLowerCase().startsWith('ru') ? 'ru' : 'en'); } catch (e) {}
@@ -819,14 +819,14 @@ T.bunker = () => ({ v: 1, title: 'Ты тринадцатый', theme: 'bunker',
       caps: [cap(0, 1.7, 'ОДНО *УБЕЖИЩЕ* НА ЗДАНИЕ'), cap(1.7, 1.6, 'ЛИФТ СТОИТ — *БЕГОМ*')], sfx: [{ n: 'steps', at: 0, dur: 3.6 }, { n: 'whoosh', at: 0 }] },
     { name: 'Очередь', dur: 5.1, bg: 'hall', zoom: [1, 1.08], fx: ['redpulse'],
       cast: [{ c: 'hero', x: .3, y: .93, s: .85, anim: 'idle', expr: 'scared' }],
-      props: [{ type: 'counter', x: .5, y: .3, from: 1, to: 30, size: 200, text: 'ЛЮДЕЙ У ДВЕРИ', at: .4, dur: 4.4, color: '#ff5252', span: 1.6 }],
+      props: [{ type: 'counter', x: .5, y: .37, from: 1, to: 30, size: 200, text: 'ЛЮДЕЙ У ДВЕРИ', at: .4, dur: 4.4, color: '#ff5252', span: 1.6 }],
       caps: [cap(0, 1.5, 'У ДВЕРИ — *30*'), cap(1.5, 1.6, 'МЕСТ — ТОЛЬКО *12*'), cap(3.1, 1.5, 'ОХРАНА *СЧИТАЕТ*')], sfx: [{ n: 'crowd', at: 0, dur: 5 }, { n: 'hit', at: 3.1 }] },
     { name: 'Тринадцатый', dur: 5.1, bg: 'doorway', zoom: [1, 1.1], fx: ['redpulse'],
       cast: [{ c: 'hero', x: .32, y: .93, s: .9, anim: 'shake', expr: 'shock' }, { c: 'guard', x: .7, y: .93, s: .9, anim: 'point', expr: 'angry', flip: true }],
       props: [{ type: 'emoji', text: '✋', x: .7, y: .3, size: 210, at: 1.5 }],
       caps: [cap(0, 1.5, '*ДВЕНАДЦАТЫЙ* ПРОШЁЛ'), cap(1.5, 1.8, 'ТЫ — *ТРИНАДЦАТЫЙ*'), cap(3.3, 1.3, 'МЕСТА *НЕТ*')], sfx: [{ n: 'hit', at: 1.5 }, { n: 'heartbeat', at: 0 }, { n: 'boom', at: 3.3 }] },
     { name: 'Люк', dur: 4.3, bg: 'hatch', zoom: [1, 1.12], fx: ['redpulse', 'shake'],
-      props: [{ type: 'timer', x: .5, y: .3, from: 180, to: 0, text: 'ДВЕРЬ ЗАКРОЕТСЯ', at: .3, dur: 3.7, span: 3.7 }],
+      props: [{ type: 'timer', x: .5, y: .38, from: 180, to: 0, text: 'ДВЕРЬ ЗАКРОЕТСЯ', at: .3, dur: 3.7, span: 3.7 }],
       caps: [cap(0, 1.7, 'ДВЕРЬ ЗАКРОЕТСЯ *САМА*'), cap(1.7, 2, 'ЧЕРЕЗ *3 МИНУТЫ*')], sfx: [{ n: 'creak', at: .2 }, { n: 'tick', at: .3, dur: 3.7 }] },
     { name: 'Выбор', dur: 6.5, bg: 'doorway', zoom: [1.06, 1],
       cast: [{ c: 'hero', x: .5, y: .98, s: .78, anim: 'shake', expr: 'scared' }],
@@ -944,6 +944,7 @@ const DB = {
   async set(k, v) { try { const db = await this.open(); await new Promise(res => { const tx = db.transaction('tts', 'readwrite'); tx.objectStore('tts').put(v, k); tx.oncomplete = res; tx.onerror = res; }); } catch (e) {} },
   async clear() { try { const db = await this.open(); await new Promise(res => { const tx = db.transaction('tts', 'readwrite'); tx.objectStore('tts').clear(); tx.oncomplete = res; tx.onerror = res; }); } catch (e) {} }
 };
+const PIPER_VOICES = { 'ru_RU-irina-medium': 'Ирина (рус.)', 'ru_RU-denis-medium': 'Денис (рус.)', 'ru_RU-dmitri-medium': 'Дмитрий (рус.)', 'ru_RU-ruslan-medium': 'Руслан (рус.)', 'en_US-lessac-medium': 'Lessac (EN)', 'en_GB-alan-medium': 'Alan (EN-GB)' };
 const OPENAI_VOICES = ['alloy', 'ash', 'ballad', 'coral', 'echo', 'fable', 'nova', 'onyx', 'sage', 'shimmer', 'verse'];
 const TTS = {
   buf: {},
@@ -951,6 +952,11 @@ const TTS = {
   async voices() { const k = Keys.get('eleven'); if (!k) throw new Error('Нет ключа ElevenLabs'); const r = await fetch('https://api.elevenlabs.io/v1/voices', { headers: { 'xi-api-key': k } }); if (!r.ok) throw new Error('ElevenLabs: ' + r.status + ' ' + (await r.text()).slice(0, 160)); const j = await r.json(); return (j.voices || []).map(x => ({ id: x.voice_id, name: x.name, lang: (x.labels && (x.labels.language || x.labels.accent)) || '' })); },
   async fetchAudio(v, text) {
     text = E.stripCap(text);
+    if (v.provider === 'piper') {
+      const m = await import('https://cdn.jsdelivr.net/npm/@diffusionstudio/vits-web@1.0.3/+esm');
+      const wav = await m.predict({ text, voiceId: v.voiceId || 'ru_RU-irina-medium' });
+      return wav.arrayBuffer();
+    }
     if (v.provider === 'openai') {
       const k = Keys.get('openai'); if (!k) throw new Error('Нет ключа OpenAI');
       const body = { model: v.model || 'gpt-4o-mini-tts', voice: v.voiceId || 'onyx', input: text, response_format: 'mp3', speed: v.speed || 1 };
@@ -1044,7 +1050,7 @@ const AI = {
     return P;
   }
 };
-G.StudioNet = { Keys, DB, TTS, AI, OPENAI_VOICES };
+G.StudioNet = { Keys, DB, TTS, AI, OPENAI_VOICES, PIPER_VOICES };
 })(window);
 
 /* Студия: интерфейс, проигрыватель, запись в видео */
@@ -1300,10 +1306,12 @@ function pTheme(el) {
 function pVoice(el) {
   const V = P.voice = P.voice || { on: false, provider: 'elevenlabs', voiceId: '', model: '', speed: 1 }; delete V.key;
   el.append(h('p', { class: 's-note' }, 'Нейроголос озвучивает субтитры. Нужен ключ сервиса: он хранится только в этом браузере и уходит только в сам сервис. Каждая фраза заказывается один раз и кэшируется на устройстве. Услуга платная по тарифу сервиса.'));
-  el.append(h('div', { class: 's-row' }, F.chk(V, 'on', 'Озвучивать ролик', () => { touch(); }), F.sel(V, 'provider', 'Сервис', { elevenlabs: 'ElevenLabs', openai: 'OpenAI TTS' }, { on: () => { V.voiceId = ''; V.model = ''; save(); pane(); }, cls: '' })));
-  const kn = V.provider === 'openai' ? 'openai' : 'eleven'; const kb = h('div', { class: 's-kbox' }); const ki = h('input', { type: 'password', placeholder: V.provider === 'openai' ? 'sk-…' : 'ключ ElevenLabs', autocomplete: 'off' }); ki.value = N.Keys.get(kn); ki.oninput = () => N.Keys.set(kn, ki.value.trim()); kb.append(fld('Ключ ' + (V.provider === 'openai' ? 'OpenAI' : 'ElevenLabs'), ki, 'w')); el.append(kb);
+  el.append(h('div', { class: 's-row' }, F.chk(V, 'on', 'Озвучивать ролик', () => { touch(); }), F.sel(V, 'provider', 'Сервис', { elevenlabs: 'ElevenLabs', openai: 'OpenAI TTS', piper: tt('Бесплатный (в браузере)', 'Free (in browser)') }, { on: () => { V.voiceId = ''; V.model = ''; save(); pane(); }, cls: '' })));
+  const kn = V.provider === 'openai' ? 'openai' : 'eleven'; const kb = h('div', { class: 's-kbox' }); const ki = h('input', { type: 'password', placeholder: V.provider === 'openai' ? 'sk-…' : 'ключ ElevenLabs', autocomplete: 'off' }); ki.value = N.Keys.get(kn); ki.oninput = () => N.Keys.set(kn, ki.value.trim()); kb.append(fld('Ключ ' + (V.provider === 'openai' ? 'OpenAI' : 'ElevenLabs'), ki, 'w')); if (V.provider !== 'piper') el.append(kb);
   const st = h('div', { class: 's-msg' });
-  if (V.provider === 'openai') { el.append(h('div', { class: 's-row' }, F.sel(V, 'voiceId', 'Голос', ['', ...N.OPENAI_VOICES].map(x => x || 'onyx').filter((x, i, a) => a.indexOf(x) === i), { on: () => save() }), F.sel(V, 'model', 'Модель', { '': 'gpt-4o-mini-tts', 'tts-1': 'tts-1', 'tts-1-hd': 'tts-1-hd' }, { on: () => save() }))); if (!V.voiceId) V.voiceId = 'onyx'; el.append(F.text(V, 'tone', 'Манера речи (только gpt-4o-mini-tts)', { ph: 'Говори тревожно, быстро, как диктор новостей', cls: 'w', on: () => save() })); }
+  if (V.provider === 'piper') { if (!V.voiceId) V.voiceId = 'ru_RU-irina-medium'; el.append(h('p', { class: 's-note' }, tt('Бесплатно и без лимитов: голос работает прямо в браузере. Первый раз скачивается модель (десятки МБ), дальше быстро. Звучит ровнее, чем ElevenLabs.', 'Free and unlimited: the voice runs in your browser. The model downloads once (tens of MB). Sounds flatter than ElevenLabs.')), h('div', { class: 's-row' }, F.sel(V, 'voiceId', 'Голос', N.PIPER_VOICES, { on: () => save() }))); }
+  if (V.provider === 'piper') { /* голос выбран выше */ }
+  else if (V.provider === 'openai') { el.append(h('div', { class: 's-row' }, F.sel(V, 'voiceId', 'Голос', ['', ...N.OPENAI_VOICES].map(x => x || 'onyx').filter((x, i, a) => a.indexOf(x) === i), { on: () => save() }), F.sel(V, 'model', 'Модель', { '': 'gpt-4o-mini-tts', 'tts-1': 'tts-1', 'tts-1-hd': 'tts-1-hd' }, { on: () => save() }))); if (!V.voiceId) V.voiceId = 'onyx'; el.append(F.text(V, 'tone', 'Манера речи (только gpt-4o-mini-tts)', { ph: 'Говори тревожно, быстро, как диктор новостей', cls: 'w', on: () => save() })); }
   else { const sv = h('select'); sv.append(h('option', { value: V.voiceId || '' }, V.voiceId || 'Голос не выбран')); sv.value = V.voiceId || ''; sv.onchange = () => { V.voiceId = sv.value; save(); }; el.append(h('div', { class: 's-row' }, fld('Голос', sv, ''), btn('Загрузить мои голоса', async () => { st.className = 's-msg'; st.textContent = 'Загружаю…'; try { const vs = await N.TTS.voices(); sv.innerHTML = ''; vs.forEach(v => sv.append(h('option', { value: v.id }, v.name + (v.lang ? ' · ' + v.lang : '')))); sv.value = V.voiceId && vs.some(v => v.id === V.voiceId) ? V.voiceId : (vs[0] && vs[0].id) || ''; V.voiceId = sv.value; save(); st.textContent = 'Голосов: ' + vs.length; st.className = 's-msg ok'; } catch (e) { st.textContent = e.message; st.className = 's-msg err'; } }, 'sm'))); el.append(h('div', { class: 's-row' }, F.text(V, 'voiceId', 'или вставь ID голоса', { on: () => save(), cls: '' }), F.sel(V, 'model', 'Модель', { '': 'eleven_multilingual_v2', eleven_turbo_v2_5: 'eleven_turbo_v2_5', eleven_flash_v2_5: 'eleven_flash_v2_5' }, { on: () => save() }))); }
   el.append(h('div', { class: 's-row' }, F.num(V, 'speed', 'Скорость', { min: .7, max: 1.3, step: .05, on: () => save() })));
   const pr = h('div', { class: 's-prog' }, h('i')); pr.hidden = true;
