@@ -1,0 +1,55 @@
+<!doctype html><html lang="ru"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Голос</title>
+<style>
+:root{--bg:#0f1115;--c:#181b22;--b:#2a2f3a;--t:#e8eaf0;--m:#8b93a5;--a:#7c9cff}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--t);font:15px/1.5 system-ui,sans-serif}
+.w{max-width:760px;margin:0 auto;padding:20px 16px 60px}h1{font-size:22px;margin:6px 0 2px}.s{color:var(--m);font-size:13px;margin-bottom:16px}
+.card{background:var(--c);border:1px solid var(--b);border-radius:14px;padding:14px;margin-bottom:14px}
+h2{font-size:14px;margin:0 0 10px;color:var(--m);text-transform:uppercase;letter-spacing:.06em}
+select,input,textarea,button{font:inherit;color:var(--t);background:#0d0f14;border:1px solid var(--b);border-radius:10px;padding:9px 11px}
+textarea{width:100%;min-height:200px;resize:vertical}button{cursor:pointer;background:var(--a);color:#0b1020;border:0;font-weight:600}
+button.g{background:#232836;color:var(--t);font-weight:500}.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0}
+.row label{display:flex;flex-direction:column;font-size:12px;color:var(--m);gap:3px;flex:1;min-width:130px}
+.row input[type=range]{padding:0}.ref{display:inline-flex;gap:6px;align-items:center;background:#232836;border-radius:8px;padding:3px 8px;margin:2px;font-size:13px}
+.ref b{cursor:pointer;color:var(--m)}audio{width:100%;margin:8px 0}.take{border-top:1px solid var(--b);padding-top:10px;margin-top:10px}
+.m{color:var(--m);font-size:13px}.err{color:#ff8a8a}
+</style><div class="w">
+<h1>Голос</h1><div class="s">Локальная озвучка: клонирует тембр по образцу. Всё на твоём компьютере.</div>
+
+<div class="card"><h2>1. Голос</h2>
+<div class="row"><select id="v" style="flex:1"></select><button class="g" id="nv">+ Новый голос</button></div>
+<div id="refs" class="m"></div>
+<div class="row"><input type="file" id="f" accept="audio/*,video/*" multiple><button id="up">Загрузить образец</button></div>
+<div class="m">Образец: 10–30 секунд чистой речи без музыки (wav, mp3, mp4). Чем человечнее запись, тем человечнее результат. Несколько образцов одного голоса — лучше.</div></div>
+
+<div class="card"><h2>2. Текст</h2>
+<textarea id="t" placeholder="Каждый абзац (новая строка) озвучивается целиком, между ними пауза. «//» в конце строки = ещё пауза."></textarea>
+<div class="row">
+<label>Темп <span id="sv">1.0</span><input type="range" id="sp" min="0.7" max="1.3" step="0.05" value="1"></label>
+<label>Выразительность <span id="tv">0.7</span><input type="range" id="tp" min="0.3" max="1.1" step="0.05" value="0.7"></label>
+<label>Пауза, с <span id="pv">0.5</span><input type="range" id="pa" min="0" max="1.5" step="0.1" value="0.5"></label></div>
+<button id="go">Озвучить</button> <span id="st" class="m"></span></div>
+
+<div class="card"><h2>3. Дубли</h2><div id="takes" class="m">Пока нет.</div></div></div>
+<script>
+const $=id=>document.getElementById(id);let V=[];
+async function load(k){const r=await (await fetch('/api/voices')).json();V=r.voices;const cur=k||$('v').value;
+$('v').innerHTML=V.map(x=>`<option>${x.name}</option>`).join('');if(cur)$('v').value=cur;draw();
+if(r.fake)$('st').textContent='(тестовый режим без модели)'}
+function draw(){const v=V.find(x=>x.name==$('v').value);$('refs').innerHTML=v?(v.refs.length?v.refs.map(r=>`<span class="ref">${r}<b data-r="${r}">✕</b></span>`).join(''):'Образцов нет'):'Создай голос'
+document.querySelectorAll('.ref b').forEach(b=>b.onclick=async()=>{await fetch('/api/delref',{method:'POST',body:JSON.stringify({voice:$('v').value,ref:b.dataset.r})});load()})}
+$('v').onchange=draw;
+$('nv').onclick=()=>{const n=prompt('Название голоса');if(n){V.push({name:n,refs:[]});$('v').innerHTML+=`<option>${n}</option>`;$('v').value=n;draw()}};
+$('up').onclick=async()=>{const fs=$('f').files;if(!fs.length||!$('v').value)return alert('Выбери голос и файл');
+for(const f of fs){$('st').textContent='Загружаю '+f.name+'…';const r=await fetch(`/api/upload?voice=${encodeURIComponent($('v').value)}&name=${encodeURIComponent(f.name)}`,{method:'POST',body:f});
+const j=await r.json();if(j.error){$('st').innerHTML='<span class=err>'+j.error+'</span>';return}}$('st').textContent='Готово';load($('v').value)};
+for(const [a,b] of [['sp','sv'],['tp','tv'],['pa','pv']])$(a).oninput=()=>$(b).textContent=$(a).value;
+$('go').onclick=async()=>{const t=$('t').value.trim();if(!t||!$('v').value)return;$('go').disabled=true;$('st').textContent='Озвучиваю… (первый раз долго: модель грузится)';
+const r=await fetch('/api/gen',{method:'POST',body:JSON.stringify({voice:$('v').value,text:t,speed:$('sp').value,temp:$('tp').value,pause:$('pa').value})});
+const j=await r.json();$('go').disabled=false;if(j.error){$('st').innerHTML='<span class=err>'+j.error+'</span>';return}$('st').textContent='';
+if($('takes').textContent=='Пока нет.')$('takes').innerHTML='';
+const d=document.createElement('div');d.className='take';d.innerHTML=`<b>${j.file}</b> · ${j.sec} с<audio controls src="/out/${j.file}"></audio>
+<button class="g" data-f="${j.file}">👍 Нравится — взять как образец</button> <a class="m" href="/out/${j.file}" download>скачать</a> · <a class="m" href="/out/${j.file}.json" target="_blank">тайминги</a>`;
+$('takes').prepend(d);d.querySelector('button').onclick=async e=>{await fetch('/api/like',{method:'POST',body:JSON.stringify({voice:$('v').value,file:j.file})});e.target.textContent='✓ Добавлен в образцы';load($('v').value)}};
+load();
+</script></html>
