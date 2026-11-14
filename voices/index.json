@@ -42,10 +42,10 @@
  },
  {
   "id": "kostya",
-  "name": "Костя — таксист (клон)",
-  "desc": "Тембр склонирован с ИИ-голоса таксиста из присланного ролика, манера оттуда же: быстро (×1,4), паузы 0,3 с, длинная пауза перед добивкой.",
-  "provider": "cartesia",
-  "voice": "389466df-0477-409d-8072-1d4e509b1a81",
+  "name": "Костя — таксист (клон, ElevenLabs)",
+  "desc": "Клон ИИ-голоса таксиста из присланного ролика на ElevenLabs (модель multilingual v2). Текст для голоса — как рассказ, нарезка с родными паузами.",
+  "provider": "elevenlabs",
+  "voice": "ikp6KzkkHRfv3tnCElfS",
   "style": {
    "syl_per_sec": 6.9,
    "speed": 1.4,
@@ -59,6 +59,8 @@
    "words": 52
   },
   "example": "",
-  "test": "voices/kostya-test.mp3"
+  "test": "voices/kostya-test.mp3",
+  "model": "eleven_multilingual_v2",
+  "voice_cartesia": "389466df-0477-409d-8072-1d4e509b1a81"
  }
 ]
