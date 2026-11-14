@@ -21,6 +21,7 @@ const TTS = {
   key(v, text) { return [v.provider, v.voiceId || '', v.model || '', v.speed || 1, v.tone || '', E.stripCap(text)].join('|'); },
   async voices() { const k = Keys.get('eleven'); if (!k) throw new Error('Нет ключа ElevenLabs'); const r = await fetch('https://api.elevenlabs.io/v1/voices', { headers: { 'xi-api-key': k } }); if (!r.ok) throw new Error('ElevenLabs: ' + r.status + ' ' + (await r.text()).slice(0, 160)); const j = await r.json(); return (j.voices || []).map(x => ({ id: x.voice_id, name: x.name, lang: (x.labels && (x.labels.language || x.labels.accent)) || '' })); },
   async fetchAudio(v, text) {
+    if (v.provider === 'clone') throw new Error('Обученным голосом озвучивает Claude: напиши в чат «озвучь ролик голосом …». Здесь можно прослушать примеры.');
     text = E.stripCap(text);
     if (v.provider === 'piper') {
       const m = await import('https://cdn.jsdelivr.net/npm/@diffusionstudio/vits-web@1.0.3/+esm');

@@ -173,3 +173,5 @@ html[data-slang=ru] .s-lang [data-l=ru],html[data-slang=en] .s-lang [data-l=en]{
 .s-it small{display:block;color:var(--muted);font-size:12px}
 .s-it .s-row{margin:8px 0 0}
 @media(max-width:900px){.s-hbtn em{display:none}.s-hbtn{height:38px;padding:0 11px;font-size:13px}.s-modal{padding:0}.s-mbox{border-radius:0 0 22px 22px;min-height:50vh}.s-ideas{grid-template-columns:1fr}}
+
+.s-vlib{display:flex;flex-direction:column;gap:10px;margin:6px 0 10px}.s-vcard{border:1px solid var(--line);border-radius:12px;padding:10px 12px}.s-vcard.on{border-color:var(--a1)}.s-vhead{display:flex;justify-content:space-between;align-items:center;gap:8px}.s-vau{display:flex;align-items:center;gap:8px;font-size:12px;opacity:.85;margin-top:4px}.s-vau span{min-width:110px}.s-vau audio{flex:1;min-width:0;height:32px}

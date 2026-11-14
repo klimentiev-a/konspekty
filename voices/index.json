@@ -1,0 +1,22 @@
+[
+ {
+  "id": "sergei",
+  "name": "Сергей — спокойный рассказчик",
+  "desc": "Тест цепочки: клон голоса Cartesia «Сергей». Ровный мужской, без резких эмоций.",
+  "provider": "cartesia",
+  "voice": "f0e4820e-e05d-4e88-8a00-f402c94c3538",
+  "style": {
+   "syl_per_sec": 4.0,
+   "speed": 0.95,
+   "short_slow": 0.85,
+   "pause_sentence": 0.2,
+   "pause_comma": 0.15,
+   "pause_long": 0.4,
+   "spread": 1.48,
+   "sentences": 15,
+   "words": 41
+  },
+  "example": "voices/sergei-example.mp3",
+  "test": "voices/sergei-test.mp3"
+ }
+]
