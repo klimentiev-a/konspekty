@@ -86,10 +86,54 @@ T.finance = () => ({ v: 1, title: 'Сложный процент', theme: 'finan
     { name: 'Формула', dur: 7, bg: 'grid', zoom: [1, 1.05], props: [{ type: 'math', text: 'S = P·(1+r)ⁿ', y: .4, at: .4 }, { type: 'counter', x: .5, y: .56, from: 0, to: 22800, suffix: ' тыс ₽', size: 110, text: 'ИТОГО', at: 2, span: 3 }], caps: [cap(0, 3, 'ДЕНЬГИ РАСТУТ *НА ДЕНЬГИ*'), cap(3, 4, 'ВЛОЖИЛ 3,6 МЛН — ПОЛУЧИЛ *22,8*')], sfx: [{ n: 'tick', at: 2, dur: 3 }, { n: 'ding', at: 5 }] },
     { name: 'Вывод', dur: 5, bg: 'city', zoom: [1.05, 1], cast: [{ c: 'hero', x: .5, y: .96, s: 1, anim: 'wave', expr: 'happy' }], caps: [cap(0, 2.5, 'ГЛАВНОЕ — *ВРЕМЯ*'), cap(2.5, 2.5, 'НАЧНИ *СЕГОДНЯ*')], sfx: [{ n: 'whoosh', at: 0 }] }
   ] });
+
+const base = (o) => Object.assign({ v: 1, vignette: true, handheld: true, hud: { on: false, plates: [], bar: null }, cap: { size: 104, y: .66, pop: 'word' }, voice: { on: false, provider: 'elevenlabs', voiceId: '', model: '', speed: 1, key: '' } }, o);
+T.tips = () => base({ title: '5 финансовых привычек', theme: 'finance', music: { style: 'lofi', vol: .45 },
+  chars: { hero: { name: 'Ведущая', hood: '#7e57c2', hair: '#3b2a22', skin: '#f2c6a0', pants: '#263042', hairStyle: 'ponytail', acc: 'earring' } },
+  scenes: [
+    { name: 'Крючок', dur: 3.4, bg: 'desk', zoom: [1.1, 1], tr: 'punch', cast: [{ c: 'hero', x: .5, y: .985, s: .7, anim: 'talk', expr: 'wink' }], caps: [cap(0, 3.2, '5 ПРИВЫЧЕК, КОТОРЫЕ *ДЕЛАЮТ* БОГАЧЕ')], sfx: [{ n: 'pop', at: 0 }, { n: 'whoosh', at: 0 }] },
+    { name: 'Привычка 1', dur: 4.2, bg: 'stock', zoom: [1, 1.08], tr: 'whip', props: [{ type: 'cards', y: .3, at: .3, items: [{ icon: 'money', label: '1', value: 'ПЛАТИ СЕБЕ ПЕРВЫМ' }] }], caps: [cap(0, 4, 'ОТКЛАДЫВАЙ *10%* СРАЗУ С ДОХОДА')], sfx: [{ n: 'ding', at: .4 }] },
+    { name: 'Привычка 2', dur: 4.2, bg: 'stock', zoom: [1, 1.08], tr: 'whip', props: [{ type: 'cards', y: .3, at: .3, items: [{ icon: 'lock', label: '2', value: 'ПОДУШКА БЕЗОПАСНОСТИ' }] }], caps: [cap(0, 4, 'РЕЗЕРВ НА *6 МЕСЯЦЕВ* РАСХОДОВ')], sfx: [{ n: 'ding', at: .4 }] },
+    { name: 'Привычка 3', dur: 4.2, bg: 'stock', zoom: [1, 1.08], tr: 'whip', props: [{ type: 'cards', y: .3, at: .3, items: [{ icon: 'chart', label: '3', value: 'ИНВЕСТИРУЙ РЕГУЛЯРНО' }] }], caps: [cap(0, 4, 'ПО СУММЕ — КАЖДЫЙ *МЕСЯЦ*')], sfx: [{ n: 'ding', at: .4 }] },
+    { name: 'Привычка 4', dur: 4.2, bg: 'stock', zoom: [1, 1.08], tr: 'whip', props: [{ type: 'cards', y: .3, at: .3, items: [{ icon: 'warning', label: '4', value: 'ДОЛГИ — ПО УБЫВАНИЮ СТАВКИ' }] }], caps: [cap(0, 4, 'СНАЧАЛА ПОГАСИ *ДОРОГИЕ* КРЕДИТЫ')], sfx: [{ n: 'ding', at: .4 }] },
+    { name: 'Привычка 5', dur: 4.2, bg: 'stock', zoom: [1, 1.08], tr: 'whip', props: [{ type: 'cards', y: .3, at: .3, items: [{ icon: 'clock', label: '5', value: 'ДАЙ ДЕНЬГАМ ВРЕМЯ' }] }], caps: [cap(0, 4, 'СЛОЖНЫЙ ПРОЦЕНТ *РАБОТАЕТ* ГОДАМИ')], sfx: [{ n: 'ding', at: .4 }] },
+    { name: 'Финал', dur: 4, bg: 'desk', zoom: [1, 1.1], tr: 'punch', cast: [{ c: 'hero', x: .5, y: .985, s: .7, anim: 'wave', expr: 'happy' }], caps: [cap(0, 1.8, '*СОХРАНИ*, ЧТОБЫ НЕ ПОТЕРЯТЬ'), cap(1.9, 2, 'КАКАЯ ПРИВЫЧКА *ТВОЯ*?')], sfx: [{ n: 'sparkle', at: 0 }] }
+  ] });
+T.news = () => base({ title: 'Новость дня', theme: 'neon', music: { style: 'news', vol: .4 },
+  chars: { anchor: { name: 'Диктор', hood: '#263a5e', hair: '#222', skin: '#e0a878', pants: '#1b2538', hairStyle: 'side', acc: 'tie' } },
+  scenes: [
+    { name: 'Заставка', dur: 3, bg: 'neon', zoom: [1.1, 1], tr: 'flash', fx: ['scan'], props: [{ type: 'popup', text: 'СРОЧНО', text2: 'главное за минуту', y: .3, at: .1 }], caps: [cap(0, 2.8, 'ГЛАВНОЕ ЗА *МИНУТУ*')], sfx: [{ n: 'alert', at: 0 }] },
+    { name: 'Новость', dur: 5, bg: 'desk', zoom: [1, 1.08], tr: 'whip', cast: [{ c: 'anchor', x: .5, y: .985, s: .7, anim: 'talk', expr: 'calm' }], props: [{ type: 'counter', x: .5, y: .2, from: 0, to: 16, suffix: ' %', size: 120, text: 'КЛЮЧЕВАЯ СТАВКА', at: .3, span: 2 }], caps: [cap(0, 4.8, 'ВАШ ЗАГОЛОВОК *ЗДЕСЬ*')], sfx: [{ n: 'typing', at: 0, dur: 2 }] },
+    { name: 'Что значит', dur: 5, bg: 'stock', zoom: [1, 1.08], tr: 'whip', props: [{ type: 'cards', y: .3, at: .3, items: [{ icon: 'bank', label: 'БАНКИ', value: 'вклады дороже' }, { icon: 'house', label: 'ИПОТЕКА', value: 'платежи выше' }] }], caps: [cap(0, 4.8, 'ЧТО ЭТО *ЗНАЧИТ* ДЛЯ ТЕБЯ')], sfx: [{ n: 'ding', at: .4 }] },
+    { name: 'Итог', dur: 4, bg: 'neon', zoom: [1.05, 1], tr: 'punch', cast: [{ c: 'anchor', x: .5, y: .985, s: .7, anim: 'point', expr: 'calm' }], caps: [cap(0, 3.8, 'ПОДПИШИСЬ — *РАЗБЕРЁМ* ДАЛЬШЕ')], sfx: [{ n: 'whoosh', at: 0 }] }
+  ] });
+T.ad = () => base({ title: 'Реклама продукта', theme: 'gold', music: { style: 'funk', vol: .4 },
+  chars: { hero: { name: 'Клиент', hood: '#ef5350', hair: '#6d4c41', skin: '#c68a5c', pants: '#283046', hairStyle: 'afro', acc: 'sunglasses' } },
+  scenes: [
+    { name: 'Проблема', dur: 3.6, bg: 'cafe', zoom: [1.1, 1], tr: 'punch', cast: [{ c: 'hero', x: .5, y: .985, s: .7, anim: 'shake', expr: 'sad' }], caps: [cap(0, 3.4, 'НАДОЕЛО *ТЕРЯТЬ* ВРЕМЯ?')], sfx: [{ n: 'fail', at: 1.8 }] },
+    { name: 'Решение', dur: 4.4, bg: 'neon', zoom: [1, 1.1], tr: 'flash', props: [{ type: 'image', y: .38, size: 640, at: .2 }], caps: [cap(0, 4.2, 'ВСТРЕЧАЙ *НОВОЕ* РЕШЕНИЕ')], sfx: [{ n: 'sparkle', at: .2 }, { n: 'whoosh2', at: 0 }] },
+    { name: 'Выгоды', dur: 5, bg: 'gradient', zoom: [1, 1.06], tr: 'whip', props: [{ type: 'cards', y: .3, at: .3, items: [{ icon: 'bolt', label: 'БЫСТРО', value: '' }, { icon: 'lock', label: 'НАДЁЖНО', value: '' }, { icon: 'money', label: 'ВЫГОДНО', value: '' }] }], caps: [cap(0, 4.8, 'БЫСТРО. *НАДЁЖНО*. ВЫГОДНО')], sfx: [{ n: 'ding', at: .4 }, { n: 'ding', at: .8 }, { n: 'ding', at: 1.2 }] },
+    { name: 'Призыв', dur: 4, bg: 'sunset', zoom: [1, 1.1], tr: 'punch', cast: [{ c: 'hero', x: .5, y: .985, s: .7, anim: 'cheer', expr: 'happy' }], props: [{ type: 'popup', text: 'ПЕРЕЙДИ ПО ССЫЛКЕ', text2: 'в описании профиля', y: .26, at: .4 }], caps: [cap(0, 3.8, '*ПОПРОБУЙ* СЕГОДНЯ')], sfx: [{ n: 'win', at: .2 }] }
+  ] });
+T.motivation = () => base({ title: 'Мотивация: начни сегодня', theme: 'sunset', music: { style: 'epic', vol: .5 },
+  chars: { hero: { name: 'Бегун', hood: '#ffd166', hair: '#222', skin: '#f7c8a0', pants: '#1e2a44', hairStyle: 'mohawk', acc: 'headband' } },
+  scenes: [
+    { name: 'Утро', dur: 3.6, bg: 'sunset', zoom: [1.1, 1], tr: 'fade', cast: [{ c: 'hero', x: .5, y: .985, s: .7, anim: 'think', expr: 'calm' }], caps: [cap(0, 3.4, 'КАЖДОЕ УТРО — *ВЫБОР*')], sfx: [{ n: 'wind', at: 0, dur: 3 }] },
+    { name: 'Бег', dur: 4.4, bg: 'beach', zoom: [1, 1.08], tr: 'whip', cast: [{ c: 'hero', x: .5, y: .985, s: .7, anim: 'run', expr: 'angry' }], caps: [cap(0, 4.2, 'ТРУДНО *СЕЙЧАС* — ЛЕГКО ПОТОМ')], sfx: [{ n: 'steps', at: 0, dur: 4 }, { n: 'riser', at: 0, dur: 4 }] },
+    { name: 'Прыжок', dur: 4, bg: 'city', zoom: [1, 1.12], tr: 'punch', cast: [{ c: 'hero', x: .5, y: .985, s: .7, anim: 'jump', expr: 'happy' }], caps: [cap(0, 3.8, 'ШАГ ЗА ШАГОМ — *ПОБЕДА*')], sfx: [{ n: 'boom', at: 0 }, { n: 'applause', at: .6, dur: 3 }] },
+    { name: 'Финал', dur: 4, bg: 'sunset', zoom: [1, 1.08], tr: 'fade', cast: [{ c: 'hero', x: .5, y: .985, s: .7, anim: 'cheer', expr: 'love' }], caps: [cap(0, 3.8, '*НАЧНИ* СЕГОДНЯ')], sfx: [{ n: 'sparkle', at: 0 }] }
+  ] });
+T.quiz = () => base({ title: 'Угадай и ответь', theme: 'mint', music: { style: 'retro', vol: .4 },
+  chars: { hero: { name: 'Ведущий', hood: '#ff6b6b', hair: '#6d4c41', skin: '#f7c8a0', pants: '#263042', hairStyle: 'curly', acc: 'glasses' } },
+  scenes: [
+    { name: 'Вопрос', dur: 4.5, bg: 'classroom', zoom: [1.1, 1], tr: 'punch', cast: [{ c: 'hero', x: .5, y: .985, s: .7, anim: 'talk', expr: 'smirk' }], props: [{ type: 'math', text: '2 + 2 × 2 = ?', y: .22, at: .3 }], caps: [cap(0, 4.2, '99% ОШИБАЮТСЯ В *ЭТОМ*')], sfx: [{ n: 'pop', at: .3 }] },
+    { name: 'Варианты', dur: 6, bg: 'grid', zoom: [1, 1.05], tr: 'whip', props: [{ type: 'choice', text: 'ВЫБЕРИ ОТВЕТ', items: [{ k: 'A', text: '8' }, { k: 'B', text: '6' }, { k: 'C', text: '4' }], at: .3 }], caps: [cap(0, 5.8, 'А, Б ИЛИ *В*? ПИШИ В КОММЕНТАХ')], sfx: [{ n: 'tick', at: 0, dur: 5 }] },
+    { name: 'Ответ', dur: 4, bg: 'classroom', zoom: [1, 1.1], tr: 'flash', cast: [{ c: 'hero', x: .5, y: .985, s: .7, anim: 'dance', expr: 'happy' }], props: [{ type: 'popup', text: 'ОТВЕТ: 6', text2: 'сначала умножение', y: .24, at: .3 }], caps: [cap(0, 3.8, 'СНАЧАЛА *УМНОЖЕНИЕ*')], sfx: [{ n: 'win', at: .3 }] }
+  ] });
 T.blank = () => ({ v: 1, title: 'Новое видео', theme: 'bunker', vignette: true, hud: { on: false, plates: [], bar: null },
   chars: { hero }, cap: { size: 104, y: .66 }, music: { style: 'none', vol: .5 }, voice: { on: false, provider: 'elevenlabs', voiceId: '', model: '', speed: 1, key: '' },
   scenes: [{ name: 'Сцена 1', dur: 4, bg: 'gradient', zoom: [1, 1.08], cast: [{ c: 'hero', x: .5, y: .9, s: 1, anim: 'talk', expr: 'calm' }], caps: [cap(0, 3.6, 'ТВОЙ *ТЕКСТ* ЗДЕСЬ')], sfx: [] }] });
 for (const k of Object.keys(T)) { const f = T[k]; T[k] = () => { const p = f(); const I = G.StudioI18n; return I && I.lang === 'en' ? I.mapProject(p, 'en') : p; }; }
-G.StudioData = { T, TNAMES: { bunker: 'Бункер: ты тринадцатый', futures: 'Финансы: фьючерс за 30 секунд', chat: 'Жуткая переписка', finance: 'Финансы: сложный процент', blank: 'Пустой проект' },
+G.StudioData = { T, TNAMES: { bunker: 'Бункер: ты тринадцатый', futures: 'Финансы: фьючерс за 30 секунд', chat: 'Жуткая переписка', finance: 'Финансы: сложный процент', tips: 'Список: 5 советов', news: 'Новость дня', ad: 'Реклама продукта', motivation: 'Мотивация', quiz: 'Викторина', blank: 'Пустой проект' },
   newScene: () => ({ name: 'Новая сцена', dur: 4, bg: 'gradient', zoom: [1, 1.06], fx: [], cast: [], props: [], caps: [cap(0, 3.6, 'НОВЫЙ *ТЕКСТ*')], sfx: [] }), hero };
 })(window);

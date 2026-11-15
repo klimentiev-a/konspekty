@@ -62,5 +62,25 @@
   "test": "voices/kostya-test.mp3",
   "model": "eleven_multilingual_v2",
   "voice_cartesia": "389466df-0477-409d-8072-1d4e509b1a81"
+ },
+ {
+  "id": "maxim",
+  "name": "Максим — спокойный и нейтральный (ElevenLabs)",
+  "desc": "Каталожный русский мужской голос ElevenLabs «Maxim – Calm & Neutral»: ровный, дикторский. Устойчивость 100 %, схожесть 100 % — как в выбранной раскладке на сайте. Нужен ключ ElevenLabs.",
+  "provider": "elevenlabs",
+  "voice": "HcaxAsrhw4ByUo4CBCBN",
+  "style": {
+   "speed": 1.0,
+   "short_slow": 1.0,
+   "pause_sentence": 0.25,
+   "pause_comma": 0.1,
+   "pause_long": 0.5
+  },
+  "example": "",
+  "test": "",
+  "model": "eleven_multilingual_v2",
+  "stab": 1,
+  "sim": 1,
+  "stylev": 0
  }
 ]

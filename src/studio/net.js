@@ -18,10 +18,15 @@ const PIPER_VOICES = { 'ru_RU-irina-medium': 'Ирина (рус.)', 'ru_RU-deni
 const OPENAI_VOICES = ['alloy', 'ash', 'ballad', 'coral', 'echo', 'fable', 'nova', 'onyx', 'sage', 'shimmer', 'verse'];
 const TTS = {
   buf: {},
-  key(v, text) { return [v.provider, v.voiceId || '', v.model || '', v.speed || 1, v.tone || '', E.stripCap(text)].join('|'); },
+  key(v, text) { return [v.provider, v.voiceId || '', v.model || '', v.speed || 1, v.tone || '', v.stab == null ? '' : v.stab, v.sim == null ? '' : v.sim, v.style == null ? '' : v.style, E.stripCap(text)].join('|'); },
+  lib: null,
+  async library() { if (this.lib) return this.lib; try { const r = await fetch('voices/index.json', { cache: 'no-cache' }); this.lib = r.ok ? await r.json() : []; } catch (e) { this.lib = []; } return this.lib; },
+  async el(voiceId, model, text, o) { const k = Keys.get('eleven'); if (!k) throw new Error('Нет ключа ElevenLabs (вкладка «Голос»)'); if (!voiceId) throw new Error('Не выбран голос ElevenLabs'); const vs = { stability: o.stab == null ? .45 : o.stab, similarity_boost: o.sim == null ? .8 : o.sim, style: o.style == null ? .3 : o.style, use_speaker_boost: true }; if (!/v3/.test(model || '')) vs.speed = Math.min(1.2, Math.max(.7, o.speed || 1)); const r = await fetch('https://api.elevenlabs.io/v1/text-to-speech/' + encodeURIComponent(voiceId) + '?output_format=mp3_44100_128', { method: 'POST', headers: { 'xi-api-key': k, 'Content-Type': 'application/json' }, body: JSON.stringify({ text, model_id: model || 'eleven_multilingual_v2', voice_settings: vs }) }); if (!r.ok) throw new Error('ElevenLabs: ' + r.status + ' ' + (await r.text()).slice(0, 160)); return r.arrayBuffer(); },
+  // клон голоса по образцу прямо в ElevenLabs (нужен тариф с Instant Voice Cloning)
+  async cloneVoice(name, files) { const k = Keys.get('eleven'); if (!k) throw new Error('Нет ключа ElevenLabs'); const fd = new FormData(); fd.append('name', name || 'Мой голос'); fd.append('remove_background_noise', 'true'); fd.append('description', 'Reel Studio'); for (const f of files) fd.append('files', f, f.name); const r = await fetch('https://api.elevenlabs.io/v1/voices/add', { method: 'POST', headers: { 'xi-api-key': k }, body: fd }); if (!r.ok) throw new Error('ElevenLabs: ' + r.status + ' ' + (await r.text()).slice(0, 220)); const j = await r.json(); return j.voice_id; },
   async voices() { const k = Keys.get('eleven'); if (!k) throw new Error('Нет ключа ElevenLabs'); const r = await fetch('https://api.elevenlabs.io/v1/voices', { headers: { 'xi-api-key': k } }); if (!r.ok) throw new Error('ElevenLabs: ' + r.status + ' ' + (await r.text()).slice(0, 160)); const j = await r.json(); return (j.voices || []).map(x => ({ id: x.voice_id, name: x.name, lang: (x.labels && (x.labels.language || x.labels.accent)) || '' })); },
   async fetchAudio(v, text) {
-    if (v.provider === 'clone') throw new Error('Обученным голосом озвучивает Claude: напиши в чат «озвучь ролик голосом …». Здесь можно прослушать примеры.');
+    if (v.provider === 'clone') { const L = await this.library(), e = L.find(x => x.id === v.voiceId); if (e && e.provider === 'elevenlabs' && e.voice) { text = E.stripCap(text); const st = e.style || {}; return this.el(e.voice, e.model, text, { speed: Math.min(1.2, v.speed || st.speed || 1), stab: e.stab, sim: e.sim, style: e.stylev }); } throw new Error('Этим голосом (' + (e ? e.provider : 'не выбран') + ') озвучивает Claude в чате: напиши «озвучь ролик голосом …». Голоса с пометкой ElevenLabs звучат прямо здесь при наличии ключа.'); }
     text = E.stripCap(text);
     if (v.provider === 'piper') {
       const m = await import('https://cdn.jsdelivr.net/npm/@diffusionstudio/vits-web@1.0.3/+esm');
@@ -35,9 +40,7 @@ const TTS = {
       const r = await fetch('https://api.openai.com/v1/audio/speech', { method: 'POST', headers: { Authorization: 'Bearer ' + k, 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
       if (!r.ok) throw new Error('OpenAI: ' + r.status + ' ' + (await r.text()).slice(0, 160)); return r.arrayBuffer();
     }
-    const k = Keys.get('eleven'); if (!k) throw new Error('Нет ключа ElevenLabs'); if (!v.voiceId) throw new Error('Не выбран голос ElevenLabs');
-    const r = await fetch('https://api.elevenlabs.io/v1/text-to-speech/' + encodeURIComponent(v.voiceId) + '?output_format=mp3_44100_128', { method: 'POST', headers: { 'xi-api-key': k, 'Content-Type': 'application/json' }, body: JSON.stringify({ text, model_id: v.model || 'eleven_multilingual_v2', voice_settings: { stability: .45, similarity_boost: .8, style: .3, speed: Math.min(1.2, Math.max(.7, v.speed || 1)) } }) });
-    if (!r.ok) throw new Error('ElevenLabs: ' + r.status + ' ' + (await r.text()).slice(0, 160)); return r.arrayBuffer();
+    return this.el(v.voiceId, v.model, text, v);
   },
   // вернуть AudioBuffer из памяти/кэша; make=true — при отсутствии заказать у сервиса
   async clip(v, text, make) {
