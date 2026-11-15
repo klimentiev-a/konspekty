@@ -167,19 +167,67 @@ const ICONS = {
   clock(c, s, col) { ell(c, 0, 0, s * .9, s * .9, '#fafafa', col || '#455a64', s * .1); line(c, 0, 0, 0, -s * .55, '#263238', s * .1); line(c, 0, 0, s * .4, s * .15, '#263238', s * .1); },
   warning(c, s, col) { poly(c, [[0, -s], [s, s * .8], [-s, s * .8]], col || '#ffd600'); txt(c, '!', 0, s * .3, s * 1.1, '#14161f'); },
   star(c, s, col) { c.beginPath(); for (let i = 0; i < 10; i++) { const r = i % 2 ? s * .4 : s, a = -Math.PI / 2 + i * Math.PI / 5; c.lineTo(Math.cos(a) * r, Math.sin(a) * r); } c.closePath(); c.fillStyle = col || '#ffd54f'; c.fill(); },
+  wheat(c, s, col) { line(c, 0, s, 0, -s * .9, '#c8a24a', s * .08); for (let i = 0; i < 5; i++) { const y = -s * .75 + i * s * .26; [-1, 1].forEach(d => { c.save(); c.translate(d * s * .16, y); c.rotate(d * .5); ell(c, 0, 0, s * .13, s * .24, col || '#f2c14e', '#c8962a', s * .03); c.restore(); }); } ell(c, 0, -s * .95, s * .1, s * .2, col || '#f2c14e', '#c8962a', s * .03); },
+  bank(c, s, col) { const k = col || '#cfd8e3'; poly(c, [[0, -s], [s, -s * .45], [-s, -s * .45]], k); for (let i = 0; i < 4; i++) fillRR(c, -s * .78 + i * s * .44, -s * .35, s * .24, s * .95, s * .04, k); fillRR(c, -s, s * .65, s * 2, s * .22, s * .05, k); },
   user(c, s, col) { ell(c, 0, -s * .4, s * .38, s * .38, col || '#b0bec5'); c.beginPath(); c.arc(0, s * .9, s * .8, Math.PI, 0); c.fillStyle = col || '#b0bec5'; c.fill(); }
 };
 const ICONNAMES = Object.keys(ICONS);
 function icon(c, name, x, y, s, col) { c.save(); c.translate(x, y); (ICONS[name] || ICONS.star)(c, s, col); c.restore(); }
-const PROPS = { popup: 'Плашка', cards: 'Карточки', text: 'Крупный текст', timer: 'Таймер', counter: 'Счётчик', chat: 'Чат', sign: 'Табличка', emoji: 'Эмодзи', icon: 'Иконка', bar: 'Полоса', math: 'Формула', arrow: 'Стрелка', choice: 'Выбор A/B/C' };
+const PROPS = { popup: 'Плашка', logo: 'Логотип (картинка)', pricechart: 'График цены', contract: 'Договор со штампом', cards: 'Карточки', text: 'Крупный текст', timer: 'Таймер', counter: 'Счётчик', chat: 'Чат', sign: 'Табличка', emoji: 'Эмодзи', icon: 'Иконка', bar: 'Полоса', math: 'Формула', arrow: 'Стрелка', choice: 'Выбор A/B/C' };
 
+const IMG = {};
+function img(src) { if (!src) return null; let im = IMG[src]; if (!im) { im = IMG[src] = new Image(); im.src = src; } return im.complete && im.naturalWidth ? im : null; }
+const easeIO = x => { x = clamp(x); return x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; };
+let OFF = null;
+function drawLogo(c, p, lt, th) {
+  const em = img(p.src), wm = img(p.src2), S = p.size || 560;
+  // золотое свечение и искры
+  const kIn = easeBack(lt / .9), kO = easeOut(lt / .9);
+  glow(c, 0, 0, S * 1.1, 'rgba(214,150,80,.55)', clamp(lt / .8) * (.55 + .15 * Math.sin(lt * 3)));
+  if (lt > .45) { const R = rng(9), e = lt - .45; for (let i = 0; i < 46; i++) { const a = R() * TAU, v = 260 + R() * 620, d = v * (1 - Math.exp(-e * 2.2)), al = clamp(1 - e / (1.4 + R())); if (al <= 0) continue; ell(c, Math.cos(a) * d, Math.sin(a) * d + e * e * 60, 4 + R() * 6, 4 + R() * 6, `rgba(255,${190 + (R() * 50 | 0)},120,${al})`); } }
+  if (em) { const w = S, h = S * em.naturalHeight / em.naturalWidth;
+    if (!OFF) OFF = document.createElement('canvas'); OFF.width = Math.ceil(w); OFF.height = Math.ceil(h); const o = OFF.getContext('2d'); o.clearRect(0, 0, w, h); o.drawImage(em, 0, 0, w, h);
+    // блик: светлая полоса проходит по эмблеме
+    const sh = (lt - 1) / .9; if (sh > 0 && sh < 1) { o.globalCompositeOperation = 'source-atop'; const x = -w * .6 + sh * w * 2.2, g = o.createLinearGradient(x - 140, 0, x + 140, h * .4); g.addColorStop(0, 'rgba(255,255,255,0)'); g.addColorStop(.5, 'rgba(255,246,220,.75)'); g.addColorStop(1, 'rgba(255,255,255,0)'); o.fillStyle = g; o.fillRect(0, 0, w, h); o.globalCompositeOperation = 'source-over'; }
+    c.save(); c.translate(0, -S * .18); c.rotate((1 - kO) * -2.2); const sc2 = Math.max(.01, kIn) * (1 + .015 * Math.sin(lt * 2.4)); c.scale(sc2, sc2); c.globalAlpha *= clamp(lt / .35); c.drawImage(OFF, -w / 2, -h / 2, w, h); c.restore(); }
+  if (wm) { const ww = Math.min(940, S * 1.65), wh = ww * wm.naturalHeight / wm.naturalWidth, k = easeOut((lt - .8) / .7), y = S * .48 + (1 - k) * 40;
+    if (k > 0) { c.save(); c.beginPath(); c.rect(-ww / 2 - 10, y - wh, (ww + 20) * k, wh * 2); c.clip(); c.globalAlpha *= clamp(k * 1.5); c.drawImage(wm, -ww / 2, y - wh / 2, ww, wh); c.restore(); } }
+  if (p.text) { const k = easeBack((lt - 1.6) / .35); if (k > 0) { c.save(); c.translate(0, S * .48 + 150); c.scale(k, k); c.font = `900 46px ${FONT}`; const tw = c.measureText(p.text).width + 90; fillRR(c, -tw / 2, -44, tw, 88, 44, '#d4874a'); txt(c, p.text, 0, 2, 46, '#fff'); c.restore(); } }
+}
+function drawChart(c, p, lt, th) {
+  const W2 = 900, H2 = 600, fx = p.fixed == null ? 100 : p.fixed, to = p.to == null ? 120 : p.to, lo = Math.min(fx, to) - 25, hi = Math.max(fx, to) + 25, up = to >= fx, col = up ? '#26c281' : '#ef5350';
+  const X = k => -W2 / 2 + 60 + k * (W2 - 160), Y = v => H2 / 2 - 60 - (v - lo) / (hi - lo) * (H2 - 150);
+  fillRR(c, -W2 / 2, -H2 / 2, W2, H2, 34, 'rgba(8,14,28,.94)', '#2a3a5a', 4);
+  txt(c, p.title || 'РЫНОЧНАЯ ЦЕНА', -W2 / 2 + 50, -H2 / 2 + 50, 34, '#9fb3d1', { al: 'left', w: 800 });
+  c.strokeStyle = 'rgba(255,255,255,.06)'; c.lineWidth = 2; for (let i = 0; i < 5; i++) { const y = -H2 / 2 + 110 + i * (H2 - 170) / 4; c.beginPath(); c.moveTo(-W2 / 2 + 40, y); c.lineTo(W2 / 2 - 40, y); c.stroke(); }
+  c.save(); c.setLineDash([18, 14]); line(c, -W2 / 2 + 40, Y(fx), W2 / 2 - 40, Y(fx), th.hl, 5); c.restore();
+  txt(c, (p.fixLabel || 'В ДОГОВОРЕ') + ' ' + fx + ' ₽', W2 / 2 - 50, Y(fx) + (up ? 36 : -36), 32, th.hl, { al: 'right', w: 900 });
+  const k = easeIO(lt / (p.span || 1.6)), N = 60, val = q => fx + (to - fx) * easeIO(q) + Math.sin(q * 19) * 3.2 * Math.sin(q * Math.PI);
+  c.strokeStyle = col; c.lineWidth = 9; c.lineJoin = 'round'; c.beginPath(); for (let i = 0; i <= N * k; i++) { const q = i / N; i ? c.lineTo(X(q), Y(val(q))) : c.moveTo(X(q), Y(val(q))); } c.stroke();
+  const hv = val(k); glow(c, X(k), Y(hv), 70, col, .6); ell(c, X(k), Y(hv), 15, 15, '#fff');
+  txt(c, Math.round(hv) + ' ₽', X(k) + 30, Y(hv) + (up ? -44 : 44), 52, col, { al: X(k) > 200 ? 'right' : 'left', stroke: '#000', sw: 8 });
+  if (k >= 1 && p.text) { const e = easeBack((lt - (p.span || 1.6)) / .3), xb = W2 / 2 - 70; line(c, xb, Y(fx), xb, Y(to), col, 6); c.save(); c.translate(-150, (Y(fx) + Y(to)) / 2 + (up ? -40 : 40)); c.scale(e, e); c.font = `900 54px ${FONT}`; const tw = c.measureText(p.text).width + 80; fillRR(c, -tw / 2, -48, tw, 96, 48, col); txt(c, p.text, 0, 2, 54, '#fff'); c.restore(); }
+}
+function drawContract(c, p, lt, th, sc) {
+  const W2 = 760, it = p.items || [], H2 = 200 + it.length * 105 + (p.stamp ? 230 : 0), base = p.at || 0, when = x => x.cap != null ? (((sc.caps || [])[x.cap] || {}).at || 0) - base + (x.off || 0) : (x.at || 0);
+  c.save(); c.rotate(-.025); c.shadowColor = 'rgba(0,0,0,.5)'; c.shadowBlur = 40; fillRR(c, -W2 / 2, -H2 / 2, W2, H2, 18, '#f7f2e7'); c.shadowBlur = 0;
+  txt(c, p.text || 'ФЬЮЧЕРСНЫЙ ДОГОВОР', 0, -H2 / 2 + 70, 46, '#1d2433', { w: 900 }); line(c, -W2 / 2 + 50, -H2 / 2 + 115, W2 / 2 - 50, -H2 / 2 + 115, '#c9bfa8', 3);
+  it.forEach((r, i) => { const k = easeOut((lt - when(r)) / .3); if (k <= 0) return; const y = -H2 / 2 + 175 + i * 105; c.save(); c.globalAlpha *= k; c.translate((1 - k) * 40, 0);
+    txt(c, r.k, -W2 / 2 + 60, y, 34, '#7a6f5a', { al: 'left', w: 800 }); txt(c, r.v, W2 / 2 - 60, y, 46, r.color || '#1d2433', { al: 'right', w: 900 }); c.restore(); line(c, -W2 / 2 + 60, y + 42, W2 / 2 - 60, y + 42, 'rgba(0,0,0,.08)', 2); });
+  if (p.stamp) { const st = p.stampCap != null ? when({ cap: p.stampCap, off: p.stampOff || 0 }) : (p.stampAt || 1.5), k = (lt - st); if (k > 0) { const e = easeOut(k / .18), z = 2.2 - 1.2 * e; c.save(); c.translate(0, H2 / 2 - 140); c.rotate(-.18); c.scale(z, z); c.globalAlpha *= clamp(k / .1) * .92;
+    c.strokeStyle = '#d32f2f'; c.lineWidth = 10; c.beginPath(); c.arc(0, 0, 120, 0, TAU); c.stroke(); c.lineWidth = 4; c.beginPath(); c.arc(0, 0, 100, 0, TAU); c.stroke(); txt(c, p.stamp, 0, -8, 40, '#d32f2f', { w: 900 }); if (p.stamp2) txt(c, p.stamp2, 0, 36, 24, '#d32f2f', { w: 800 }); c.restore(); } }
+  c.restore();
+}
 function drawProp(c, p, t, th, sc) {
   const at = p.at || 0, dur = p.dur == null ? 999 : p.dur, lt = t - at;
   if (lt < 0 || lt > dur) return;
   const pop = easeBack(lt / .28), fade = clamp((dur - lt) / .15), x = (p.x == null ? .5 : p.x) * W, y = (p.y == null ? .4 : p.y) * H, s = p.s || 1, col = p.color || th.a;
   c.save(); c.globalAlpha = fade; c.translate(x, y); c.scale(s * (.6 + .4 * pop), s * (.6 + .4 * pop)); if (p.rot) c.rotate(p.rot * Math.PI / 180);
   const T = p.text || '', T2 = p.text2 || '';
+  if (p.type === 'logo') { c.restore(); c.save(); c.globalAlpha = fade; c.translate(x, y); drawLogo(c, p, lt, th); c.restore(); return; }
   switch (p.type) {
+    case 'pricechart': drawChart(c, p, lt, th); break;
+    case 'contract': drawContract(c, p, lt, th, sc); break;
     case 'popup': { c.font = `900 56px ${FONT}`; const w = Math.max(520, Math.min(900, c.measureText(T).width + 120)), h = T2 ? 200 : 130; glow(c, 0, 0, 480, col, .25); fillRR(c, -w / 2, -h / 2, w, h, 28, 'rgba(8,11,22,.94)', col, 6); txt(c, T, 0, T2 ? -34 : 0, 56, th.ink); if (T2) txt(c, T2, 0, 42, 38, col, { w: 800 }); break; }
     case 'cards': { const it = p.items || [], n = it.length || 1, cw = Math.min(300, (940 - (n - 1) * 24) / n), tw = n * cw + (n - 1) * 24; it.forEach((o, i) => { const bx = -tw / 2 + i * (cw + 24), k = easeBack((lt - i * .12) / .3); c.save(); c.translate(bx + cw / 2, 0); c.scale(.6 + .4 * k, .6 + .4 * k); c.globalAlpha = clamp(k); fillRR(c, -cw / 2, -150, cw, 300, 26, 'rgba(8,11,22,.92)', o.color || col, 5); icon(c, o.icon || 'star', 0, -50, cw * .22, o.color); txt(c, o.label || '', 0, 70, 32, th.ink, { w: 800 }); if (o.value) txt(c, o.value, 0, 118, 44, o.color || th.hl); c.restore(); }); break; }
     case 'text': { c.font = `900 ${p.size || 110}px ${FONT}`; const ls = wrapLines(c, T, 940); ls.forEach((l, i) => txt(c, l, 0, (i - (ls.length - 1) / 2) * (p.size || 110) * 1.1, p.size || 110, p.color || th.ink, { stroke: '#000', sw: 14 })); break; }
@@ -294,5 +342,5 @@ function drawScene(c, P, t) {
   if (S.i === P.scenes.length - 1 && P.outFade !== false && t > total(P) - .3) { c.fillStyle = `rgba(0,0,0,${clamp((t - (total(P) - .3)) / .3)})`; c.fillRect(0, 0, W, H); }
 }
 
-G.StudioEngine = { W, H, THEMES, HAIR, ACC, ANIMS, EXPR, BG, BGNAMES, ICONNAMES, PROPS, FXN, drawChar, drawScene, total, timeline, sceneAt, parseCap, stripCap, keyval, FONT };
+G.StudioEngine = { IMG, img, W, H, THEMES, HAIR, ACC, ANIMS, EXPR, BG, BGNAMES, ICONNAMES, PROPS, FXN, drawChar, drawScene, total, timeline, sceneAt, parseCap, stripCap, keyval, FONT };
 })(window);

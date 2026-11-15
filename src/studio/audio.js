@@ -35,9 +35,18 @@ const SFX = {
   fail(t, d, v, o) { [392, 330, 262, 196].forEach((f, i) => osc(0, 'sawtooth', f, f, t + i * .2, t + i * .2 + .5, .1 * v, .001, o)); },
   wind(t, d, v, o) { const L = d || 4; noise(t, t + L / 2, .02, .25 * v, o, 'bandpass', 300, 900, 2); noise(t + L / 2, t + L, .25 * v, .02, o, 'bandpass', 900, 300, 2); }
 };
-const MUSIC_NAMES = { none: 'Без музыки', thriller: 'Триллер (нарастает)', tension: 'Напряжение', calm: 'Спокойная', action: 'Экшен', sad: 'Грустная', mystery: 'Тайна' };
+const MUSIC_NAMES = { none: 'Без музыки', thriller: 'Триллер (нарастает)', explainer: 'Объяснялка (бодрая)', tension: 'Напряжение', calm: 'Спокойная', action: 'Экшен', sad: 'Грустная', mystery: 'Тайна' };
 function pad(t, L, freqs, vol, o, type) { for (const f of freqs) { const s = ctx.createOscillator(), g = ctx.createGain(), fl = ctx.createBiquadFilter(); s.type = type || 'sawtooth'; s.frequency.value = f; s.detune.value = (Math.random() - .5) * 14; fl.type = 'lowpass'; fl.frequency.value = 600; g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(vol, t + Math.min(1.5, L / 3)); g.gain.setValueAtTime(vol, t + L - .8); g.gain.linearRampToValueAtTime(0, t + L); s.connect(fl); fl.connect(g); g.connect(o); s.start(t); s.stop(t + L + .1); } }
 const MUSIC = {
+  // бодрая подложка для познавательных роликов: бочка, хлопок на 2 и 4, хэты, бас и арпеджио по аккордам Am–F–C–G
+  explainer(t, L, o) { const b = 60 / 112, n = Math.floor(L / b), ch = [[220, 261.6, 329.6], [174.6, 220, 261.6], [261.6, 329.6, 392], [196, 246.9, 293.7]], bass = [55, 43.65, 65.4, 49];
+    for (let bar = 0; bar * 4 * b < L; bar++) pad(t + bar * 4 * b, Math.min(4 * b + .3, L - bar * 4 * b + .3), ch[bar % 4], .022, o, 'triangle');
+    for (let i = 0; i < n; i++) { const tt = t + i * b, bar = (i / 4) | 0, c4 = ch[bar % 4], bs = bass[bar % 4];
+      osc(0, 'sine', 140, 45, tt, tt + .24, .5, .001, o);
+      if (i % 2) { noise(tt, tt + .14, .22, .001, o, 'bandpass', 1800, 1200, 1.2); }
+      noise(tt + b / 2, tt + b / 2 + .04, .07, .001, o, 'highpass', 7500); noise(tt, tt + .03, .04, .001, o, 'highpass', 9000);
+      osc(0, 'sawtooth', bs * 2, bs * 2, tt, tt + b * .45, .07, .001, o); osc(0, 'sawtooth', bs * 2, bs * 2, tt + b / 2, tt + b * .9, .05, .001, o);
+      for (let j = 0; j < 2; j++) { const f = c4[(i * 2 + j) % 3] * 2; osc(0, 'triangle', f, f, tt + j * b / 2, tt + j * b / 2 + .2, .035, .0001, o); } } },
   // триллер: пульс баса восьмыми, бочка, хэты подключаются со второй трети, диссонанс в пэде, нарастание к концу
   thriller(t, L, o) { const b = 60 / 112, n = Math.floor(L / b); pad(t, L, [55, 58.3, 82.4], .045, o);
     for (let i = 0; i < n; i++) { const tt = t + i * b, k = i * b / L;

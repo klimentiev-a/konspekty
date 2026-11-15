@@ -37,6 +37,38 @@ T.bunker = () => ({ v: 1, title: 'Ты тринадцатый', theme: 'bunker',
       props: [{ type: 'choice', y: .47, cap: 0, off: 1.7, text: 'ЧТО ДЕЛАЕШЬ?', text2: 'ПИШИ A, B ИЛИ C', items: [{ k: 'A', text: 'Отдать место коллеге' }, { k: 'B', text: 'Протолкнуться силой' }, { k: 'C', text: 'Искать другое укрытие' }] }],
       caps: [Object.assign(cap(0, 1.4, 'И ЛИШНИЙ ЗДЕСЬ — *ТЫ*'), { kick: true })], sfx: [{ n: 'boom', at: 0 }, { n: 'ding', cap: 0, at: 1.4 }, { n: 'ding', cap: 0, at: 1.75 }, { n: 'ding', cap: 0, at: 2.1 }] }
   ] });
+T.futures = () => ({ v: 1, title: 'Фьючерс за 30 секунд', theme: 'finance', vignette: true, outFade: false, handheld: true,
+  hud: { on: false, plates: [], bar: null },
+  chars: { baker: { name: 'Пекарь', hood: '#eceff1', hair: '#5a3a22', skin: '#f2c6a0', pants: '#37474f', hairStyle: 'bald', acc: 'none' }, farmer: { name: 'Фермер', hood: '#6d8b3a', hair: '#3a2a20', skin: '#e0a878', pants: '#3e4a5e', hairStyle: 'cap', acc: 'beard' } },
+  cap: { size: 96, y: .7, pop: 'word' }, music: { style: 'explainer', vol: .32 }, voice: { on: false, provider: 'elevenlabs', voiceId: '', model: '', speed: 1, key: '' },
+  scenes: [
+    { name: 'Заголовок', dur: 2.2, bg: 'grid', zoom: [1.15, 1], tr: 'flash', fx: ['dust'],
+      props: [{ type: 'text', text: 'ФЬЮЧЕРС', x: .5, y: .34, size: 165, color: '#ffd600', at: .05 }, { type: 'popup', text: 'FUTURES', text2: 'ЗА 30 СЕКУНД', x: .5, y: .48, at: .35 }],
+      caps: [cap(0, 2, ' ')], sfx: [{ n: 'whoosh', at: 0 }, { n: 'hit', at: .05 }] },
+    { name: 'Договор', dur: 5.4, bg: 'office', zoom: [1, 1.08], tr: 'whip',
+      props: [{ type: 'contract', x: .5, y: .37, at: 0, items: [{ k: 'ЧТО', v: 'купить / продать', cap: 1 }, { k: 'КОГДА', v: 'в будущем', cap: 1, off: .9 }, { k: 'ЦЕНА', v: 'фиксируем сегодня', color: '#1e9e5a', cap: 2, off: .5 }] }],
+      caps: [Object.assign(cap(0, 1.2, 'ЭТО *ДОГОВОР*'), { kick: true }), cap(1.2, 2, 'КУПИТЬ ИЛИ ПРОДАТЬ *В БУДУЩЕМ*'), cap(3.2, 2, 'ПО ЦЕНЕ *СЕГОДНЯШНЕГО* ДНЯ')], sfx: [{ n: 'ding', cap: 1 }, { n: 'ding', cap: 1, at: .9 }, { n: 'cash', cap: 2, at: .5 }] },
+    { name: 'Пекарь и фермер', dur: 4.6, bg: 'street', zoom: [1.06, 1], tr: 'punch',
+      cast: [{ c: 'baker', x: .27, y: .99, s: .88, anim: 'talk', expr: 'happy' }, { c: 'farmer', x: .73, y: .99, s: .88, anim: 'talk', expr: 'happy', flip: true }],
+      props: [{ type: 'contract', x: .5, y: .33, s: .95, cap: 1, text: 'ДОГОВОР', items: [{ k: 'ТОВАР', v: 'пшеница', cap: 1 }, { k: 'СРОК', v: 'через 3 месяца', cap: 1, off: .5 }, { k: 'ЦЕНА', v: '100 ₽', color: '#1e9e5a', cap: 1, off: 1.2 }] }],
+      caps: [cap(0, 1.8, '*ПЕКАРЬ* И *ФЕРМЕР*'), cap(1.8, 2.6, 'ПШЕНИЦА ЧЕРЕЗ 3 МЕСЯЦА — *100 ₽*')], sfx: [{ n: 'whoosh', cap: 1 }, { n: 'ding', cap: 1, at: 1.2 }] },
+    { name: 'Рост', dur: 3.2, bg: 'grid', zoom: [1, 1.06], tr: 'whip',
+      props: [{ type: 'pricechart', x: .5, y: .36, at: .05, fixed: 100, to: 120, span: 1.6, title: 'ЦЕНА ПШЕНИЦЫ ЧЕРЕЗ 3 МЕСЯЦА', text: 'ПЕКАРЬ +20 ₽' }],
+      caps: [cap(0, 3, 'ВЫРОСЛА ДО 120 — *ПЕКАРЬ В ПЛЮСЕ*')], sfx: [{ n: 'riser', at: 0, dur: 1.6 }, { n: 'win', at: 1.7 }] },
+    { name: 'Падение', dur: 3, bg: 'grid', zoom: [1, 1.06], tr: 'whip',
+      props: [{ type: 'pricechart', x: .5, y: .36, at: .05, fixed: 100, to: 80, span: 1.4, title: 'ЦЕНА ПШЕНИЦЫ ЧЕРЕЗ 3 МЕСЯЦА', text: 'ФЕРМЕР +20 ₽' }],
+      caps: [cap(0, 2.8, 'УПАЛА ДО 80 — *ФЕРМЕР В ПЛЮСЕ*')], sfx: [{ n: 'whoosh', at: 0 }, { n: 'win', at: 1.5 }] },
+    { name: 'Биржа', dur: 2.2, bg: 'city', zoom: [1.08, 1], tr: 'punch',
+      props: [{ type: 'contract', x: .5, y: .38, s: 1.05, at: 0, text: 'ДОГОВОР', items: [{ k: 'ТОВАР', v: 'пшеница' }, { k: 'СРОК', v: 'через 3 месяца' }, { k: 'ЦЕНА', v: '100 ₽', color: '#1e9e5a' }], stamp: 'БИРЖА', stamp2: 'ГАРАНТИРУЕТ', stampCap: 0, stampOff: .7 }],
+      caps: [cap(0, 2, 'СДЕЛКУ ГАРАНТИРУЕТ *БИРЖА*')], sfx: [{ n: 'hit', cap: 0, at: .7 }], kicks: [.7] },
+    { name: 'Залог и плечо', dur: 5, bg: 'grid', zoom: [1, 1.1], tr: 'flash',
+      props: [{ type: 'cards', x: .5, y: .3, s: 1.45, cap: 0, items: [{ icon: 'wheat', label: 'ВЕСЬ КОНТРАКТ', value: '100%', color: '#90a4ae' }, { icon: 'lock', label: 'ТВОЙ ЗАЛОГ', value: 'ЧАСТЬ', color: '#ffd600' }] },
+              { type: 'arrow', x: .36, y: .52, s: 1.1, rot: 180, color: '#26c281', cap: 1, off: .3 }, { type: 'arrow', x: .64, y: .52, s: 1.1, color: '#ef5350', cap: 1, off: .7 }],
+      caps: [cap(0, 2.4, 'ПЛАТИШЬ НЕ ВСЁ — *ТОЛЬКО ЗАЛОГ*'), Object.assign(cap(2.4, 2.6, 'ПРИБЫЛЬ И УБЫТОК — *В РАЗЫ БОЛЬШЕ*'), { kick: true })], sfx: [{ n: 'ding', cap: 0, at: .2 }, { n: 'ding', cap: 0, at: .45 }, { n: 'hit', cap: 1 }, { n: 'win', cap: 1, at: .4 }, { n: 'fail', cap: 1, at: .9 }] },
+    { name: 'Логотип', dur: 3.1, bg: 'gradient', zoom: [1, 1.04], tr: 'flash', fx: ['dust'],
+      props: [{ type: 'logo', x: .5, y: .44, size: 560, at: .05, text: 'ПОДПИСЫВАЙСЯ', src: '', src2: '' }],
+      caps: [cap(0, 1.5, '  ')], sfx: [{ n: 'whoosh', at: 0 }, { n: 'boom', at: .45, v: .5 }, { n: 'cash', at: 1.05 }, { n: 'ding', at: 1.65 }] }
+  ] });
 T.chat = () => ({ v: 1, title: 'Жуткая переписка', theme: 'horror', vignette: true,
   hud: { on: false, plates: [], bar: null }, chars: { hero: { name: 'Лена', hood: '#7e57c2', hair: '#2b1a12', skin: '#f3c9a5', pants: '#263042', hairStyle: 'long', acc: 'none', hold: 'phone' } },
   cap: { size: 100, y: .66 }, music: { style: 'mystery', vol: .5 }, voice: { on: false, provider: 'elevenlabs', voiceId: '', model: '', speed: 1, key: '' },
@@ -58,6 +90,6 @@ T.blank = () => ({ v: 1, title: 'Новое видео', theme: 'bunker', vignet
   chars: { hero }, cap: { size: 104, y: .66 }, music: { style: 'none', vol: .5 }, voice: { on: false, provider: 'elevenlabs', voiceId: '', model: '', speed: 1, key: '' },
   scenes: [{ name: 'Сцена 1', dur: 4, bg: 'gradient', zoom: [1, 1.08], cast: [{ c: 'hero', x: .5, y: .9, s: 1, anim: 'talk', expr: 'calm' }], caps: [cap(0, 3.6, 'ТВОЙ *ТЕКСТ* ЗДЕСЬ')], sfx: [] }] });
 for (const k of Object.keys(T)) { const f = T[k]; T[k] = () => { const p = f(); const I = G.StudioI18n; return I && I.lang === 'en' ? I.mapProject(p, 'en') : p; }; }
-G.StudioData = { T, TNAMES: { bunker: 'Бункер: ты тринадцатый', chat: 'Жуткая переписка', finance: 'Финансы: сложный процент', blank: 'Пустой проект' },
+G.StudioData = { T, TNAMES: { bunker: 'Бункер: ты тринадцатый', futures: 'Финансы: фьючерс за 30 секунд', chat: 'Жуткая переписка', finance: 'Финансы: сложный процент', blank: 'Пустой проект' },
   newScene: () => ({ name: 'Новая сцена', dur: 4, bg: 'gradient', zoom: [1, 1.06], fx: [], cast: [], props: [], caps: [cap(0, 3.6, 'НОВЫЙ *ТЕКСТ*')], sfx: [] }), hero };
 })(window);
