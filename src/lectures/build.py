@@ -5,7 +5,7 @@ import re, os, re, json, glob, ast, sys
 
 HERE = os.path.dirname(os.path.abspath(__file__)); ROOT = os.path.abspath(os.path.join(HERE, '..', '..'))
 GROUPS = ['M&A и сделки', 'LBO, левфин и слияния', 'Модели и Excel', 'Оценка', 'Кейсы M&A', 'Отчётность и учёт', 'Налоги', 'PE и венчур', 'Нефть и газ', 'Металлы и добыча', 'TMT и медиа', 'Телеком',
-          'Финтех и банки', 'Страхование и пенсии', 'Инфраструктура и проекты', 'Недвижимость и ритейл', 'Здравоохранение и прочее', 'Крипта и альтернативы']
+          'Финтех и банки', 'Страхование и пенсии', 'Инфраструктура и проекты', 'Недвижимость и ритейл', 'Здравоохранение и прочее', 'Крипта и альтернативы', 'ECM и IPO']
 TYPES = {'points', 'table', 'formula', 'steps', 'compare', 'stats', 'qa', 'takeaway'}
 SOURCES = {'School of Finance', 'IB Club', 'Campus Finance', 'Skillspace', 'Hub Артёма'}
 
