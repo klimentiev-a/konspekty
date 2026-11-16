@@ -870,7 +870,7 @@ function secsOf(c){
       if(/^\|/.test(tl)){if(cur.tbo!==2){(cur.tb=cur.tb||[]);if(cur.tbo!==1)cur.tbo=1;if(cur.tb.length<9&&!/^\|[\s:|-]+\|?$/.test(tl))cur.tb.push(tl)}}
       else{if(cur.tbo===1)cur.tbo=2;
         if(/^(?:[-*]|\d+\.)\s+\S/.test(tl)){(cur.ls=cur.ls||[]);if(cur.ls.length<8)cur.ls.push(tl.replace(/^(?:[-*]|\d+\.)\s+/,''))}}}
-    if(!code&&!cur.p1&&l.trim()&&!/^[|>#<\-*\d]/.test(l.trim())&&l.trim().length>40)cur.p1=l.replace(/\*\*/g,'').replace(/<[^>]+>/g,'').trim();
+    if(!code&&!cur.p1&&l.trim()&&!/^[|>#<\-*\d]/.test(l.trim())&&l.trim().length>40)cur.p1=l.replace(/\[([^\]]+)\]\([^)]*\)/g,'$1').replace(/\*\*/g,'').replace(/`/g,'').replace(/<[^>]+>/g,'').trim();
     var r=gl&&l.match(/^\|\s*\*\*(.+?)\*\*\s*\|/);
     if(r){secs.push(cur);cur={h:r[1].trim(),t:[l],term:1};return}
     cur.t.push(l)});
@@ -955,12 +955,15 @@ function miniTb(rows){var r=rows.map(function(l){return l.replace(/^\||\|\s*$/g,
   var w=Math.min(4,r[0].length);return '<div class="tablewrap"><table><thead><tr>'+r[0].slice(0,w).map(function(c){return '<th>'+mdI(c)+'</th>'}).join('')+'</tr></thead><tbody>'+r.slice(1,8).map(function(x){return '<tr>'+x.slice(0,w).map(function(c){return '<td>'+mdI(c)+'</td>'}).join('')+'</tr>'}).join('')+'</tbody></table></div>'}
 function miniKonspekt(rr,term,qtxt){
   var good=rr.filter(function(r){return !r.x.weak&&!r.x.term}),out='',fm=term&&term.f?term.f:'',w=term&&term.w?term.w:'';
-  if(!fm){var g=good.filter(function(r){return r.x.fmT})[0];if(g){fm=g.x.fmT;w=''}}
   var ws=lc(qtxt||'').split(/[^a-zа-я0-9]+/).filter(function(z){return z.length>=3&&!/^(что|как|такое|виды|вид|формула|для|или|это)$/.test(z)}).map(function(z){return z.slice(0,Math.max(3,z.length-2))});
   var rel=function(r){return ws.length&&ws.some(function(z){return r.x.hlow.indexOf(z)>=0||lc(r.c.title).indexOf(z)>=0})};
+  good=good.filter(rel).concat(good.filter(function(r){return !r.x.weak&&!rel(r)}));
+  if(!fm){var g2=good.filter(function(r){return r.x.fmT&&rel(r)})[0];if(g2){fm=g2.x.fmT}}
   var withL=good.filter(function(r){return r.x.tb||r.x.ls}),kk=/вид|тип|классиф|разновид|состав|из чего|структур|этап|шаг|как считать|как устроен|порядок|признак/i;
   var kind=withL.filter(function(r){return rel(r)&&kk.test(r.x.h)})[0]||withL.filter(function(r){return ws.some(function(z){return r.x.hlow.indexOf(z)>=0})})[0]||withL.filter(rel)[0];
-  var def=term?term.d:(good[0]&&(good[0].x.p1||good[0].x.text.slice(0,260))||'');
+  if(!term&&!(good[0]&&rel(good[0])))return '';
+  window._mkT=good[0]?(good[0].x.intro?good[0].c.title:good[0].x.h).replace(/^[\d.\s]+/,''):'';
+  var def=term?term.d:(good[0]&&good[0].x.p1||'');
   if(def&&def.length>420)def=def.slice(0,420).replace(/\s+\S*$/,'')+'…';
   if(def)out+='<p>'+esc(def)+'</p>';
   if(fm)out+='<h4 class="mk">Формула</h4><div class="f tf">'+esc(fm)+'</div>'+(w?'<p class="fw"><span>где</span> '+esc(w)+'</p>':'');
@@ -984,7 +987,7 @@ function renderSearch(q){
   if(!cards.length&&rr.length&&!f){
     var qs=qOrig.trim()!==q0.trim()||/\?\s*$/.test(qOrig)||q0.trim().split(/\s+/).length>=1;
     var mk=qs?miniKonspekt(rr,null,q0):'';
-    if(mk)cardsH='<div class="hit tcard"><small>Мини-конспект из учебника</small><b>'+esc(q0.trim().replace(/^./,function(c){return c.toUpperCase()}))+'</b>'+mk+'</div>'}
+    if(mk)cardsH='<div class="hit tcard"><small>Мини-конспект из учебника</small><b>'+esc(window._mkT||q0.trim())+'</b>'+mk+'</div>'}
   view.innerHTML='<section class="results"><p class="eyebrow">Поиск</p>'+(note?'<p class="note">'+esc(note)+'</p>':'')+cardsH+(total?'<p class="note">Найдено мест: '+total+' · глав: '+chs.size+(total>rr.length?' · показаны лучшие '+rr.length:'')+'</p>'+rr.map(function(r,ix){
     var m=qrx(q,false).exec(r.x.text),i=m?m.index:0,sn=r.x.text.slice(Math.max(0,i-70),i+170);
     var isI=r.x.intro;
