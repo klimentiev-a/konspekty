@@ -14,6 +14,7 @@ python3 src/finance/make_ucheba.py src/index.src.html ucheba.html
 python3 src/finance/build_finance.py src/finance/content src/marked.min.js finance.html
 python3 src/english/build_english.py
 python3 src/fin2/build.py
+python3 src/emitent/build.py
 python3 src/finance/make_search.py
 # Страницы, которых больше нет: переадресация на новые адреса (закладки и старые ссылки продолжают работать)
 python3 - <<'PY'

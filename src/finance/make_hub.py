@@ -197,7 +197,7 @@ cards_artem += ('''
     </div>
     <div class="card f"><a class="cover" href="fin2/index.html" aria-label="Облигации и акции"></a>
       <div class="ic">2</div><b>Облигации и акции</b><span>Скринеры, карточки выпусков, ОФЗ, макро, фонды</span>
-      <div class="links"><a href="fin2/index.html#screener">Облигации</a><a href="fin2/akcii.html#screener">Акции</a><a href="fin2/index.html#auctions">ОФЗ</a><a href="fin2/akcii.html#funds">Фонды</a></div>
+      <div class="links"><a href="fin2/index.html#screener">Облигации</a><a href="fin2/akcii.html#screener">Акции</a><a href="fin2/index.html#auctions">ОФЗ</a><a href="fin2/akcii.html#funds">Фонды</a><a href="emitent.html">Эмитент</a></div>
     </div>
   </div>
   <script>
