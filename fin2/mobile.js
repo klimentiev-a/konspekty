@@ -484,6 +484,7 @@ window.BondsMobile = (() => {
   }
   function indexCaption(asset,view,period) {
     if (asset === 'bonds' && view === 'yield') return `YTM базы, % годовых · изменение за ${period}`;
+    if (asset === 'bonds' && view === 'gspread') return 'YTM минус КБД ОФЗ на дюрации индекса · б.п.';
     if (view === 'base100') return `100 на старте · результат за ${period}`;
     if (view === 'yield') return `Накопленная доходность · за ${period}`;
     return `Официальные пункты MOEX · результат за ${period}`;
@@ -504,7 +505,7 @@ window.BondsMobile = (() => {
       });
       hero.querySelectorAll('[data-asset]').forEach(b => b.setAttribute('aria-pressed',String(b.classList.contains('on'))));
       const period = Object.fromEntries(INDEX_PERIODS)[INDEX_PAGE.period] || INDEX_PAGE.period;
-      panel.querySelector('.idx-chart-head h3').textContent = INDEX_PAGE.asset === 'bonds' && INDEX_PAGE.view === 'yield' ? 'Доходность индексной базы' : 'Динамика индексов';
+      panel.querySelector('.idx-chart-head h3').textContent = INDEX_PAGE.asset === 'bonds' && INDEX_PAGE.view === 'yield' ? 'Доходность индексной базы' : INDEX_PAGE.view === 'gspread' ? 'G-спред индексной базы' : 'Динамика индексов';
       panel.querySelector('.idx-chart-head .muted').textContent = indexCaption(INDEX_PAGE.asset,INDEX_PAGE.view,period);
       const chart = panel.querySelector('#idx-chart'), cards = panel.querySelector('#idx-cards');
       const chartHint = el('<p class="mobile-index-chart-hint">Нажмите на название в легенде, чтобы скрыть или вернуть линию.</p>');

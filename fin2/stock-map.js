@@ -108,6 +108,7 @@ window.StockMap = (() => {
     const draw=()=>{
       syncPicker();
       const shown=items.filter(r=>!select.value||r.sector===select.value);
+      const shownCap=shown.reduce((sum,r)=>sum+r.cap,0);
       root.querySelector('.map-toolbar>span').textContent=`${shown.length} выпусков · ${cap(shown.reduce((sum,r)=>sum+r.cap,0))}`;
       if(window.echarts){
         // A new tree means a new view rectangle. notMerge alone leaves the
@@ -124,7 +125,8 @@ window.StockMap = (() => {
           series:[{
             type:'treemap',id:'stock-market-tree',width:'100%',height:'100%',top:0,left:0,
             roam:false,nodeClick:false,visibleMin:0,childrenVisibleMin:0,breadcrumb:{show:false},
-            label:{show:true,fontFamily:'system-ui',fontSize:12,overflow:'truncate',formatter:p=>p.data.aggregate?`Другое\n${p.data.members.length} вып.`:p.data.ticker?`${p.name}\n${change(p.data.change)}`:p.name},
+            label:{show:true,fontFamily:'IBM Plex Sans, Arial, sans-serif',fontSize:12,overflow:'truncate',formatter:p=>{const fraction=p.value/shownCap;if(fraction<.003)return '';if(p.data.aggregate)return fraction<.009?'Другое':`Другое\n${p.data.members.length} вып.`;return p.data.ticker?(fraction<.009?p.name:`${p.name}\n${change(p.data.change)}`):p.name;}},
+            labelLayout:{hideOverlap:true},
             upperLabel:{show:false,height:23,fontSize:11,color:'#535952',overflow:'truncate',formatter:p=>p.name},
             itemStyle:{borderColor:'#f1f0ec',borderWidth:2,gapWidth:2},
             levels:[{upperLabel:{show:false},itemStyle:{borderWidth:0,gapWidth:7}},

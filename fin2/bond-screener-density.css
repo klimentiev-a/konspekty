@@ -1,0 +1,59 @@
+/* Bond screener only: all 16 columns, including comparison, stay available.
+   At narrow desktop/mobile widths keep internal scrolling, never tiny type. */
+.bond-screener-wrap .bond-screener-table {
+  width: 100%;
+  min-width: 1150px;
+  table-layout: fixed;
+}
+.bond-screener-wrap .bond-screener-table th,
+.bond-screener-wrap .bond-screener-table td {
+  box-sizing: border-box;
+  padding: 7px 5px;
+  font-size: 12px;
+  vertical-align: middle;
+}
+.bond-screener-wrap .bond-screener-table th {
+  white-space: normal;
+  line-height: 1.25;
+  font-size: 11px;
+  letter-spacing: 0;
+  overflow-wrap: normal;
+}
+.bond-screener-wrap .bond-screener-table th:first-child {
+  width: auto !important;
+}
+.bond-screener-wrap .bond-screener-table td:first-child {
+  padding-inline: 3px;
+  text-align: center;
+}
+.bond-screener-wrap .bond-screener-table .cmp-cb {
+  margin: 0;
+  vertical-align: middle;
+}
+.bond-screener-wrap .bond-screener-table td:nth-child(2),
+.bond-screener-wrap .bond-screener-table td:nth-child(4),
+.bond-screener-wrap .bond-screener-table td:nth-child(5),
+.bond-screener-wrap .bond-screener-table td:nth-child(6),
+.bond-screener-wrap .bond-screener-table td:nth-child(11),
+.bond-screener-wrap .bond-screener-table td:nth-child(16) {
+  white-space: normal;
+  overflow-wrap: anywhere;
+  line-height: 1.35;
+}
+.bond-screener-wrap .bond-screener-table td:nth-child(2) .link {
+  display: inline-block;
+  max-width: 100%;
+}
+.bond-screener-wrap .bond-screener-table .isin {
+  font-size: 10px !important;
+  white-space: nowrap;
+}
+.bond-screener-wrap .bond-screener-table .badge {
+  padding-inline: 4px;
+  gap: 3px;
+  max-width: 100%;
+  white-space: normal;
+}
+@media (min-width: 1600px) {
+  .bond-screener-wrap .bond-screener-table td { font-size: 12.5px; }
+}

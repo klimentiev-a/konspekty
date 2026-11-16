@@ -668,3 +668,8 @@
   .matrix-issuer-empty { margin:0; padding:12px 8px; color:var(--muted); font-size:12px; }
   .matrix-issuer-status { position:absolute; width:1px; height:1px; padding:0; overflow:hidden; clip-path:inset(50%); white-space:nowrap; }
 }
+
+@media (max-width:760px) {
+  #idx-view:has([data-v="gspread"]) { grid-template-columns:repeat(4,minmax(0,1fr)); }
+  #idx-view:has([data-v="gspread"]) .chip { white-space:nowrap; padding-inline:4px; }
+}

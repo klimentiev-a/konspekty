@@ -1,112 +1,84 @@
-/* Whole-platform BondsAI paper components. One hierarchy across all modules. */
-.stockai-next{--bg:#F1F0EC;--paper:#fff;--text:#191B1F;--muted:#74787F;--gold:#8A6320;--line:#DEDCD5;--green:#1D6A4B;--red:#A63A31;--ui-ink:#191B1F;--ui-muted:#74787F;--ui-line:#DEDCD5;--ui-gold:#8A6320;--ui-canvas:#F1F0EC;--st-ink:#191B1F;--st-line:#DEDCD5;--st-blue:#8A6320;--sr-gold:#8A6320;--sr-muted:#74787F;--sr-line:#DEDCD5;font:14px/1.55 'IBM Plex Sans',Arial,sans-serif;-webkit-font-smoothing:antialiased}
-.stockai-next ::selection{background:#8a632033;color:#191b1f}
-.stockai-next .stock-platform-header{position:sticky;top:0;z-index:50;gap:6px;background:#fff;border-bottom:1px solid #c6c3ba}
-.stockai-next .stock-main-nav{width:100%;display:flex;align-items:center;gap:3px;overflow:auto;white-space:nowrap}
-.stockai-next .stock-main-nav>a{display:inline-flex;align-items:center;gap:7px;padding:5px 13px;border:1px solid transparent;border-radius:18px;text-decoration:none;color:#74787f;font-size:13px;font-weight:600;min-height:29px}
-.stockai-next .stock-main-nav>a:hover{background:#8a632012;color:#191b1f}
-.stockai-next .stock-main-nav>a.active{background:#8a632016;border-color:#8a63204d;color:#8a6320}
-.stockai-next .workspace>main{max-width:1900px;padding:24px clamp(20px,3vw,48px) 48px}
-.stockai-next .ai-global-search{width:min(470px,42vw)}
-.stockai-next :is(.st-heading,.ai-page-head,.ui-analysis-head,.sr-company-heading) h1,.stockai-next .sr-company-heading h2{font:600 26px/1.25 'IBM Plex Serif',Georgia,serif;letter-spacing:-.3px}
-.stockai-next :is(.sr-dashboard-panel,.ssr-panel,.panel) :is(h2,h3){font:600 18px/1.35 'IBM Plex Serif',Georgia,serif;letter-spacing:-.1px}
-.stockai-next :is(.sr-dashboard-panel,.ssr-panel,.panel,.st-filters,.st-results,.ai-table-wrap){border:1px solid #dedcd5;border-radius:5px;background:white;box-shadow:0 1px 2px #191b1f0c,0 10px 28px -20px #191b1f4d}
-.stockai-next :is(.sr-dashboard-panel,.ssr-panel,.panel){padding:18px 20px 12px}
-.stockai-next :is(.sr-panel,.bank-missing){border:1px solid #dedcd5;border-radius:5px;background:#fff;padding:18px 20px;box-shadow:none}
-.stockai-next .ai-page-head{margin-bottom:18px}.stockai-next .ai-page-head h1{margin:0 0 5px}.stockai-next .ai-page-head p{margin:0;font-size:12px}
-.stockai-next :is(input[type=search],input[type=number],select){border:1px solid #c6c3ba;border-radius:4px;background:#fff;color:#191b1f;font-family:'IBM Plex Sans',Arial,sans-serif}
-.stockai-next :is(input,select):focus-visible{outline:0;border-color:#8a6320;box-shadow:0 0 0 3px #8a63202e}
-.stockai-next select{min-height:34px;padding:6px 30px 6px 10px;font-size:12px;max-width:100%}
-.stockai-next .fund-market-provider .ssr-panel>label{display:block;max-width:260px;margin:8px 0}.stockai-next .fund-market-provider .ssr-panel>label select{width:100%}
-.stockai-next :is(button,a,summary):focus-visible{outline:2px solid #8a6320;outline-offset:3px}
-.stockai-next input[type=checkbox]{accent-color:#8a6320}
-.stockai-next :is(.ai-filter-chips,.st-sector-options,.sr-segments){gap:6px}
-.stockai-next :is(.ai-filter-chips,.st-sector-options,.sr-segments) :is(button,a){padding:6px 12px;min-height:31px;border:1px solid #c6c3ba;border-radius:18px;background:#fff;color:#74787f;font-size:12px;line-height:1.4;text-decoration:none}
-.stockai-next :is(.ai-filter-chips,.st-sector-options,.sr-segments) :is(button[aria-pressed=true],a[aria-current=page]){background:#8a6320;border-color:#8a6320;color:white;font-weight:600}
-.stockai-next :is(.ai-filter-chips,.st-sector-options,.sr-segments) :is(button,a):hover{border-color:#8a6320}
-.stockai-next .ai-filter-chips small,.stockai-next .st-sector-options button[aria-pressed=true] span{color:inherit;opacity:.8}
-.stockai-next .st-primary-filters{gap:14px 24px}.stockai-next .st-filters{padding:18px 20px}.stockai-next .st-heading{margin-bottom:14px}
-.stockai-next .st-table thead th,.stockai-next :is(.ai-company-table,.sr-table,.ssr-table) thead th{background:#f1f0ec;color:#74787f;font-size:10px;font-weight:600;letter-spacing:.2px}
-.stockai-next .st-table td{font-size:12px}.stockai-next .st-table small{font-size:10px}
-.stockai-next .st-table tbody tr:hover :is(th,td),.stockai-next :is(.ai-company-table,.sr-table,.ssr-table) tbody tr:hover{background:#8a632012}
-.stockai-next .st-name button[data-st-open]{color:#8a6320;font-weight:600}
-/* Tables adapt to their content; research-only column presets never leak into funds. */
-.stockai-next .ai-company-table:not(.ui-research-list){table-layout:auto;min-width:0;font-size:13px}
-.stockai-next .ai-company-table:not(.ui-research-list) :is(th,td){width:auto;min-width:0;text-align:center;padding:9px 13px;vertical-align:middle}
-.stockai-next .ai-company-table:not(.ui-research-list) :is(th,td):first-child{text-align:left;white-space:normal;min-width:180px}
-.stockai-next .ai-company-table:not(.ui-research-list) :is(th,td):last-child{padding-right:16px}
-.stockai-next .ai-company-table:not(.ui-research-list) tbody th{font-weight:500}
-.stockai-next .ai-company-table a.ai-company-name,.stockai-next .ui-sector-company-table a{color:#8a6320;font-size:13px;font-weight:600;text-decoration:none}
-.stockai-next .ai-company-table a.ai-company-name:hover,.stockai-next .ui-sector-company-table a:hover{text-decoration:underline;text-underline-offset:3px}
-.stockai-next .ai-company-table small{line-height:1.45;font-size:10px}.stockai-next .ai-company-table td:not(:first-child){font-variant-numeric:tabular-nums}
-.stockai-next .ui-fund-table th:first-child{max-width:380px}.stockai-next .ui-fund-table th:first-child small{max-width:360px;overflow:hidden;text-overflow:ellipsis}
-.stockai-next .ui-research-list .ai-financial-cell>small{max-width:170px}
-.stockai-next .ui-sector-company-table :is(th,td):first-child{width:40%}
-/* The same inner navigation for retail, banks, expanded sectors and funds. */
-.stockai-next :is(.sr-tabs,.ssr-tabs,.fund-sections){display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:0 0 18px;padding:8px 0;border:0;background:transparent}
-.stockai-next :is(.sr-tabs,.ssr-tabs,.fund-sections) :is(button,a){border:1px solid #c6c3ba;border-radius:18px;background:#fff;color:#74787f;font:500 12px/1.4 'IBM Plex Sans',Arial,sans-serif;padding:6px 13px;min-height:31px;text-decoration:none}
-.stockai-next :is(.sr-tabs,.ssr-tabs,.fund-sections) :is(button[aria-pressed=true],a[aria-current=page]){background:#8a6320;color:white;border-color:#8a6320;font-weight:600}
-.stockai-next .ai-research-toolbar{padding:0;margin-bottom:8px;gap:10px}
-.stockai-next .ai-research-toolbar>label{font-size:11px;gap:8px}
-.stockai-next .ai-research-toolbar :is(a,button){background:#fff;border:1px solid #dedcd5;padding:6px 10px;border-radius:4px;min-height:32px;text-decoration:none}
-.stockai-next .ai-research-toolbar select{height:35px;font-size:13px;border-color:#c6c3ba}
-.stockai-next .sr-controls{align-items:center;flex-wrap:wrap;margin:12px 0 16px}
-.stockai-next .sr-controls .sr-breakdowns summary{font-size:12px;padding:7px 10px}
-.stockai-next .sr-company-heading{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:14px}
-.stockai-next .sr-company-heading h1,.stockai-next .sr-company-heading h2{margin:0}.stockai-next .sr-company-heading p{font-size:11px;margin-top:5px}
-.ui-facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));background:#fff;border:1px solid #dedcd5;border-radius:5px;padding:14px 0;margin:0 0 16px;box-shadow:0 1px 2px #191b1f0c}
-.ui-facts>div{min-width:0;padding:0 18px;border-right:1px solid #dedcd5}.ui-facts>div:last-child{border-right:0}
-.ui-facts span{display:block;font-size:11px;color:#74787f}.ui-facts strong{display:block;font-size:23px;line-height:1.5;font-weight:600;font-variant-numeric:tabular-nums;color:#191b1f}
-.ui-facts strong small{font-size:11px;font-weight:400;white-space:nowrap}.ui-facts>div>small{display:block;font-size:10px;margin-top:1px;color:#74787f}
-.ui-facts.ui-fund-summary{grid-template-columns:repeat(3,minmax(0,1fr))}
-.stockai-next .sr-snapshot,.stockai-next .ai-bank-pulse{padding:14px 0;margin:0 0 16px;border:1px solid #dedcd5;border-radius:5px;background:white;gap:0}
-.stockai-next .sr-snapshot>div,.stockai-next .ai-bank-pulse>div{padding:0 18px;border-right:1px solid #dedcd5}
-.stockai-next .ai-bank-pulse>div:last-child{border:0}.stockai-next .ai-bank-pulse strong{font-size:23px;line-height:1.4;margin:4px 0}.stockai-next .ai-bank-pulse strong small{font-size:11px}
-.stockai-next .ai-bank-pulse span,.stockai-next .ai-bank-pulse>div>small{font-size:10px}
-.stockai-next .ai-bank-basis{font-size:11px;margin:-6px 0 16px}
-.stockai-next .sr-chart-grid,.stockai-next .ui-sector-panels{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;align-items:start}
-.stockai-next .ui-sector-panels>.ssr-panel:first-child{grid-column:1/-1}
-.stockai-next .ui-sector-panels>.ssr-other,.stockai-next .ui-sector-panels>.ui-valuation-tools,.stockai-next .ui-sector-panels>.ui-valuation-block{grid-column:1/-1}
-.stockai-next .ui-sector-panels .ssr-chart{height:330px}.stockai-next .ui-sector-panels>.ssr-panel:first-child .ssr-chart{height:370px}
-.stockai-next .sr-echart{height:330px}.stockai-next .sr-chart-grid>.sr-dashboard-panel:first-child .sr-echart{height:370px}
-.stockai-next .sr-panel-head{gap:16px;margin-bottom:12px}.stockai-next .sr-panel-head p{font-size:11px}.stockai-next .sr-last strong{font-size:23px}.stockai-next .sr-last small{font-size:10px}
-.stockai-next .sr-income .sr-echart{height:290px}.stockai-next .sr-income-waterfall{height:430px}
-.stockai-next .ssr-unit{font-size:11px;margin:3px 0 12px}
-.stockai-next :is(.sr-all-data,.ssr-other){border:1px solid #dedcd5;border-radius:5px;background:white;padding:0 16px;margin:16px 0;box-shadow:none}
-.stockai-next :is(.sr-all-data,.ssr-other)>summary{padding:12px 0;font-size:12px;font-weight:500;color:#8a6320;cursor:pointer}
-.stockai-next .ssr-other p,.stockai-next .ssr-other li{font-size:12px;max-width:85ch}
-.stockai-next .ssr-documents{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 28px;margin:10px 0 0}
-.stockai-next .ssr-documents li{min-width:0;padding:12px 0}.stockai-next .ssr-documents a{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px;color:#8a6320}.stockai-next .ssr-documents span{font-size:10px}
-.stockai-next .sr-documents{gap:12px}.stockai-next .sr-document{padding:14px;border-radius:5px}
-.ui-valuation-tools{display:flex;gap:24px;align-items:center;justify-content:space-between;font-size:12px;margin-bottom:12px}.ui-valuation-tools a{color:#8a6320}
-.ui-valuation-block{min-width:0}.ui-valuation-source summary{font-size:11px;color:#8a6320;cursor:pointer}.ui-valuation-source p{font-size:12px}
-/* Fund screens use the same controls, summaries, tables and chart surfaces. */
-.stockai-next .ai-catalog-controls:has([data-fund-query]),.stockai-next .fund-market-controls{background:#fff;border:1px solid #dedcd5;border-radius:5px;padding:16px 18px;gap:14px;margin:0 0 16px}
-.stockai-next .ai-catalog-controls:has([data-fund-query]) label,.stockai-next .fund-market-controls label{font-size:11px;min-width:150px;gap:5px}
-.stockai-next .ai-catalog-controls:has([data-fund-query]) :is(input,select),.stockai-next .fund-market-controls :is(input,select){height:35px;font-size:12px;border-radius:4px;border-color:#c6c3ba}
-.stockai-next .fund-company-query{padding:16px 18px;background:white;border:1px solid #dedcd5;border-radius:5px;max-width:none;font-size:11px}
-.stockai-next .fund-company-query input{max-width:470px;height:36px;font-size:13px}
-.ui-fund-detail-charts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-bottom:16px}.ui-fund-detail-charts>.ssr-panel:only-child{grid-column:1/-1}
-.stockai-next .ui-fund-detail-charts .ssr-chart{height:340px}.ui-method-inline{font-size:11px}
-.ui-back{display:inline-block;font-size:11px;color:#8a6320;text-decoration:none;margin-bottom:6px}
-.ui-weight{position:relative;width:100%;min-width:160px;height:28px;display:flex;align-items:center;justify-content:flex-end;padding-right:9px;background:#f8f7f3;border-radius:3px;overflow:hidden}
-.ui-weight>span{position:absolute;left:0;top:0;bottom:0;background:#8a63202e}.ui-weight b{position:relative;font-weight:600;font-size:12px}
-.stockai-next .ui-holdings-table{min-width:500px}.stockai-next .ui-holdings-table :is(th,td):first-child{width:65%}
-.stockai-next .fund-market-facts{border:1px solid #dedcd5;border-radius:5px;background:white;padding:14px 0;gap:0;margin:0 0 18px}
-.stockai-next .fund-market-facts>div{padding:0 18px;border-right:1px solid #dedcd5;min-width:190px}.stockai-next .fund-market-facts>div:last-child{border:0}
-.stockai-next .fund-market-facts dt{font-size:11px;color:#74787f}.stockai-next .fund-market-facts dd{font-size:23px;line-height:1.4;margin:4px 0;font-weight:600}.stockai-next .fund-market-facts span{font-size:10px}
-.stockai-next .fund-market-status{border-radius:4px;font-size:12px}.stockai-next .fund-market-scope{font-size:12px}
-.stockai-next .fund-market-provider>h2{font:600 22px 'IBM Plex Serif',Georgia,serif}.stockai-next .fund-market-provider>p{font-size:12px}
-.stockai-next .fund-market-charts{gap:16px}.stockai-next .fund-market-charts .ssr-chart{height:340px}
-.stockai-next .fund-holder-security p{font-size:12px;margin:8px 0}.stockai-next .fund-holder-security small{font-size:10px}
-/* Market-map chrome follows the same full-width panel, not a separate dashboard. */
-.stockai-next .market-map-panel .section-label h1{font:600 22px 'IBM Plex Serif',Georgia,serif;margin:0}.stockai-next .market-map-panel{margin:0}
-.stockai-next .market-treemap{height:540px}.stockai-next .map-toolbar{margin:12px 0 14px;gap:14px}
-.stockai-next .map-sector-trigger{min-height:35px;border-radius:4px;font-size:13px;border-color:#c6c3ba}
-.stockai-next .map-toolbar>span{font-size:11px}.stockai-next .map-datestamp{font-size:10px;margin-bottom:0}
-.stockai-next .st-dialog{border-radius:6px;border-color:#c6c3ba}.stockai-next .st-dialog h2{font:600 24px 'IBM Plex Serif',Georgia,serif}
-.stockai-next .st-dialog-head button{min-width:32px;min-height:32px;color:#74787f}.stockai-next .st-quick-facts strong{font-size:18px}
-.stockai-next .ai-empty{border:1px solid #dedcd5;border-radius:5px;padding:28px;box-shadow:none}.stockai-next .ai-empty h2{font:600 20px 'IBM Plex Serif',Georgia,serif}
-@media(max-width:1050px){.stockai-next .ui-sector-panels,.ui-fund-detail-charts{grid-template-columns:1fr}.stockai-next .sr-chart-grid{grid-template-columns:1fr}.stockai-next .stock-main-nav>a{font-size:12px;padding:5px 10px}.stockai-next .ai-research-toolbar{flex-wrap:wrap}.ui-facts{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 0}}
-@media(max-width:700px){.stockai-next .stock-main-nav{flex-wrap:nowrap;gap:2px;padding:4px 0}.stockai-next .stock-main-nav>a{font-size:11px;padding:6px 9px}.stockai-next .workspace>main{padding:16px 12px 32px}.stockai-next .platform-brand-row{height:40px}.stockai-next .ai-global-search{width:46vw}.stockai-next .ai-global-search input{font-size:11px}.ui-facts.ui-fund-summary{grid-template-columns:1fr;gap:12px}.ui-facts>div{border-right:0}.stockai-next .ssr-documents{grid-template-columns:1fr}.stockai-next .ui-sector-panels .ssr-chart{height:330px}.ui-valuation-tools{align-items:start;flex-direction:column;gap:10px}.stockai-next .sr-tabs,.stockai-next .ssr-tabs,.stockai-next .fund-sections{flex-wrap:nowrap;overflow:auto}.stockai-next :is(.sr-tabs,.ssr-tabs,.fund-sections) :is(button,a){white-space:nowrap}.stockai-next .ai-company-table:not(.ui-research-list){min-width:650px}.stockai-next .ui-holdings-table{min-width:420px}}
+/* One shared component contract for equities, company research and funds. */
+.stockai-next{--bg:#f1f0ec;--paper:#fff;--text:#202326;--muted:#626b6a;--gold:#8a6320;--line:#dedcd5;--green:#267260;--red:#ae5144;--ui-ink:var(--text);--ui-muted:var(--muted);--ui-line:var(--line);--ui-gold:var(--gold);--ui-canvas:var(--bg);--st-ink:var(--text);--st-line:var(--line);--st-blue:var(--gold);--sr-gold:var(--gold);--sr-muted:var(--muted);--sr-line:var(--line);font:14px/1.45 'IBM Plex Sans',Arial,sans-serif;color:var(--text);background:var(--bg);font-variant-numeric:tabular-nums;-webkit-font-smoothing:antialiased}
+.stockai-next ::selection{background:#e6dbc2;color:var(--text)}
+.stockai-next [hidden]{display:none!important}
+.stockai-next .stock-platform-header{position:sticky;top:0;z-index:50;background:#fff;border-bottom:1px solid #cbc7bd;box-shadow:none;gap:4px;padding:10px 24px 6px;height:auto}
+.stockai-next .platform-brand-row{height:38px;min-height:38px;padding:0;gap:20px}
+.stockai-next .stock-main-nav{display:flex;gap:4px;align-items:center;overflow:auto;width:100%;padding:0;white-space:nowrap}
+.stockai-next .stock-main-nav>a{display:inline-flex;align-items:center;gap:6px;min-height:34px;padding:5px 12px;font-size:13px;font-weight:500;border:1px solid transparent;border-radius:18px;color:#626b6a;text-decoration:none}
+.stockai-next .stock-main-nav>a:hover{color:var(--text);background:#f6f4ee}
+.stockai-next .stock-main-nav>a.active{color:var(--gold);border-color:#d3c7ad;background:#f5f1e8;font-weight:600}
+.stockai-next .ai-global-search{width:min(470px,42vw)}.stockai-next .ai-global-search input{height:36px;border-radius:4px;background:white;font-size:13px}
+.stockai-next .workspace{display:block;max-width:none}.stockai-next .workspace>main{width:100%;max-width:1900px;padding:20px 24px 48px;margin:0 auto;min-width:0}.stockai-next #content{min-width:0}
+/* A page heading must never inherit the site-header height or white banner. */
+.stockai-next :is(.ai-page-head,.ui-analysis-head,.st-heading,.ssr-head,.sr-company-heading){height:auto;min-height:0;display:flex;align-items:center;justify-content:space-between;gap:12px 24px;padding:0;margin:0 0 16px;background:transparent;border:0;box-shadow:none;min-width:0;flex-wrap:wrap}
+.stockai-next :is(.ai-page-head,.ui-analysis-head,.st-heading,.ssr-head) h1,.stockai-next .sr-company-heading :is(h1,h2){font:600 24px/1.3 'IBM Plex Serif',Georgia,serif;letter-spacing:-.3px;margin:0}
+.stockai-next :is(.ai-page-head,.ui-analysis-head,.st-heading,.ssr-head) p{margin:4px 0 0;font-size:12px}
+.stockai-next .ai-page-head>div:first-child{margin-right:auto}
+.stockai-next .ui-back{display:inline-flex;align-items:center;font-size:12px;margin:0 0 5px;color:var(--gold);text-decoration:none}.stockai-next .ui-back:hover{text-decoration:underline}
+.stockai-next :is(.st-snapshot,.ui-history,.fund-market-scope){font-size:12px;line-height:1.4;color:var(--muted)}
+/* Inner tabs have one baseline; pills are reserved for actual filter states. */
+.stockai-next :is(.fund-sections,.sr-tabs,.ssr-tabs){display:flex;flex-wrap:wrap;align-items:center;gap:20px;margin:0 0 18px;padding:0;border:0;border-bottom:1px solid var(--line);background:transparent}
+.stockai-next :is(.fund-sections,.sr-tabs,.ssr-tabs)>:is(a,button){display:inline-flex;align-items:center;min-height:38px;padding:8px 0;border:0;border-bottom:2px solid transparent;border-radius:0;background:transparent;color:var(--muted);font:500 13px/1.35 'IBM Plex Sans',Arial,sans-serif;text-decoration:none;white-space:nowrap}
+.stockai-next :is(.fund-sections,.sr-tabs,.ssr-tabs)>:is(a,button):hover{color:var(--gold);border-bottom-color:#d5c5a4;background:transparent}
+.stockai-next :is(.fund-sections,.sr-tabs,.ssr-tabs)>:is([aria-current=page],[aria-pressed=true]){color:var(--gold);font-weight:600;border-bottom-color:var(--gold);background:transparent}.stockai-next .sr-tabs:empty{display:none}
+.stockai-next :is(input[type=search],input[type=number],select){min-width:0;max-width:100%;min-height:36px;padding:7px 10px;border:1px solid #c6c3ba;border-radius:4px;background:#fff;color:var(--text);font:13px/1.35 'IBM Plex Sans',Arial,sans-serif}.stockai-next select{padding-right:28px}
+.stockai-next :is(button,a,summary,input,select):focus-visible{outline:2px solid var(--gold);outline-offset:3px}.stockai-next input[type=checkbox]{accent-color:var(--gold)}
+.stockai-next :is(.ai-catalog-controls:has([data-fund-query]),.ui-analysis-filters,.fund-market-controls,.st-filters){border:1px solid var(--line);border-radius:6px;background:#fff;padding:16px;margin:0 0 14px;gap:12px 16px;box-shadow:0 2px 4px #00000004}
+.stockai-next .ai-catalog-controls:has([data-fund-query]){display:grid;grid-template-columns:1.35fr 1.2fr 1fr 1fr 1fr;align-items:end}
+.stockai-next .ai-catalog-controls:has([data-fund-query]) label,.stockai-next .fund-market-controls label{display:grid;gap:6px;min-width:0;max-width:none;font-size:12px;font-weight:500}
+.stockai-next .ai-catalog-controls:has([data-fund-query]) :is(input,select),.stockai-next .fund-market-controls :is(input,select){height:36px;width:100%;font-size:13px;border-radius:4px}
+.stockai-next :is(.ai-filter-chips,.st-sector-options,.sr-segments){display:flex;flex-wrap:wrap;gap:6px}
+.stockai-next :is(.ai-filter-chips,.st-sector-options,.sr-segments)>:is(a,button){min-height:30px;padding:5px 11px;border:1px solid #cbc7bd;border-radius:16px;background:white;color:var(--muted);font:500 12px/1.3 'IBM Plex Sans',Arial,sans-serif;text-decoration:none}
+.stockai-next :is(.ai-filter-chips,.st-sector-options,.sr-segments)>:is([aria-pressed=true],[aria-current=page]){background:var(--gold);border-color:var(--gold);color:white}
+.stockai-next .st-primary-filters{gap:12px 18px;align-items:end}
+.stockai-next .st-primary-filters fieldset{min-width:0;margin:0;padding:0;border:0;grid-template-columns:minmax(0,1fr) 10px minmax(0,1fr);column-gap:6px;align-items:center}
+.stockai-next .st-primary-filters legend,.stockai-next .st-type-field{width:100%;font-size:11px;line-height:16px;text-align:center;color:var(--muted);letter-spacing:0}
+.stockai-next .st-primary-filters legend{padding:0;margin:0 0 6px;min-height:16px}
+.stockai-next .st-type-field{gap:6px}
+.stockai-next .st-primary-filters :is(input,select){box-sizing:border-box;text-align:center;font-size:12px;line-height:18px;height:34px;min-height:34px;padding:7px 10px;border-radius:4px}
+.stockai-next .st-primary-filters input[type=number]{appearance:textfield;-moz-appearance:textfield}
+.stockai-next .st-primary-filters input[type=number]::-webkit-inner-spin-button,.stockai-next .st-primary-filters input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+.stockai-next .st-primary-filters input::placeholder{text-align:center;opacity:1;color:#7e8581}
+.stockai-next .st-primary-filters fieldset>span{display:block;height:34px;line-height:34px;text-align:center;color:#949a95}
+.stockai-next .st-type-field select{text-align:center;text-align-last:center;padding-inline:28px}
+.stockai-next .st-sector-band{align-items:start;margin-bottom:14px}.stockai-next .st-sector-band>strong{padding-top:6px}
+.stockai-next :is(.ui-outlined-link,.ai-row-actions a,.ai-research-toolbar>a,.ai-research-toolbar>button){display:inline-flex;align-items:center;min-height:32px;padding:6px 10px;border:1px solid #d6d1c5;border-radius:4px;background:#fff;color:var(--gold);font-size:12px;text-decoration:none}
+.stockai-next :is(.ui-outlined-link,.ai-row-actions a):hover{background:#f7f3e9;border-color:#b9a477}
+.stockai-next .ai-research-toolbar{padding:0;margin:0 0 14px;gap:8px 12px;align-items:center}.stockai-next .ai-research-toolbar>label{min-width:0;gap:8px;font-size:12px}.stockai-next .ai-research-toolbar select{height:36px;min-width:200px;font-size:13px}.stockai-next .ai-context{font-size:12px;margin:0 0 10px;min-height:0}
+/* Compact facts share the same value and unit hierarchy. */
+.stockai-next :is(.ui-facts,.sr-snapshot,.ai-bank-pulse,.fund-market-facts){display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;padding:14px 0;margin:0 0 16px;border:1px solid var(--line);border-radius:6px;background:white;box-shadow:none}
+.stockai-next :is(.ui-facts.ui-fund-summary,.fund-market-facts){grid-template-columns:repeat(3,minmax(0,1fr))}
+.stockai-next .ui-facts:not(.ui-fund-summary){grid-template-columns:repeat(auto-fit,minmax(180px,1fr))}
+.stockai-next :is(.ui-facts,.sr-snapshot,.ai-bank-pulse,.fund-market-facts)>div{min-width:0;padding:0 16px;border:0;border-right:1px solid var(--line)}.stockai-next :is(.ui-facts,.sr-snapshot,.ai-bank-pulse,.fund-market-facts)>div:last-child{border:0}
+.stockai-next :is(.ui-facts,.sr-snapshot,.ai-bank-pulse,.fund-market-facts) :is(span,dt){font-size:12px;color:var(--muted);line-height:1.4}
+.stockai-next :is(.ui-facts,.sr-snapshot,.ai-bank-pulse) strong,.stockai-next .fund-market-facts dd{display:block;margin:5px 0 1px;font-size:24px;line-height:1.25;font-weight:600;color:var(--text);overflow-wrap:anywhere}
+.stockai-next :is(.ui-facts,.sr-snapshot,.ai-bank-pulse) strong small{font-size:12px;font-weight:400;margin-left:4px;white-space:nowrap}.stockai-next :is(.ui-facts,.sr-snapshot,.ai-bank-pulse)>div>small,.stockai-next .fund-market-facts>div>span{display:block;font-size:11px;margin-top:5px;line-height:1.4}
+.stockai-next .st-results{padding:12px 16px;margin-bottom:14px;gap:16px;border:1px solid var(--line);border-radius:6px;box-shadow:none;grid-template-columns:repeat(4,minmax(0,1fr)) auto}.stockai-next .st-results>div{text-align:left;border-right:1px solid var(--line);padding-right:16px;min-width:0;gap:6px}.stockai-next .st-results strong{font-size:21px}.stockai-next .st-results>div>span{font-size:11px;letter-spacing:0}
+/* Content-based widths prevent company presets from leaking into fund tables. */
+.stockai-next .ai-table-wrap{min-width:0;max-width:100%;overflow:auto;background:#fff;border:1px solid var(--line);border-radius:6px;box-shadow:none}
+.stockai-next .ai-company-table:not(.ui-research-list){table-layout:auto;min-width:0;width:100%;font-size:13px}.stockai-next .ai-company-table:not(.ui-research-list) :is(th,td){width:auto;min-width:0;padding:10px 14px;vertical-align:middle;text-align:right;line-height:1.4}.stockai-next .ai-company-table:not(.ui-research-list) :is(th,td):first-child{text-align:left;white-space:normal;min-width:190px}
+.stockai-next :is(.ai-company-table,.sr-table,.ssr-table) thead th{background:#f7f6f2;color:#626b6a;font-size:11px;line-height:1.45;letter-spacing:0;font-weight:500;text-transform:none}.stockai-next :is(.ai-company-table,.sr-table,.ssr-table) tbody th{font-weight:500}.stockai-next :is(.ai-company-table,.sr-table,.ssr-table) tbody tr:hover{background:#f8f5ed}
+.stockai-next .ai-company-table a.ai-company-name{color:var(--gold);font-size:13px;font-weight:600;text-decoration:none}.stockai-next .ai-company-table small{font-size:11px;line-height:1.4;margin-top:3px}.stockai-next .ui-fund-table th:first-child{max-width:360px}.stockai-next .ui-fund-table :is(td,th){white-space:nowrap}.stockai-next .ui-fund-table th:first-child{white-space:normal}
+.stockai-next .ui-research-list :is(th,td){padding:10px 14px;font-size:13px;line-height:1.4}.stockai-next .ui-research-list .ai-financial-cell>strong{font-size:15px}.stockai-next .ai-row-actions{display:table-cell;white-space:nowrap}.stockai-next .ai-row-actions a{font-size:12px;margin:0 4px 0 0;padding:5px 8px}.stockai-next .ai-watch{font-size:20px;min-height:30px;min-width:30px}.stockai-next .ai-financial-cell>small{font-size:10px}
+.stockai-next .st-table{font-size:12px}.stockai-next .st-table :is(th,td){vertical-align:middle}.stockai-next .st-table thead th{background:#f7f6f2;padding:10px 9px;color:#626b6a}.stockai-next .st-table :is(td,tbody th){height:44px;padding:8px 10px;border-bottom-color:#e8e5dc}.stockai-next .st-table tbody tr:nth-child(even) :is(th,td){background:#fdfcf9}.stockai-next .st-table tbody tr:hover :is(th,td){background:#f5f0e3}
+.stockai-next .st-name{justify-content:flex-start;padding-left:22px}.stockai-next .st-name button{text-align:left;color:var(--gold)}.stockai-next .st-table tbody th:nth-child(2){min-width:180px}.stockai-next .st-table tbody th:nth-child(2)>small{text-align:left;padding-left:22px}
+/* Charts use equal padding and shrinkable columns, not overflowing fixed boxes. */
+.stockai-next .ui-fund-detail-charts .ssr-panel>:is(.fi-quick,.ui-method-inline){display:flex;align-items:center;min-height:40px;margin:0 0 12px;font-size:12px}
+.stockai-next :is(.ssr-panel,.sr-dashboard-panel,.sr-panel,.panel,.bank-missing,.st-map-panel){min-width:0;max-width:100%;padding:16px;border:1px solid var(--line);border-radius:6px;background:#fff;box-shadow:0 2px 4px #00000003}
+.stockai-next :is(.ssr-panel,.sr-dashboard-panel,.panel) :is(h2,h3){font:600 17px/1.35 'IBM Plex Serif',Georgia,serif;letter-spacing:0;margin:0 0 8px;overflow-wrap:break-word}
+.stockai-next :is(.sr-chart-grid,.ui-sector-panels,.ui-fund-detail-charts,.fund-market-charts){display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;align-items:start;margin-bottom:16px}.stockai-next .sr-chart-grid>.sr-dashboard-panel:first-child,.stockai-next .ui-sector-panels>.ssr-panel:first-child{grid-column:1/-1}.stockai-next .ui-sector-panels>:is(.ssr-other,.ui-valuation-tools,.ui-valuation-block){grid-column:1/-1}
+.stockai-next :is(.ssr-chart,.sr-echart){width:100%;height:340px;min-width:0}.stockai-next .sr-chart-grid>.sr-dashboard-panel:first-child .sr-echart{height:370px}
+.stockai-next .sr-panel-head{height:auto;padding:0;border:0;background:none;gap:12px;align-items:start;margin:0 0 12px}.stockai-next .sr-panel-head h3{margin:0 0 4px}.stockai-next .sr-panel-head p{font-size:11px;line-height:1.4;margin:0}.stockai-next .sr-last{flex-shrink:0}.stockai-next .sr-last strong{font-size:22px;line-height:1.3}.stockai-next .sr-last small{font-size:11px}
+.stockai-next .sr-history-head{margin:10px 0 12px;font-size:12px}.stockai-next .sr-controls{margin:10px 0 14px;gap:10px;align-items:center;flex-wrap:wrap}.stockai-next .sr-income{margin-top:16px}.stockai-next .sr-income-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;align-items:start}.stockai-next .sr-income-waterfall{height:420px}.stockai-next .sr-income .sr-echart{height:320px}
+.stockai-next .sr-sga-detail{margin-top:14px;padding-top:12px;border-top:1px solid var(--line)}.stockai-next .sr-sga-detail h4{margin:0 0 6px;font-size:12px}.stockai-next .sr-sga-detail>div{padding:7px 0;font-size:12px}.stockai-next :is(.ssr-unit,.sr-series-basis){font-size:12px}
+.stockai-next :is(.sr-all-data,.ssr-other){margin:16px 0;padding:0 16px;border:1px solid var(--line);border-radius:6px;background:#fff;box-shadow:none}.stockai-next :is(.sr-all-data,.ssr-other)>summary{padding:12px 0;min-height:38px;color:var(--gold);font-size:12px;cursor:pointer}
+.stockai-next .ssr-documents{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 24px}.stockai-next .ssr-documents li{min-width:0}.stockai-next .ssr-documents a{display:block;font-size:12px;overflow-wrap:anywhere}.stockai-next .ssr-documents span{font-size:11px}
+.stockai-next .ui-valuation-tools{display:flex;justify-content:space-between;align-items:center;gap:16px;font-size:12px;margin-bottom:12px}.stockai-next .ui-valuation-block{min-width:0}
+.stockai-next .ui-weight{position:relative;min-width:140px;padding:5px 8px;text-align:right;background:#f8f7f3;border-radius:3px;overflow:hidden}.stockai-next .ui-weight>span{position:absolute;inset:0 auto 0 0;background:#e4d8bf}.stockai-next .ui-weight b{position:relative;font-size:12px;font-weight:500}
+.stockai-next .market-map-panel{margin:0}.stockai-next .market-map-panel .section-label h1{font:600 24px 'IBM Plex Serif',Georgia,serif;margin:0}.stockai-next .market-treemap{height:540px}.stockai-next .map-toolbar{margin:12px 0 16px;gap:12px}.stockai-next .map-sector-trigger{min-height:36px;font-size:13px}.stockai-next .map-toolbar>span{font-size:12px}.stockai-next .st-scatter{height:480px}.stockai-next .st-map-controls{gap:12px;align-items:end}.stockai-next .st-map-controls>span{font-size:12px;max-width:42ch}
+.stockai-next .ai-empty{padding:24px;border:1px solid var(--line);border-radius:6px;box-shadow:none}.stockai-next .ai-empty h2{font-size:18px}.stockai-next .st-dialog{border-radius:6px}.stockai-next .st-dialog h2{font:600 22px 'IBM Plex Serif',Georgia,serif}
+@media(max-width:1100px){.stockai-next .ai-catalog-controls:has([data-fund-query]){grid-template-columns:repeat(3,minmax(0,1fr))}.stockai-next .st-primary-filters{grid-template-columns:repeat(4,minmax(0,1fr))}.stockai-next .ui-research-list{min-width:1000px}}
+@media(max-width:850px){.stockai-next :is(.sr-chart-grid,.ui-sector-panels,.ui-fund-detail-charts,.fund-market-charts,.sr-income-grid){grid-template-columns:1fr}.stockai-next .workspace>main{padding:16px}.stockai-next .stock-platform-header{padding-inline:16px}.stockai-next .stock-main-nav>a{padding-inline:9px;font-size:12px}.stockai-next :is(.ui-facts,.sr-snapshot,.ai-bank-pulse){grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 0}}
+@media(max-width:600px){.stockai-next .workspace>main{padding:14px 12px}.stockai-next .stock-platform-header{padding:8px 12px 4px}.stockai-next .ai-global-search{width:46vw}.stockai-next .stock-main-nav>a{font-size:11px}.stockai-next :is(.fund-sections,.sr-tabs,.ssr-tabs){gap:16px;flex-wrap:nowrap;overflow:auto}.stockai-next .ai-catalog-controls:has([data-fund-query]){grid-template-columns:repeat(2,minmax(0,1fr))}.stockai-next .st-primary-filters{grid-template-columns:repeat(2,minmax(0,1fr))}.stockai-next :is(.ui-facts.ui-fund-summary,.fund-market-facts){grid-template-columns:1fr;gap:14px}.stockai-next :is(.ui-fund-summary,.fund-market-facts)>div{border:0}.stockai-next .st-results{grid-template-columns:repeat(2,minmax(0,1fr))}.stockai-next .ssr-documents{grid-template-columns:1fr}.stockai-next .ai-research-toolbar>label{width:100%}.stockai-next .ui-valuation-tools{align-items:start;flex-direction:column}}
 @media(prefers-reduced-motion:reduce){.stockai-next *{scroll-behavior:auto!important;transition:none!important}}

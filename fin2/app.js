@@ -482,11 +482,39 @@ function buildSettingsPop() {
     <div class="sp-sec">Режим</div>
     <button class="sp-mode" id="sp-daynight">${isDay ? "☀ Дневная" : "☾ Ночная"} · переключить</button>
     <div class="sp-sec" style="margin-top:12px">Помощь</div>
-    <a class="sp-mode sp-link" href="BondsAI-Guide.pdf?v=2.2" download="BondsAI-Guide.pdf" title="PDF, 22 страницы: все экраны, рейтинги, методика, словарь">📘 Скачать гайд (PDF)</a>`;
+    <a class="sp-mode sp-link" href="/BondsAI-Guide.pdf?v=20261111.4" download="BondsAI-Guide.pdf">Скачать гайд (PDF)</a>`;
   pop.querySelectorAll(".sp-style").forEach(b => b.onclick = () => { applyTheme(b.dataset.s); buildSettingsPop(); });
   pop.querySelector("#sp-daynight").onclick = toggleDayNight;
 }
 
+function publicBondRoute(search) {
+  const q = new URLSearchParams(search), view = q.get('view'), raw = q.get('isin') || '';
+  const isin = /^[A-Z]{2}[A-Z0-9]{9}[0-9]$/.test(raw) ? raw : null;
+  return view === 'issue' && isin ? { view, isin } : view === 'marketmap' ? { view, isin } : null;
+}
+let PUBLIC_FOCUS_ISIN = null;
+async function applyPublicBondRoute() {
+  const route = publicBondRoute(location.search);
+  if (!route) return;
+  SECTION = 'analytics';
+  if (route.view === 'issue') {
+    ISSUE = { isin: route.isin, base: null, peerMode: 'issuer' };
+    NAV_STACK.push('screener'); TAB = 'issue';
+  } else {
+    TAB = 'marketmap'; PUBLIC_FOCUS_ISIN = route.isin;
+    if (route.isin) {
+      try {
+        const response = await fetch(`${API}/api/universe/one?isin=${encodeURIComponent(route.isin)}`);
+        if (!response.ok) return;
+        const row = await response.json();
+        if (row.isin !== route.isin) return;
+        MAP.ccy = row.currency || 'RUB'; MAP.clean = false; MAP.ytmMin = '';
+        MAP.kinds = new Set([row.kind === 'floater' ? 'floater' : 'fixed']);
+        MAP.metric = row.kind === 'floater' ? 'sm' : 'yield';
+      } catch (e) { }
+    }
+  }
+}
 async function boot() {
   // Explicit return from Stocks restores the last public bond section only.
   // A normal first visit keeps the existing screener landing page.
@@ -511,6 +539,8 @@ async function boot() {
       // грузит shared-хостинг; там полный пересчёт идёт по CRON. Локально — остаётся.
       if (/investplatformai\.(online|ru)/i.test(location.hostname)) bf.style.display = "none";
     } }
+  await applyPublicBondRoute();
+  renderTabs();
   countVisit();                   // счётчик посещений (за 24ч и всё время)
   // analytics-first: show the screener immediately; заставку снимаем, когда вкладка готова
   Promise.resolve(render()).catch(() => { }).finally(() => { if (window.hideSplash) window.hideSplash(); });
@@ -2016,7 +2046,7 @@ function screenerTable() {
     <td><span class="badge ${r.kind}">${KIND_RU[r.kind] || r.type_label || "—"}</span></td>
     <td>${dmy(r.matdate)}${r.offer_date ? `<div class="muted" style="font-size:10px">${offerWord(r)} ${dmy(r.offer_date)}</div>` : ""}</td>
     <td>${pct(r.price, 2)}${r.price_stale ? ` <span title="${(PT_RU[r.price_type]||r.price_type||'')}, нет сделок сегодня — цена может быть неактуальна" style="color:var(--warn,#e0a34a);cursor:help">⚠</span>` : ""}</td>
-    <td>${r.kind === "floater" ? "—" : `<b>${pct(r.ytm)}</b>${yieldBasisBadge(r)}`}</td>
+    <td>${r.kind === "floater" ? "—" : `<b>${checkedYieldLabel(r)}</b>${yieldBasisBadge(r)}`}</td>
     <td>${r.kind === "floater"
         ? (r.years_to_maturity == null ? "—" : `${fmt(r.years_to_maturity, 1)}<div class="muted" style="font-size:10px">срок</div>`)
         : (r.duration_years == null ? "—" : fmt(r.duration_years, 2))}</td>
@@ -2034,7 +2064,9 @@ function screenerTable() {
     <td class="muted">${r.volume == null ? "—" : fmt(r.volume / 1e6, 1) + "М"}<div style="font-size:9px;color:${LIQ_COLOR[r.liq_class] || 'var(--muted)'}">${r.liq_class || ""}</div></td>
   </tr>`).join("");
   const empty = `<tr><td colspan="${SCOLS.length + 1}" class="muted" style="padding:28px;text-align:center">По заданным условиям ничего не найдено. Измените или очистите фильтры.</td></tr>`;
-  const t = el(`<div class="tbl-wrap panel"><table><thead><tr>${head}</tr></thead><tbody>${body || empty}</tbody></table></div>`);
+  const widths = [2.1, 9.8, 4.6, 7.4, 11.7, 5.8, 6.6, 5.3, 5.3, 5.6, 6.6, 5.9, 5.7, 5.9, 6.3, 5.4];
+  const columns = `<colgroup>${widths.map(width => `<col style="width:${width}%">`).join("")}</colgroup>`;
+  const t = el(`<div class="tbl-wrap panel bond-screener-wrap"><table class="bond-screener-table">${columns}<thead><tr>${head}</tr></thead><tbody>${body || empty}</tbody></table></div>`);
   t.querySelectorAll("th").forEach(th => th.onclick = () => {
     const k = th.dataset.k;
     if (!k) return;                        // колонка без сортировки (чекбокс сравнения)
@@ -2372,6 +2404,10 @@ async function drawMarketMap(node, tnode) {
   }));
   const nr = rows.filter(r => !r.rating_bucket);
   if (nr.length) series.push({ name: "NR", type: "scatter", symbolSize: 10, data: nr.map(pt), itemStyle: { color: "#5c6f69", opacity: .55 } });
+  const focusedIssue = PUBLIC_FOCUS_ISIN && rows.find(r => r.isin === PUBLIC_FOCUS_ISIN);
+  if (focusedIssue) series.push({ name: 'Выбранный выпуск', type: 'scatter', symbol: 'diamond', symbolSize: 20,
+    data: [pt(focusedIssue)], z: 20, itemStyle: { color: '#d9a646', borderColor: '#26364c', borderWidth: 2 },
+    label: { show: true, formatter: focusedIssue.name, position: 'top', color: AXIS_TXT, fontSize: 11 } });
   // Fit the X axis to where the bonds actually are — don't stretch out to empty
   // long durations. Clip the КБД curve to the same range.
   const durs = rows.map(r => r.duration_years).filter(x => x != null);
@@ -2543,7 +2579,7 @@ function showRedemptionIssues(year, issuesMap) {
 const INDEX_PAGE = { asset: "bonds", bondGroup: "fixed", equityGroup: "main", period: "1y", view: "yield", cache: {} };
 const INDEX_GROUPS = {
   bonds: [["fixed", "Корпоративные"], ["floaters", "Флоатеры"], ["duration", "По сроку"], ["government", "Государственные"]],
-  stocks: [["main", "Основные"], ["total_return", "Полная доходность"], ["sectors", "Отрасли"], ["themes", "Темы"]],
+  stocks: [["main", "Основные"], ["total_return", "Полная доходность"], ["sectors", "Отрасли"], ["sectors_total_return", "Отрасли · полная доходность"], ["themes", "Темы"]],
 };
 const INDEX_PERIODS = [["1m", "1 мес"], ["3m", "3 мес"], ["6m", "6 мес"], ["ytd", "YTD"], ["1y", "1 год"], ["3y", "3 года"], ["5y", "5 лет"], ["all", "Вся история"]];
 const INDEX_COLORS = { market: "#8a6320", AAA: "#2f6fd6", AA: "#16856d", A: "#c6841d", BBB: "#b66142", HY: "#a63a31",
@@ -2611,6 +2647,10 @@ function indexPeriodRows(s, period) {
 }
 
 function indexMetric(s, viewType, asset, period) {
+  if (viewType === "gspread" && asset === "bonds") {
+    const points = indexPeriodRows(s, period).map(p => [p.date, p.g_spread_bp ?? null]);
+    return points.some(p => p[1] != null) ? points : [];
+  }
   const bondYield = viewType === "yield" && asset === "bonds";
   const rows = indexPeriodRows(s, period).filter(p => bondYield ? p.yield != null : p.close != null);
   if (!rows.length) return [];
@@ -2637,6 +2677,9 @@ function indexStats(s, period) {
     ytm,
     dy: y0 && ytm != null ? ytm - y0.yield : null,
     dur: latest?.duration_days ?? null,
+    gSpread: latest?.g_spread_bp ?? null,
+    dSpread: latest?.g_spread_bp != null && points.some(p => p.g_spread_bp != null)
+      ? latest.g_spread_bp - points.find(p => p.g_spread_bp != null).g_spread_bp : null,
   };
 }
 
@@ -2692,9 +2735,30 @@ async function openIndexComposition(code, name, asset) {
   }
 }
 
+function indexYieldDisplayScale(series, full = false, spread = false) {
+  const valueOf = p => (Array.isArray(p) ? p : p?.value)?.[1];
+  const typical = series.map(s => s.data.map(valueOf).filter(v => Number.isFinite(v)).sort((a,b) => a-b))
+    .filter(a => a.length).map(a => a[Math.floor((a.length-1)*.9)]);
+  const upper = spread ? Math.ceil(Math.max(2500, ...typical.map(v => v * 1.25)) / 500) * 500
+    : Math.ceil(Math.max(40, ...typical.map(v => v * 1.25)) / 5) * 5;
+  const lower = spread ? -upper : 0;
+  const count = series.reduce((n,s) => n+s.data.filter(p => {
+    const v=valueOf(p); return Number.isFinite(v) && (v>upper || v<lower);
+  }).length,0);
+  if (!count || full) return {series, count, upper, clipped:false};
+  return {count,upper,clipped:true,series:series.map(s => ({...s, smooth:false,showSymbol:true,symbol:"none",
+    data:s.data.map(p => {
+      const value=Array.isArray(p)?p:p?.value;
+      if (!value || !Number.isFinite(value[1]) || (value[1]>=lower && value[1]<=upper)) return p;
+      return {...(Array.isArray(p)?{}:p),value:[value[0],Math.min(upper,Math.max(lower,value[1]))],
+        rawUnclipped:value[1],symbol:'triangle',symbolSize:8};
+    })}))};
+}
+
 async function renderIndices(v) {
   const asset = INDEX_PAGE.asset, isStocks = asset === "stocks", group = indexGroup(), period = INDEX_PAGE.period, viewType = INDEX_PAGE.view;
   const bondYield = !isStocks && viewType === "yield";
+  const bondSpread = !isStocks && viewType === "gspread";
   const groups = INDEX_GROUPS[asset], periodLabel = Object.fromEntries(INDEX_PERIODS)[period], periodText = period === "ytd" ? "YTD" : periodLabel.toLowerCase();
   const key = `${asset}|${group}|${period}`;
   const hero = el(`<div class="panel idx-hero">
@@ -2705,24 +2769,28 @@ async function renderIndices(v) {
       <div class="idx-asof" id="idx-asof">Загрузка…</div></div>
     <div class="idx-controls">
       <div class="field"><label>${isStocks ? "Семейство" : "Срез рынка"}</label><div class="chips" id="idx-group">${groups.map(([k, l]) => `<span class="chip ${group === k ? "on" : ""}" data-v="${k}">${l}</span>`).join("")}</div></div>
-      <div class="field"><label>Вид графика</label><div class="chips" id="idx-view"><span class="chip ${viewType === "points" ? "on" : ""}" data-v="points">Пункты</span><span class="chip ${viewType === "base100" ? "on" : ""}" data-v="base100">База 100</span><span class="chip ${viewType === "yield" ? "on" : ""}" data-v="yield">Доходность</span></div></div>
+      <div class="field"><label>Вид графика</label><div class="chips" id="idx-view"><span class="chip ${viewType === "points" ? "on" : ""}" data-v="points">Пункты</span><span class="chip ${viewType === "base100" ? "on" : ""}" data-v="base100">База 100</span><span class="chip ${viewType === "yield" ? "on" : ""}" data-v="yield">Доходность</span>${isStocks ? "" : `<span class="chip ${bondSpread ? "on" : ""}" data-v="gspread">G-спред</span>`}</div></div>
       <div class="field idx-period"><label>Период</label><div class="chips" id="idx-period">${INDEX_PERIODS.map(([k, l]) => `<span class="chip ${period === k ? "on" : ""}" data-v="${k}">${l}</span>`).join("")}</div></div>
     </div></div>`);
   v.appendChild(hero);
-  hero.querySelectorAll("[data-asset]").forEach(b => b.onclick = () => { INDEX_PAGE.asset = b.dataset.asset; render(); });
-  hero.querySelectorAll("#idx-group .chip").forEach(b => b.onclick = () => { if (isStocks) INDEX_PAGE.equityGroup = b.dataset.v; else INDEX_PAGE.bondGroup = b.dataset.v; render(); });
+  hero.querySelectorAll("[data-asset]").forEach(b => b.onclick = () => { INDEX_PAGE.asset = b.dataset.asset; if (INDEX_PAGE.asset === "stocks" && bondSpread) INDEX_PAGE.view = "yield"; render(); });
+  hero.querySelectorAll("#idx-group .chip").forEach(b => b.onclick = () => { if (isStocks) {
+    INDEX_PAGE.equityGroup = b.dataset.v;
+    if (b.dataset.v === "sectors_total_return") INDEX_PAGE.view = "base100";
+  } else INDEX_PAGE.bondGroup = b.dataset.v; render(); });
   hero.querySelectorAll("#idx-view .chip").forEach(b => b.onclick = () => { INDEX_PAGE.view = b.dataset.v; render(); });
   hero.querySelectorAll("#idx-period .chip").forEach(b => b.onclick = () => { INDEX_PAGE.period = b.dataset.v; render(); });
 
   const yieldHint = group === "fixed" ? " · исходные значения MOEX без ограничения YTM"
     : group === "floaters" ? ` · это YTM корзин флоатеров, не значение КС (сейчас ${fmt(CUR_KC, 2)}%) или RUONIA` : "";
-  const stockTitle = group === "total_return" ? "Индексы полной доходности" : group === "sectors" ? "Отраслевые индексы" : group === "themes" ? "Тематические индексы" : "Основные индексы акций";
-  const indexSub = viewType === "base100" ? `100 = первая сессия периода · справа доходность за ${periodText}`
+  const sectorTR = isStocks && group === "sectors_total_return";
+  const stockTitle = sectorTR ? "Отраслевые индексы полной доходности" : group === "total_return" ? "Индексы полной доходности" : group === "sectors" ? "Отраслевые индексы" : group === "themes" ? "Тематические индексы" : "Основные индексы акций";
+  const indexSub = (sectorTR ? "Брутто · дивиденды до налогов · " : "") + (viewType === "base100" ? `100 = ${sectorTR ? "первая общая сессия" : "первая сессия периода"} · справа доходность за ${periodText}`
     : viewType === "yield" ? `накопленная доходность от первой сессии периода · справа итог за ${periodText}`
-    : `официальные пункты MOEX · справа доходность за ${periodText}`;
+    : `официальные пункты MOEX · справа доходность за ${periodText}`);
   const bondIndexTitle = group === "government" ? "Государственные и муниципальные облигации" : "Динамика индексов полной доходности";
-  const panelTitle = bondYield ? "Доходность облигаций в индексной базе" : isStocks && viewType === "yield" ? "Накопленная доходность индексов акций" : isStocks ? stockTitle : bondIndexTitle;
-  const panel = el(`<div class="panel idx-main"><div class="idx-chart-head"><div><h3>${panelTitle}</h3><div class="muted">${bondYield ? `% годовых · взвешенная YTM базы MOEX${yieldHint}` : indexSub}</div></div><button class="xc-btn" id="idx-fs" title="Развернуть" aria-label="Развернуть"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg></button></div>
+  const panelTitle = bondSpread ? "G-спред облигаций в индексной базе" : bondYield ? "Доходность облигаций в индексной базе" : isStocks && viewType === "yield" ? "Накопленная доходность индексов акций" : isStocks ? stockTitle : bondIndexTitle;
+  const panel = el(`<div class="panel idx-main"><div class="idx-chart-head"><div><h3>${panelTitle}</h3><div class="muted">${bondSpread ? "б.п. · YTM индекса минус КБД ОФЗ на его дюрации" : bondYield ? `% годовых · взвешенная YTM базы MOEX${yieldHint}` : indexSub}</div></div><button class="xc-btn" id="idx-fs" title="Развернуть" aria-label="Развернуть"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg></button></div>
     <div id="idx-cards" class="idx-cards"></div><div id="idx-chart" class="chart tall"><div class="loading">Загружаю индексы MOEX…</div></div><div id="idx-guide" class="idx-guide"></div></div>`);
   v.appendChild(panel);
   const table = el(`<div class="panel idx-table"><h3>Срез на последнюю дату</h3><div id="idx-table"><div class="loading" style="padding:30px">Загрузка…</div></div></div>`);
@@ -2747,16 +2815,22 @@ async function renderIndices(v) {
   const quoteTimes = (data.series || []).filter(s => s.points?.at(-1)?.date === data.as_of && s.quote_time).map(s => s.quote_time).sort();
   const quoteTime = quoteTimes.at(-1);
   hero.querySelector("#idx-asof").innerHTML = data.as_of ? `на <b>${dmy(data.as_of)}${quoteTime ? ' · ' + escA(quoteTime.slice(0,5)) + ' мск' : ''}</b><small>${quoteTime ? 'последний биржевой срез' : 'последние доступные данные MOEX'} · обновление раз в час</small>` : "нет данных";
-  const available = (data.series || []).filter(s => indexMetric(s, viewType, asset, period).length);
+  let available = (data.series || []).filter(s => indexMetric(s, viewType, asset, period).length);
+  if (sectorTR && viewType !== "points" && available.length > 1) {
+    const calendars = available.map(s => new Set(indexPeriodRows(s, period)
+      .filter(p => p.close > 0).map(p => p.date)));
+    const start = [...calendars[0]].find(date => calendars.every(days => days.has(date)));
+    available = start ? available.map(s => ({ ...s, points: s.points.filter(p => p.date >= start) })) : [];
+  }
   const cards = panel.querySelector("#idx-cards");
   cards.innerHTML = available.map(s => {
     const st = indexStats(s, period), stockReturn = isStocks && viewType === "yield";
-    const val = bondYield ? st.ytm : stockReturn ? st.ret : st.close;
-    const delta = bondYield ? st.dy : st.ret;
-    const good = delta == null ? "" : (bondYield ? (delta <= 0 ? "pos" : "neg") : cls(delta));
+    const val = bondSpread ? st.gSpread : bondYield ? st.ytm : stockReturn ? st.ret : st.close;
+    const delta = bondSpread ? st.dSpread : bondYield ? st.dy : st.ret;
+    const good = delta == null ? "" : ((bondYield || bondSpread) ? (delta <= 0 ? "pos" : "neg") : cls(delta));
     return `<div class="idx-card idx-card-open" style="--series:${indexColor(s)}" role="button" tabindex="0" data-compose="${escA(s.code)}" data-name="${escA(s.name)}" aria-label="Показать состав индекса ${escA(s.name)}"><div class="idx-card-name"><span class="idx-card-label"><i></i><span>${escA(s.short)}</span></span><button class="idx-compose-btn" type="button" aria-label="Состав индекса ${escA(s.short)}">Состав</button></div>
-      <div class="idx-card-value">${bondYield ? (st.badYield && val == null ? `<span title="MOEX публикует аномальную YTM выше 100%">—*</span>` : pct(val)) : stockReturn ? (val == null ? "—" : `${val >= 0 ? "+" : ""}${fmt(val, 2)}%`) : (val == null ? "—" : `${fmt(val, 2)} <small>п.</small>`)}</div>
-      <div class="idx-card-delta ${good}">${delta == null ? "нет сравнения" : bondYield ? `${delta > 0 ? "+" : ""}${fmt(delta, 2)} п.п. · ${periodLabel}` : stockReturn ? `за ${periodText} · от первой сессии` : `${delta >= 0 ? "+" : ""}${fmt(delta, 2)}% · ${periodLabel}`}</div></div>`;
+      <div class="idx-card-value">${bondSpread ? bp(val, 1) : bondYield ? (st.badYield && val == null ? `<span title="MOEX публикует аномальную YTM выше 100%">—*</span>` : pct(val)) : stockReturn ? (val == null ? "—" : `${val >= 0 ? "+" : ""}${fmt(val, 2)}%`) : (val == null ? "—" : `${fmt(val, 2)} <small>п.</small>`)}</div>
+      <div class="idx-card-delta ${good}">${delta == null ? "нет сравнения" : bondSpread ? `${delta > 0 ? "+" : ""}${fmt(delta, 1)} б.п. · ${periodLabel}` : bondYield ? `${delta > 0 ? "+" : ""}${fmt(delta, 2)} п.п. · ${periodLabel}` : stockReturn ? `за ${periodText} · от первой сессии` : `${delta >= 0 ? "+" : ""}${fmt(delta, 2)}% · ${periodLabel}`}</div></div>`;
   }).join("");
   cards.querySelectorAll("[data-compose]").forEach(card => {
     const open = () => openIndexComposition(card.dataset.compose, card.dataset.name, asset);
@@ -2767,27 +2841,43 @@ async function renderIndices(v) {
 
   const series = available.map(s => {
     const points = indexMetric(s, viewType, asset, period);
+    const correctedPoints = (bondYield || bondSpread) ? points.map(p => {
+      const raw = s.points.find(r => r.date === p[0]);
+      if (!raw || p[1] == null) return p;
+      if (!bondSpread && raw.yield_source !== "bondsai_weighted") return p;
+      return { value: p, correction: raw.yield_correction, rawYield: raw.raw_yield,
+        indexYield: raw.yield, kbdYield: raw.kbd_yield, duration: raw.duration_days };
+    }) : points;
     const lastValue = points.filter(p => p[1] != null).at(-1)?.[1];
-    const endValue = lastValue == null ? "" : `${fmt(lastValue, 1)}${bondYield || viewType === "yield" ? "%" : ""}`;
-    return { name: s.short, type: "line", showSymbol: false, smooth: .12, connectNulls: false,
-      data: points, lineStyle: { width: s.tone === "market" || s.code === "IMOEX" ? 3 : 2.2, color: indexColor(s) },
+    const endValue = lastValue == null ? "" : `${fmt(lastValue, bondSpread ? 0 : 1)}${bondYield || viewType === "yield" ? "%" : ""}`;
+    return { name: s.short, type: "line", showSymbol: false, symbol: "none", smooth: .12, connectNulls: false,
+      data: correctedPoints, lineStyle: { width: s.tone === "market" || s.code === "IMOEX" ? 3 : 2.2, color: indexColor(s) },
       itemStyle: { color: indexColor(s) }, endLabel: { show: true, color: indexColor(s), fontWeight: 700, formatter: endValue },
       labelLayout: { moveOverlap: "shiftY" }, emphasis: { focus: "series", lineStyle: { width: 4 } } };
   });
+  const displayScale = (bondYield || bondSpread) ? indexYieldDisplayScale(series, INDEX_PAGE.fullYieldScale, bondSpread) : {series, count:0, clipped:false};
   const chartNode = panel.querySelector("#idx-chart"); chartNode.innerHTML = "";
   if (!series.length) chartNode.innerHTML = `<div class="muted" style="padding:70px;text-align:center">Для этого показателя пока нет сопоставимых данных</div>`;
   else mkChart(chartNode, {
     ...CHART_BG,
-    tooltip: { trigger: "axis", axisPointer: { type: "line" }, formatter: ps => `${dmyAny(ps[0].axisValue)}<br>` + ps.filter(p => p.value?.[1] != null).map(p => `${p.marker}${p.seriesName}: <b>${bondYield ? pct(p.value[1]) : viewType === "yield" ? `${p.value[1] >= 0 ? "+" : ""}${fmt(p.value[1], 2)}%` : viewType === "base100" ? `${fmt(p.value[1], 2)} · ${p.value[1] >= 100 ? "+" : ""}${fmt(p.value[1] - 100, 2)}%` : `${fmt(p.value[1], 2)} п.`}</b>`).join("<br>") },
+    tooltip: { trigger: "axis", axisPointer: { type: "line" }, formatter: ps => `${dmyAny(ps[0].axisValue)}<br>` + ps.filter(p => p.value?.[1] != null).map(p => `${p.marker}${p.seriesName}: <b>${bondSpread ? bp(p.data?.rawUnclipped ?? p.value[1], 1) : bondYield ? pct(p.data?.rawUnclipped ?? p.value[1]) + (p.data?.rawUnclipped != null ? " · за границей шкалы" : "") : viewType === "yield" ? `${p.value[1] >= 0 ? "+" : ""}${fmt(p.value[1], 2)}%` : viewType === "base100" ? `${fmt(p.value[1], 2)} · ${p.value[1] >= 100 ? "+" : ""}${fmt(p.value[1] - 100, 2)}%` : `${fmt(p.value[1], 2)} п.`}</b>${bondSpread ? `<br><small>YTM ${pct(p.data?.indexYield)} · КБД ${pct(p.data?.kbdYield)} · дюрация ${fmt(p.data?.duration / 365, 2)} г.</small>` : ""}${p.data?.correction ? `<br><small>Расчёт BondsAI · ${p.data.correction.constituents} выпусков · MOEX: ${pct(p.data.rawYield)}</small>` : ''}`).join("<br>") },
     legend: { type: "scroll", top: 0, data: available.map(s => s.short),
       selected: Object.fromEntries(available.map(s => [s.short, true])),
       textStyle: { color: AXIS_TXT }, icon: "roundRect", itemWidth: 14, itemHeight: 7 },
     grid: { left: 58, right: 78, top: 44, bottom: 42 },
     xAxis: { type: "time", ...AX },
-    yAxis: { type: "value", name: bondYield ? "YTM, %" : viewType === "yield" ? "доходность, %" : viewType === "base100" ? "база 100" : "пункты", scale: true, ...AX,
+    yAxis: { type: "value", name: bondSpread ? "G-спред, б.п." : bondYield ? "YTM, %" : viewType === "yield" ? "доходность, %" : viewType === "base100" ? "база 100" : "пункты", scale: true, ...AX, ...(bondYield ? {
+      min: ({min, max}) => Number.isFinite(min) ? min - Math.max(.5, (max - min) * .08) : null,
+      max: ({min, max}) => Number.isFinite(max) ? max + Math.max(.5, (max - min) * .08) : null,
+    } : {}),
       axisLabel: { color: AXIS_TXT, formatter: v => bondYield || viewType === "yield" ? `${fmt(v, 1)}%` : fmt(v, 0) } },
-    series,
+    series: displayScale.series,
   });
+  if (displayScale.count) {
+    const note = el(`<div class="muted" style="margin:8px 0 14px;font-size:12px">${displayScale.clipped ? `Обрезанные выбросы отмечены треугольниками; исходные значения — при наведении.` : "Полная шкала, включая выбросы."} <button type="button" class="pill" id="idx-scale-toggle">${displayScale.clipped ? "Показать выбросы целиком" : "Обрезать выбросы"}</button></div>`);
+    chartNode.after(note);
+    note.querySelector('#idx-scale-toggle').onclick = () => { INDEX_PAGE.fullYieldScale = !INDEX_PAGE.fullYieldScale; render(); };
+  }
   panel.querySelector("#idx-guide").innerHTML = `<div class="idx-guide-head"><b>Что стоит за линиями</b><span>код открывает индекс на MOEX</span></div>
     <div class="idx-guide-grid">${available.map(s => `<div class="idx-guide-item" style="--series:${indexColor(s)}">
       <i aria-hidden="true"></i><div><div class="idx-guide-meta"><strong>${escA(s.short)}</strong><a href="${s.url}" target="_blank" rel="noopener">${escA(s.code)}</a></div>
@@ -2795,19 +2885,20 @@ async function renderIndices(v) {
   panel.querySelector("#idx-fs").onclick = () => { panel.classList.toggle("fullscreen"); setTimeout(() => charts.forEach(c => c.resize()), 60); };
 
   const rows = (data.series || []).map(s => ({ s, st: indexStats(s, period) }));
-  table.querySelector("#idx-table").innerHTML = `<div class="tbl-wrap"><table><thead><tr><th>Индекс</th><th>Код</th><th>Значение</th><th>За период</th>${isStocks ? "" : "<th>YTM базы</th><th>Изменение YTM</th><th>Дюрация</th>"}</tr></thead><tbody>${rows.map(({ s, st }) => `<tr>
+  table.querySelector("#idx-table").innerHTML = `<div class="tbl-wrap"><table><thead><tr><th>Индекс</th><th>Код</th><th>Значение</th><th>За период</th>${isStocks ? "" : "<th>YTM базы</th><th>Изменение YTM</th><th>G-спред, б.п.</th><th>Дюрация</th>"}</tr></thead><tbody>${rows.map(({ s, st }) => `<tr>
     <td><span class="idx-dot" style="background:${indexColor(s)}"></span><b>${escA(s.name)}</b></td>
     <td><a class="link idx-code" href="${s.url}" target="_blank" rel="noopener">${s.code}</a></td><td>${fmt(st.close, 2)}</td>
     <td class="${cls(st.ret)}">${st.ret == null ? "—" : `${st.ret >= 0 ? "+" : ""}${fmt(st.ret, 2)}%`}</td>
     ${isStocks ? "" : `<td>${pct(st.ytm)}</td>
     <td class="${st.dy == null ? "" : st.dy <= 0 ? "pos" : "neg"}">${st.dy == null ? "—" : `${st.dy > 0 ? "+" : ""}${fmt(st.dy, 2)} п.п.`}</td>
+    <td>${bp(st.gSpread, 1)}</td>
     <td>${st.dur == null ? "—" : `${fmt(st.dur / 365, 2)} г.`}</td>`}</tr>`).join("")}</tbody></table></div>`;
   if (isStocks) {
-    const treatment = group === "total_return" ? "Брутто учитывает реинвестирование дивидендов до налогов; нетто — после налогообложения для указанного типа инвестора." : "Ценовые индексы не учитывают дивиденды; для оценки результата с дивидендами выберите «Полная доходность».";
+    const treatment = sectorTR ? "Отраслевые индексы брутто учитывают реинвестирование дивидендов до налогов." : group === "total_return" ? "Брутто учитывает реинвестирование дивидендов до налогов; нетто — после налогообложения для указанного типа инвестора." : "Ценовые индексы не учитывают дивиденды; для оценки результата с дивидендами выберите «Полная доходность».";
     v.appendChild(el(`<div class="idx-note"><b>Как читать.</b> «Пункты» показывает официальные уровни MOEX, «База 100» приводит линии к 100, «Доходность» показывает накопленное изменение в процентах от первой сессии периода. Справа — итог ровно за ${periodText}, таблица всегда сохраняет исходные пункты. ${treatment} РТС рассчитывается в долларах США. Источник: <a href="${data.source_url}" target="_blank" rel="noopener">ПАО Московская Биржа / ISS</a>.</div>`));
   } else {
     const floaterNote = group === "floaters" ? " «На КС» и «На RUONIA» — индексы корзин флоатеров по типу базовой ставки; их YTM не равна самой КС или RUONIA." : "";
-    v.appendChild(el(`<div class="idx-note"><b>Как читать.</b> «Пункты» — официальный индекс MOEX, «База 100» — тот же индекс от 100 на старте периода, «Доходность» — взвешенная YTM входящих в него облигаций. Состав базы меняется при ребалансировках.${floaterNote} YTM показывается без отсечения значений, включая выше 100%. Экстремальные значения меняют масштаб; ненужные линии можно отключить в легенде. Прочерк означает отсутствие данных за последнюю сессию. Источник: <a href="${data.source_url}" target="_blank" rel="noopener">ПАО Московская Биржа / ISS</a>.</div>`));
+    v.appendChild(el(`<div class="idx-note"><b>Как читать.</b> «Пункты» — официальный индекс MOEX, «База 100» — тот же индекс от 100 на старте периода, «Доходность» — взвешенная YTM входящих в него облигаций. «G-спред» — разница между YTM и доходностью <a href="${data.gcurve_source_url || "https://www.moex.com/a3643"}" target="_blank" rel="noopener">КБД ОФЗ на закрытии той же даты</a> на средневзвешенной дюрации индекса. Состав базы меняется при ребалансировках.${floaterNote} Исходные YTM сохранены. Выбросы по умолчанию ограничены только на графике; полную шкалу можно включить кнопкой над пояснением. Прочерк означает отсутствие данных за последнюю сессию. Источник: <a href="${data.source_url}" target="_blank" rel="noopener">ПАО Московская Биржа / ISS</a>.</div>`));
   }
 }
 
@@ -2869,6 +2960,117 @@ async function fetchJSONRetry(url, tries = 3) {
     if (i < tries - 1) await new Promise(res => setTimeout(res, [2000, 5000][i] || 5000));
   }
   throw last;
+}
+
+function fiscalYtd(rows) {
+  const map = new Map((rows || []).map(r => [r.date, r.val]));
+  return (rows || []).map(r => {
+    const year=r.date.slice(0,4), month=+r.date.slice(5,7);let total=0;
+    for(let m=1;m<=month;m++){const v=map.get(`${year}-${String(m).padStart(2,'0')}`);if(v==null)return {date:r.date,val:null};total+=v;}
+    return {date:r.date,val:total};
+  });
+}
+function renderFiscalMonthlyPanel(host, data) {
+  const bud=data.budget||{}, debt=data.gov_debt||{};
+  const latest=s=>(s||[]).filter(r=>r.val!=null).at(-1);
+  const read=(s,date)=>(s||[]).find(r=>r.date===date)?.val;
+  const b=latest(bud.revenue), g=latest(debt.total);
+  const money=n=>n==null?'—':`${fmt(n/1000,2)} трлн ₽`;
+  const prevMonth=d=>{const dt=new Date(`${d}-01T00:00:00Z`);dt.setUTCMonth(dt.getUTCMonth()-1);return dt.toISOString().slice(0,7);};
+  const debtChange=g?g.val-read(debt.total,prevMonth(g.date)):null;
+  const snapshot=el(`<div class="panel"><h3>Бюджет и долг · ежемесячно</h3><div class="kpis kpis-4">
+    <div class="kpi"><div class="label">Доходы · ${b?mmy(b.date):'нет данных'}</div><div class="value">${money(b?.val)}</div><div class="sub">Федеральный бюджет · за месяц</div></div>
+    <div class="kpi"><div class="label">Расходы · ${b?mmy(b.date):'нет данных'}</div><div class="value">${money(b?read(bud.spending,b.date):null)}</div><div class="sub">Кассовое исполнение · за месяц</div></div>
+    <div class="kpi"><div class="label">Баланс · ${b?mmy(b.date):'нет данных'}</div><div class="value">${money(b?read(bud.balance,b.date):null)}</div><div class="sub">Профицит (+) / дефицит (−)</div></div>
+    <div class="kpi"><div class="label">Внутренний госдолг · ${g?mmy(g.date):'нет данных'}</div><div class="value">${money(g?.val)}</div><div class="sub">На конец месяца, включая гарантии${Number.isFinite(debtChange)?` · изменение ${money(debtChange)}`:''}</div></div></div>
+    <p class="muted" style="font-size:12px;margin-top:12px">Долг — остаток на дату; его изменение не равно чистому размещению ОФЗ: влияют гарантии и другие операции. Внешний долг ЦБ включает частный сектор и не подменяет государственный внешний долг.</p></div>`);
+  host.appendChild(snapshot);
+  renderMinfinMonthlyTable(host, data);
+  renderFiscalBalance(host, data);
+}
+
+function fiscalBudgetTimeline(budget) {
+  const a=new Map((budget.revenue||[]).map(r=>[r.date,r.val]));
+  const b=new Map((budget.spending||[]).map(r=>[r.date,r.val]));
+  const oil=new Map((budget.oilgas||[]).map(r=>[r.date,r.val])), non=new Map((budget.nonoilgas||[]).map(r=>[r.date,r.val]));
+  const dates=[...new Set([...a.keys(),...b.keys()])].filter(d=>/^\d{4}-\d{2}$/.test(d)).sort();
+  if(!dates.length)return [];
+  const cursor=new Date(dates[0]+'-01T00:00:00Z'), end=dates.at(-1), out=[];
+  while(cursor.toISOString().slice(0,7)<=end){
+    const date=cursor.toISOString().slice(0,7);
+    out.push({date,revenue:a.get(date)??null,spending:b.get(date)??null,oilgas:oil.get(date)??null,nonoilgas:non.get(date)??null});cursor.setUTCMonth(cursor.getUTCMonth()+1);
+  }
+  return out.map(r=>({...r,hasStructure:r.revenue!=null&&r.oilgas!=null&&r.nonoilgas!=null&&Math.abs(r.oilgas+r.nonoilgas-r.revenue)<=Math.max(1,Math.abs(r.revenue)*1e-6)}));
+}
+function renderMinfinMonthlyTable(host, data) {
+  const bud=data.budget||{}, archive=data.budget_releases||{};
+  const rows=fiscalBudgetTimeline(bud);if(!rows.length)return;
+  const source=archive.source||'https://minfin.gov.ru/ru/statistics/fedbud/';
+  const panel=el(`<div class="panel"><div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center"><h3 style="margin:0">Доходы и расходы федерального бюджета</h3><a href="${escA(source)}" target="_blank" rel="noopener" style="font-size:12px">Минфин ↗</a></div>
+    <div style="display:flex;gap:18px;flex-wrap:wrap;font-size:12px;margin:14px 0 8px"><span><i style="display:inline-block;width:12px;height:12px;background:#16856d;border-radius:2px;margin-right:6px"></i>Ненефтегазовые доходы</span><span><i style="display:inline-block;width:12px;height:12px;background:#79b8a6;border-radius:2px;margin-right:6px"></i>Нефтегазовые доходы</span><span><i style="display:inline-block;width:12px;height:12px;background:#bd6658;border-radius:2px;margin-right:6px"></i>Расходы</span></div>
+    <div style="display:flex;min-width:0"><div data-budget-axis style="position:relative;flex:0 0 48px;height:340px;font-size:11px;color:var(--muted)"></div><div data-budget-scroll tabindex="0" role="region" aria-label="Доходы и расходы по месяцам за всю историю; прокрутка влево и вправо" style="overflow-x:auto;overflow-y:hidden;min-width:0;flex:1;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain"><div data-budget-bars class="chart" style="height:340px"></div></div></div>
+    </div>`);
+  host.appendChild(panel);
+  const scroll=panel.querySelector('[data-budget-scroll]'), node=panel.querySelector('[data-budget-bars]');
+  node.style.width=Math.max(600,rows.length*76)+'px';
+  const values=rows.flatMap(r=>[r.revenue,r.spending]).filter(v=>v!=null&&Number.isFinite(v));
+  const upper=Math.max(2,Math.ceil(Math.max(0,...values)/1000*1.1/2)*2);
+  panel.querySelector('[data-budget-axis]').innerHTML=`<span style="position:absolute;top:0">трлн ₽</span>`+Array.from({length:5},(_,i)=>`<span style="position:absolute;right:9px;top:${24+i*256/4}px;transform:translateY(-50%)">${fmt(upper*(1-i/4),1)}</span>`).join('');
+  const labels=rows.map(r=>r.date);
+  mkChart(node,{...CHART_BG,animation:false,grid:{left:0,right:12,top:24,bottom:60},
+    tooltip:{trigger:'axis',axisPointer:{type:'shadow'},formatter:ps=>{
+      const row=rows[ps[0].dataIndex], n=v=>v==null?'—':fmt(v,1)+' млрд ₽';
+      const balance=row.revenue!=null&&row.spending!=null?row.revenue-row.spending:null;
+      return `${mmy(row.date)}<br>Доходы: <b>${n(row.revenue)}</b>${row.hasStructure?`<br>　Ненефтегазовые: ${n(row.nonoilgas)}<br>　Нефтегазовые: ${n(row.oilgas)}`:'<br>　Разбивка не раскрыта'}<br>Расходы: <b>${n(row.spending)}</b><br>${balance==null?'Баланс':balance<0?'Дефицит':'Профицит'}: <b>${n(balance==null?null:Math.abs(balance))}</b>`;
+    }},
+    xAxis:{type:'category',data:labels,axisTick:{alignWithLabel:true},axisLabel:{interval:0,fontSize:10,formatter:date=>`${date.slice(5)}\n${date.slice(0,4)}`}},
+    yAxis:{type:'value',min:0,max:upper,interval:upper/4,axisLabel:{show:false},axisTick:{show:false},axisLine:{show:false},splitLine:{lineStyle:{color:'rgba(128,128,128,.18)'}}},
+    series:[
+      {name:'Ненефтегазовые доходы',type:'bar',stack:'revenue',barWidth:23,barGap:'20%',itemStyle:{color:'#16856d'},label:{show:true,position:'inside',color:'#fff',fontSize:9,formatter:p=>{const r=rows[p.dataIndex];return r.hasStructure&&r.revenue>0?fmt(r.nonoilgas/r.revenue*100,0)+'%':'';}},data:rows.map(r=>r.hasStructure?r.nonoilgas/1000:null)},
+      {name:'Нефтегазовые доходы',type:'bar',stack:'revenue',barWidth:23,itemStyle:{color:'#79b8a6'},label:{show:true,position:'inside',color:'#173e34',fontSize:9,formatter:p=>{const r=rows[p.dataIndex];return r.hasStructure&&r.revenue>0?fmt(r.oilgas/r.revenue*100,0)+'%':'';}},data:rows.map(r=>r.hasStructure?r.oilgas/1000:null)},
+      {name:'Доходы без разбивки',type:'bar',stack:'revenue',barWidth:23,itemStyle:{color:'#8c9692'},data:rows.map(r=>!r.hasStructure&&r.revenue!=null?r.revenue/1000:null)},
+      {name:'Расходы',type:'bar',stack:'spending',barWidth:23,itemStyle:{color:'#bd6658',borderRadius:[2,2,0,0]},label:{show:true,position:'top',color:'#a34f43',fontSize:9,formatter:p=>p.value==null?'':fmt(p.value,2)},data:rows.map(r=>r.spending==null?null:r.spending/1000)},
+      {name:'Сумма доходов',type:'custom',silent:true,tooltip:{show:false},renderItem:(params,api)=>{const value=api.value(1);if(value==null)return;const point=api.coord([api.value(0),value]);return {type:'text',x:point[0]-13.8,y:point[1]-8,style:{text:fmt(value,2),fill:'#236c59',fontSize:9,align:'center',verticalAlign:'bottom'}};},data:rows.map((r,i)=>[i,r.revenue==null?null:r.revenue/1000])}]});
+  requestAnimationFrame(()=>{scroll.scrollLeft=scroll.scrollWidth-scroll.clientWidth;});
+}
+
+function fiscalBalanceTimeline(budget) {
+  const rows=fiscalBudgetTimeline(budget).map(r=>({...r,balance:r.revenue==null||r.spending==null?null:r.revenue-r.spending}));
+  return rows.map((r,i)=>{const span=rows.slice(Math.max(0,i-11),i+1);return {...r,ltm:span.length===12&&span.every(x=>x.balance!=null)?span.reduce((sum,x)=>sum+x.balance,0):null};});
+}
+function renderFiscalBalance(host,data) {
+  const rows=fiscalBalanceTimeline(data.budget||{});if(!rows.length)return;
+  const deltaLtm=rows.map(r=>r.ltm);
+  const panel=el(`<div class="panel"><h3>Баланс бюджета за месяц и дельта LTM</h3><div style="display:flex;gap:18px;flex-wrap:wrap;font-size:12px;margin:14px 0"><span style="color:#16856d">■ Профицит за месяц</span><span style="color:#bd6658">■ Дефицит за месяц</span><span style="color:#856322">■ Дельта LTM · за 12 месяцев</span><span class="muted">трлн ₽</span></div><div style="display:flex;min-width:0"><div data-balance-axis style="position:relative;flex:0 0 48px;height:340px;font-size:11px;color:var(--muted)"></div><div data-balance-scroll tabindex="0" role="region" aria-label="Дефицит и профицит: месяц и последние 12 месяцев" style="overflow-x:auto;overflow-y:hidden;min-width:0;flex:1;-webkit-overflow-scrolling:touch"><div data-balance-chart class="chart" style="height:340px"></div></div></div></div>`);
+  host.appendChild(panel);
+  const scroll=panel.querySelector('[data-balance-scroll]'),node=panel.querySelector('[data-balance-chart]');node.style.width=Math.max(600,rows.length*76)+'px';
+  const values=rows.flatMap(r=>[r.balance,deltaLtm[rows.indexOf(r)]]).filter(v=>v!=null).map(v=>v/1000),lo=Math.min(-2,Math.floor(Math.min(...values)/2)*2),hi=Math.max(2,Math.ceil(Math.max(...values)/2)*2);
+  panel.querySelector('[data-balance-axis]').innerHTML=Array.from({length:5},(_,i)=>`<span style="position:absolute;right:9px;top:${24+i*256/4}px;transform:translateY(-50%)">${fmt(hi-(hi-lo)*i/4,1)}</span>`).join('');
+  mkChart(node,{...CHART_BG,animation:false,grid:{left:0,right:12,top:24,bottom:60},tooltip:{trigger:'axis',formatter:ps=>{const r=rows[ps[0].dataIndex],n=v=>v==null?'—':fmt(v,1)+' млрд ₽';return `${mmy(r.date)}<br>${r.balance<0?'Дефицит':'Профицит'} за месяц: <b>${n(r.balance)}</b><br>Дельта LTM: <b>${n(deltaLtm[ps[0].dataIndex])}</b>`;}},xAxis:{type:'category',data:rows.map(r=>r.date),axisLabel:{interval:0,fontSize:10,formatter:d=>`${d.slice(5)}\n${d.slice(0,4)}`}},yAxis:{type:'value',min:lo,max:hi,interval:(hi-lo)/4,axisLabel:{show:false},splitLine:{lineStyle:{color:'rgba(128,128,128,.18)'}}},series:[{name:'За месяц',type:'bar',barWidth:24,label:{show:true,position:'outside',fontSize:9,color:'#68716c',formatter:p=>p.value==null?'':fmt(p.value,2)},data:rows.map(r=>({value:r.balance==null?null:r.balance/1000,itemStyle:{color:r.balance<0?'#bd6658':'#16856d'}})),markLine:{silent:true,symbol:'none',label:{show:false},data:[{yAxis:0}],lineStyle:{color:'#8b8b82',type:'solid'}}},{name:'Дельта LTM',type:'bar',barWidth:24,label:{show:true,position:'outside',fontSize:9,color:'#856322',formatter:p=>p.value==null?'':fmt(p.value,2)},itemStyle:{color:'#856322'},data:deltaLtm.map(v=>v==null?null:v/1000)}]});
+  requestAnimationFrame(()=>{scroll.scrollLeft=scroll.scrollWidth-scroll.clientWidth;});
+}
+
+function fiscalYearEndBalance(data) {
+  const gdp=new Map((data.gdp||[]).map(r=>[r.date,r.val]));
+  return fiscalBalanceTimeline(data.budget||{}).filter(r=>r.date.endsWith('-12')&&r.ltm!=null&&gdp.get(r.date.slice(0,4))>0).map(r=>({date:r.date.slice(0,4),val:100*r.ltm/gdp.get(r.date.slice(0,4))}));
+}
+function renderFiscalYearEndBalance(host,data) {
+  const rows=fiscalYearEndBalance(data);if(!rows.length)return;
+  const panel=el(`<div class="panel"><h3>Дефицит / профицит бюджета к ВВП · на конец года</h3><div class="muted" style="font-size:12px;margin:10px 0">LTM на 31 декабря / номинальный ВВП того же года · % ВВП · факт</div><div data-year-end-balance class="chart" style="height:320px"></div></div>`);host.appendChild(panel);
+  mkChart(panel.querySelector('[data-year-end-balance]'),{...CHART_BG,grid:{left:55,right:20,top:25,bottom:40},tooltip:{trigger:'axis',formatter:ps=>`${ps[0].axisValue} · на 31 декабря<br>Баланс бюджета: <b>${fmt(ps[0].value,2)}% ВВП</b>`},xAxis:{type:'category',data:rows.map(r=>r.date)},yAxis:{type:'value',name:'% ВВП'},series:[{name:'Баланс / ВВП',type:'bar',barMaxWidth:38,label:{show:true,position:'outside',fontSize:10,color:'#68716c',formatter:p=>p.value==null?'':fmt(p.value,1)+'%'},data:rows.map(r=>({value:r.val,itemStyle:{color:r.val<0?'#bd6658':'#16856d'}})),markLine:{silent:true,symbol:'none',label:{show:false},data:[{yAxis:0}],lineStyle:{color:'#8b8b82',type:'solid'}}}]});
+}
+
+function fiscalDebtServiceLtm(series) {
+  const m=new Map((series||[]).map(r=>[r.date,r.val]));
+  return (series||[]).map(r=>{let sum=0;const dt=new Date(r.date+'-01T00:00:00Z');for(let i=0;i<12;i++){const v=m.get(dt.toISOString().slice(0,7));if(v==null||!Number.isFinite(v))return {date:r.date,val:null};sum+=v;dt.setUTCMonth(dt.getUTCMonth()-1);}return {date:r.date,val:sum};});
+}
+function renderDebtWithInterest(node,gd,budget) {
+  const annual=[{"date": "2021-12", "val": 1084.2363, "internal": 934.8501, "external": 149.3862}, {"date": "2022-12", "val": 1330.5703999999998, "internal": 1191.1122, "external": 139.4582}, {"date": "2023-12", "val": 1724.137, "internal": 1551.7184, "external": 172.4187}, {"date": "2024-12", "val": 2328.7092000000002, "internal": 2159.4961000000003, "external": 169.2131}, {"date": "2025-12", "val": 3211.5671, "internal": 3070.0994, "external": 141.4677}];
+  const service=fiscalDebtServiceLtm(budget.debt_service), dates=[...new Set([...(gd.total||[]).map(r=>r.date),...service.map(r=>r.date)])].sort();
+  const map=s=>new Map((s||[]).map(r=>[r.date,r.val])),total=map(gd.total),guarantees=map(gd.guarantees),securities=map(gd.securities),interest=map(service);annual.forEach(r=>interest.set(r.date,r.val));
+  const verifiedAnnual=map(annual);
+  mkChart(node,{...CHART_BG,grid:{left:60,right:20,top:48,bottom:65},legend:{data:['Долг без гарантий','Госгарантии','Процентные расходы LTM · весь госдолг'],top:0,textStyle:{fontSize:10}},tooltip:{trigger:'axis',formatter:ps=>{const d=ps[0].axisValue,n=v=>v==null?'нет данных':fmt(v/1000,2)+' трлн ₽';return `${mmy(d)}<br>Внутренний госдолг: <b>${n(total.get(d))}</b><br>В том числе гарантии: ${n(guarantees.get(d))}<br>Процентные расходы LTM · весь госдолг: <b>${n(interest.get(d))}</b>${verifiedAnnual.has(d)?"<br>Годовой факт · отчёт об исполнении бюджета, таблица 92":""}`;}},xAxis:{type:'category',data:dates,axisLabel:{formatter:mmy}},yAxis:{type:'value',name:'трлн ₽'},dataZoom:[{type:'inside',start:60,end:100},{type:'slider',height:16,bottom:8,start:60,end:100}],series:[{name:'Долг без гарантий',type:'line',stack:'debt',symbol:'none',areaStyle:{opacity:.18},lineStyle:{color:'#5b8def'},itemStyle:{color:'#5b8def'},connectNulls:false,data:dates.map(d=>securities.get(d)==null?null:securities.get(d)/1000)},{name:'Госгарантии',type:'line',stack:'debt',symbol:'none',areaStyle:{color:'#e6b344',opacity:.35},lineStyle:{color:'#e6b344'},itemStyle:{color:'#e6b344'},data:dates.map(d=>guarantees.get(d)==null?null:guarantees.get(d)/1000)},{name:'Процентные расходы LTM · весь госдолг',type:'bar',barMaxWidth:18,z:5,itemStyle:{color:'#bd6658'},data:dates.map(d=>({value:interest.get(d)==null?null:interest.get(d)/1000,label:{show:verifiedAnnual.has(d),position:'top',fontSize:10,color:'#a34f43',formatter:p=>p.value==null?'':fmt(p.value,2)}}))}]});
+  node.parentNode.appendChild(el('<p class="muted" style="font-size:11px;margin-top:8px">Красные столбцы: до 2021 — месячный LTM; за 2022–2025 — проверенный годовой факт на декабрь. Между годовыми точками данные не восстановлены. <a href="https://sozd.duma.gov.ru/download/1f16a542-8011-690c-84a4-5d34af8662f1" target="_blank" rel="noopener">Отчёт, таблица 92 ↗</a></p>'));
 }
 
 async function renderMacro(v) {
@@ -3554,6 +3756,8 @@ async function renderMacro(v) {
   v.appendChild(nav);
   nav.querySelectorAll("[data-sub]").forEach(c => c.onclick = () => goSub(c.dataset.sub));
 
+  if (sub === "budget") renderFiscalMonthlyPanel(v, d);
+
   // В бюджетном разделе рядом с агрегатами показываем фактический календарь
   // погашений по выпускам. Загружаем его лениво, чтобы не замедлять «Сводку».
   if (sub === "budget" && MACRO.ofzRedemption === undefined) {
@@ -4149,19 +4353,6 @@ async function renderMacro(v) {
     }
     levelChart(node, mode, mode === "yoy" ? [["revenue", "Доходы", "#1fe0a0"], ["spending", "Расходы", "#ff6b6b"]] : [["revenue", "Доходы", "#1fe0a0"], ["spending", "Расходы", "#ff6b6b"], ["balance", "Дефицит/профицит", "#5b8def"]], ba, { lblFn: x => x });
   }, { modes: ["abs", "yoy", "gdp"] });
-  if ((bud.balance || []).length) C("budget", "Дефицит / профицит бюджета", "за месяц (млрд ₽, столбики) + сумма за 12 мес (трлн ₽, линия) · «Годы» — итог за год · % ВВП — к ВВП за 4 квартала · Минфин" + (bud.prelim ? ` · ${mmy(bud.prelim.date)} — предварительная оценка Минфина от ${bud.prelim.published || ""}` : "") + BP_NOTE, 320, (node, mode) => {
-    const yr = FREQ === "year";
-    if (yr) {
-      if (mode === "gdp") { levelChart(node, "gdp", [["x", "Дефицит(−)/профицит(+) за год", "#5b8def"]], { x: bud.balance }, { kind: "bar", ext: futureTo(BP_END) }); return; }
-      barLine(node, { bars: [["Дефицит(−)/профицит(+) за год", (bud.balance || []).map(r => ({ date: r.date, val: r.val / 1000 })), "#5b8def", "sum"]], ub: "трлн ₽", dgb: 2, colorSign: true, ext: futureTo(BP_END) });
-      return fcBoxes(node, planBoxes("balance", "#5b8def"));
-    }
-    const r12 = roll12(bud.balance);
-    if (mode === "gdp") return levelChart(node, "gdp", [["x", "Дефицит(−)/профицит(+) за 12 мес", "#5b8def"]], { x: r12.filter(r => r.val != null) }, { kind: "area" });
-    barLine(node, { bars: [["За месяц", bud.balance, "#9aa7b0"]], lines: [["Сумма за 12 мес", r12.map(r => ({ date: r.date, val: r.val == null ? null : r.val / 1000 })), "#5b8def"]], ub: "млрд ₽", ul: "трлн ₽", dgb: 0, dgl: 2, colorSign: true, ext: futureTo(BP_END) });
-    fcBoxes(node, planBoxes("balance", "#5b8def", 1000, false, 1));   // план годового дефицита — на шкале «за 12 мес»
-    notePrelim(node);
-  }, { agg: "sum", modes: ["abs", "gdp"] });
   // (убран по просьбе пользователя: «Доходы и расходы по месяцам» — ряды остаются в API/CSV; по годам с планом — в «Годовых итогах»)
   if ((bud.net_internal_debt || []).length) C("budget", "Чистое размещение ОФЗ", NIS
       ? `размещение − погашение · за месяц (млрд ₽) + сумма за 12 мес (трлн ₽) · предложение ОФЗ на рынке · с 2021 г. — факт по аукционам: выручка аукционов и ДРПА (результаты Минфина) минус погашения и амортизация ОФЗ (Мосбиржа), по ${dmy(NIS.asof)}; сверка с сальдо внутреннего долга из отчёта Минфина об исполнении бюджета — медианная разница ${fmt(NIS.check_median, 0)} млрд ₽ в месяц (${NIS.check_months} мес.) · до 2021 г. — отчёт Минфина · в «Годах»: текущий год — с начала года, пунктир — ${BP_IS_DRAFT ? "проект" : "план"} чистых госзаимствований`
@@ -4212,8 +4403,9 @@ async function renderMacro(v) {
         tooltip: { formatter: ps => { const t = f0(ps), a = (Array.isArray(ps) ? ps : [ps])[0]; return a && estM.has(a.axisValue) ? t + `<div style="margin-top:5px;font-size:11px;opacity:.75">оценка: изменение госдолга в ОФЗ по номиналу (Минфин) − дисконт на аукционах; в отчёте об исполнении бюджета месяца ещё нет</div>` : t; } } });
     }
   }, { agg: "sum", modes: ["abs", "gdp"] });
-  if ((BP.gross_borrowing || []).length) C("budget", "Программа внутренних заимствований — проект бюджета", `размещение ОФЗ, погашение и чистое привлечение · трлн ₽ · законопроект № 615-9 от 30.09.2026 · источник: материалы Госдумы`, 280, node => {
-    const yrs = (BP.gross_borrowing || []).map(r => r.date), gross = BPm("gross_borrowing"), red = BPm("debt_redemption"), net = BPm("net_borrowing");
+  if ((BP.gross_borrowing || []).length) C("budget", "ОФЗ: размещение и погашение · история и проект", `2023–2026: расчёт по денежной выручке аукционов/ДРПА Минфина и погашениям/амортизации Мосбиржи; не кассовое исполнение программы внутренних заимствований. 2026: по 20.10, неполный год. 2027–2029: проект бюджета`, 280, node => {
+    const history = [{"date": "2023", "gross": 2624.7419077999994, "redemption": 872.3059999999999, "net": 1752.4359077999993, "status": "Факт", "source": "Аукционы и ДРПА Минфина: денежная выручка; погашения и амортизация ОФЗ: Мосбиржа"}, {"date": "2024", "gross": 4007.4810884000008, "redemption": 1441.7079999999999, "net": 2565.773088400001, "status": "Факт", "source": "Аукционы и ДРПА Минфина: денежная выручка; погашения и амортизация ОФЗ: Мосбиржа"}, {"date": "2025", "gross": 6983.192786100003, "redemption": 1383.149, "net": 5600.043786100003, "status": "Факт", "source": "Аукционы и ДРПА Минфина: денежная выручка; погашения и амортизация ОФЗ: Мосбиржа"}, {"date": "2026", "gross": 4336.090534299999, "redemption": 1214.686, "net": 3121.404534299999, "status": "Факт по 2026-10-20", "source": "Аукционы и ДРПА Минфина: денежная выручка; погашения и амортизация ОФЗ: Мосбиржа"}];
+    const yrs = [...history.map(r=>r.date),...(BP.gross_borrowing||[]).map(r=>r.date)], gross = {...Object.fromEntries(history.map(r=>[r.date,r.gross])),...BPm("gross_borrowing")}, red = {...Object.fromEntries(history.map(r=>[r.date,r.redemption])),...BPm("debt_redemption")}, net = {...Object.fromEntries(history.map(r=>[r.date,r.net])),...BPm("net_borrowing")};
     const issueLines = y => {
       const issues = [...(((MACRO.ofzRedemption || {}).issues || {})[y] || [])]
         .filter(x => +(x.vol_bln || 0) >= .05)
@@ -4228,16 +4420,16 @@ async function renderMacro(v) {
     mkChart(node, {
       ...CHART_BG,
       tooltip: { trigger: "axis", axisPointer: XP, formatter: ps => { const y = ps[0].axisValue;
-        return `<div style="font-weight:600;margin-bottom:3px">${y}</div>`
+        return `<div style="font-weight:600;margin-bottom:3px">${y} · ${history.find(r=>r.date===y)?.status||"Проект"}</div>`
           + `${ps[0]?.marker || ""}Размещение: <b>${fmt(gross[y] / 1000, 3)} трлн ₽</b><br>`
           + `${ps[1]?.marker || ""}Погашение: <b>${fmt(red[y] / 1000, 3)} трлн ₽</b><br>`
           + `${ps[2]?.marker || ""}Чистое привлечение: <b>${fmt(net[y] / 1000, 3)} трлн ₽</b>`
           + issueLines(y); } },
-      legend: legOf(["Размещение", "Погашение", "Чистое привлечение"]), grid: { left: 48, right: 20, top: 34, bottom: 30 },
-      xAxis: { type: "category", data: yrs, ...AX, axisLabel: { color: AXIS_TXT } }, yAxis: { type: "value", name: "трлн ₽", ...AX },
+      legend: legOf(["Размещение", "Погашение", "Чистое привлечение"]), grid: { left: 48, right: 20, top: 34, bottom: 52 },
+      xAxis: { type: "category", data: yrs, ...AX, axisLabel: { interval: 0, hideOverlap: false, color: AXIS_TXT, formatter:y=>y+"\n"+(history.find(r=>r.date===y)?.status||"Проект") } }, yAxis: { type: "value", name: "трлн ₽", ...AX },
       series: [
-        { name: "Размещение", type: "bar", data: yrs.map(y => gross[y] / 1000), itemStyle: { color: "#5b8def" }, barMaxWidth: 34 },
-        { name: "Погашение", type: "bar", data: yrs.map(y => red[y] / 1000), itemStyle: { color: "#9aa7b0" }, barMaxWidth: 34 },
+        { name: "Размещение", type: "bar", data: yrs.map(y => ({value:gross[y] / 1000,itemStyle:{opacity:history.some(r=>r.date===y)?1:.45}})), itemStyle: { color: "#5b8def" }, barMaxWidth: 34 },
+        { name: "Погашение", type: "bar", data: yrs.map(y => ({value:red[y] / 1000,itemStyle:{opacity:history.some(r=>r.date===y)?1:.45}})), itemStyle: { color: "#9aa7b0" }, barMaxWidth: 34 },
         { name: "Чистое привлечение", type: "line", data: yrs.map(y => net[y] / 1000), symbol: "circle", symbolSize: 7, lineStyle: { width: 2.4, color: "#1fe0a0" }, itemStyle: { color: "#1fe0a0" },
           label: { show: true, position: "top", offset: [12, 0], align: "left", color: AXIS_TXT, formatter: p => fmt(p.value, 1) } },
       ],
@@ -4245,7 +4437,7 @@ async function renderMacro(v) {
   });
   const gd = d.gov_debt || {};
   if ((gd.total || []).length) C("budget", "Госдолг РФ (внутренний)", "ОФЗ и прочие бумаги/кредиты + госгарантии · на конец месяца (Минфин публикует на 1-е число следующего) · Минфин · расходы на его обслуживание Минфин с 2022 г. помесячно не раскрывает", 300, (node, mode) =>
-    levelChart(node, mode, [["securities", "Ценные бумаги и кредиты (в осн. ОФЗ)", "#5b8def"], ["guarantees", "Госгарантии", "#f5c542"]], gd, { unit: "трлн ₽", div: 1000, dg: 1, kind: "stack" }),
+    mode === "abs" && FREQ !== "year" ? renderDebtWithInterest(node, gd, bud) : levelChart(node, mode, [["securities", "Ценные бумаги и кредиты (в осн. ОФЗ)", "#5b8def"], ["guarantees", "Госгарантии", "#f5c542"]], gd, { unit: "трлн ₽", div: 1000, dg: 1, kind: "stack" }),
     { agg: "last", modes: ["abs", "yoy", "gdp", "share"] });
   const _nwf = d.nwf || {};
   if ((_nwf.volume || []).length) C("budget", "Фонд национального благосостояния (ФНБ)", "подушка бюджета · Минфин", 290, (node, mode) => mode === "gdp"
@@ -6940,7 +7132,7 @@ async function renderMovers(v) {
       <td style="text-align:left"><span class="link">${r.name}</span><div class="isin muted" style="font-size:10px;font-family:var(--mono)">${r.isin}</div></td>
       <td>${ratingPill(r)}</td>
       <td>${r.kind === "floater" ? `<b>${pct(r.current_yield)}</b><div class="muted" style="font-size:9px">тек.дох.</div>`
-        : (r.ytm != null && (r.ytm > 60 || r.noncomparable)) ? `<span class="muted" title="Доходность ${pct(r.ytm)} — цена далеко ниже номинала (дефолт/дистресс): как доходность не сопоставима">дистресс</span>` : `<b>${pct(r.ytm)}</b>`}</td>
+        : (r.ytm != null && (r.ytm > 60 || r.noncomparable)) ? `<span class="muted" title="Доходность ${pct(r.ytm)} — цена далеко ниже номинала (дефолт/дистресс): как доходность не сопоставима">дистресс</span>` : `<b>${checkedYieldLabel(r)}</b>`}</td>
       <td>${turn(r.volume_today ?? r.volume)}</td>
       <td>${valFn(r)}</td></tr>`).join("");
     const t = el(`<div class="tbl-wrap panel" style="max-height:560px;overflow-y:auto"><table><thead><tr><th style="text-align:left">Выпуск</th><th>Рейтинг</th><th>Доходность</th><th>Оборот</th><th>${valCol}</th></tr></thead><tbody>${body}</tbody></table></div>`);
@@ -7211,13 +7403,23 @@ async function renderSandbox(v) {
     cell.querySelector("input").oninput = window.BondsMobile?.isPhone() ? e => phoneDraft(e.target,'meetings',i) : debounce(e => { const rate = parseFloat(e.target.value); if (Number.isFinite(rate) && rate >= 0) { SANDBOX.ratePath[i].rate = rate; render(); } }, 500);
     ratesBox.appendChild(cell);
   });
+  const ruoniaOffset = 0.2; // percentage points, same basis as floater_scenario_ytm
+  const keyRateData = SANDBOX.ratePath.map(({ date, rate }) => [date, rate]);
+  const ruoniaData = SANDBOX.ratePath.map(({ date, rate }) => [date, rate - ruoniaOffset]);
   mkChart(rp.querySelector("#sb-rate-chart"), {
     ...CHART_BG,
+    legend: { top: 0, textStyle: { color: AXIS_TXT } },
     tooltip: { trigger: "axis", valueFormatter: v => pct(v) },
-    grid: { left: 44, right: 16, top: 12, bottom: 24 },
+    grid: { left: 44, right: 16, top: 38, bottom: 24 },
     xAxis: { type: "time", ...AX },
-    yAxis: { type: "value", name: "ставка ЦБ, %", scale: true, ...AX },
-    series: [{ type: "line", step: "end", symbol: "none", data: SANDBOX.ratePath.map(p => [p.date, p.rate]), lineStyle: { width: 2.5, color: "#8b7bff" }, areaStyle: { color: "rgba(139,123,255,.12)" } }],
+    yAxis: { type: "value", name: "ставка, %", scale: true, ...AX },
+    series: [
+      { name: "Ключевая ставка", type: "line", step: "end", symbol: "none", data: keyRateData,
+        itemStyle: { color: "#8b7bff" }, lineStyle: { width: 2.5 },
+        areaStyle: { color: "rgba(139,123,255,.12)" } },
+      { name: "RUONIA (КС − 0,2 п.п.)", type: "line", step: "end", symbol: "none", data: ruoniaData,
+        itemStyle: { color: "#b08740" }, lineStyle: { width: 2, type: "dashed" } },
+    ],
   });
 
   // ---- bond set: screener-style rows ----
@@ -7269,9 +7471,10 @@ async function renderSandbox(v) {
       let sc = SANDBOX._sc[ck];
       if (sc === undefined) {
         sc = await fetch(`${API}/api/model/floater_scenario`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ isin, price: b.price, rate_path: SANDBOX.ratePath }) }).then(x => x.json()).catch(() => null);
-        SANDBOX._sc[ck] = sc;
+        if (sc?.ytm != null) SANDBOX._sc[ck] = sc;
       }
       b.scenario_ytm = sc && sc.ytm != null ? sc.ytm : null;
+      b.scenario_source = sc?.projection_source;
       b.scenario_duration = sc && sc.duration != null ? sc.duration : null;
       b.scenario_gspread = sc && sc.gspread != null ? sc.gspread : null;
       b.scenario_ofz = sc && sc.ofz != null ? sc.ofz : null;
@@ -7327,7 +7530,7 @@ async function renderSandbox(v) {
     <td>${ratingPill(b)}</td>
     <td><span class="badge ${b.kind}">${KIND_RU[b.kind] || "—"}</span></td>
     <td>${pct(b.price, 2)}</td>
-    <td><b>${pct(yOf(b))}</b>${yieldBasisBadge(b)}${b.kind === "floater" ? '<div class="muted" style="font-size:9px">сценарий</div>' : ""}</td>
+    <td><b>${pct(yOf(b))}</b>${b.kind === "floater" ? '<div class="muted" style="font-size:9px">' + (b.scenario_source === "ruonia_key_rate_basis" ? "RUONIA = КС − 0,2 п.п." : "сценарий") + '</div>' : ""}</td>
     <td>${fmt(durOf(b), 2)}</td>
     <td class="${spreadCls(b.kind === "floater" ? b.scenario_gspread : b.g_spread_bp)}">${bp(b.kind === "floater" ? b.scenario_gspread : b.g_spread_bp)}</td>
     <td>${dmy(b.matdate)}</td>
@@ -7352,15 +7555,15 @@ async function renderSandbox(v) {
     <div class="chips" id="sb-metric" style="margin-bottom:8px">
       ${SB_METRICS.map(([k, l]) => `<span class="chip ${SANDBOX.metric === k ? "on" : ""}" data-m="${k}">${l}</span>`).join("")}</div>
     <div class="muted" style="font-size:12px;margin:2px 0 10px 2px">
-      <span style="color:#1fe0a0;font-size:14px">●</span> фикс &nbsp;·&nbsp; <span style="color:#f5b13c;font-size:14px">●</span> флоатер — сценарный YTM по прогнозу ставки</div>
+      <span style="color:#1fe0a0;font-size:14px">●</span> фикс &nbsp;·&nbsp; <span style="color:#f5b13c;font-size:14px">●</span> флоатер — прогноз по графику ключевой ставки; RUONIA = КС − 0,2 п.п.</div>
     <div class="chart tall" id="sb-chart"></div></div>`);
   v.appendChild(chartPanel);
   chartPanel.querySelectorAll("#sb-metric .chip").forEach(c => c.onclick = () => { SANDBOX.metric = c.dataset.m; render(); });
   const mOf = b => sbMetricOf(b, SANDBOX.metric);
-  const pts = bonds.filter(b => durOf(b) != null && mOf(b) != null).map(b => ({ value: [durOf(b), mOf(b)], name: b.name, isin: b.isin, kind: b.kind, ytm: b.ytm, yield_limitation: b.yield_limitation, yield_conditional_on_call: b.yield_conditional_on_call, itemStyle: { color: b.kind === "floater" ? "#f5b13c" : "#1fe0a0" } }));
+  const pts = bonds.filter(b => durOf(b) != null && mOf(b) != null).map(b => ({ value: [durOf(b), mOf(b)], name: b.name, isin: b.isin, kind: b.kind, projectionSource: b.scenario_source, itemStyle: { color: b.kind === "floater" ? "#f5b13c" : "#1fe0a0" } }));
   mkChart(chartPanel.querySelector("#sb-chart"), {
     ...CHART_BG,
-    tooltip: { trigger: "item", formatter: p => `<b>${p.data.name}</b><br>дюр ${fmt(p.value[0], 2)}г · ${metricLabel(SANDBOX.metric).split(",")[0]}: <b>${isYield ? pct(p.value[1]) : bp(p.value[1])}</b>${yieldBasisBadge(p.data)}${p.data.kind === "floater" && isYield ? " (сценарий)" : ""}` },
+    tooltip: { trigger: "item", formatter: p => `<b>${p.data.name}</b><br>дюр ${fmt(p.value[0], 2)}г · ${metricLabel(SANDBOX.metric).split(",")[0]}: <b>${isYield ? pct(p.value[1]) : bp(p.value[1])}</b>${p.data.kind === "floater" && isYield ? (p.data.projectionSource === "ruonia_key_rate_basis" ? " (RUONIA = КС − 0,2 п.п.)" : " (сценарий КС)") : ""}` },
     grid: { left: 64, right: 28, top: 44, bottom: 46 },
     xAxis: { type: "value", name: "Дюрация, лет", nameLocation: "middle", nameGap: 30, min: 0, scale: true, ...AX },
     yAxis: { type: "value", name: metricLabel(SANDBOX.metric), nameLocation: "end", nameGap: 14, nameTextStyle: { align: "right", padding: [0, 8, 0, 0] }, scale: true, ...AX },
@@ -7627,9 +7830,18 @@ async function renderIssuerPage(v) {
     window.BondsMobile?.compactChartText(redHost);
     if (!keys.length) return;
     const labels = keys.map(plabel);
-    mkChart(redHost.querySelector("#ip-redemption"), {
+    const redChart = redHost.querySelector("#ip-redemption");
+    const tipWidth = Math.max(1, Math.min(360, redChart.clientWidth - 24));
+    const tipHeight = Math.max(1, Math.min(240, redChart.clientHeight - 24));
+    mkChart(redChart, {
       ...CHART_BG,
-      tooltip: { trigger: "axis", axisPointer: { type: "shadow" }, formatter: ps => {
+      tooltip: { trigger: "axis", confine: true, enterable: true,
+        extraCssText: `border-radius:10px;box-shadow:0 10px 30px -8px rgba(0,0,0,.35);width:${tipWidth}px;max-height:${tipHeight}px;box-sizing:border-box;white-space:normal;overflow-wrap:anywhere;overflow-y:auto;`,
+        position: (point, params, dom, rect, size) => {
+          const [w, h] = size.contentSize, [vw, vh] = size.viewSize, gap = 8;
+          const x = point[0] + w + gap <= vw ? point[0] + gap : point[0] - w - gap;
+          return [Math.max(gap, Math.min(x, vw - w - gap)), Math.max(gap, Math.min(point[1] - h / 2, vh - h - gap))];
+        }, axisPointer: { type: "shadow" }, formatter: ps => {
         if (!ps || !ps.length) return "";
         const i = ps[0].dataIndex, bk = buckets[keys[i]];
         let t = `<div style="font-weight:600;margin-bottom:2px">${labels[i]}</div>`;
@@ -7637,7 +7849,7 @@ async function renderIssuerPage(v) {
         t += `<div style="border-top:1px solid rgba(255,255,255,.15);margin-top:2px;padding-top:2px">Всего: <b>${volFmt(bk.fix + bk.fl + bk.am + bk.cp + bk.cpp)}</b></div>`;
         t += `<div style="margin-top:4px;font-size:11px;line-height:1.5">${bk.items.slice().sort((a, b) => a.date < b.date ? -1 : 1).map(x => `<b>${escA(x.name)}</b> · ${dmy(x.date)} · ${TYPE[x.type] || ""}${x.type === "amort" && x.pct ? " " + fmt(x.pct, 1) + "% номинала" : ""} · ${volFmt(x.amount)}${x.rescaled ? ' <span style="opacity:.7">(пересчёт на текущий номинал)</span>' : ""}`).join("<br>")}</div>`;
         const cps = Object.entries(bk.cps).sort((a, b) => b[1].amount - a[1].amount);
-        if (cps.length) t += `<div style="margin-top:4px;font-size:11px;line-height:1.5;opacity:.9">купоны: ${cps.slice(0, 8).map(([n, c]) => `${escA(n)} ${volFmt(c.amount)}${c.projected ? " (прогноз)" : ""}`).join(" · ")}${cps.length > 8 ? ` · ещё ${cps.length - 8}` : ""}</div>`;
+        if (cps.length) t += `<div style="margin-top:6px;font-size:11px;line-height:1.5"><b>Купоны</b>${cps.map(([n, c]) => `<div style="margin-top:3px">${escA(n)}: <b>${volFmt(c.amount)}</b>${c.projected ? " (прогноз)" : ""}</div>`).join("")}</div>`;
         return t;
       } },
       legend: { top: 4, right: 10, textStyle: { color: cssVar("--muted", "#8aa"), fontSize: 11 }, itemWidth: 14, itemHeight: 8 },
@@ -7706,7 +7918,8 @@ async function renderIssue(v) {
   const backLabel = prevTab === "issuer" ? "← Назад к эмитенту" : "← Назад к скринеру";
   v.appendChild(el(`<div class="toolbar"><button class="btn ghost" id="i-back">${backLabel}</button>
     <button class="btn ghost" id="i-watch" style="font-size:13px">${WATCH.has(isin) ? "★ В избранном" : "☆ В избранное"}</button>
-    <span class="muted" style="font-family:var(--mono)">${isin}</span></div>`));
+    <span class="muted" style="font-family:var(--mono)">${isin}</span>
+    <a class="btn ghost" href="?view=marketmap&isin=${encodeURIComponent(isin)}">Карта рынка</a></div>`));
   v.querySelector("#i-back").onclick = goBack;
   v.querySelector("#i-watch").onclick = e => { toggleWatch(isin); e.target.textContent = WATCH.has(isin) ? "★ В избранном" : "☆ В избранное"; };
   const host = el(`<div id="i-body"><div class="loading">Загружаю выпуск…</div></div>`);
@@ -7736,7 +7949,7 @@ async function renderIssue(v) {
       <div class="kpi"><div class="label">${isFloat ? "Ориентир: индекс + спред" : (d.ytm_basis === "offer" ? `YTM · к ${d.offer_type === "CALL" ? "колл-опциону" : "оферте"} ${dmy(d.offer_date)}${d.offer_soon_days != null ? ` (ближайшая дата через ${d.offer_soon_days} дн. не учитывается — слишком близко)` : ""}`
           : d.ytm_basis === "mbs" ? "YTM · с учётом досрочных погашений (модель биржи)"
           : d.offer_soon_days != null ? `YTM · к погашению: ближайшая оферта или колл через ${d.offer_soon_days} дн. не учитывается — слишком близко`
-          : (d.ytm_to_maturity || d.offer_date ? "YTM · к погашению" : "YTM"))}${d.ruble_basis ? ", " + d.currency : ""}</div><div class="value">${pct(isFloat ? flCoupon(d) : d.ytm)}${yieldBasisBadge(d)}</div><div class="sub">${isFloat ? `${flIndex(d)} + ${fmt(d.float_add != null ? d.float_add : (d.float_qm || 0), 2)}%${d.couponpercent != null ? ` · текущий купон ${pct(d.couponpercent)}` : ""}` : ""}<span id="i-ytm-ba" style="display:block"></span></div></div>
+          : (d.ytm_to_maturity || d.offer_date ? "YTM · к погашению" : "YTM"))}${d.ruble_basis ? ", " + d.currency : ""}</div><div class="value">${pct(isFloat ? flCoupon(d) : d.ytm)}${yieldBasisBadge(d)}</div><div class="sub">${isFloat ? `${flIndex(d)} + ${fmt(d.float_add != null ? d.float_add : (d.float_qm || 0), 2)}%${d.couponpercent != null ? ` · текущий купон ${pct(d.couponpercent)}` : ""}` : ""}${d.yield_limitation === "offer_accrual_unconfirmed_excluded" ? "Нижняя оценка: без неизвестного НКД между купоном и выкупом" : ""}<span id="i-ytm-ba" style="display:block"></span></div></div>
       <div class="kpi"><div class="label">Цена</div><div class="value">${pct(d.price, 2)}</div><div class="sub"><div id="i-price-ba"></div></div></div>
       ${isFloat
         ? `<div class="kpi">${kpiQ("Simple margin / DM к ОФЗ",
@@ -8372,3 +8585,9 @@ function refreshVisibleIndicesIfDue() {
 setInterval(refreshVisibleIndicesIfDue, 60000);
 document.addEventListener('visibilitychange', refreshVisibleIndicesIfDue);
 watchIssueHover();
+
+function checkedYieldLabel(row) {
+  const value = pct(row.ytm);
+  return row.ytm != null && row.yield_limitation === "offer_accrual_unconfirmed_excluded"
+    ? `<span title="Нижняя оценка: неизвестный НКД между купоном и PUT-выкупом не включён">≥ ${value}</span>` : value;
+}
