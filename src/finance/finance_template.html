@@ -433,7 +433,7 @@ html.sc-lock,html.sc-lock body{overflow:hidden}
 .results{padding-top:24px;max-width:760px}
 .hit{display:block;padding:16px 0;border-top:1px solid var(--line);text-decoration:none}
 .hit:last-child{border-bottom:1px solid var(--line)}
-.tcard{padding:16px 16px;margin:0 0 10px;border:1px solid var(--line);border-radius:12px;background:var(--surface)}.tcard p{color:var(--fg)}
+.tcard .tf{margin:.7em 0 .5em;font-size:15px;white-space:pre-wrap}.tcard .fw{font-size:13.5px;color:var(--muted);margin:.2em 0 0}.tcard .fw span{font-weight:600;color:var(--accent);margin-right:.3em}a.tcard{display:block;text-decoration:none;color:inherit}.tcard{padding:16px 16px;margin:0 0 10px;border:1px solid var(--line);border-radius:12px;background:var(--surface)}.tcard p{color:var(--fg)}
 .hit small{font:500 11.5px/1.2 var(--sans);letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
 .hit b{display:block;margin:6px 0 4px;font:600 18px/1.3 var(--serif)}
 .hit p{margin:0;font:400 14.5px/1.55 var(--sans);color:var(--muted)}
@@ -858,10 +858,15 @@ function leadOf(l){return lc(l.replace(/^[\s|>*#\-–—\d.)(]+/,'').replace(/\*
 function secsOf(c){
   if(c.secs)return c.secs;
   var secs=[],cur={h:c.title,t:[c.short||''],intro:1},code=false,gl=c.id==='glossariy';
+  var fcode=false;
   c.md.split('\n').forEach(function(l){
-    if(/^```/.test(l))code=!code;
+    if(/^```/.test(l)){
+      if(!code&&/^```f\s*$/.test(l)&&!cur.fm){fcode=true;cur.fm=[]}else if(code){fcode=false}
+      code=!code;return}
+    if(fcode){cur.fm.push(l);return}
     var m=!code&&l.match(/^#{2,3}\s+(.*)/);
     if(m){secs.push(cur);cur={h:m[1].replace(/[*`]/g,'').trim(),t:[]};return}
+    if(!code&&!cur.p1&&l.trim()&&!/^[|>#<\-*\d]/.test(l.trim())&&l.trim().length>40)cur.p1=l.replace(/\*\*/g,'').replace(/<[^>]+>/g,'').trim();
     var r=gl&&l.match(/^\|\s*\*\*(.+?)\*\*\s*\|/);
     if(r){secs.push(cur);cur={h:r[1].trim(),t:[l],term:1};return}
     cur.t.push(l)});
@@ -869,7 +874,7 @@ function secsOf(c){
   secs.forEach(function(x){
     x.lead=x.t.map(leadOf).filter(Boolean);
     x.text=x.t.join(' ').replace(/<[^>]+>/g,' ').replace(/\*\*/g,'').replace(/[#>|`]/g,' ').replace(/\s+/g,' ').trim();
-    x.low=lc(x.text);x.nz=nzf(x.text);x.hlow=lc(x.h);x.weak=/^(проверь себя|что почитать|типичные ошибки|как это спрашивают)/i.test(x.h);x.t=null});
+    x.low=lc(x.text);x.nz=nzf(x.text);x.hlow=lc(x.h);x.fmT=x.fm?x.fm.join('\n').trim():'';x.weak=/^(проверь себя|что почитать|типичные ошибки|как это спрашивают|ещё вопросы|вопросы|итог|коротко)/i.test(x.h);x.t=null});
   return c.secs=secs}
 function hl(el,q,hs){
   if(!el)return;var re=qrx(q,false),rg=qrx(q,true),w=document.createTreeWalker(el,NodeFilter.SHOW_TEXT),n,list=[];
@@ -880,7 +885,16 @@ function hl(el,q,hs){
     if(hd){m=ms.filter(function(x){return hd.compareDocumentPosition(x)&Node.DOCUMENT_POSITION_FOLLOWING})[0]||m;if(!m){setTimeout(function(){hd.scrollIntoView({block:'start'})},50);return}}}
   if(m){var d=m.closest('details');if(d)d.open=true;m.classList.add('pulse');setTimeout(function(){m.scrollIntoView({block:'center'})},50)}
 }
+var QW=/^(?:что\s+такое|что\s+означает|что\s+значит|что\s+за|как\s+(?:посчитать|рассчитать|считается|считать|найти|определить|вычислить)|как\s+работает|формула|формулу|расчёт|расчет|зачем\s+нужн\w+|для\s+чего\s+нужн\w+|объясни|расскажи\s+про|определение|понятие)\s+/i;
+function qClean(q){var t=q.trim().replace(/[?!.]+$/,'').trim(),n=0;while(QW.test(t)&&n++<2)t=t.replace(QW,'').trim();return t}
 function termCards(q,trx){
+  var c0=qClean(q);
+  if(c0.length>=2&&c0!==q.trim()){var r0=termCards1(c0,trx);if(r0.length)return r0}
+  var r1=termCards1(q,trx);if(r1.length)return r1;
+  var parts=c0.split(/\s+(?:и|или|vs|против|versus|отличие\s+от|отличается\s+от)\s+/i).map(function(z){return z.replace(/^(?:разница|отличие|чем\s+отличается|сравни)\s+/i,'').trim()}).filter(function(z){return z.length>=2});
+  if(parts.length>=2){var o=[];parts.slice(0,2).forEach(function(z){var r=termCards1(z,trx);if(r.length&&o.indexOf(r[0])<0)o.push(r[0])});if(o.length)return o}
+  return[]}
+function termCards1(q,trx){
   var qq=q.trim(),ql=lc(qq),out=[];if(qq.length<2)return out;
   TT.forEach(function(x){
     var ok=false,ex=false;
@@ -933,6 +947,7 @@ function core(q,tr){
   return {res:res,chs:chs,f:f,cards:f?[]:termCards(q,trx)}
 }
 function renderSearch(q){
+  var qOrig=q,qcl=qClean(q);if(qcl.length>=2)q=qcl;
   var R=core(q),qe=q,note='';
   if(cyr(q)&&R.cards.length===0){
     var q2=layoutFix(q);
@@ -942,7 +957,13 @@ function renderSearch(q){
   var res=R.res,chs=R.chs,f=R.f,q0=q;q=qe;
   var per={},rr=[];res.forEach(function(r){per[r.c.id]=(per[r.c.id]||0)+1;if(per[r.c.id]<=4&&rr.length<60)rr.push(r)});
   var total=res.length,cards=R.cards;
-  var cardsH=cards.map(function(x){return '<div class="hit tcard"><small>Определение</small><b>'+esc(x.t)+'</b><p>'+esc(x.d)+'</p></div>'}).join('');
+  var cardsH=cards.map(function(x){return '<div class="hit tcard"><small>Определение</small><b>'+esc(x.t)+'</b><p>'+esc(x.d)+'</p>'+(x.f?'<div class="f tf">'+esc(x.f)+'</div>'+(x.w?'<p class="fw"><span>где</span> '+esc(x.w)+'</p>':''):'')+'</div>'}).join('');
+  if(!cards.length&&rr.length&&(f===false||!f)){
+    var qs=qOrig.trim()!==q0.trim()||/\?\s*$/.test(qOrig)||q0.trim().split(/\s+/).length>=2;
+    var top=rr.filter(function(r){return !r.x.weak&&!r.x.term})[0];
+    if(qs&&top&&(top.x.p1||top.x.fmT)){
+      var ti=top.x.intro,tp=top.x.p1||top.x.text.slice(0,260);
+      cardsH='<a class="hit tcard" href="'+(top.c.sec?'#learn/sektor/':'#learn/')+top.c.id+'" data-hl="1" data-hs="'+esc(ti?'':top.x.h)+'"><small>Из учебника · '+esc(top.c.title)+'</small><b>'+esc(ti?top.c.title:top.x.h)+'</b><p>'+esc(tp.length>420?tp.slice(0,420).replace(/\s+\S*$/,'')+'…':tp)+'</p>'+(top.x.fmT?'<div class="f tf">'+esc(top.x.fmT)+'</div>':'')+'<p class="fw"><span>Открыть раздел →</span></p></a>'}}
   view.innerHTML='<section class="results"><p class="eyebrow">Поиск</p>'+(note?'<p class="note">'+esc(note)+'</p>':'')+cardsH+(total?'<p class="note">Найдено мест: '+total+' · глав: '+chs.size+(total>rr.length?' · показаны лучшие '+rr.length:'')+'</p>'+rr.map(function(r,ix){
     var m=qrx(q,false).exec(r.x.text),i=m?m.index:0,sn=r.x.text.slice(Math.max(0,i-70),i+170);
     var isI=r.x.intro;

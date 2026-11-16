@@ -102,13 +102,41 @@ def glossary_terms(md):
             out.append((pats, title, mean))
     return out
 
+def _plain(h):
+    h = re.sub(r'<br\s*/?>', '\n', h)
+    h = re.sub(r'<[^>]+>', '', h)
+    return h.replace('&lt;', '<').replace('&gt;', '>').replace('&amp;', '&').strip()
+
+def glossary_formulas(md):
+    """ключ (термин, расшифровка, псевдонимы в нижнем регистре) → (формула, пояснение обозначений)"""
+    mp = {}
+    for line in md.split('\n'):
+        if not line.startswith('| **'): continue
+        cells = [c.strip() for c in line.strip('|').split('|')]
+        if len(cells) < 4 or '<code>' not in cells[3]: continue
+        codes = re.findall(r'<code>(.*?)</code>', cells[3], re.S)
+        f = '\n'.join(_plain(c) for c in codes).replace(';  ', '\n').replace('; ', '\n')
+        m = re.search(r'<span class="fx">(.*?)</span>', cells[3], re.S)
+        w = _plain(m.group(1)) if m else ''
+        w = re.sub(r'^где:\s*', '', w)
+        term = cells[0].replace('**', '').strip()
+        keys = {term.lower(), cells[1].split(' (')[0].strip().lower()} | {a.strip().lower() for a in re.split(r'\s+/\s+|,\s*', term)}
+        for k in keys:
+            if k: mp.setdefault(k, (f, w))
+    return mp
+
 def build(glossary_md):
     seen = set(); terms = []
+    gf = glossary_formulas(glossary_md)
     for pats, title, d in RICH + EXTRA + glossary_terms(glossary_md):
         key = pats[0].lower()
         if key in seen: continue
         seen.add(key)
-        terms.append({'p': pats, 't': enrich(title, OVR), 'd': d})
+        t = {'p': pats, 't': enrich(title, OVR), 'd': d}
+        head = re.split(r'\s+[—(]', title)[0].strip().lower()
+        hit = gf.get(head) or gf.get(title.split(' — ')[-1].split(' (')[0].strip().lower())
+        if hit: t['f'], t['w'] = hit[0], hit[1]
+        terms.append(t)
     import json, os
     mp = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'terms_more.json')
     if os.path.exists(mp):
