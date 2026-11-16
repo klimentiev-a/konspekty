@@ -17,6 +17,7 @@
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--fg);font:400 16px/1.5 'IBM Plex Sans',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;-webkit-font-smoothing:antialiased}
 .wrap{max-width:1100px;margin:0 auto;padding:16px 16px 80px}
+body.embed header{display:none}body.embed .wrap{padding:6px 0 24px;max-width:none}
 header{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:10px}
 header a.back{color:var(--muted);text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-size:14px}
 h1{font-size:22px;margin:0;line-height:1.2}
@@ -62,7 +63,8 @@ ul.pl li{margin:4px 0}
 <nav class="tabs" id="tabs"></nav>
 <div id="view"></div>
 </div>
-<script src="fin2/research-echarts.js?v=360"></script>
+<script>if(/[?&]embed=1/.test(location.search)||window.top!==window)document.documentElement.className+=" embed";document.addEventListener("DOMContentLoaded",function(){if(document.documentElement.classList.contains("embed"))document.body.classList.add("embed")})</script>
+<script src="fin2/research-echarts.js?v=361"></script>
 <script>
 (function(){
 "use strict";
@@ -233,6 +235,8 @@ function render(){
 $("#tabs").onclick=function(ev){var b=ev.target.closest("button[data-t]");if(!b)return;tab=b.dataset.t;history.replaceState(null,"","#"+tab);render();window.scrollTo(0,0)};
 var h=(location.hash||"").slice(1);if(V[h])tab=h;
 if(window.MutationObserver)new MutationObserver(function(){setTimeout(draw,0)}).observe(document.documentElement,{attributes:true,attributeFilter:["data-theme","data-skin"]});
+function postH(){if(window.top===window)return;try{window.parent.postMessage({f2h:document.documentElement.scrollHeight},location.origin)}catch(e){}}
+if(window.ResizeObserver)new ResizeObserver(postH).observe(document.body);window.addEventListener("load",postH);
 window.addEventListener("hashchange",function(){var x=(location.hash||"").slice(1);if(V[x]&&x!==tab){tab=x;render()}});
 render();
 })();

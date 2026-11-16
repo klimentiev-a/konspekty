@@ -3,7 +3,7 @@
 "use strict";
 (function () {
   const F2 = window.FIN2 = window.FIN2 || {};
-  const KNOWN = ["screener", "marketmap", "movers", "ideas", "sandbox", "placements", "auctions", "macro", "indices", "issuers"];
+  const KNOWN = ["screener", "marketmap", "movers", "ideas", "sandbox", "placements", "auctions", "macro", "indices", "issuers", "issuers2"];
   // вкладка из адреса: fin2/index.html#auctions, #issue=RU000A… (карточка выпуска), #issuer=… (эмитент)
   function applyHash() {
     const h = (location.hash || "").slice(1);
@@ -33,10 +33,37 @@
     const orig = window.render;
     window.render = function () { const r = orig.apply(this, arguments); syncHash(); return r; };
   }
+  // Вкладка «Аналитика эмитентов 2»: наша страница ../emitent.html внутри Облигаций (iframe).
+  // app.js не правим: добавляем пункт в SECTIONS и подменяем _renderInner для этой вкладки.
+  function addIssuers2() {
+    if (typeof SECTIONS === "undefined" || typeof _renderInner !== "function") return false;
+    const tabs = (SECTIONS.find(s => s[0] === "analytics") || [])[2];
+    if (!tabs) return false;
+    if (!tabs.some(t => t[0] === "issuers2")) {
+      const i = tabs.findIndex(t => t[0] === "issuers");
+      tabs.splice(i < 0 ? tabs.length : i + 1, 0, ["issuers2", "Аналитика эмитентов 2"]);
+      TAB_SECTION["issuers2"] = "analytics";
+      ANALYTICS_TABS.add("issuers2");
+      const inner = window._renderInner;
+      window._renderInner = function () {
+        if (TAB !== "issuers2") return inner.apply(this, arguments);
+        if (typeof disposeCharts === "function") disposeCharts();
+        const v = document.getElementById("view");
+        v.innerHTML = '<iframe id="f2-emitent" title="Аналитика эмитентов 2" src="../emitent.html?embed=1' + (location.hash.indexOf("issuers2") < 0 ? "" : "") + '#overview" style="width:100%;height:900px;border:0;display:block" loading="eager"></iframe>';
+      };
+      if (typeof renderTabs === "function") renderTabs();
+    }
+    return true;
+  }
+  window.addEventListener("message", e => {
+    if (e.origin !== location.origin || !e.data || typeof e.data.f2h !== "number") return;
+    const fr = document.getElementById("f2-emitent");
+    if (fr) fr.style.height = Math.max(500, Math.ceil(e.data.f2h) + 8) + "px";
+  });
   document.addEventListener("DOMContentLoaded", () => {
     // app.js объявлен позже (defer): ждём, пока появится render/boot
     const t = setInterval(() => {
-      if (typeof window.render === "function") { clearInterval(t); wrapRender(); if (applyHash()) { /* вкладка из адреса */ } }
+      if (typeof window.render === "function") { clearInterval(t); wrapRender(); addIssuers2(); if (applyHash()) { /* вкладка из адреса */ } }
     }, 50);
     setTimeout(() => clearInterval(t), 10000);
   });
