@@ -4,7 +4,7 @@
 <meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="Финансы">
 <link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="favicon.svg?v=31" type="image/svg+xml"><link rel="icon" href="icon-192.png?v=31" sizes="192x192"><link rel="apple-touch-icon" href="apple-touch-icon.png?v=31">
 <title>Финансы</title>
-<script>/* тема до первой отрисовки: без вспышки светлого фона и без плавной смены на старте */(function(){try{var d=document.documentElement,v=localStorage.getItem('fin:skin')||localStorage.getItem('theme')||'auto',T={ocean:'light',dark:'dark',light:'light',graphite:'dark',news:'dark'};if(!T[v])return;if(v==='ocean'||v==='graphite'||v==='news')d.setAttribute('data-skin',v);d.setAttribute('data-theme',T[v])}catch(e){}})()</script>
+<script>/* тема до первой отрисовки: без вспышки светлого фона и без плавной смены на старте */(function(){try{var d=document.documentElement,v=localStorage.getItem('fin:skin')||localStorage.getItem('theme')||'auto',T={dark:'dark',light:'light',graphite:'dark',news:'dark'};if(!T[v])return;if(v==='graphite'||v==='news')d.setAttribute('data-skin',v);d.setAttribute('data-theme',T[v])}catch(e){}})()</script>
 <script>(function(){
 var Z=[0.8,0.9,1,1.1,1.2,1.3,1.45,1.6];
 function g(){try{if(!localStorage.getItem('siteZoomLocal')){localStorage.removeItem('siteZoom');localStorage.setItem('siteZoomLocal','1')}var v=parseFloat(localStorage.getItem('siteZoom'));return v>0?v:1}catch(e){return 1}}
@@ -148,7 +148,6 @@ document.addEventListener('DOMContentLoaded',function(){var v=g();document.query
   --bg:#171611;--rail:#1D1C16;--surface:#22211A;--fg:#E8E4D8;--muted:#A39D8E;--faint:#7A7466;
   --line:#33312A;--line2:#292820;--accent:#5FC2A3;--accent2:#E8886B;--mark:#5B4A17;--up:#4CC17E;--down:#F07167;color-scheme:dark}
 /* оформления: data-skin (плюс data-theme=light|dark, чтобы карта и графики брали нужную палитру) */
-:root[data-skin="ocean"]{--bg:#E9F0F6;--rail:#DCE7F0;--surface:#F7FAFD;--fg:#14283A;--muted:#4B6277;--faint:#7289A0;--line:#C5D4E1;--line2:#D6E1EB;--accent:#1A5FA8;--accent2:#C2561F;--mark:#FFE08A;--up:#1B7A47;--down:#B3261E}
 :root[data-skin="graphite"]{--bg:#15171B;--rail:#1B1E23;--surface:#1F2227;--fg:#E6E8EC;--muted:#9AA1AD;--faint:#6F7683;--line:#2E3239;--line2:#262A30;--accent:#7BA7F5;--accent2:#F2A65A;--mark:#3C4A66;--up:#4FC27F;--down:#F07167}
 :root[data-skin="news"]{--bg:#161512;--rail:#1C1B17;--surface:#201F1A;--fg:#EAE3D2;--muted:#B3AA96;--faint:#847C6A;--line:#3A372E;--line2:#2C2A23;--accent:#E0483B;--accent2:#D8B25A;--mark:#5A4A1C;--up:#86C783;--down:#E0483B;--sans:var(--serif)}
 /* «Медь», «Бумага», «Институт» (19.11, Артём: оформление дешёвое): три новых оформления раздела Финансы */
@@ -822,7 +821,7 @@ view.addEventListener('focusin',function(e){var i=e.target;if(i.classList&&i.cla
 var root=document.documentElement,POLAPP=false;   // politika.html: та же сборка, но только политическая карта
 function applyTheme(t){if(t)root.setAttribute('data-theme',t);else root.removeAttribute('data-theme')}
 /* оформление раздела: store('fin:skin') = '' (системное) | 'light' | 'dark' | id из SKINS */
-var SKINS=[['auto','Как в системе','#F4F1E8','#1F6B57',''],['ocean','Океан','#E9F0F6','#1A5FA8','light'],
+var SKINS=[['auto','Как в системе','#F4F1E8','#1F6B57',''],
   ['dark','Ночь','#171611','#5FC2A3','dark'],['graphite','Графит','#15171B','#7BA7F5','dark'],['news','Газета','#161512','#E0483B','dark'],
   ['copper','Ночь и медь','#0C0D10','#D9954F','dark'],['paper','Бумага и чернила','#F7F4EE','#1F5C4A','light'],['inst','Институт','#F2F4F8','#14213D','light'],['terminal','Терминал','#0E0F11','#FFB347','dark'],['glass','Стекло','#0A0B1E','#A5B4FC','dark']];
 function applySkin(id,quiet){
@@ -840,7 +839,7 @@ function skinMenu(open){
   if(!open){if(m)m.remove();return}
   if(m){m.remove();return}
   var cur=skinGet();m=document.createElement('div');m.id='thm';m.className='thm';m.setAttribute('role','menu');
-  m.innerHTML='<p>Оформление</p>'+SKINS.map(function(x,i){return (i===1||i===3||i===5?'<div class="sep"></div>':'')+'<button type="button" role="menuitemradio" aria-checked="'+(x[0]===cur)+'" class="'+(x[0]===cur?'on':'')+'" data-skin="'+x[0]+'"><span class="skw" style="background:'+x[2]+'"><i style="background:'+x[3]+'"></i></span>'+x[1]+'</button>'}).join('');
+  m.innerHTML='<p>Оформление</p>'+SKINS.map(function(x,i){return (i===1||i===5||i===7?'<div class="sep"></div>':'')+'<button type="button" role="menuitemradio" aria-checked="'+(x[0]===cur)+'" class="'+(x[0]===cur?'on':'')+'" data-skin="'+x[0]+'"><span class="skw" style="background:'+x[2]+'"><i style="background:'+x[3]+'"></i></span>'+x[1]+'</button>'}).join('');
   document.body.appendChild(m);
 }
 $('#b-theme').onclick=function(e){e.stopPropagation();skinMenu(true)};

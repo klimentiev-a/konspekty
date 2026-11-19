@@ -124,7 +124,6 @@ h1,.lead{animation:up .45s cubic-bezier(.2,.8,.25,1) both}.lead{animation-delay:
 .inst .go{display:flex;align-items:center;justify-content:center;margin-top:12px;height:46px;border-radius:999px;background:var(--a2);color:var(--surface);font:600 15px inherit;text-decoration:none}
 .inst .arr{position:absolute;left:50%;bottom:-16px;width:0;height:0;margin-left:-9px;border:9px solid transparent;border-top-color:var(--surface)}
 @media (min-width:700px){.inst .arr{display:none}}
-:root[data-skin="ocean"]{--bg:#E9F0F6;--surface:#F7FAFD;--fg:#14283A;--muted:#4B6277;--faint:#7289A0;--line:#C5D4E1;--a1:#1A5FA8;--a2:#C2561F;color-scheme:light}
 :root[data-skin="graphite"]{--bg:#15171B;--surface:#1F2227;--fg:#E6E8EC;--muted:#9AA1AD;--faint:#6F7683;--line:#2E3239;--a1:#7BA7F5;--a2:#F2A65A;color-scheme:dark}
 :root[data-skin="news"]{--bg:#161512;--surface:#201F1A;--fg:#EAE3D2;--muted:#B3AA96;--faint:#847C6A;--line:#3A372E;--a1:#E0483B;--a2:#D8B25A;color-scheme:dark}
 /* «Медь», «Бумага», «Институт» (19.11) */
@@ -181,7 +180,7 @@ h1{font-size:clamp(40px,8vw,68px);letter-spacing:-.035em;line-height:1}
 /* оформление начальной страницы: своё, отдельное от разделов (ключ hub:skin) */
 (function(){try{
   var d=document.documentElement,id=localStorage.getItem('hub:skin');if(!id)return;
-  var T={ocean:'light',graphite:'dark',news:'dark',dark:'dark',copper:'dark',paper:'light',inst:'light',terminal:'dark',glass:'dark'};
+  var T={graphite:'dark',news:'dark',dark:'dark',copper:'dark',paper:'light',inst:'light',terminal:'dark',glass:'dark'};
   if(!T[id])return;
   if(id==='dark')d.removeAttribute('data-skin');else d.setAttribute('data-skin',id);
   d.setAttribute('data-theme',T[id]);
@@ -801,7 +800,7 @@ if('serviceWorker' in navigator&&location.protocol==='https:')navigator.serviceW
 <script>
 /* выбор оформления начальной страницы: 9 вариантов, запоминается только здесь */
 (function(){
-  var SK=[['auto','Как в системе','#F4F1E8','#1F6B57',''],['ocean','Океан','#E9F0F6','#1A5FA8','light'],['dark','Ночь','#171611','#5FC2A3','dark'],['graphite','Графит','#15171B','#7BA7F5','dark'],['news','Газета','#161512','#E0483B','dark'],['copper','Ночь и медь','#0C0D10','#D9954F','dark'],['paper','Бумага и чернила','#F7F4EE','#1F5C4A','light'],['inst','Институт','#F2F4F8','#14213D','light'],['terminal','Терминал','#0E0F11','#FFB347','dark'],['glass','Стекло','#0A0B1E','#A5B4FC','dark']];
+  var SK=[['auto','Как в системе','#F4F1E8','#1F6B57',''],['dark','Ночь','#171611','#5FC2A3','dark'],['graphite','Графит','#15171B','#7BA7F5','dark'],['news','Газета','#161512','#E0483B','dark'],['copper','Ночь и медь','#0C0D10','#D9954F','dark'],['paper','Бумага и чернила','#F7F4EE','#1F5C4A','light'],['inst','Институт','#F2F4F8','#14213D','light'],['terminal','Терминал','#0E0F11','#FFB347','dark'],['glass','Стекло','#0A0B1E','#A5B4FC','dark']];
   var d=document.documentElement;
   function st(k,v){try{if(v===undefined)return localStorage.getItem(k);if(v===null)localStorage.removeItem(k);else localStorage.setItem(k,v)}catch(e){return null}}
   function cur(){var v=st('hub:skin');if(v)return v;return st('theme')==='dark'?'dark':'auto'}
