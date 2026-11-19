@@ -2127,7 +2127,7 @@ function fbPool(tic){var f=fbFile(tic);if(!f)return [];
   var pe=fbPeers(tic),a=((M.news&&M.news.items)||[]).filter(function(x){return !x.dup&&(x.tags||[]).some(function(t){return pe[t]})}).concat(ENEWS[f]||[]);
   a.forEach(function(x){x._n=0});return a}
 /* связь новости и движения: новость должна быть ПРО эту бумагу и не противоречить направлению (на падении не «взлетела»), а не просто иметь готовый пересказ */
-var ENTXC={NVDA:['huang','хуанг'],TSLA:['musk','маск'],META:['zuckerberg'],AAPL:['iphone'],SBER:['сбер','греф'],VTBR:['втб','костин'],YDEX:['яндекс','yandex']};
+var ENTXC={ANT:['anthropic','claude','антропик','клод'],NVDA:['huang','хуанг'],TSLA:['musk','маск'],META:['zuckerberg'],AAPL:['iphone'],SBER:['сбер','греф'],VTBR:['втб','костин'],YDEX:['яндекс','yandex']};
 var UPW=/рост|вырос|выросл|подскоч|взлет|взмыл|рекорд|превзош|повысил|повышен|одобр|сделк|прибыль выросла|surge|jump|soar|rall|climb|gain|beat|rise|rose|record|upgrad|boost|win/i,DNW=/упал|упали|падени|снизил|снижен|обвал|рухн|просел|провал|отставк|уход|расследован|иск\b|санкц|убыт|плох|слабее|plung|drop|fall|fell|slump|tumbl|slid|sink|miss|cut|resign|step down|probe|lawsuit|downgrad|warn|loss/i;
 function entRel(tic){var n=(typeof tname==='function'?String(tname(tic)||''):'').toLowerCase().replace(/[«»"()]/g,'').split(/\s+/)[0]||'',o=[];if(n.length>=6)o.push(n.slice(0,n.length>8?5:4));else if(n.length>=3)o.push(n);if(tic.length>2)o.push(tic.toLowerCase());return o.concat(ENTXC[tic]||[])}
 function relScore(x,ent,mv){var t=(x.to||x.t||'').toLowerCase(),sc=0,ix=-1;

@@ -49,7 +49,7 @@ WORLD = [
  ['NFLX','Netflix','US','Медиа'],['CRM','Salesforce','US','Софт'],['ADBE','Adobe','US','Софт'],['CSCO','Cisco','US','Телеком-оборудование'],['INTC','Intel','US','Полупроводники'],
  ['QCOM','Qualcomm','US','Полупроводники'],['TXN','Texas Instruments','US','Полупроводники'],['MU','Micron','US','Полупроводники'],['AMAT','Applied Materials','US','Полупроводники'],
  ['LRCX','Lam Research','US','Полупроводники'],['KLAC','KLA','US','Полупроводники'],['ARM','Arm','GB','Полупроводники'],['NOW','ServiceNow','US','Софт'],['INTU','Intuit','US','Софт'],
- ['IBM','IBM','US','IT-услуги'],['ACN','Accenture','IE','IT-услуги'],['PLTR','Palantir','US','Софт'],['UBER','Uber','US','Интернет'],['ABNB','Airbnb','US','Интернет'],
+ ['IBM','IBM','US','IT-услуги'],['ACN','Accenture','IE','IT-услуги'],['PLTR','Palantir','US','Софт'],['ANT','Anthropic','US','Софт'],['UBER','Uber','US','Интернет'],['ABNB','Airbnb','US','Интернет'],
  ['SHOP','Shopify','CA','Интернет'],['SNOW','Snowflake','US','Софт'],['PANW','Palo Alto Networks','US','Кибербезопасность'],['CRWD','CrowdStrike','US','Кибербезопасность'],
  ['ANET','Arista Networks','US','Телеком-оборудование'],['DELL','Dell','US','Техника'],['SMCI','Super Micro','US','Техника'],['MRVL','Marvell','US','Полупроводники'],
  ['ADI','Analog Devices','US','Полупроводники'],['COIN','Coinbase','US','Крипто'],['MSTR','Strategy (MicroStrategy)','US','Крипто'],['SPOT','Spotify','SE','Медиа'],
