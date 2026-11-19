@@ -170,11 +170,7 @@ h1{font-size:clamp(40px,8vw,68px);letter-spacing:-.035em;line-height:1}
 <script>
 /* оформление начальной страницы: своё, отдельное от разделов (ключ hub:skin) */
 (function(){try{
-  var d=document.documentElement,id=localStorage.getItem('hub:skin');if(!id)return;
-  var T={graphite:'dark',news:'dark',dark:'dark',copper:'dark',paper:'light',inst:'light'};
-  if(!T[id])return;
-  if(id==='dark')d.removeAttribute('data-skin');else d.setAttribute('data-skin',id);
-  d.setAttribute('data-theme',T[id]);
+  var d=document.documentElement;d.setAttribute('data-skin','copper');d.setAttribute('data-theme','dark');
 }catch(e){}})();
 </script>
 <style>
@@ -316,13 +312,13 @@ if('serviceWorker' in navigator&&location.protocol==='https:')navigator.serviceW
 <script>
 /* выбор оформления начальной страницы: 9 вариантов, запоминается только здесь */
 (function(){
-  var SK=[['auto','Как в системе','#F4F1E8','#1F6B57',''],['dark','Ночь','#171611','#5FC2A3','dark'],['graphite','Графит','#15171B','#7BA7F5','dark'],['news','Газета','#161512','#E0483B','dark'],['copper','Ночь и медь','#0C0D10','#D9954F','dark'],['paper','Бумага и чернила','#F7F4EE','#1F5C4A','light'],['inst','Институт','#F2F4F8','#14213D','light']];
+  var SK=[['copper','Ночь и медь','#0C0D10','#D9954F','dark']];
   var d=document.documentElement;
   function st(k,v){try{if(v===undefined)return localStorage.getItem(k);if(v===null)localStorage.removeItem(k);else localStorage.setItem(k,v)}catch(e){return null}}
-  function cur(){var v=st('hub:skin');if(v)return v;return st('theme')==='dark'?'dark':'auto'}
+  function cur(){return 'copper'}
   function apply(id){
     d.classList.add('tt');setTimeout(function(){d.classList.remove('tt')},360);
-    var x=SK.filter(function(a){return a[0]===id})[0];if(!x){id='auto';x=SK[0]}
+    var x=SK.filter(function(a){return a[0]===id})[0];if(!x){id='copper';x=SK[0]}
     if(id==='auto'){d.removeAttribute('data-skin');d.removeAttribute('data-theme')}
     else if(id==='dark'){d.removeAttribute('data-skin');d.setAttribute('data-theme',id)}
     else{d.setAttribute('data-skin',id);d.setAttribute('data-theme',x[4])}
@@ -335,7 +331,7 @@ if('serviceWorker' in navigator&&location.protocol==='https:')navigator.serviceW
     m.innerHTML='<p>Оформление</p>'+SK.map(function(x,i){return (i===1||i===3||i===5?'<div class="sep"></div>':'')+'<button type="button" role="menuitemradio" aria-checked="'+(x[0]===c)+'" class="'+(x[0]===c?'on':'')+'" data-skin="'+x[0]+'"><span class="skw" style="background:'+x[2]+'"><i style="background:'+x[3]+'"></i></span>'+x[1]+'</button>'}).join('');
     document.body.appendChild(m);
   }
-  var tb=document.getElementById('thm');if(tb)tb.addEventListener('click',function(e){e.stopPropagation();menu(true)});
+  var tb=document.getElementById('thm');if(tb)tb.style.display='none';apply('copper');
   document.addEventListener('click',function(e){
     var b=e.target.closest&&e.target.closest('#skm [data-skin]');
     if(b){var id=b.getAttribute('data-skin');st('hub:skin',id);apply(id);menu(false);return}
