@@ -24,6 +24,10 @@ TPL = TPL.replace(_zold, _znew).replace(".zm,.zmr,.skinmenu{zoom:var(--iz,1)}", 
 PROF = {'artem': ('Артем', '11231', 'artem.html'), 'nastya': ('Настя', '1591', 'nastya.html')}
 TOK = {p: hashlib.sha256(('hub:%s:%s' % (p, v[1])).encode()).hexdigest()[:24] for p, v in PROF.items()}
 
+# страницы Насти собираются из отдельной замороженной копии шаблона (hub_nastya.html): правки оформления Артёма на них не влияют
+TPL_N = open(os.path.join(ROOT, 'src', 'finance', 'hub_nastya.html'), encoding='utf-8').read().replace(_zold, _znew).replace(".zm,.zmr,.skinmenu{zoom:var(--iz,1)}", ".zm,.zmr,.skinmenu,.zq{zoom:var(--iz,1)}")
+head_n = TPL_N[:TPL_N.index('<body>')]
+tail_js_n = TPL_N[TPL_N.index('<script>\ntry{var t=localStorage.getItem'):TPL_N.index('</body>')]
 head = TPL[:TPL.index('<body>')]
 tail_js = TPL[TPL.index('<script>\ntry{var t=localStorage.getItem'):TPL.index('</body>')]
 foot = re.search(r'<p class="foot".*?</p>', TPL, re.S).group(0)
@@ -105,12 +109,13 @@ THEME_BTN = '<button type="button" class="thm" id="thm" aria-label="Оформл
 THEME_JS = ''   # кнопка «Оформление» обслуживается скриптом в hub.html (меню 9 оформлений, ключ hub:skin)
 
 def page(title, body, gate_p=None, apple_title='Hub'):
-    h = head.replace('<title>Hub</title>', '<title>%s</title>' % title)
+    nn = (gate_p == 'nastya')
+    h = (head_n if nn else head).replace('<title>Hub</title>', '<title>%s</title>' % title)
     if gate_p: h = h.replace(OLDLINK, '')
     if gate_p:
         h = h.replace('<meta charset="utf-8">', '<meta charset="utf-8">' + gate(gate_p), 1)
     h = h.replace('</head>', EXTRA_CSS + '</head>', 1)
-    return h + '<body>\n' + body + '\n' + THEME_JS + tail_js + ZQ_JS + '</body></html>\n'
+    return h + '<body>\n' + body + '\n' + THEME_JS + (tail_js_n if nn else tail_js) + ZQ_JS + '</body></html>\n'
 
 
 def topbar(back_href, back_text, logout=None):
