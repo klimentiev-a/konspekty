@@ -179,6 +179,9 @@ document.addEventListener('DOMContentLoaded',function(){var v=g();document.query
 #tape .tx{position:absolute;right:0;top:0;bottom:0;width:34px;border:0;border-left:1px solid var(--line);background:linear-gradient(90deg,transparent,#151618 35%);color:var(--faint);font:400 15px/1 'IBM Plex Mono',monospace;cursor:pointer;opacity:.55;padding:0 0 0 8px;z-index:2}
 #tape .tx:hover{opacity:1;color:var(--fg)}
 #tape-show{display:none}
+.thm .tapeopt{display:flex;align-items:center;gap:8px;margin:-2px 0 4px 54px;padding:2px 8px;font:400 12px/1.2 'IBM Plex Mono',monospace;color:var(--muted);cursor:pointer}
+.thm .tapeopt input{accent-color:var(--accent);margin:0;cursor:pointer}
+.thm .tapeopt:hover{color:var(--fg)}
 :root[data-skin="terminal"].tape-off #tape.on{display:none}
 :root[data-skin="terminal"].tape-off #tape-show.on{display:block;position:fixed;right:14px;top:62px;z-index:40;width:26px;height:26px;border:1px solid var(--line);background:#151618;color:var(--faint);font:400 12px/1 'IBM Plex Mono',monospace;cursor:pointer;opacity:.6;padding:0}
 :root[data-skin="terminal"].tape-off #tape-show.on:hover{opacity:1;color:var(--fg)}
@@ -886,6 +889,10 @@ function skinMenu(open){
   if(m){m.remove();return}
   var cur=skinGet();m=document.createElement('div');m.id='thm';m.className='thm';m.setAttribute('role','menu');
   m.innerHTML='<p>Оформление</p>'+SKINS.map(function(x,i){return '<button type="button" role="menuitemradio" aria-checked="'+(x[0]===cur)+'" class="'+(x[0]===cur?'on':'')+'" data-skin="'+x[0]+'"><span class="skw" style="background:'+x[2]+'"><i style="background:'+x[3]+'"></i></span>'+x[1]+'</button>'}).join('');
+  var tb=m.querySelector('button[data-skin="terminal"]');
+  if(tb){var lb=document.createElement('label');lb.className='tapeopt';lb.innerHTML='<input type="checkbox"><span>бегущая строка</span>';
+    var cb=lb.querySelector('input');cb.checked=store('fin:tape')!=='0';
+    cb.onchange=function(){store('fin:tape',cb.checked?'1':'0');tapeUpdate()};tb.parentNode.insertBefore(lb,tb.nextSibling)}
   document.body.appendChild(m);
 }
 $('#b-theme').onclick=function(e){e.stopPropagation();skinMenu(true)};
