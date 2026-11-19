@@ -171,6 +171,18 @@ document.addEventListener('DOMContentLoaded',function(){var v=g();document.query
 :root[data-skin="glass"] .tile,:root[data-skin="glass"] .sect.brief,:root[data-skin="glass"] .nw.hero,:root[data-skin="glass"] .nw.big,:root[data-skin="glass"] .tablewrap{background:linear-gradient(145deg,rgba(255,255,255,.13),rgba(255,255,255,.05));border-color:rgba(255,255,255,.18);-webkit-backdrop-filter:blur(18px) saturate(1.3);backdrop-filter:blur(18px) saturate(1.3);border-radius:24px;box-shadow:0 20px 60px rgba(0,0,0,.28)}
 :root[data-skin="glass"] .tile.lk:hover,:root[data-skin="glass"] .tile[data-tip]:hover{transform:translateY(-6px) scale(1.012)}
 :root[data-skin="glass"] .top{background:rgba(10,11,30,.55)}
+/* «Терминал»: бегущая строка котировок (только Рынок) */
+#tape{display:none}
+:root[data-skin="terminal"] #tape.on{display:block;overflow:hidden;white-space:nowrap;background:#151618;border-bottom:1px solid var(--line);position:relative}
+#tape div{display:inline-block;padding:9px 0;animation:tmarq 70s linear infinite;will-change:transform}
+#tape:hover div{animation-play-state:paused}
+#tape span{display:inline-block;padding:0 22px;font:500 12px/1 'IBM Plex Mono',monospace;color:var(--muted);letter-spacing:.02em}
+#tape b{color:var(--fg);font-weight:500;margin-left:7px}#tape i{font-style:normal;margin-left:7px}
+#tape i.up{color:var(--up)}#tape i.down{color:var(--down)}
+@keyframes tmarq{to{transform:translateX(-50%)}}
+@media(prefers-reduced-motion:reduce){#tape div{animation:none}#tape.on{overflow-x:auto}}
+:root[data-skin="terminal"] .sq::placeholder,:root[data-skin="terminal"] input::placeholder{color:var(--faint)}
+:root[data-skin="terminal"] .sq:focus{outline:1px solid var(--accent)!important;box-shadow:none!important}
 /* «Газета ночью»: гарнитура с засечками, двойная линия под шапкой, зерно бумаги, прямые углы */
 :root[data-skin="news"] body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:900;opacity:.05;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .9 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
 :root[data-skin="news"] .top{border-bottom:3px double var(--line)}
@@ -830,10 +842,35 @@ function applySkin(id,quiet){
   if(id==='auto'){root.removeAttribute('data-skin');applyTheme('')}
   else if(id==='light'||id==='dark'){root.removeAttribute('data-skin');applyTheme(id)}
   else{root.setAttribute('data-skin',id);applyTheme(sk[4])}
+  try{tapeUpdate()}catch(e){}
   try{var bg=getComputedStyle(root).getPropertyValue('--bg').trim();document.querySelectorAll('meta[name=theme-color]').forEach(function(m){if(bg)m.setAttribute('content',bg)})}catch(e){}
 }
 function skinGet(){var v=store('fin:skin');if(v&&/^(copper|terminal|glass)$/.test(v))return v;return 'copper'}
 applySkin(skinGet(),true);
+
+/* «Терминал»: бегущая строка и клавиша «/» для поиска (только в Рынке) */
+function tapeUpdate(){
+  var el=document.getElementById('tape');
+  if(!el){el=document.createElement('div');el.id='tape';el.setAttribute('aria-label','Котировки');var h=document.querySelector('header.top');if(h&&h.parentNode)h.parentNode.insertBefore(el,h.nextSibling);else return}
+  var on=root.getAttribute('data-skin')==='terminal'&&/^#markets/.test(location.hash);
+  el.classList.toggle('on',on);if(!on||el.getAttribute('data-f'))return;
+  loadSnap().then(function(j){
+    if(!j)return;var a=[];
+    function add(n,v,c,d){if(v==null||isNaN(v))return;a.push('<span>'+n+'<b>'+nf(v,d)+'</b><i class="'+(c>0?'up':c<0?'down':'')+'">'+(c==null||isNaN(c)?'':(c>0?'▲ +':c<0?'▼ ':'')+nf(c,2)+'%')+'</i></span>')}
+    var ix=j.idx||{};if(ix.IMOEX)add('IMOEX',ix.IMOEX.v,ix.IMOEX.ch,2);
+    var V=(j.fx&&j.fx.Valute)||{};['USD','EUR','CNY'].forEach(function(c){var x=V[c];if(x)add(c+'/RUB',x.Value/(x.Nominal||1),(x.Value/x.Previous-1)*100,2)});
+    var en=j.energy||{};if(en['BZ=F'])add('Brent',en['BZ=F'].p,en['BZ=F'].ch,2);
+    (j.crypto||[]).slice(0,2).forEach(function(c){add(c.s,c.p,c.c24,0)});
+    ['SBER','GAZP','LKOH','YDEX'].forEach(function(t){var x=j.ru&&j.ru[t];if(x)add(t,x.p,x.ch,2)});
+    ['NVDA','AAPL','MSFT'].forEach(function(t){var x=j.us&&j.us[t];if(x)add(t,x.p,x.ch,2)});
+    if(!a.length)return;var h=a.join('');el.innerHTML='<div>'+h+h+'</div>';el.setAttribute('data-f','1')
+  })
+}
+document.addEventListener('keydown',function(e){
+  if(e.key!=='/'||e.ctrlKey||e.metaKey||e.altKey)return;var t=e.target;if(t&&(t.tagName==='INPUT'||t.tagName==='TEXTAREA'||t.isContentEditable))return;
+  if(root.getAttribute('data-skin')!=='terminal'||!/^#markets/.test(location.hash))return;
+  var q=document.querySelector('.sq');if(q){e.preventDefault();q.focus()}
+});
 function skinMenu(open){
   var m=document.getElementById('thm');
   if(!open){if(m)m.remove();return}
