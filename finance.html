@@ -824,7 +824,9 @@ function applyTheme(t){if(t)root.setAttribute('data-theme',t);else root.removeAt
 var SKINS=[['auto','Как в системе','#F4F1E8','#1F6B57',''],
   ['dark','Ночь','#171611','#5FC2A3','dark'],['graphite','Графит','#15171B','#7BA7F5','dark'],['news','Газета','#161512','#E0483B','dark'],
   ['copper','Ночь и медь','#0C0D10','#D9954F','dark'],['paper','Бумага и чернила','#F7F4EE','#1F5C4A','light'],['inst','Институт','#F2F4F8','#14213D','light'],['terminal','Терминал','#0E0F11','#FFB347','dark'],['glass','Стекло','#0A0B1E','#A5B4FC','dark']];
+var MKSK={terminal:1,glass:1};
 function applySkin(id,quiet){
+  if(MKSK[id]&&!/^#markets/.test(location.hash))id='dark';
   if(!quiet){root.classList.add('tt');setTimeout(function(){root.classList.remove('tt')},360)}
   var sk=SKINS.filter(function(x){return x[0]===id})[0];if(!sk){id='auto';sk=SKINS[0]}
   if(id==='auto'){root.removeAttribute('data-skin');applyTheme('')}
@@ -2707,6 +2709,7 @@ function glFocus(t){var alts=[];try{alts=JSON.parse(sessionStorage.getItem('fin:
     if(!hit)return;hit.scrollIntoView({block:'center'});hit.classList.add('flash');setTimeout(function(){hit.classList.remove('flash')},2500)},60)}
 var ALIAS={week:'summary',daily:'summary',fx:'ru',macro:'ru',divs:'cal',events:'cal',plc:'bonds'};
 function route(){
+  try{applySkin(skinGet(),true)}catch(e){}
   var h=decodeURIComponent(location.hash.slice(1)),p=h.split('/');
   // старые адреса: мир, расчёты, главная «Финансов», политика — теперь это учебник или рынок
   if(p[0]==='world'&&p[1]==='sectors'){location.replace('#learn/sektor'+(p[2]?'/'+p[2]:''));return}

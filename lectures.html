@@ -77,7 +77,7 @@ document.addEventListener('DOMContentLoaded',function(){var v=g();document.query
 </script>
 
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=Literata:opsz,wght@7..72,500..700&family=IBM+Plex+Mono:wght@400;500;600&family=Manrope:wght@400;500;600;700;800&display=swap" media="print" onload="this.media='all'"><noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=Literata:opsz,wght@7..72,500..700&family=IBM+Plex+Mono:wght@400;500;600&family=Manrope:wght@400;500;600;700;800&display=swap"></noscript>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=Literata:opsz,wght@7..72,500..700&display=swap" media="print" onload="this.media='all'"><noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=Literata:opsz,wght@7..72,500..700&display=swap"></noscript>
 <style>
 :root{--bg:#F4F1E8;--surface:#FBF9F3;--fg:#25221C;--muted:#665F52;--faint:#857E6E;--line:#D9D3C2;--a1:#A93D28;--a2:#1F6B57;color-scheme:light}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#171611;--surface:#22211A;--fg:#E8E4D8;--muted:#A39D8E;--faint:#7A7466;--line:#33312A;--a1:#E8886B;--a2:#5FC2A3;color-scheme:dark}}
@@ -130,15 +130,6 @@ h1,.lead{animation:up .45s cubic-bezier(.2,.8,.25,1) both}.lead{animation-delay:
 :root[data-skin="copper"]{--bg:#0C0D10;--surface:#15171C;--fg:#ECEAE6;--muted:#A29E96;--faint:#78746C;--line:#2A2E37;--a1:#D9954F;--a2:#E8B06E;color-scheme:dark}
 :root[data-skin="paper"]{--bg:#F7F4EE;--surface:#FFFDF9;--fg:#1B1A17;--muted:#665F54;--faint:#85806F;--line:#DDD4C3;--a1:#1F5C4A;--a2:#B3372B;color-scheme:light}
 :root[data-skin="inst"]{--bg:#F2F4F8;--surface:#FFFFFF;--fg:#111B33;--muted:#56617A;--faint:#7C869C;--line:#D5DBE7;--a1:#14213D;--a2:#B8893B;color-scheme:light}
-/* «Терминал» и «Стекло» (19.11) */
-:root[data-skin="terminal"]{--bg:#0E0F11;--surface:#131416;--fg:#D9D6CF;--muted:#9A968D;--faint:#7C786F;--line:#2A2A2E;--a1:#FFB347;--a2:#FFB347;color-scheme:dark}
-:root[data-skin="terminal"] body,:root[data-skin="terminal"] h1,:root[data-skin="terminal"] .lead,:root[data-skin="terminal"] .card b,:root[data-skin="terminal"] .ic{font-family:'IBM Plex Mono',ui-monospace,Menlo,monospace}
-:root[data-skin="terminal"] *{border-radius:0!important}
-:root[data-skin="terminal"] h1{text-transform:uppercase;letter-spacing:.04em;font-size:clamp(34px,6vw,54px)}
-:root[data-skin="terminal"] .card{box-shadow:none}
-:root[data-skin="glass"]{--bg:#0A0B1E;--surface:#14173A;--fg:#F2F3FF;--muted:#BFC2F0;--faint:#8F93C8;--line:rgba(255,255,255,.16);--a1:#F472B6;--a2:#A5B4FC;color-scheme:dark}
-:root[data-skin="glass"] body{font-family:'Manrope',system-ui,sans-serif;background:radial-gradient(60vw 50vh at 8% 0,rgba(79,70,229,.55),transparent 70%),radial-gradient(50vw 45vh at 100% 8%,rgba(225,29,116,.42),transparent 70%),radial-gradient(55vw 45vh at 45% 100%,rgba(14,165,164,.35),transparent 70%),#0A0B1E;background-attachment:fixed}
-:root[data-skin="glass"] .card,:root[data-skin="glass"] .hsrch{background:linear-gradient(145deg,rgba(255,255,255,.13),rgba(255,255,255,.05));border-color:rgba(255,255,255,.18);-webkit-backdrop-filter:blur(18px) saturate(1.3);backdrop-filter:blur(18px) saturate(1.3);box-shadow:0 20px 60px rgba(0,0,0,.28)}
 :root[data-skin="news"] body,:root[data-skin="news"] h1,:root[data-skin="news"] .lead,:root[data-skin="news"] .card b{font-family:'Literata',Georgia,'Times New Roman',serif}
 :root[data-skin="news"] body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:900;opacity:.05;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .9 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
 :root[data-skin="news"] h1{font-weight:800;letter-spacing:-.015em;border-bottom:3px double var(--line);padding-bottom:10px}
@@ -180,7 +171,7 @@ h1{font-size:clamp(40px,8vw,68px);letter-spacing:-.035em;line-height:1}
 /* оформление начальной страницы: своё, отдельное от разделов (ключ hub:skin) */
 (function(){try{
   var d=document.documentElement,id=localStorage.getItem('hub:skin');if(!id)return;
-  var T={graphite:'dark',news:'dark',dark:'dark',copper:'dark',paper:'light',inst:'light',terminal:'dark',glass:'dark'};
+  var T={graphite:'dark',news:'dark',dark:'dark',copper:'dark',paper:'light',inst:'light'};
   if(!T[id])return;
   if(id==='dark')d.removeAttribute('data-skin');else d.setAttribute('data-skin',id);
   d.setAttribute('data-theme',T[id]);
@@ -800,7 +791,7 @@ if('serviceWorker' in navigator&&location.protocol==='https:')navigator.serviceW
 <script>
 /* выбор оформления начальной страницы: 9 вариантов, запоминается только здесь */
 (function(){
-  var SK=[['auto','Как в системе','#F4F1E8','#1F6B57',''],['dark','Ночь','#171611','#5FC2A3','dark'],['graphite','Графит','#15171B','#7BA7F5','dark'],['news','Газета','#161512','#E0483B','dark'],['copper','Ночь и медь','#0C0D10','#D9954F','dark'],['paper','Бумага и чернила','#F7F4EE','#1F5C4A','light'],['inst','Институт','#F2F4F8','#14213D','light'],['terminal','Терминал','#0E0F11','#FFB347','dark'],['glass','Стекло','#0A0B1E','#A5B4FC','dark']];
+  var SK=[['auto','Как в системе','#F4F1E8','#1F6B57',''],['dark','Ночь','#171611','#5FC2A3','dark'],['graphite','Графит','#15171B','#7BA7F5','dark'],['news','Газета','#161512','#E0483B','dark'],['copper','Ночь и медь','#0C0D10','#D9954F','dark'],['paper','Бумага и чернила','#F7F4EE','#1F5C4A','light'],['inst','Институт','#F2F4F8','#14213D','light']];
   var d=document.documentElement;
   function st(k,v){try{if(v===undefined)return localStorage.getItem(k);if(v===null)localStorage.removeItem(k);else localStorage.setItem(k,v)}catch(e){return null}}
   function cur(){var v=st('hub:skin');if(v)return v;return st('theme')==='dark'?'dark':'auto'}
