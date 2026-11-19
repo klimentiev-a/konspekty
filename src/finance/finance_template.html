@@ -52,6 +52,12 @@
 :root[data-skin="terminal"] #tape.on{display:block;overflow:hidden;white-space:nowrap;background:#151618;border-bottom:1px solid var(--line);position:relative}
 #tape div{display:inline-block;padding:9px 0;animation:tmarq 70s linear infinite;will-change:transform}
 #tape:hover div{animation-play-state:paused}
+#tape .tx{position:absolute;right:0;top:0;bottom:0;width:34px;border:0;border-left:1px solid var(--line);background:linear-gradient(90deg,transparent,#151618 35%);color:var(--faint);font:400 15px/1 'IBM Plex Mono',monospace;cursor:pointer;opacity:.55;padding:0 0 0 8px;z-index:2}
+#tape .tx:hover{opacity:1;color:var(--fg)}
+#tape-show{display:none}
+:root[data-skin="terminal"].tape-off #tape.on{display:none}
+:root[data-skin="terminal"].tape-off #tape-show.on{display:block;position:fixed;right:14px;top:62px;z-index:40;width:26px;height:26px;border:1px solid var(--line);background:#151618;color:var(--faint);font:400 12px/1 'IBM Plex Mono',monospace;cursor:pointer;opacity:.6;padding:0}
+:root[data-skin="terminal"].tape-off #tape-show.on:hover{opacity:1;color:var(--fg)}
 #tape span{display:inline-block;padding:0 22px;font:500 12px/1 'IBM Plex Mono',monospace;color:var(--muted);letter-spacing:.02em}
 #tape b{color:var(--fg);font-weight:500;margin-left:7px}#tape i{font-style:normal;margin-left:7px}
 #tape i.up{color:var(--up)}#tape i.down{color:var(--down)}
@@ -723,6 +729,9 @@ function tapeUpdate(){
   var el=document.getElementById('tape');
   if(!el){el=document.createElement('div');el.id='tape';el.setAttribute('aria-label','Котировки');var h=document.querySelector('header.top');if(h&&h.parentNode)h.parentNode.insertBefore(el,h.nextSibling);else return}
   var on=root.getAttribute('data-skin')==='terminal'&&/^#markets/.test(location.hash);
+  root.classList.toggle('tape-off',store('fin:tape')==='0');
+  var sb=document.getElementById('tape-show');if(!sb){sb=document.createElement('button');sb.id='tape-show';sb.type='button';sb.title='Показать бегущую строку';sb.setAttribute('aria-label','Показать бегущую строку');sb.textContent='▤';sb.onclick=function(){store('fin:tape','1');tapeUpdate()};document.body.appendChild(sb)}
+  sb.classList.toggle('on',on);
   el.classList.toggle('on',on);if(!on||el.getAttribute('data-f'))return;
   loadSnap().then(function(j){
     if(!j)return;var a=[];
@@ -733,7 +742,7 @@ function tapeUpdate(){
     (j.crypto||[]).slice(0,2).forEach(function(c){add(c.s,c.p,c.c24,0)});
     ['SBER','GAZP','LKOH','YDEX'].forEach(function(t){var x=j.ru&&j.ru[t];if(x)add(t,x.p,x.ch,2)});
     ['NVDA','AAPL','MSFT'].forEach(function(t){var x=j.us&&j.us[t];if(x)add(t,x.p,x.ch,2)});
-    if(!a.length)return;var h=a.join('');el.innerHTML='<div>'+h+h+'</div>';el.setAttribute('data-f','1')
+    if(!a.length)return;var h=a.join('');el.innerHTML='<div>'+h+h+'</div><button type="button" class="tx" title="Скрыть строку" aria-label="Скрыть бегущую строку">×</button>';el.querySelector('.tx').onclick=function(){store('fin:tape','0');tapeUpdate()};el.setAttribute('data-f','1')
   })
 }
 document.addEventListener('keydown',function(e){
@@ -2586,7 +2595,7 @@ function qzPick(i,j){var qs=(QZ.data&&QZ.data[QZ.id])||[];if(!qs[i]||QZ.solved[i
   document.addEventListener('visibilitychange',function(){if(document.hidden)save()});
   window.__holdScroll=function(){hold=Date.now()+600};
   window.__restoreScroll=function(){
-    var k=key(),e=k&&rd()[k];hold=Date.now()+2500;tgt=e&&e.y>0?e.y:null;
+    var k=key(),e=k&&rd()[k];if(/#markets\/(ru|us|crypto)\/[^\/]+$/.test(location.hash))e=null;hold=Date.now()+2500;tgt=e&&e.y>0?e.y:null;
     if(tgt===null){hold=Date.now()+300;return false}
     var tries=0;
     (function go(){
@@ -2640,7 +2649,7 @@ function route(){
   }
 }
 function enter(){view.classList.remove('enter');void view.offsetWidth;view.classList.add('enter')}
-window.addEventListener('hashchange',function(){window.__holdScroll();window.scrollTo(0,0);route();enter();if(!Q)return;});
+window.addEventListener('hashchange',function(){window.__holdScroll();var up=function(){window.scrollTo({top:0,left:0,behavior:'instant'})};up();route();up();setTimeout(up,60);enter();if(!Q)return;});
 route();window.__restoreScroll();
 })();
 </script>

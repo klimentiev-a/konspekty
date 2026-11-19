@@ -211,6 +211,12 @@ document.addEventListener('DOMContentLoaded',function(){var v=g();document.query
 :root[data-skin="terminal"] #tape.on{display:block;overflow:hidden;white-space:nowrap;background:#151618;border-bottom:1px solid var(--line);position:relative}
 #tape div{display:inline-block;padding:9px 0;animation:tmarq 70s linear infinite;will-change:transform}
 #tape:hover div{animation-play-state:paused}
+#tape .tx{position:absolute;right:0;top:0;bottom:0;width:34px;border:0;border-left:1px solid var(--line);background:linear-gradient(90deg,transparent,#151618 35%);color:var(--faint);font:400 15px/1 'IBM Plex Mono',monospace;cursor:pointer;opacity:.55;padding:0 0 0 8px;z-index:2}
+#tape .tx:hover{opacity:1;color:var(--fg)}
+#tape-show{display:none}
+:root[data-skin="terminal"].tape-off #tape.on{display:none}
+:root[data-skin="terminal"].tape-off #tape-show.on{display:block;position:fixed;right:14px;top:62px;z-index:40;width:26px;height:26px;border:1px solid var(--line);background:#151618;color:var(--faint);font:400 12px/1 'IBM Plex Mono',monospace;cursor:pointer;opacity:.6;padding:0}
+:root[data-skin="terminal"].tape-off #tape-show.on:hover{opacity:1;color:var(--fg)}
 #tape span{display:inline-block;padding:0 22px;font:500 12px/1 'IBM Plex Mono',monospace;color:var(--muted);letter-spacing:.02em}
 #tape b{color:var(--fg);font-weight:500;margin-left:7px}#tape i{font-style:normal;margin-left:7px}
 #tape i.up{color:var(--up)}#tape i.down{color:var(--down)}
