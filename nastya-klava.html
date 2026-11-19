@@ -127,6 +127,10 @@ h1,.lead{animation:up .45s cubic-bezier(.2,.8,.25,1) both}.lead{animation-delay:
 :root[data-skin="ocean"]{--bg:#E9F0F6;--surface:#F7FAFD;--fg:#14283A;--muted:#4B6277;--faint:#7289A0;--line:#C5D4E1;--a1:#1A5FA8;--a2:#C2561F;color-scheme:light}
 :root[data-skin="graphite"]{--bg:#15171B;--surface:#1F2227;--fg:#E6E8EC;--muted:#9AA1AD;--faint:#6F7683;--line:#2E3239;--a1:#7BA7F5;--a2:#F2A65A;color-scheme:dark}
 :root[data-skin="news"]{--bg:#161512;--surface:#201F1A;--fg:#EAE3D2;--muted:#B3AA96;--faint:#847C6A;--line:#3A372E;--a1:#E0483B;--a2:#D8B25A;color-scheme:dark}
+/* «Медь», «Бумага», «Институт» (19.11) */
+:root[data-skin="copper"]{--bg:#0C0D10;--surface:#15171C;--fg:#ECEAE6;--muted:#A29E96;--faint:#78746C;--line:#2A2E37;--a1:#D9954F;--a2:#E8B06E;color-scheme:dark}
+:root[data-skin="paper"]{--bg:#F7F4EE;--surface:#FFFDF9;--fg:#1B1A17;--muted:#665F54;--faint:#85806F;--line:#DDD4C3;--a1:#1F5C4A;--a2:#B3372B;color-scheme:light}
+:root[data-skin="inst"]{--bg:#F2F4F8;--surface:#FFFFFF;--fg:#111B33;--muted:#56617A;--faint:#7C869C;--line:#D5DBE7;--a1:#14213D;--a2:#B8893B;color-scheme:light}
 :root[data-skin="news"] body,:root[data-skin="news"] h1,:root[data-skin="news"] .lead,:root[data-skin="news"] .card b{font-family:'Literata',Georgia,'Times New Roman',serif}
 :root[data-skin="news"] body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:900;opacity:.05;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .9 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
 :root[data-skin="news"] h1{font-weight:800;letter-spacing:-.015em;border-bottom:3px double var(--line);padding-bottom:10px}
@@ -146,7 +150,7 @@ h1,.lead{animation:up .45s cubic-bezier(.2,.8,.25,1) both}.lead{animation-delay:
 /* оформление начальной страницы: своё, отдельное от разделов (ключ hub:skin) */
 (function(){try{
   var d=document.documentElement,id=localStorage.getItem('hub:skin');if(!id)return;
-  var T={ocean:'light',graphite:'dark',news:'dark',dark:'dark'};
+  var T={ocean:'light',graphite:'dark',news:'dark',dark:'dark',copper:'dark',paper:'light',inst:'light'};
   if(!T[id])return;
   if(id==='dark')d.removeAttribute('data-skin');else d.setAttribute('data-skin',id);
   d.setAttribute('data-theme',T[id]);
@@ -845,7 +849,7 @@ if('serviceWorker' in navigator&&location.protocol==='https:')navigator.serviceW
 <script>
 /* выбор оформления начальной страницы: 9 вариантов, запоминается только здесь */
 (function(){
-  var SK=[['auto','Как в системе','#F4F1E8','#1F6B57',''],['ocean','Океан','#E9F0F6','#1A5FA8','light'],['dark','Ночь','#171611','#5FC2A3','dark'],['graphite','Графит','#15171B','#7BA7F5','dark'],['news','Газета','#161512','#E0483B','dark']];
+  var SK=[['auto','Как в системе','#F4F1E8','#1F6B57',''],['ocean','Океан','#E9F0F6','#1A5FA8','light'],['dark','Ночь','#171611','#5FC2A3','dark'],['graphite','Графит','#15171B','#7BA7F5','dark'],['news','Газета','#161512','#E0483B','dark'],['copper','Ночь и медь','#0C0D10','#D9954F','dark'],['paper','Бумага и чернила','#F7F4EE','#1F5C4A','light'],['inst','Институт','#F2F4F8','#14213D','light']];
   var d=document.documentElement;
   function st(k,v){try{if(v===undefined)return localStorage.getItem(k);if(v===null)localStorage.removeItem(k);else localStorage.setItem(k,v)}catch(e){return null}}
   function cur(){var v=st('hub:skin');if(v)return v;return st('theme')==='dark'?'dark':'auto'}
@@ -861,7 +865,7 @@ if('serviceWorker' in navigator&&location.protocol==='https:')navigator.serviceW
     var m=document.getElementById('skm');if(m){m.remove();if(open)return}
     if(!open)return;
     var c=cur();m=document.createElement('div');m.id='skm';m.className='skm';m.setAttribute('role','menu');
-    m.innerHTML='<p>Оформление</p>'+SK.map(function(x,i){return (i===1||i===3?'<div class="sep"></div>':'')+'<button type="button" role="menuitemradio" aria-checked="'+(x[0]===c)+'" class="'+(x[0]===c?'on':'')+'" data-skin="'+x[0]+'"><span class="skw" style="background:'+x[2]+'"><i style="background:'+x[3]+'"></i></span>'+x[1]+'</button>'}).join('');
+    m.innerHTML='<p>Оформление</p>'+SK.map(function(x,i){return (i===1||i===3||i===5?'<div class="sep"></div>':'')+'<button type="button" role="menuitemradio" aria-checked="'+(x[0]===c)+'" class="'+(x[0]===c?'on':'')+'" data-skin="'+x[0]+'"><span class="skw" style="background:'+x[2]+'"><i style="background:'+x[3]+'"></i></span>'+x[1]+'</button>'}).join('');
     document.body.appendChild(m);
   }
   var tb=document.getElementById('thm');if(tb)tb.addEventListener('click',function(e){e.stopPropagation();menu(true)});

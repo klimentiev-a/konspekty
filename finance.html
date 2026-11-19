@@ -131,7 +131,7 @@ document.addEventListener('DOMContentLoaded',function(){var v=g();document.query
 })();
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://iss.moex.com" crossorigin><link rel="preconnect" href="https://api.coingecko.com" crossorigin><link rel="preconnect" href="https://raw.githubusercontent.com" crossorigin><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Literata:opsz,wght@7..72,400..700&family=JetBrains+Mono:wght@400;500&display=swap" media="print" onload="this.media='all'"><noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Literata:opsz,wght@7..72,400..700&family=JetBrains+Mono:wght@400;500&display=swap"></noscript>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Literata:opsz,wght@7..72,400..700&family=JetBrains+Mono:wght@400;500&family=Lora:wght@600;700&family=Manrope:wght@400;500;600;700&display=swap" media="print" onload="this.media='all'"><noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Literata:opsz,wght@7..72,400..700&family=JetBrains+Mono:wght@400;500&family=Lora:wght@600;700&family=Manrope:wght@400;500;600;700&display=swap"></noscript>
 <style>
 :root{
   --bg:#F4F1E8;--rail:#ECE8DB;--surface:#FBF9F3;--fg:#25221C;--muted:#665F52;--faint:#857E6E;
@@ -151,6 +151,13 @@ document.addEventListener('DOMContentLoaded',function(){var v=g();document.query
 :root[data-skin="ocean"]{--bg:#E9F0F6;--rail:#DCE7F0;--surface:#F7FAFD;--fg:#14283A;--muted:#4B6277;--faint:#7289A0;--line:#C5D4E1;--line2:#D6E1EB;--accent:#1A5FA8;--accent2:#C2561F;--mark:#FFE08A;--up:#1B7A47;--down:#B3261E}
 :root[data-skin="graphite"]{--bg:#15171B;--rail:#1B1E23;--surface:#1F2227;--fg:#E6E8EC;--muted:#9AA1AD;--faint:#6F7683;--line:#2E3239;--line2:#262A30;--accent:#7BA7F5;--accent2:#F2A65A;--mark:#3C4A66;--up:#4FC27F;--down:#F07167}
 :root[data-skin="news"]{--bg:#161512;--rail:#1C1B17;--surface:#201F1A;--fg:#EAE3D2;--muted:#B3AA96;--faint:#847C6A;--line:#3A372E;--line2:#2C2A23;--accent:#E0483B;--accent2:#D8B25A;--mark:#5A4A1C;--up:#86C783;--down:#E0483B;--sans:var(--serif)}
+/* «Медь», «Бумага», «Институт» (19.11, Артём: оформление дешёвое): три новых оформления раздела Финансы */
+:root[data-skin="copper"]{--bg:#0C0D10;--rail:#111318;--surface:#15171C;--fg:#ECEAE6;--muted:#A29E96;--faint:#78746C;--line:#2A2E37;--line2:#20232A;--accent:#D9954F;--accent2:#E8B06E;--mark:#4A3718;--up:#5FCF9A;--down:#F0726B}
+:root[data-skin="paper"]{--bg:#F7F4EE;--rail:#EFE9DD;--surface:#FFFDF9;--fg:#1B1A17;--muted:#665F54;--faint:#85806F;--line:#DDD4C3;--line2:#E8E0D0;--accent:#1F5C4A;--accent2:#B3372B;--mark:#F3DE9A;--up:#1F7A52;--down:#B3372B}
+:root[data-skin="inst"]{--bg:#F2F4F8;--rail:#E6EAF2;--surface:#FFFFFF;--fg:#111B33;--muted:#56617A;--faint:#7C869C;--line:#D5DBE7;--line2:#E3E8F0;--accent:#14213D;--accent2:#B8893B;--mark:#F1E0B0;--up:#17794F;--down:#B3372B;--serif:'Lora',Georgia,serif;--sans:'Manrope',system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif}
+:root[data-skin="copper"] h1,:root[data-skin="paper"] h1,:root[data-skin="inst"] h1{font-weight:700;letter-spacing:-.02em}
+:root[data-skin="copper"] .top,:root[data-skin="paper"] .top,:root[data-skin="inst"] .top{border-bottom:1px solid var(--line)}
+:root[data-skin="inst"] .top{border-bottom:2px solid var(--accent2)}
 /* «Газета ночью»: гарнитура с засечками, двойная линия под шапкой, зерно бумаги, прямые углы */
 :root[data-skin="news"] body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:900;opacity:.05;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .9 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
 :root[data-skin="news"] .top{border-bottom:3px double var(--line)}
@@ -766,7 +773,8 @@ var root=document.documentElement,POLAPP=false;   // politika.html: та же с
 function applyTheme(t){if(t)root.setAttribute('data-theme',t);else root.removeAttribute('data-theme')}
 /* оформление раздела: store('fin:skin') = '' (системное) | 'light' | 'dark' | id из SKINS */
 var SKINS=[['auto','Как в системе','#F4F1E8','#1F6B57',''],['ocean','Океан','#E9F0F6','#1A5FA8','light'],
-  ['dark','Ночь','#171611','#5FC2A3','dark'],['graphite','Графит','#15171B','#7BA7F5','dark'],['news','Газета','#161512','#E0483B','dark']];
+  ['dark','Ночь','#171611','#5FC2A3','dark'],['graphite','Графит','#15171B','#7BA7F5','dark'],['news','Газета','#161512','#E0483B','dark'],
+  ['copper','Ночь и медь','#0C0D10','#D9954F','dark'],['paper','Бумага и чернила','#F7F4EE','#1F5C4A','light'],['inst','Институт','#F2F4F8','#14213D','light']];
 function applySkin(id,quiet){
   if(!quiet){root.classList.add('tt');setTimeout(function(){root.classList.remove('tt')},360)}
   var sk=SKINS.filter(function(x){return x[0]===id})[0];if(!sk){id='auto';sk=SKINS[0]}
@@ -782,7 +790,7 @@ function skinMenu(open){
   if(!open){if(m)m.remove();return}
   if(m){m.remove();return}
   var cur=skinGet();m=document.createElement('div');m.id='thm';m.className='thm';m.setAttribute('role','menu');
-  m.innerHTML='<p>Оформление</p>'+SKINS.map(function(x,i){return (i===1||i===3?'<div class="sep"></div>':'')+'<button type="button" role="menuitemradio" aria-checked="'+(x[0]===cur)+'" class="'+(x[0]===cur?'on':'')+'" data-skin="'+x[0]+'"><span class="skw" style="background:'+x[2]+'"><i style="background:'+x[3]+'"></i></span>'+x[1]+'</button>'}).join('');
+  m.innerHTML='<p>Оформление</p>'+SKINS.map(function(x,i){return (i===1||i===3||i===5?'<div class="sep"></div>':'')+'<button type="button" role="menuitemradio" aria-checked="'+(x[0]===cur)+'" class="'+(x[0]===cur?'on':'')+'" data-skin="'+x[0]+'"><span class="skw" style="background:'+x[2]+'"><i style="background:'+x[3]+'"></i></span>'+x[1]+'</button>'}).join('');
   document.body.appendChild(m);
 }
 $('#b-theme').onclick=function(e){e.stopPropagation();skinMenu(true)};
