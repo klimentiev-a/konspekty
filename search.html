@@ -391,7 +391,7 @@ function run(){if(!IDX)return;var q=Q.trim();
   var cur=TAB.filter(function(t){return t[0]===tab})[0],per={},list=[];
   all.forEach(function(r){if(cur[1].indexOf(r.it.k)<0)return;var key=r.it.u;per[key]=(per[key]||0)+1;if(per[key]<=3&&list.length<50)list.push(r)});res=list;kb=-1;
   box.innerHTML=(note?'<p class="sm">'+esc(note)+'</p>':'')+(list.length?list.map(function(r,i){var it=r.it;
-    return '<a href="'+esc(it.u)+'" data-i="'+i+'" data-q="'+esc(qe)+'" data-hs="'+esc(it.intro?'':it.h)+'"><small>'+KIND[it.k]+(it.intro||it.k==='co'||it.k==='term'||it.k==='tk'?'':' · '+esc(it.t))+'</small><b>'+hl(it.intro||!it.h?it.t:it.h,re)+'</b><p>'+snip(it,re)+'</p></a>'}).join('')
+    return '<a href="'+esc(it.u)+'" data-i="'+i+'" data-q="'+esc(qe)+'" data-hs="'+esc(it.intro?'':it.h)+'"><small>'+KIND[it.k]+(it.intro||it.k==='co'||it.k==='term'||it.k==='tk'?'':' · '+esc(it.t))+'</small><b>'+hl(it.intro||!it.h?it.t:it.h,re)+'</b><p>'+(it.k==='term'?hl(it.x,re):snip(it,re))+'</p></a>'}).join('')
     :'<p class="sm">Ничего не найдено по «'+esc(q)+'». Попробуй корень слова, другое написание или формулу без пробелов.</p>')}
 var tm=null;inp.addEventListener('input',function(){Q=inp.value;clearTimeout(tm);tm=setTimeout(function(){run();try{history.replaceState(null,'',Q?'?q='+encodeURIComponent(Q):location.pathname)}catch(e){}},120)});
 tabs.addEventListener('click',function(e){var b=e.target.closest('[data-t]');if(!b)return;tab=b.getAttribute('data-t');run()});

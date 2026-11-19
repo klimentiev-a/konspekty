@@ -46,6 +46,18 @@ for tt in T.RICH:
     out.append(['term', tt[1], tt[2], 'finance.html#learn/glossariy/' + _thead(tt[1])])
 for tt in T.EXTRA:
     out.append(['term', tt[1], tt[2], 'finance.html#learn/glossariy/' + _thead(tt[1])])
+# каждый термин глоссария — отдельная карточка «Термин» (полное объяснение + формула), а не только кусок главы
+_seen = {_thead(x[1]).lower() for x in out if x[0] == 'term'}
+_prev = {p_.lower() for tt_ in list(T.RICH) + list(T.EXTRA) for p_ in tt_[0]}
+_gmd = open(os.path.join(HERE, 'content', '98_glossary.md'), encoding='utf-8').read()
+for tm in T.build(_gmd):
+    head = _thead(tm['t'])
+    if head.lower() in _seen: continue
+    _rp = {x.lower() for x in tm['p'] if not x.startswith('\\b')}
+    if _rp & _prev: continue
+    _seen.add(head.lower())
+    body = tm['d'] + ((' Формула: ' + tm['f'].replace('\n', '; ') + ('. Где: ' + tm['w'] if tm.get('w') else '')) if tm.get('f') else '')
+    out.append(['term', tm['t'], body, 'finance.html#learn/glossariy/' + head])
 for x in S.RU: out.append(['co', x[1] + ' · ' + x[0], x[2] + ' · акции Мосбиржи', 'finance.html#markets/ru/' + x[0]])
 for x in S.US: out.append(['co', x[1] + ' · ' + x[0], x[2] + ' · акции США', 'finance.html#markets/us/' + x[0]])
 # компании мира из справочника сайта (карточка с графиком и новостями)
