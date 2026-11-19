@@ -148,6 +148,28 @@ h1,.lead{animation:up .45s cubic-bezier(.2,.8,.25,1) both}.lead{animation-delay:
 .skm .skw{flex:none;width:34px;height:24px;border-radius:7px;border:1px solid rgba(128,128,128,.35);position:relative;overflow:hidden}
 .skm .skw i{position:absolute;right:0;bottom:0;width:16px;height:12px;border-top-left-radius:6px}
 .skm .sep{height:1px;margin:6px 4px;background:var(--line)}
+
+/* ===== премиум-слой главной (19.11) ===== */
+:root{--ease:cubic-bezier(.22,.8,.26,1);--sh1:0 1px 2px rgba(20,20,30,.06),0 8px 26px rgba(20,20,30,.06);--sh2:0 2px 4px rgba(20,20,30,.07),0 18px 46px rgba(20,20,30,.13)}
+:root[data-theme="dark"]{--sh1:inset 0 1px 0 rgba(255,255,255,.05),0 8px 26px rgba(0,0,0,.4);--sh2:inset 0 1px 0 rgba(255,255,255,.07),0 20px 50px rgba(0,0,0,.55)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--sh1:inset 0 1px 0 rgba(255,255,255,.05),0 8px 26px rgba(0,0,0,.4);--sh2:inset 0 1px 0 rgba(255,255,255,.07),0 20px 50px rgba(0,0,0,.55)}}
+body{background:radial-gradient(900px 420px at 12% -8%,color-mix(in srgb,var(--a2) 11%,transparent),transparent 70%),radial-gradient(700px 380px at 96% 0,color-mix(in srgb,var(--a1) 9%,transparent),transparent 70%),var(--bg);background-attachment:fixed}
+.w{max-width:960px}
+h1{font-size:clamp(40px,8vw,68px);letter-spacing:-.035em;line-height:1}
+.lead{font-size:18px;max-width:560px}
+.hsrch{height:56px;border-radius:16px;box-shadow:var(--sh1);transition:box-shadow .2s var(--ease),border-color .2s}
+.hsrch:focus-within{box-shadow:0 0 0 4px color-mix(in srgb,var(--a2) 16%,transparent),var(--sh1)}
+.cards{gap:18px;margin-top:26px}
+.card{border-radius:24px;padding:28px 28px 22px;min-height:230px;box-shadow:var(--sh1);overflow:hidden;transition:transform .3s var(--ease),box-shadow .3s var(--ease),border-color .3s}
+.card:before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;background:linear-gradient(140deg,color-mix(in srgb,var(--a2) 55%,transparent),transparent 45%,color-mix(in srgb,var(--a1) 40%,transparent));-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;opacity:0;transition:opacity .3s;pointer-events:none}
+.card:hover{transform:translateY(-4px);box-shadow:var(--sh2)}.card:hover:before{opacity:1}
+.card:after{content:"→";position:absolute;top:24px;right:26px;width:36px;height:36px;border-radius:50%;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:17px;transition:transform .3s var(--ease),background-color .25s,color .25s,border-color .25s}
+.card.pf:after{display:none}.card:hover:after{transform:translateX(3px);background:var(--a2);color:var(--surface);border-color:var(--a2)}
+.card .ic{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;background:color-mix(in srgb,currentColor 11%,transparent);font-size:24px}
+.card b{font-size:30px;letter-spacing:-.02em}
+.links a{border-radius:10px;background:color-mix(in srgb,var(--fg) 3%,transparent);border-color:transparent;transition:background-color .2s,color .2s,transform .2s var(--ease)}
+.links a:hover{background:color-mix(in srgb,var(--a2) 14%,transparent);border-color:transparent;transform:translateY(-1px)}
+@media (prefers-reduced-motion:no-preference){.card:nth-child(1){animation-delay:.12s}.card:nth-child(2){animation-delay:.2s}.card:nth-child(3){animation-delay:.28s}.card:nth-child(4){animation-delay:.36s}}
 </style>
 <script>
 /* оформление начальной страницы: своё, отдельное от разделов (ключ hub:skin) */
