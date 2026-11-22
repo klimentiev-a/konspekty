@@ -171,6 +171,10 @@ document.addEventListener('DOMContentLoaded',function(){var v=g();document.query
 :root[data-skin="glass"] .tile,:root[data-skin="glass"] .sect.brief,:root[data-skin="glass"] .nw.hero,:root[data-skin="glass"] .nw.big,:root[data-skin="glass"] .tablewrap{background:linear-gradient(145deg,rgba(255,255,255,.13),rgba(255,255,255,.05));border-color:rgba(255,255,255,.18);-webkit-backdrop-filter:blur(18px) saturate(1.3);backdrop-filter:blur(18px) saturate(1.3);border-radius:24px;box-shadow:0 20px 60px rgba(0,0,0,.28)}
 :root[data-skin="glass"] .tile.lk:hover,:root[data-skin="glass"] .tile[data-tip]:hover{transform:translateY(-6px) scale(1.012)}
 :root[data-skin="glass"] .top{background:rgba(10,11,30,.55)}
+.fxl{display:block;width:100%;height:220px;margin-top:12px}.fxlm{display:flex;justify-content:space-between;gap:8px;font-size:12px;color:var(--faint);margin-top:4px}
+.fxcv{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:6px}.fxcv input,.fxcv select{min-height:44px;padding:0 12px;border:1px solid var(--line);background:var(--surface);color:var(--fg);font:inherit;border-radius:var(--rad,10px);max-width:100%}.fxcv input{width:150px}.fxcv select{flex:1;min-width:150px}
+.fxar{color:var(--faint)}.fxres{margin-top:12px;font-size:19px}.fxres .note{font-size:13px;color:var(--muted)}
+.fxmv{display:grid;grid-template-columns:1fr 1fr;gap:20px}@media(max-width:700px){.fxmv{grid-template-columns:1fr}}.fxmv h3{margin:0 0 6px;font-size:14px;color:var(--muted)}
 /* «Терминал»: бегущая строка котировок (только Рынок) */
 #tape{display:none}
 :root[data-skin="terminal"] #tape.on{display:block;overflow:hidden;white-space:nowrap;background:#151618;border-bottom:1px solid var(--line);position:relative}
@@ -873,8 +877,8 @@ function tapeUpdate(){
     if(!j)return;var a=[];
     function add(n,v,c,d,href){if(v==null||isNaN(v))return;a.push('<a class="tk" href="'+(href||'#markets/ru')+'">'+n+'<b>'+nf(v,d)+'</b><i class="'+(c>0?'up':c<0?'down':'')+'">'+(c==null||isNaN(c)?'':(c>0?'▲ +':c<0?'▼ ':'')+nf(c,2)+'%')+'</i></a>')}
     var ix=j.idx||{};if(ix.IMOEX)add('IMOEX',ix.IMOEX.v,ix.IMOEX.ch,2,'#markets/idx/IMOEX');
-    var V=(j.fx&&j.fx.Valute)||{};['USD','EUR','CNY'].forEach(function(c){var x=V[c];if(x)add(c+'/RUB',x.Value/(x.Nominal||1),(x.Value/x.Previous-1)*100,2,'#markets/ru')});
-    var en=j.energy||{};if(en['BZ=F'])add('Brent',en['BZ=F'].p,en['BZ=F'].ch,2,'#markets/world');
+    var V=(j.fx&&j.fx.Valute)||{};['USD','EUR','CNY'].forEach(function(c){var x=V[c];if(x)add(c+'/RUB',x.Value/(x.Nominal||1),(x.Value/x.Previous-1)*100,2,'#markets/fx')});
+    var en=j.energy||{};if(en['BZ=F'])add('Brent',en['BZ=F'].p,en['BZ=F'].ch,2,'#markets/fx');
     (j.crypto||[]).slice(0,2).forEach(function(c){add(c.s,c.p,c.c24,0,'#markets/crypto/'+c.s)});
     ['SBER','GAZP','LKOH','YDEX'].forEach(function(t){var x=j.ru&&j.ru[t];if(x)add(t,x.p,x.ch,2,'#markets/ru/'+t)});
     ['NVDA','AAPL','MSFT'].forEach(function(t){var x=j.us&&j.us[t];if(x)add(t,x.p,x.ch,2,'#markets/us/'+t)});
@@ -1310,10 +1314,10 @@ function loadCR(){
 function usdRub(){try{return M.fx.Valute.USD.Value}catch(e){return 83.9153}}
 
 /* ---------------- рынки: виды ---------------- */
-var SUBS=[['summary','Сегодня'],['ru','Россия'],['us','Мир'],['news','Новости'],['crypto','Крипта'],['bonds','Облигации'],['risk','Риск и доходность'],['cal','Календарь']],cur='summary';
+var SUBS=[['summary','Сегодня'],['ru','Россия'],['fx','Валюты'],['us','Мир'],['news','Новости'],['crypto','Крипта'],['bonds','Облигации'],['risk','Риск и доходность'],['cal','Календарь']],cur='summary';
 var SLBL={};SUBS.forEach(function(s){SLBL[s[0]]=s[1]});
 /* одна строка: 5 главных разделов + «Ещё» со всем остальным; открытый раздел из «Ещё» показывается отдельным чипом */
-var MAIN_SUBS=['summary','ru','us','news'],MORE_SUBS=SUBS.map(function(x){return x[0]}).filter(function(k){return MAIN_SUBS.indexOf(k)<0});
+var MAIN_SUBS=['summary','ru','fx','us','news'],MORE_SUBS=SUBS.map(function(x){return x[0]}).filter(function(k){return MAIN_SUBS.indexOf(k)<0});
 function subnav(){
   return '<nav class="sub sub1" aria-label="Разделы рынков">'+SUBS.map(function(x){return '<a class="chip'+(x[0]===cur?' on':'')+'" href="#markets/'+x[0]+'">'+x[1]+'</a>'}).join('')+'</nav>'}
 function subScroll(){var n=view.querySelector('.sub1'),a=n&&n.querySelector('.chip.on');if(a)n.scrollLeft=Math.max(0,a.offsetLeft-n.clientWidth/2+a.offsetWidth/2)}
@@ -1969,18 +1973,85 @@ function numOf(t){var x=parseFloat(String(t).replace(/[^\d,.\-−]/g,'').replace
 function flashEl(el,o,n){if(o==null||o===n)return;var a=numOf(o),b=numOf(n);if(a==null||b==null||a===b)return;el.classList.remove('flu','fld');void el.offsetWidth;el.classList.add(b>a?'flu':'fld')}
 function flashPrep(){FLPREV={};FLCUR=cur+'|'+(CARD.tic||'')+'|'+(ASSET.id||'');view.querySelectorAll('[data-fk]').forEach(function(e){FLPREV[e.getAttribute('data-fk')]=e.textContent})}
 function flashApply(){if(!FLPREV||FLCUR!==cur+'|'+(CARD.tic||'')+'|'+(ASSET.id||''))return;view.querySelectorAll('[data-fk]').forEach(function(e){flashEl(e,FLPREV[e.getAttribute('data-fk')],e.textContent)})}
+
+/* ---------------- вкладка «Валюты»: курсы ЦБ, кросс-курсы, график, конвертер и аналитика ---------------- */
+var FXC={code:'USD',per:90,amt:1000,from:'RUB',to:'USD'};
+function fxRate(c){var v=M.fx&&M.fx.Valute&&M.fx.Valute[c];if(c==='RUB')return {v:1,p:1};if(!v)return null;var n=v.Nominal||1;return {v:v.Value/n,p:v.Previous/n,n:v.Name,nom:n}}
+function fxCross(a,b){var x=fxRate(a),y=fxRate(b);if(!x||!y)return null;return {v:x.v/y.v,ch:((x.v/y.v)/(x.p/y.p)-1)*100}}
+function fxLine(vals,dates,w,h){
+  var ok=vals.map(function(v,i){return v==null?null:[i,v]}).filter(Boolean);if(ok.length<3)return '';
+  var mn=Math.min.apply(0,ok.map(function(p){return p[1]})),mx=Math.max.apply(0,ok.map(function(p){return p[1]})),pad=(mx-mn)*.08||mx*.01,lo=mn-pad,hi=mx+pad,L=vals.length-1||1;
+  var X=function(i){return 6+(w-12)*i/L},Y=function(v){return 8+(h-24)*(1-(v-lo)/(hi-lo))};
+  var d=ok.map(function(p,k){return (k?'L':'M')+X(p[0]).toFixed(1)+' '+Y(p[1]).toFixed(1)}).join(''),la=ok[ok.length-1],fi=ok[0];
+  var up=la[1]>=fi[1];
+  var area=d+'L'+X(la[0]).toFixed(1)+' '+(h-16)+'L'+X(fi[0]).toFixed(1)+' '+(h-16)+'Z';
+  var imn=ok.filter(function(p){return p[1]===mn})[0],imx=ok.filter(function(p){return p[1]===mx})[0];
+  return '<svg class="fxl" viewBox="0 0 '+w+' '+h+'" preserveAspectRatio="none" role="img" aria-label="График курса"><path d="'+area+'" fill="var(--accent)" opacity=".10"/><path d="'+d+'" fill="none" stroke="var(--accent)" stroke-width="1.8" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>'+
+   '<circle cx="'+X(la[0]).toFixed(1)+'" cy="'+Y(la[1]).toFixed(1)+'" r="3.2" fill="var(--accent)"/></svg>'+
+   '<div class="fxlm"><span>'+dates[fi[0]].split('-').reverse().join('.')+'</span><span>мин '+nf(mn,2)+' · макс '+nf(mx,2)+'</span><span>'+dates[la[0]].split('-').reverse().join('.')+'</span></div>';
+}
+function vFXT(){
+  var j=M.fx,h=status('fx','Курсы ЦБ');
+  if(!j||!j.Valute)return h+'<p class="sect note">Курсы ЦБ пока не загрузились. Нажми «Обновить» или открой страницу позже.</p>'+secNews('fx','Новости о валютах',8);
+  var V=j.Valute,usd=fxRate('USD'),eur=fxRate('EUR'),cny=fxRate('CNY'),H=XD.fxh&&XD.fxh.dates?XD.fxh:null;
+  var ret=function(c,days){if(!H||!H.v[c])return null;var a=H.v[c],i=a.length-1,last=a[i];if(last==null)return null;var d0=new Date(H.dates[i]+'T12:00:00');d0.setDate(d0.getDate()-days);var ds=d0.toISOString().slice(0,10),k=-1;for(var q=0;q<H.dates.length;q++){if(H.dates[q]<=ds&&a[q]!=null)k=q}return k<0?null:(last/a[k]-1)*100};
+  var tl=function(c,r){var ch=(r.v/r.p-1)*100,m=ret(c,30);return tile(c+'/RUB',nf(r.v,4),pct(ch)+' за день'+(m!=null?' · '+pct(m,1)+' за 30 дн.':''))};
+  h+='<div class="tiles" style="margin-top:12px">'+tl('USD',usd)+tl('EUR',eur)+tl('CNY',cny)+'</div>';
+  /* корзина и нефть */
+  var bk=((usd.v/usd.p+eur.v/eur.p+cny.v/cny.p)/3-1)*100,br=M.snap&&M.snap.energy&&M.snap.energy['BZ=F'];
+  var rub=Math.abs(bk)<.05?'рубль почти не изменился к корзине доллар–евро–юань':bk>0?'рубль слабее к корзине доллар–евро–юань':'рубль крепче к корзине доллар–евро–юань';
+  h+='<div class="sect"><h2>Аналитика</h2><ul class="bl">'+
+   '<li><b>Рубль за день:</b> '+rub+' ('+pct(bk)+' к вчерашнему курсу ЦБ).</li>'+
+   (br?'<li><b>Нефть в рублях:</b> Brent '+nf(br.p,2)+' $ × '+nf(usd.v,2)+' ₽ = <b>'+nf(br.p*usd.v,0)+' ₽ за баррель</b>. Для бюджета России важнее цена нефти в рублях, а не в долларах.</li>':'')+
+   '<li><b>Юань к доллару:</b> '+nf(usd.v/cny.v,4)+' CNY за 1 USD; евро к доллару '+nf(eur.v/usd.v,4)+'.</li></ul></div>';
+  /* график */
+  var CH=['USD','EUR','CNY','GBP','CHF','JPY','AED','TRY','KZT','INR'].filter(function(c){return V[c]});if(CH.indexOf(FXC.code)<0)FXC.code='USD';
+  var chips=CH.map(function(c){return '<button class="chip'+(c===FXC.code?' on':'')+'" data-fxc="'+c+'" type="button">'+c+'</button>'}).join('');
+  var pers=[[30,'30 дн.'],[90,'3 мес.'],[180,'6 мес.'],[365,'год']].map(function(p){return '<button class="chip'+(p[0]===FXC.per?' on':'')+'" data-fxp="'+p[0]+'" type="button">'+p[1]+'</button>'}).join('');
+  var body='';
+  if(H&&H.v[FXC.code]){
+    var n=H.dates.length,from=Math.max(0,n-1-FXC.per),a=H.v[FXC.code].slice(from),dts=H.dates.slice(from),vv=a.filter(function(x){return x!=null}),cc=[];
+    for(var i=1;i<vv.length;i++)cc.push((vv[i]/vv[i-1]-1)*100);
+    var sd=cc.length>2?Math.sqrt(cc.reduce(function(s,x){return s+x*x},0)/cc.length):null,r7=ret(FXC.code,7),r30=ret(FXC.code,30),r90=ret(FXC.code,90);
+    body=fxLine(a,dts,720,220)+(vv.length<20?'<p class="note">История пока копится ('+vv.length+' дн.): бот докачивает архив ЦБ в течение нескольких часов.</p>':'')+
+     '<div class="tiles" style="margin-top:10px">'+tile('7 дней',r7==null?'—':pct(r7,1),'изменение курса')+tile('30 дней',r30==null?'—':pct(r30,1),'изменение курса')+tile('90 дней',r90==null?'—':pct(r90,1),'изменение курса')+tile('Размах за день',sd==null?'—':'±'+nf(sd,2)+'%','типичное дневное движение')+'</div>';
+  }else body='<p class="sect note">История курсов появится после первого обновления данных (обычно в течение часа).</p>';
+  h+='<div class="sect"><h2>График курса ЦБ, ₽ за 1 '+FXC.code+'</h2><div class="chips">'+chips+'</div><div class="chips" style="margin-top:6px">'+pers+'</div>'+body+'</div>';
+  /* кросс-курсы */
+  var cr=[['EUR','USD'],['GBP','USD'],['USD','CNY'],['USD','JPY'],['USD','CHF'],['USD','TRY'],['USD','KZT'],['USD','AED'],['EUR','CNY']].map(function(p){var c=fxCross(p[0],p[1]);return c?{p:p[0]+'/'+p[1],v:c.v,ch:c.ch}:null}).filter(Boolean);
+  h+='<div class="sect"><h2>Кросс-курсы</h2><p class="note" style="margin-top:0">Считаются из курсов ЦБ к рублю: показывают, как валюты стоят друг к другу.</p>'+table('fxx',[{k:'p',t:'Пара',cls:'nm',f:function(r){return '<b>'+r.p+'</b>'}},{k:'v',t:'Курс',num:1,f:function(r){return nf(r.v,r.v<10?4:2)}},{k:'ch',t:'За день',num:1,f:function(r){return pct(r.ch)}}],cr)+'</div>';
+  /* конвертер */
+  var codes=['RUB'].concat(Object.keys(V).sort());
+  var opt=function(sel){return codes.map(function(c){return '<option value="'+c+'"'+(c===sel?' selected':'')+'>'+c+(V[c]?' — '+esc(V[c].Name):' — Российский рубль')+'</option>'}).join('')};
+  h+='<div class="sect"><h2>Конвертер по курсу ЦБ</h2><div class="fxcv"><input id="fx-amt" type="number" inputmode="decimal" min="0" value="'+FXC.amt+'" aria-label="Сумма"><select id="fx-from" aria-label="Из валюты">'+opt(FXC.from)+'</select><span class="fxar">→</span><select id="fx-to" aria-label="В валюту">'+opt(FXC.to)+'</select></div><div class="fxres" id="fx-res">'+fxConv()+'</div></div>';
+  /* движения дня */
+  var mv=Object.keys(V).map(function(c){var r=fxRate(c);return {c:c,n:V[c].Name,ch:(r.v/r.p-1)*100,v:r.v}}).filter(function(r){return isFinite(r.ch)}).sort(function(a,b){return b.ch-a.ch});
+  var li=function(r){return '<li><b>'+r.c+'</b> '+esc(r.n)+' — '+nf(r.v,4)+' ₽ ('+pct(r.ch)+')</li>'};
+  h+='<div class="sect"><h2>Кто двигался сильнее всего за день</h2><div class="fxmv"><div><h3>Дороже рубля</h3><ul class="bl">'+mv.slice(0,5).map(li).join('')+'</ul></div><div><h3>Дешевле</h3><ul class="bl">'+mv.slice(-5).reverse().map(li).join('')+'</ul></div></div></div>';
+  /* все курсы */
+  var rows=Object.keys(V).map(function(c){var r=fxRate(c),m=ret(c,30);return {c:c,n:V[c].Name,nom:V[c].Nominal,v:V[c].Value,ch:(r.v/r.p-1)*100,m:m}});
+  var cols=[{k:'c',t:'Валюта',cls:'nm',f:function(r){return '<b>'+r.c+'</b><i>'+esc(r.n)+'</i>'}},{k:'nom',t:'За',num:1,f:function(r){return r.nom}},{k:'v',t:'Курс ЦБ, ₽',num:1,f:function(r){return nf(r.v,4)}},{k:'ch',t:'За день',num:1,f:function(r){return pct(r.ch)}}];
+  if(H)cols.push({k:'m',t:'30 дн.',num:1,f:function(r){return r.m==null?'—':pct(r.m,1)}});
+  h+='<div class="sect"><h2>Все валюты ЦБ</h2>'+table('fxall',cols,rows)+'</div>';
+  h+='<p class="sect note">Официальный курс ЦБ на '+new Date(j.Date).toLocaleDateString('ru-RU')+' (устанавливается на следующий день после торгов). Источник: cbr-xml-daily.ru (зеркало данных ЦБ). Это не торговые котировки: обменные пункты и банки берут свою маржу.</p>';
+  return h+secNews('fx','Новости о валютах',10);
+}
+function fxConv(){var a=fxRate(FXC.from),b=fxRate(FXC.to);if(!a||!b||!(FXC.amt>=0))return '—';var r=FXC.amt*a.v/b.v;return '<b>'+nf(FXC.amt,2)+' '+FXC.from+' = '+nf(r,r<10?4:2)+' '+FXC.to+'</b><span class="note"> · 1 '+FXC.from+' = '+nf(a.v/b.v,a.v/b.v<10?4:2)+' '+FXC.to+'</span>'}
+view.addEventListener('click',function(e){var c=e.target.closest&&e.target.closest('[data-fxc],[data-fxp]');if(!c||cur!=='fx')return;if(c.hasAttribute('data-fxc'))FXC.code=c.getAttribute('data-fxc');else FXC.per=+c.getAttribute('data-fxp');drawMarkets(true)});
+view.addEventListener('input',function(e){if(cur!=='fx')return;var t=e.target;if(t.id==='fx-amt')FXC.amt=parseFloat(t.value);else if(t.id==='fx-from')FXC.from=t.value;else if(t.id==='fx-to')FXC.to=t.value;else return;var o=document.getElementById('fx-res');if(o)o.innerHTML=fxConv()});
 function drawMarkets(full){
   if(state!=='markets')return;
   if(cur==='ru'&&CARD.tic&&full!==true&&document.getElementById('card-root')){var cp=document.getElementById('card-price'),l=(M.ru||{})[CARD.tic]||{};if(cp&&l.p){var tl=cp.querySelector('.tile'),ov=tl.querySelector('.v').textContent;tl.querySelector('.v').innerHTML=nf(l.p,l.p<10?3:2)+' ₽';flashEl(tl.querySelector('.v'),ov,tl.querySelector('.v').textContent);tl.querySelector('.s').innerHTML=(l.ch!=null?pct(l.ch)+' за день · ':'')+'<span data-ago="'+Date.now()+'">только что</span>'}return}
   if(full!==true){var sn=document.querySelector('[data-secnews]');if(sn&&M.news&&!sn.querySelector('.nw')){var q=sn.getAttribute('data-secnews').split('|');sn.outerHTML=secNews(q[0],q[1],+q[2])}}
   if(ASSET.kind&&full!==true&&document.getElementById('card-root')){var ai=assetInfo(ASSET.kind,ASSET.id),cq=document.getElementById('card-price');if(ai&&cq&&ai.px){var t0=cq.querySelector('.tile'),ov0=t0.querySelector('.v').textContent;t0.querySelector('.v').innerHTML=nf(ai.px,ai.px<1?4:ai.px<10?3:2)+ai.unit;flashEl(t0.querySelector('.v'),ov0,t0.querySelector('.v').textContent);t0.querySelector('.s').innerHTML=(ai.ch!=null?pct(ai.ch)+' ':'')+esc(ai.chNote||'')+(ASSET.kind==='cr'?' · <span data-ago="'+Date.now()+'">только что</span>':'')}return}
-  var y=window.scrollY,fn=ASSET.kind?vAsset:{summary:vSummary,ru:CARD.tic?function(){return vCard(CARD.tic)}:vRU,us:vUS,crypto:vCrypto,bonds:vBonds,risk:vRisk,cal:vCal,news:vNews}[cur];
+  var y=window.scrollY,fn=ASSET.kind?vAsset:{summary:vSummary,fx:vFXT,ru:CARD.tic?function(){return vCard(CARD.tic)}:vRU,us:vUS,crypto:vCrypto,bonds:vBonds,risk:vRisk,cal:vCal,news:vNews}[cur];
   var html=subnav()+fn(),sig=html.replace(/data-ago="\d+">[^<]*</g,'');
   if(full!==true&&sig===LASTSIG){view.querySelectorAll('.stat [data-ago]').forEach(function(e){e.setAttribute('data-ago',Date.now())});return}   // данные не изменились — не трогаем страницу
   LASTSIG=sig;if(full!==true)flashPrep();else FLPREV=null;view.innerHTML=html;if(document.getElementById('sc-chart'))scDraw();subScroll();flashApply();skel(view);if((cur==='ru'&&CARD.tic)||ASSET.kind)drawPC();window.scrollTo(0,y);
 }
 var LASTSIG='';window.__dm=drawMarkets;
-var loaders={summary:[loadIdx,loadFX,loadCR,loadSnap,loadNews,loadDig,loadCal],ru:[loadRU,loadNews,loadIdx,loadFX,loadKBD,loadSnap],us:[loadSnap,loadNews],crypto:[loadFX,loadCR,loadNews],bonds:[loadKBD,loadIdx,loadNews,loadUni],risk:[loadNews],cal:[loadRU,loadCal,loadSnap],news:[loadNews]};
+function loadFxh(){return loadX('fxh','fxhist.json',9000)}
+var loaders={fx:[loadFX,loadSnap,loadNews,loadFxh],summary:[loadIdx,loadFX,loadCR,loadSnap,loadNews,loadDig,loadCal],ru:[loadRU,loadNews,loadIdx,loadFX,loadKBD,loadSnap],us:[loadSnap,loadNews],crypto:[loadFX,loadCR,loadNews],bonds:[loadKBD,loadIdx,loadNews,loadUni],risk:[loadNews],cal:[loadRU,loadCal,loadSnap],news:[loadNews]};
 var timer;
 var busy=false;
 function ago(ms){var s=Math.max(0,Math.round((Date.now()-ms)/1000));return s<5?'только что':s<60?s+' с назад':Math.floor(s/60)+' мин назад'}
@@ -2764,7 +2835,7 @@ function glFocus(t){var alts=[];try{alts=JSON.parse(sessionStorage.getItem('fin:
         ||rows.filter(function(tr){var c=key(tr);return c.indexOf(q+' ')===0||c.indexOf(q+'(')===0})[0]
         ||(q.length>=5?rows.filter(function(tr){return key(tr).indexOf(q.slice(0,Math.max(4,q.length-3)))===0})[0]:null)}
     if(!hit)return;hit.scrollIntoView({block:'center'});hit.classList.add('flash');setTimeout(function(){hit.classList.remove('flash')},2500)},60)}
-var ALIAS={week:'summary',daily:'summary',fx:'ru',macro:'ru',divs:'cal',events:'cal',plc:'bonds'};
+var ALIAS={week:'summary',daily:'summary',macro:'ru',divs:'cal',events:'cal',plc:'bonds'};
 function route(){
   try{applySkin(skinGet(),true)}catch(e){}
   var h=decodeURIComponent(location.hash.slice(1)),p=h.split('/');

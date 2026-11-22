@@ -206,6 +206,10 @@ document.addEventListener('DOMContentLoaded',function(){var v=g();document.query
 :root[data-skin="glass"] .tile,:root[data-skin="glass"] .sect.brief,:root[data-skin="glass"] .nw.hero,:root[data-skin="glass"] .nw.big,:root[data-skin="glass"] .tablewrap{background:linear-gradient(145deg,rgba(255,255,255,.13),rgba(255,255,255,.05));border-color:rgba(255,255,255,.18);-webkit-backdrop-filter:blur(18px) saturate(1.3);backdrop-filter:blur(18px) saturate(1.3);border-radius:24px;box-shadow:0 20px 60px rgba(0,0,0,.28)}
 :root[data-skin="glass"] .tile.lk:hover,:root[data-skin="glass"] .tile[data-tip]:hover{transform:translateY(-6px) scale(1.012)}
 :root[data-skin="glass"] .top{background:rgba(10,11,30,.55)}
+.fxl{display:block;width:100%;height:220px;margin-top:12px}.fxlm{display:flex;justify-content:space-between;gap:8px;font-size:12px;color:var(--faint);margin-top:4px}
+.fxcv{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:6px}.fxcv input,.fxcv select{min-height:44px;padding:0 12px;border:1px solid var(--line);background:var(--surface);color:var(--fg);font:inherit;border-radius:var(--rad,10px);max-width:100%}.fxcv input{width:150px}.fxcv select{flex:1;min-width:150px}
+.fxar{color:var(--faint)}.fxres{margin-top:12px;font-size:19px}.fxres .note{font-size:13px;color:var(--muted)}
+.fxmv{display:grid;grid-template-columns:1fr 1fr;gap:20px}@media(max-width:700px){.fxmv{grid-template-columns:1fr}}.fxmv h3{margin:0 0 6px;font-size:14px;color:var(--muted)}
 /* «Терминал»: бегущая строка котировок (только Рынок) */
 #tape{display:none}
 :root[data-skin="terminal"] #tape.on{display:block;overflow:hidden;white-space:nowrap;background:#151618;border-bottom:1px solid var(--line);position:relative}
