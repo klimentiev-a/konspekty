@@ -62,7 +62,9 @@
 :root[data-skin="terminal"].tape-off #tape.on{display:none}
 :root[data-skin="terminal"].tape-off #tape-show.on{display:block;position:fixed;right:14px;top:62px;z-index:40;width:26px;height:26px;border:1px solid var(--line);background:#151618;color:var(--faint);font:400 12px/1 'IBM Plex Mono',monospace;cursor:pointer;opacity:.6;padding:0}
 :root[data-skin="terminal"].tape-off #tape-show.on:hover{opacity:1;color:var(--fg)}
-#tape span{display:inline-block;padding:0 22px;font:500 12px/1 'IBM Plex Mono',monospace;color:var(--muted);letter-spacing:.02em}
+#tape a.tk{display:inline-block;text-decoration:none;transition:color .15s,background .15s}
+#tape a.tk:hover{color:var(--fg);background:#1d1e21}
+#tape span,#tape a.tk{display:inline-block;padding:0 22px;font:500 12px/1 'IBM Plex Mono',monospace;color:var(--muted);letter-spacing:.02em}
 #tape b{color:var(--fg);font-weight:500;margin-left:7px}#tape i{font-style:normal;margin-left:7px}
 #tape i.up{color:var(--up)}#tape i.down{color:var(--down)}
 @keyframes tmarq{to{transform:translateX(-50%)}}
@@ -739,13 +741,13 @@ function tapeUpdate(){
   el.classList.toggle('on',on);if(!on||el.getAttribute('data-f'))return;
   loadSnap().then(function(j){
     if(!j)return;var a=[];
-    function add(n,v,c,d){if(v==null||isNaN(v))return;a.push('<span>'+n+'<b>'+nf(v,d)+'</b><i class="'+(c>0?'up':c<0?'down':'')+'">'+(c==null||isNaN(c)?'':(c>0?'▲ +':c<0?'▼ ':'')+nf(c,2)+'%')+'</i></span>')}
-    var ix=j.idx||{};if(ix.IMOEX)add('IMOEX',ix.IMOEX.v,ix.IMOEX.ch,2);
-    var V=(j.fx&&j.fx.Valute)||{};['USD','EUR','CNY'].forEach(function(c){var x=V[c];if(x)add(c+'/RUB',x.Value/(x.Nominal||1),(x.Value/x.Previous-1)*100,2)});
-    var en=j.energy||{};if(en['BZ=F'])add('Brent',en['BZ=F'].p,en['BZ=F'].ch,2);
-    (j.crypto||[]).slice(0,2).forEach(function(c){add(c.s,c.p,c.c24,0)});
-    ['SBER','GAZP','LKOH','YDEX'].forEach(function(t){var x=j.ru&&j.ru[t];if(x)add(t,x.p,x.ch,2)});
-    ['NVDA','AAPL','MSFT'].forEach(function(t){var x=j.us&&j.us[t];if(x)add(t,x.p,x.ch,2)});
+    function add(n,v,c,d,href){if(v==null||isNaN(v))return;a.push('<a class="tk" href="'+(href||'#markets/ru')+'">'+n+'<b>'+nf(v,d)+'</b><i class="'+(c>0?'up':c<0?'down':'')+'">'+(c==null||isNaN(c)?'':(c>0?'▲ +':c<0?'▼ ':'')+nf(c,2)+'%')+'</i></a>')}
+    var ix=j.idx||{};if(ix.IMOEX)add('IMOEX',ix.IMOEX.v,ix.IMOEX.ch,2,'#markets/idx/IMOEX');
+    var V=(j.fx&&j.fx.Valute)||{};['USD','EUR','CNY'].forEach(function(c){var x=V[c];if(x)add(c+'/RUB',x.Value/(x.Nominal||1),(x.Value/x.Previous-1)*100,2,'#markets/ru')});
+    var en=j.energy||{};if(en['BZ=F'])add('Brent',en['BZ=F'].p,en['BZ=F'].ch,2,'#markets/world');
+    (j.crypto||[]).slice(0,2).forEach(function(c){add(c.s,c.p,c.c24,0,'#markets/crypto/'+c.s)});
+    ['SBER','GAZP','LKOH','YDEX'].forEach(function(t){var x=j.ru&&j.ru[t];if(x)add(t,x.p,x.ch,2,'#markets/ru/'+t)});
+    ['NVDA','AAPL','MSFT'].forEach(function(t){var x=j.us&&j.us[t];if(x)add(t,x.p,x.ch,2,'#markets/us/'+t)});
     if(!a.length)return;var h=a.join('');el.innerHTML='<div>'+h+h+'</div><button type="button" class="tx" title="Скрыть строку" aria-label="Скрыть бегущую строку">×</button>';el.querySelector('.tx').onclick=function(){store('fin:tape','0');tapeUpdate()};el.setAttribute('data-f','1')
   })
 }
