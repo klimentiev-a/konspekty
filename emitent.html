@@ -11,8 +11,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Serif:wght@500;600;700&display=swap" media="print" onload="this.media='all'">
-<link rel="stylesheet" href="fin2/styles.css?v=380">
-<link rel="stylesheet" href="fin2/fin2-hub.css?v=380">
+<link rel="stylesheet" href="fin2/styles.css?v=381">
+<link rel="stylesheet" href="fin2/fin2-hub.css?v=381">
 <style>
 /* тема раздела Облигации: те же классы body (light/paper/indigo) из localStorage bonds_theme */
 body{margin:0;min-height:100vh}
@@ -48,7 +48,7 @@ td.l,th.l{text-align:left}
 <div class="chips" id="tabs"></div>
 <div id="view"><div class="muted">Загрузка…</div></div>
 </div>
-<script src="fin2/research-echarts.js?v=380"></script>
+<script src="fin2/research-echarts.js?v=381"></script>
 <script>
 (function(){
 "use strict";
@@ -233,7 +233,7 @@ if(window.ResizeObserver)new ResizeObserver(postH).observe(document.body);
 // тема: слежение за переключением «Тёмный/Светлый/Индиго/Бумага» в Облигациях
 window.addEventListener("storage",function(e){if(e.key!=="bonds_theme")return;document.body.classList.remove("light","paper","indigo");if(e.newValue&&e.newValue!=="dark")document.body.classList.add(e.newValue);setTimeout(draw,0)});
 var h0=(location.hash||"").slice(1);if(V[h0])tab=h0;
-fetch("emitent-data/wush.json?v=380").then(function(r){return r.json()}).then(function(d){D=d;render()}).catch(function(e){$("#view").innerHTML='<div class="panel">Не удалось загрузить данные: '+e.message+'</div>'});
+fetch("emitent-data/wush.json?v=381").then(function(r){return r.json()}).then(function(d){D=d;render()}).catch(function(e){$("#view").innerHTML='<div class="panel">Не удалось загрузить данные: '+e.message+'</div>'});
 })();
 </script>
 </body>
