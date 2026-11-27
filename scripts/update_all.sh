@@ -30,6 +30,7 @@ fi
 rm -rf hist
 git clone -q --depth 1 -b data "$REPO_URL" hist 2>/dev/null || mkdir -p hist
 python3 update_history.py hist || echo "::warning::история цен не обновилась"
+python3 update_moex_hist.py hist || echo "::warning::история Мосбиржи не обновилась"   # запасные графики индексов и акций РФ
 python3 update_enews.py hist   || echo "::warning::архив новостей не обновился"
 if [ "$(cat hist/.changed 2>/dev/null || echo 0)" != "0" ]; then
   (cd hist && rm -rf .git .changed && git init -q && git checkout -q -b data && git add -A && git commit -qm "Данные истории цен" && git push -q -f "$REPO_URL" data) \

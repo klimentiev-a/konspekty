@@ -2576,7 +2576,7 @@ function loadCandles(tic,range){
   var cr=cRange(range),days={'1m':32,'3m':95,'6m':185,'1y':370,'3y':1100,'5y':1830}[range],iv=isWk(range)?7:24;
   return getJSON(ISS+'shares/securities/'+tic+'/candles.json?iss.meta=off&interval='+iv+'&from='+(cr?cr.f:isoDaysAgo(days))+(cr?'&till='+cr.t:'')+'&candles.columns=begin,close',12000)
    .then(function(j){CARD.candles[key]=j.candles.data.map(function(r){return [new Date(r[0].replace(' ','T')).getTime(),r[1]]});CARD.err[key]=0})
-   .catch(function(){CARD.err[key]=1});
+   .catch(function(){return loadHist('ru-'+tic).then(function(h){var d=sliceHist(h,range);if(d.length<2)throw 0;CARD.candles[key]=d;CARD.err[key]=0})}).catch(function(){CARD.err[key]=1});
 }
 function loadDivs(tic){
   if(CARD.divs[tic])return Promise.resolve();
@@ -2652,7 +2652,7 @@ function assetInfo(kind,id){
       src:'cg',cgid:c.id||CRID[id],hkey:'cr-'+id,links:[['CoinGecko','https://www.coingecko.com/ru/coins/'+(c.id||CRID[id]||id.toLowerCase())]]}}
   if(kind==='idx'){var x=IDX[id];if(!x)return null;var v=(M.idx||{})[id]||{},su=((M.snap&&M.snap.us)||{})[id]||{};
     return {key:id,name:x.n,sub:x.sub,unit:'',px:x.src==='iss'?v.v:su.p,ch:x.src==='iss'?v.ch:su.ch,chNote:x.src==='iss'?(v.tm?'биржа '+String(v.tm).slice(0,5):''):'снимок',cap:null,mult:[],
-      src:x.src,hkey:'us-'+id,links:x.src==='iss'?[['Мосбиржа','https://www.moex.com/ru/index/'+id]]:[['Yahoo Finance','https://finance.yahoo.com/quote/'+encodeURIComponent(id)]]}}
+      src:x.src,hkey:(x.src==='iss'?'ix-':'us-')+id,links:x.src==='iss'?[['Мосбиржа','https://www.moex.com/ru/index/'+id]]:[['Yahoo Finance','https://finance.yahoo.com/quote/'+encodeURIComponent(id)]]}}
   return null;
 }
 var RDAYS={'1w':8,'1m':31,'3m':92,'6m':183,'1y':366,'3y':1096,'5y':1827};
@@ -2703,7 +2703,8 @@ function loadSeries(a,range){
   if(isIntra(range)&&a.src==='iss')p=issIntra(ISS+'index/securities/'+encodeURIComponent(a.key),range);
   else if(isIntra(range)&&a.src==='cg')p=cgIntra(a,range);
   else if(a.src==='iss')p=getJSON(ISS+'index/securities/'+encodeURIComponent(a.key)+'/candles.json?iss.meta=off&interval='+(weekly?7:24)+'&from='+(cr?cr.f:isoDaysAgo(RDAYS[range]))+(cr?'&till='+cr.t:'')+'&candles.columns=begin,close',12000)
-    .then(function(j){return j.candles.data.map(function(r){return [new Date(r[0].replace(' ','T')).getTime(),r[1]]})});
+    .then(function(j){return j.candles.data.map(function(r){return [new Date(r[0].replace(' ','T')).getTime(),r[1]]})})
+    .catch(function(){return loadHist(a.hkey).then(function(h){return sliceHist(h,range)})});
   else if(a.src==='cg'&&cr)p=getJSON('https://api.binance.com/api/v3/klines?symbol='+a.key+'USDT&interval='+(weekly?'1w':'1d')+'&startTime='+new Date(cr.f).getTime()+'&endTime='+(new Date(cr.t).getTime()+864e5)+'&limit=1000',12000).then(function(r){return r.map(function(q){return [q[0],+q[4]]})}).catch(function(){return loadHist(a.hkey).then(function(h){return sliceHist(h,range)})})
   else if(a.src==='cg')p=getJSON('https://api.coingecko.com/api/v3/coins/'+a.cgid+'/market_chart?vs_currency=usd&days='+RDAYS[range]+'&interval=daily',12000)
     .then(function(j){var pr=j.prices.map(function(q){return [q[0],q[1]]});if(weekly)pr=pr.filter(function(q,i){return i%7===0||i===pr.length-1});return pr})

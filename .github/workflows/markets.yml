@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     branches: [main]
-    paths: ['update_fxhist.py', 'update_markets.py', 'update_news.py', 'update_history.py', 'update_enews.py', 'newsutil.py', 'scripts/update_all.sh', '.github/workflows/markets.yml']
+    paths: ['update_fxhist.py', 'update_markets.py', 'update_news.py', 'update_history.py', 'update_moex_hist.py', 'update_enews.py', 'newsutil.py', 'scripts/update_all.sh', '.github/workflows/markets.yml']
 concurrency: markets
 permissions:
   contents: write
