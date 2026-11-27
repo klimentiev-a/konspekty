@@ -27,19 +27,24 @@ document.addEventListener('DOMContentLoaded',function(){var v=g();document.query
     shown=true;
     var rk='hubReload:'+page(location.href),last=0;try{last=+sessionStorage.getItem(rk)||0}catch(er){}
     if(Date.now()-last<30000)return;                                  // эта страница только что перезагрузилась на свежую версию
-    var d=document.createElement('div');
-    d.setAttribute('role','status');
-    d.style.cssText='position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 16px);transform:translate(-50%,140%);z-index:9999;display:flex;align-items:center;gap:12px;padding:8px 8px 8px 16px;border-radius:999px;border:1px solid var(--line,#D9D3C2);background:var(--surface,#FBF9F3);color:var(--fg,#25221C);box-shadow:0 10px 30px rgba(0,0,0,.18);font:500 14px/1.2 system-ui,sans-serif;white-space:nowrap;transition:transform .4s cubic-bezier(.2,.9,.25,1)';
-    d.innerHTML='<span>Hub обновился</span><button type="button" style="border:0;border-radius:999px;padding:9px 14px;background:var(--a2,var(--accent,#1F6B57));color:#fff;font:600 14px/1 system-ui,sans-serif;cursor:pointer">Обновить</button>';
-    d.querySelector('button').onclick=function(){var b=this,done=false;b.textContent='…';b.disabled=true;try{sessionStorage.setItem(rk,String(Date.now()))}catch(er){}
+    /* автообновление без кнопки: сначала кладём свежую страницу в кэш, потом перезагружаем, когда это незаметно:
+       сразу, если человек ещё ничего не трогал; иначе — когда вкладка уходит в фон или он замер (нет ввода в поле) */
+    function fresh(){var done=false;try{sessionStorage.setItem(rk,String(Date.now()))}catch(er){}
       function go(){if(done)return;done=true;try{location.reload()}catch(er){location.href=location.href.replace(/#.*$/,'')}}
-      setTimeout(go,3500);   // не зависнуть, если сеть медленная
+      setTimeout(go,3500);
       try{var u=location.href.replace(/#.*$/,'');caches.keys().then(function(ks){var k=ks.filter(function(x){return /-static$/.test(x)})[0];if(!k)return go();
-        return fetch(u,{cache:'reload'}).then(function(r){return r.ok?caches.open(k).then(function(c){return c.put(u,r)}):0}).then(go,go)}).catch(go)}catch(er){go()}};
-    document.body.appendChild(d);requestAnimationFrame(function(){requestAnimationFrame(function(){d.style.transform='translate(-50%,0)'})});
+        return fetch(u,{cache:'reload'}).then(function(r){return r.ok?caches.open(k).then(function(c){return c.put(u,r)}):0}).then(go,go)}).catch(go)}catch(er){go()}}
+    function typing(){var a=document.activeElement;return !!a&&(/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)||a.isContentEditable)}
+    function tryNow(){if(!touched&&!typing()&&Date.now()-t0<20000){fresh();return true}return false}
+    if(tryNow())return;
+    var idle=null;
+    function arm(){clearTimeout(idle);idle=setTimeout(function(){if(!typing()&&document.visibilityState!=='visible')fresh()},60000)}
+    document.addEventListener('visibilitychange',function(){if(document.visibilityState==='hidden'&&!typing())fresh()});
+    arm();
   });
   function ask(){var c=navigator.serviceWorker.controller;if(c)c.postMessage({t:'hub-check',url:location.href})}
   ask();setTimeout(ask,1500);setTimeout(ask,4000);
+  document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible'){try{navigator.serviceWorker.getRegistration().then(function(r){if(r)r.update()})}catch(e){}ask()}});
   window.addEventListener('load',function(){setTimeout(function(){
     try{if(navigator.connection&&navigator.connection.saveData)return}catch(e){}
     ['index.html','finance.html','ucheba.html'].forEach(function(p){if(page(location.href)!==p)fetch(p).catch(function(){})});
