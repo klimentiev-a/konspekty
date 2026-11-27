@@ -1,4 +1,4 @@
-2026-11-27T00:26Z
+2026-11-27T00:35Z
 div SBER <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate in certificate chain (_ssl.c:1081)>
 div LKOH <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate in certificate chain (_ssl.c:1081)>
 div ROSN <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate in certificate chain (_ssl.c:1081)>
@@ -8,5 +8,5 @@ smartlab SBER байт 56561 строк 0 []
 dohod SBER байт 40089 строк 26 [('2026-07-20', 37.64), ('2025-07-18', 34.84)]
 альтернативный источник: эмитентов с данными 28 записей 52
 corp_cal 52 записей по 28 эмитентам
-fin 331
+fin: свежий, пропуск
 digest: база 2026-11-21 дней 6 новостей 8
