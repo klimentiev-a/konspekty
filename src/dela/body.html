@@ -1,0 +1,20 @@
+<div class="w dl">
+  %%TOP%%
+  <h1>Календарь</h1>
+  <p class="lead">Тесты и сдачи из Smart LMS и мои дела. Время московское.</p>
+  <div class="dl-bar">
+    <div class="dl-seg" id="dlf" role="tablist" aria-label="Фильтр">
+      <button type="button" data-f="open" class="on">Впереди</button><button type="button" data-f="all">Все</button><button type="button" data-f="done">Сделано</button>
+    </div>
+    <div class="dl-mon"><button type="button" id="dlp" aria-label="Предыдущий месяц">‹</button><b id="dlm"></b><button type="button" id="dln" aria-label="Следующий месяц">›</button></div>
+  </div>
+  <div class="dl-grid" id="dlg" aria-label="Месяц"></div>
+  <form class="dl-add" id="dla" autocomplete="off">
+    <input id="dlt" type="text" placeholder="Новое дело…" aria-label="Название дела" required>
+    <input id="dld" type="date" aria-label="Дата" required>
+    <input id="dlh" type="time" aria-label="Время">
+    <button type="submit">Добавить</button>
+  </form>
+  <div id="dll"></div>
+  <p class="foot">Данные из Smart LMS обновляются, когда их добавляет Claude. Галочки и свои дела хранятся в этом браузере.</p>
+</div>

@@ -180,6 +180,10 @@ cards_artem = cards_artem[:cards_artem.rindex('\n  </div>')] + """
       <div class="ic">▶</div><b>Студия</b><span>Reels с нуля: идея, сцены, голос, музыка, проверка рамки Instagram, запись MP4, RU/EN</span>
       <div class="links"><a href="studio.html">Открыть</a></div>
     </div>
+    <div class="card u"><a class="cover" href="dela.html" aria-label="Календарь"></a>
+      <div class="ic">◷</div><b>Календарь</b><span>Тесты и сдачи из Smart LMS по дням и мои дела: что, когда и до какого времени</span>
+      <div class="links"><a href="dela.html">Открыть</a></div>
+    </div>
   </div>"""
 cards_artem += ('''
   <div class="cards" data-group="fin" hidden>
@@ -413,6 +417,12 @@ _sr = lambda n: open(os.path.join(_sp, n), encoding='utf-8').read()
 st_body = _sr('body.html') + '<script>\n' + '\n'.join(_sr(n) for n in ('i18n.js', 'engine.js', 'data.js', 'audio.js', 'net.js', 'ui.js')) + '\n</script>'
 st_html = page('Reel Studio · Hub', st_body, 'artem').replace('</head>', '<style>\n' + _sr('studio.css') + '</style></head>', 1)
 
-for name, html in (('index.html', index_html), ('artem.html', artem_html), ('nastya.html', nastya_html), ('nastya-ucheba.html', nu_html), ('nastya-klava.html', kl_html), ('search.html', search_html), ('lectures.html', lec_html), ('studio.html', st_html)):
+# ---------------- dela.html: Календарь дел (src/dela/) ----------------
+_dp = os.path.join(ROOT, 'src', 'dela')
+_dr = lambda n: open(os.path.join(_dp, n), encoding='utf-8').read()
+dl_body = _dr('body.html').replace('%%TOP%%', topbar('artem.html', 'Артем')) + '<script>\n' + _dr('dela.js').replace('%%TASKS%%', _dr('tasks.json').strip()) + '\n</script>'
+dl_html = page('Календарь · Hub', dl_body, 'artem').replace('</head>', '<style>\n' + _dr('dela.css') + '</style></head>', 1)
+
+for name, html in (('index.html', index_html), ('artem.html', artem_html), ('nastya.html', nastya_html), ('nastya-ucheba.html', nu_html), ('nastya-klava.html', kl_html), ('search.html', search_html), ('lectures.html', lec_html), ('studio.html', st_html), ('dela.html', dl_html)):
     open(os.path.join(ROOT, name), 'w', encoding='utf-8').write(html)
     print('ok', name, len(html))

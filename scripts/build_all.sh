@@ -26,7 +26,7 @@ PY
 # Синхронизация прогресса между устройствами: подключаем sync.js первым скриптом (идемпотентно)
 python3 - <<'PY'
 import re
-for f in ['index.html','artem.html','nastya.html','nastya-ucheba.html','nastya-klava.html','ucheba.html','finance.html','english.html']:
+for f in ['index.html','artem.html','nastya.html','nastya-ucheba.html','nastya-klava.html','ucheba.html','finance.html','english.html','dela.html']:
     s = open(f, encoding='utf-8').read()
     if 'src="tables.js"' not in s:
         s = s.replace('<meta charset="utf-8">', '<meta charset="utf-8"><script src="tables.js"></script>', 1)
