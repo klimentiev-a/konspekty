@@ -2,17 +2,26 @@
   %%TOP%%
   <h1>Календарь</h1>
   <p class="lead">Тесты и сдачи из Smart LMS и мои дела. Время московское.</p>
+  <section class="dl-hero" id="dlh" aria-live="polite"></section>
+  <div class="dl-stats" id="dls"></div>
+  <div class="dl-strip-row">
+    <div class="dl-strip" id="dlw" role="listbox" aria-label="Ближайшие дни"></div>
+    <button type="button" class="dl-mb" id="dlmb" aria-expanded="false">Месяц</button>
+  </div>
+  <div class="dl-month" id="dlm" hidden>
+    <div class="dl-mh"><button type="button" id="dlp" aria-label="Предыдущий месяц">‹</button><b id="dlmt"></b><button type="button" id="dln" aria-label="Следующий месяц">›</button></div>
+    <div class="dl-grid" id="dlg"></div>
+  </div>
   <div class="dl-bar">
     <div class="dl-seg" id="dlf" role="tablist" aria-label="Фильтр">
       <button type="button" data-f="open" class="on">Впереди</button><button type="button" data-f="all">Все</button><button type="button" data-f="done">Сделано</button>
     </div>
-    <div class="dl-mon"><button type="button" id="dlp" aria-label="Предыдущий месяц">‹</button><b id="dlm"></b><button type="button" id="dln" aria-label="Следующий месяц">›</button></div>
+    <button type="button" class="dl-plus" id="dlpl">+ Своё дело</button>
   </div>
-  <div class="dl-grid" id="dlg" aria-label="Месяц"></div>
-  <form class="dl-add" id="dla" autocomplete="off">
-    <input id="dlt" type="text" placeholder="Новое дело…" aria-label="Название дела" required>
+  <form class="dl-add" id="dla" autocomplete="off" hidden>
+    <input id="dlt" type="text" placeholder="Что нужно сделать" aria-label="Название дела" required>
     <input id="dld" type="date" aria-label="Дата" required>
-    <input id="dlh" type="time" aria-label="Время">
+    <input id="dlh2" type="time" aria-label="Время">
     <button type="submit">Добавить</button>
   </form>
   <div id="dll"></div>
